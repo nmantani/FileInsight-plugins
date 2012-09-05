@@ -29,7 +29,7 @@ List of plugins:
 
 How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
-For the TrID plugin, please edit TRID_PATH variable according to your TrID installation path.
+For the TrID plugin, please edit TRID_PATH variable in main.py according to your TrID installation path.
 
 Author: Nobutaka Mantani <nobutaka@nobutaka.org>
 
