@@ -1,5 +1,5 @@
 #
-# Incremental XOR - XORing selected region while incrementing XOR key
+# Incremental XOR - XOR selected region while incrementing XOR key
 #
 # Copyright (c) 2012, Nobutaka Mantani
 # All rights reserved.
