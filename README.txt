@@ -27,5 +27,9 @@ List of plugins:
 * Zero-skip XOR
   XOR selected region while skipping data 0x00
 
+How to use:
+Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
+For the TrID plugin, please edit TRID_PATH variable according to your TrID installation path.
+
 Author: Nobutaka Mantani <nobutaka@nobutaka.org>
 
