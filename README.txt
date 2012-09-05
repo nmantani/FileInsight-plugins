@@ -13,7 +13,7 @@ List of plugins:
   file if not selected)
 
 * Incremental XOR
-  XORing selected region while incrementing XOR key
+  XOR selected region while incrementing XOR key
 
 * Null-preserving XOR
   XOR selected region while skipping data 0x00
