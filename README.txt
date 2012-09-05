@@ -15,6 +15,9 @@ List of plugins:
 * Incremental XOR
   XORing selected region while incrementing XOR key
 
+* Null-preserving XOR
+  XOR selected region while skipping data 0x00
+
 * Reverse order
   Reverse order of selected region
 
@@ -23,9 +26,6 @@ List of plugins:
 
 * TrID
   Send selected region (the whole file if not selected) to TrID
-
-* Null-preserving XOR
-  XOR selected region while skipping data 0x00
 
 How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
