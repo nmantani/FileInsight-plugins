@@ -1,0 +1,31 @@
+Tiny plugins for McAfee FileInsight
+
+List of plugins:
+
+* Copy to new file
+  Copy selected region (the whole file if not selected) to new file
+
+* Decremental XOR
+  XOR selected region while decrementing XOR key
+
+* Hash values
+  Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
+  file if not selected)
+
+* Incremental XOR
+  XORing selected region while incrementing XOR key
+
+* Reverse order
+  Reverse order of selected region
+
+* Swap two bytes
+  Swap each pair of bytes of selected region
+
+* TrID
+  Send selected region (the whole file if not selected) to TrID
+
+* Zero-skip XOR
+  XOR selected region while skipping data 0x00
+
+Author: Nobutaka Mantani <nobutaka@nobutaka.org>
+
