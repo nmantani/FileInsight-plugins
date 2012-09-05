@@ -16,7 +16,7 @@ List of plugins:
   XOR selected region while incrementing XOR key
 
 * Null-preserving XOR
-  XOR selected region while skipping data 0x00
+  XOR selected region while skipping null bytes
 
 * Reverse order
   Reverse order of selected region
