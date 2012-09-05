@@ -1,5 +1,5 @@
 #
-# Zero-skip XOR - XOR selected region while skipping data 0x00
+# Null-preserving XOR - XOR selected region while skipping data 0x00
 #
 # Copyright (c) 2012, Nobutaka Mantani
 # All rights reserved.

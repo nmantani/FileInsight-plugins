@@ -24,7 +24,7 @@ List of plugins:
 * TrID
   Send selected region (the whole file if not selected) to TrID
 
-* Zero-skip XOR
+* Null-preserving XOR
   XOR selected region while skipping data 0x00
 
 How to use:
