@@ -48,4 +48,5 @@ You need Python installed in addition to FileInsight.
 For the TrID plugin, please edit TRID_PATH variable in main.py according to your TrID installation path.
 
 Author: Nobutaka Mantani <nobutaka@nobutaka.org>
+License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
 
