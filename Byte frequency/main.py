@@ -37,6 +37,8 @@ else:
     length = getLength()
     print "Byte frequency of the whole file"
 
+freq = {}
+
 for i in range(0, 256):
     freq[i] = 0
 
