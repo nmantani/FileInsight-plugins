@@ -8,6 +8,9 @@ List of plugins:
 * Binary to hex text
   Convert binary of selected region into hex text
 
+* Byte frequency
+  Show byte frequency of selected region (the whole file if not selected)
+
 * Copy to new file
   Copy selected region (the whole file if not selected) to new file
 
