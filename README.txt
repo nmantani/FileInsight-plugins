@@ -1,6 +1,12 @@
 Tiny plugins for McAfee FileInsight
 
+These plugins may be useful for extracing malware executables and
+decoy documents from malicious document files.
+
 List of plugins:
+
+* Binary to hex text
+  Convert binary of selected region into hex text
 
 * Copy to new file
   Copy selected region (the whole file if not selected) to new file
@@ -11,6 +17,9 @@ List of plugins:
 * Hash values
   Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
   file if not selected)
+
+* Hex text to binary
+  Convert hex text of selected region into binary
 
 * Incremental XOR
   XOR selected region while incrementing XOR key
@@ -26,6 +35,9 @@ List of plugins:
 
 * TrID
   Send selected region (the whole file if not selected) to TrID
+
+* XOR with next byte
+  XOR selected region while using next byte as XOR key
 
 How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
