@@ -34,7 +34,7 @@ if (length > 0):
 
     for i in range(0, length):
         j = offset + i
-        newbuf.append("%x" % ord(buf[j]))
+        newbuf.append("%02x" % ord(buf[j]))
 
     newDocument("New file", 1)
     setDocument("".join(newbuf))
