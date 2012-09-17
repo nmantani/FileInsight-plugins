@@ -39,13 +39,19 @@ List of plugins:
 * TrID
   Send selected region (the whole file if not selected) to TrID
 
+* XOR search
+  Search XORed / bit-rotated string in selected region (the whole file
+  if not selected)
+
 * XOR with next byte
   XOR selected region while using next byte as XOR key
 
 How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
 You need Python installed in addition to FileInsight.
-For the TrID plugin, please edit TRID_PATH variable in main.py according to your TrID installation path.
+
+For the TrID plugin, please edit TRID_PATH variable in main.py according to
+your TrID installation path.
 
 Author: Nobutaka Mantani <nobutaka@nobutaka.org>
 License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
