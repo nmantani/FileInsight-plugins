@@ -32,6 +32,7 @@ import os
 
 TRID_PATH = "C:\\Program Files\\trid_net\\TrIDNet.exe" # EDIT HERE
 
+offset = getSelectionOffset()
 length = getSelectionLength()
 if (length > 0):
     data = getSelection()
@@ -43,8 +44,8 @@ handle = os.fdopen(fd, "w")
 handle.write(data)
 handle.close()
 
-subprocess.Popen([TRID_PATH, filepath], shell=False)
-time.sleep(3)
+p = subprocess.Popen([TRID_PATH, filepath], shell=False)
+p.wait()
 os.remove(filepath)
 
 if (length > 0):
