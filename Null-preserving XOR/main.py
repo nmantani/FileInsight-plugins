@@ -33,7 +33,7 @@ if (length > 0):
     buf = list(getDocument())
     for i in range(0, length):
         j = offset + i
-        if ord(buf[j]) != 0x00:
+        if ord(buf[j]) != 0x00 and ord(buf[j]) != key:
             buf[j] = chr(ord(buf[j]) ^ key)
     newDocument("New file", 1)
     setDocument("".join(buf))
