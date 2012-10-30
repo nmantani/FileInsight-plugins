@@ -28,7 +28,7 @@
 
 import binascii
 
-LEN_AFTER_HIT = 50
+LEN_AFTER_HIT = 30
 
 # Make bad-character shift table for quick search
 def make_table(pattern, size):
@@ -136,11 +136,11 @@ def search_xor(buf, offset, length, keyword):
 
             for k in range(0, len(hitstr)):
                 c = ord(hitstr[k]) ^ i
-                if (c < 0x20 or c > 0x126):
-                    c = 0x2e
                 hitstr[k] = chr(c)
 
-            print "XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, "".join(hitstr))
+            hitstr = binascii.hexlify("".join(hitstr))
+            hitstr = hitstr.upper()
+            print "XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, hitstr)
 
 # Search bit-rotated string
 def search_rol(buf, offset, length, keyword):
@@ -182,11 +182,11 @@ def search_rol(buf, offset, length, keyword):
 
             for k in range(0, len(hitstr)):
                 c = rol(ord(hitstr[k]), i)
-                if (c < 0x20 or c > 0x126):
-                    c = 0x2e
                 hitstr[k] = chr(c)
 
-            print "ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, "".join(hitstr))
+            hitstr = binascii.hexlify("".join(hitstr))
+            hitstr = hitstr.upper()
+            print "ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, hitstr)
 
 length_sel = getSelectionLength()
 offset = getSelectionOffset()
@@ -199,12 +199,12 @@ if (len(keyword) > 0):
     if (length_sel > 0):
         length = length_sel
         buf = list(getSelection())
-        print "Search XORed / bit-rotated string from offset %s to %s with keyword %s" % (hex(offset), hex(offset + length - 1), disp_keyword)
+        print "Search XORed / bit-rotated data from offset %s to %s with keyword %s" % (hex(offset), hex(offset + length - 1), disp_keyword)
     else:
         buf = list(getDocument())
         length = getLength()
         offset = 0
-        print "Search XORed / bit-rotated string in the whole file with keyword %s" % disp_keyword
+        print "Search XORed / bit-rotated data in the whole file with keyword %s" % disp_keyword
 
     search_xor(buf, offset, length, keyword)
     search_rol(buf, offset, length, keyword)
