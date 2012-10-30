@@ -1,6 +1,6 @@
 #
-# XOR search - Search XORed / bit-rotated string in selected region (the whole
-# file if not selected)
+# XOR text search - Search XORed / bit-rotated string in selected region (the
+# whole file if not selected)
 #
 # Copyright (c) 2012, Nobutaka Mantani
 # All rights reserved.

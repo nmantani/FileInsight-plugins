@@ -39,7 +39,11 @@ List of plugins:
 * TrID
   Send selected region (the whole file if not selected) to TrID
 
-* XOR search
+* XOR hex search
+  Search XORed / bit-rotated data in selected region (the whole file
+  if not selected)
+
+* XOR text search
   Search XORed / bit-rotated string in selected region (the whole file
   if not selected)
 
