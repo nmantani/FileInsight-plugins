@@ -33,6 +33,9 @@ List of plugins:
 * Reverse order
   Reverse order of selected region
 
+* Swap nibbles
+  Swap each pair of nibbles of selected region
+
 * Swap two bytes
   Swap each pair of bytes of selected region
 
