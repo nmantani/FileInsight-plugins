@@ -17,6 +17,9 @@ List of plugins:
 * Decremental XOR
   XOR selected region while decrementing XOR key
 
+* Fill
+  Fill selected region with specified hex pattern
+
 * Hash values
   Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
   file if not selected)
