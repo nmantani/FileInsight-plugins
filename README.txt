@@ -1,7 +1,7 @@
 Tiny plugins for McAfee FileInsight
 
-These plugins may be useful for extracing malware executables and
-decoy documents from malicious document files.
+These plugins would be useful for extracing malware executables and decoy
+documents from malicious document files.
 
 List of plugins:
 
@@ -20,6 +20,10 @@ List of plugins:
 * Fill
   Fill selected region with specified hex pattern
 
+* Guess 256 byte XOR keys
+  Guess 256 byte XOR keys from selected region (the whole file if not selected)
+  based on the byte frequency
+
 * Hash values
   Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
   file if not selected)
@@ -31,7 +35,7 @@ List of plugins:
   XOR selected region while incrementing XOR key
 
 * Null-preserving XOR
-  XOR selected region while skipping null bytes
+  XOR selected region while skipping null bytes and XOR key itself
 
 * Reverse order
   Reverse order of selected region
