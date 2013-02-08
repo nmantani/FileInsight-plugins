@@ -27,38 +27,21 @@
 
 offset = getSelectionOffset()
 length = getSelectionLength()
+string = list(getSelection())
 
-hexchars = {"0" : True,
-            "1" : True,
-            "2" : True,
-            "3" : True,
-            "4" : True,
-            "5" : True,
-            "6" : True,
-            "7" : True,
-            "8" : True,
-            "9" : True,
-            "A" : True,
-            "B" : True,
-            "C" : True,
-            "D" : True,
-            "E" : True,
-            "F" : True,
-            "a" : True,
-            "b" : True,
-            "c" : True,
-            "d" : True,
-            "e" : True,
-            "f" : True}
+hexchars = list("0123456789abcdefABCDEF")
 
 if (length > 1):
-    buf = list(getDocument())
+    buf = []
+    for i in range(0, len(string)):
+        if string[i] in hexchars:
+            buf.append(string[i])
+
     newbuf = []
     i = 0
-    while (i < length):
-        j = offset + i
-        if (i < length - 1 and hexchars.get(buf[j]) and hexchars.get(buf[j + 1])):
-            newbuf.append(chr(int(buf[j] + buf[j + 1], 16)))
+    while (i < len(buf)):
+        if i < length - 1 and buf[i] in hexchars and buf[i+1] in hexchars:
+            newbuf.append(chr(int(buf[i] + buf[i+1], 16)))
         i += 2
     newDocument("New file", 1)
     setDocument("".join(newbuf))
