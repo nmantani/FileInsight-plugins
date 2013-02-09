@@ -40,7 +40,7 @@ if (length > 1):
     newbuf = []
     i = 0
     while (i < len(buf)):
-        if i < length - 1 and buf[i] in hexchars and buf[i+1] in hexchars:
+        if i < length - 1 and buf[i]:
             newbuf.append(chr(int(buf[i] + buf[i+1], 16)))
         i += 2
     newDocument("New file", 1)
