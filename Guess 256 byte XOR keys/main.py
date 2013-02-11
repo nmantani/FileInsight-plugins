@@ -27,34 +27,119 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
+import hashlib
+import binascii
+import struct
+
+def xor256(buf, key):
+    b = list(buf)
+    k = list(key)
+    length = len(buf)
+    for i in range(0, length):
+        b[i] = chr(ord(b[i]) ^ ord(k[i % 256]))
+    return  "".join(b)
+
+def find_ole_header(buf, offset):
+    i = 0
+    pos = 0
+    length = len(buf)
+    while i < length:
+        pos = buf.find("".join(['\xd0', '\xcf', '\x11', '\xe0', '\xa1', '\xb1', '\x1a', '\xe1']), i)
+        if pos == -1:
+            break
+        else:
+            print "OLE2 Compound Document header found at offset %s" % hex(offset + pos)
+            i += pos + 8
+
+def find_pdf_header(buf, offset):
+    i = 0
+    pos = 0
+    length = len(buf)
+    while i < length:
+        pos = buf.find("%PDF", i)
+        if pos == -1:
+            break
+        else:
+            print "PDF header found at offset %s" % hex(offset + pos)
+            i += pos + 4
+
+def find_pe_header(buf, offset):
+    i = 0
+    pos = 0
+    length = len(buf)
+    while i < length:
+        pos = buf.find("MZ", i)
+        if pos == -1:
+            break
+        else:
+            if pos + 64 < length:
+                # Get the offset of the "PE" characters
+                pe_offset = struct.unpack("<I", buf[pos+60:pos+64])[0]
+                if pos + pe_offset + 23 < length:
+                    # Check machine
+                    if buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x4c', '\x01']):
+                        # Check characteristics
+                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
+                            print "Win32 DLL found at offset %s" % hex(offset + pos)
+                        else:
+                            print "Win32 executable found at offset %s" % hex(offset + pos)
+                    elif buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x64', '\x86']):
+                        # Check characteristics
+                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
+                            print "Win64 DLL found at offset %s" % hex(offset + pos)
+                        else:
+                            print "Win64 executable found at offset %s" % hex(offset + pos)
+            i += pos + 2
+
+def find_rtf_header(buf, offset):
+    i = 0
+    pos = 0
+    length = len(buf)
+    while i < length:
+        pos = buf.find("{\\rtf", i)
+        if pos == -1:
+            break
+        else:
+            print "RTF header found at offset %s" % hex(offset + pos)
+            i += pos + 5
 
 length = getSelectionLength()
 offset = getSelectionOffset()
 
 if (length > 0):
     buf = getSelection()
-    print "Top five 256 byte XOR key guessed from offset %s to %s" % (hex(offset), hex(offset + length - 1))
+    print "Top five 256 byte XOR keys guessed from offset %s to %s\n" % (hex(offset), hex(offset + length - 1))
 else:
+    offset = 0
     buf = getDocument()
     length = getLength()
-    print "Top five 256 byte XOR key guessed from the whole file"
+    print "Top five 256 byte XOR keys guessed from the whole file\n"
 
+block = {}
 freq = {}
-for i in range(0, 256):
-    freq[i] = {}
-    for j in range(0, 256):
-        freq[i][j] = 0
+for i in range(0, length, 256):
+    b = buf[i:i + 256]
+    if len(b) == 256:
+        h = hashlib.md5(b).hexdigest()
+        if h not in block:
+            block[h] = b
+            freq[h] = 1
+        else:
+            freq[h] += 1
 
-for i in range(0, length):
-    v = ord(buf[i])
-    j = i % 256
-    if (v in freq):
-        freq[j][v] += 1
-
-for i in range(0, 5):
-    sys.stdout.write("0x")
-    for j in range(255, -1, -1):
-        l = sorted(freq[j].items(), key=lambda x:x[1], reverse=True)
-        sys.stdout.write("%02X" % l[i][0])
-    print
+i = 0
+for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
+    if i < 5:
+        sys.stdout.write("XOR key: 0x")
+        for j in range(255, -1, -1):
+            sys.stdout.write("%02x" % ord(block[k][j]))
+        print
+        print "Occurrence count: %i" % v
+        tmp = xor256(buf, block[k])
+        find_pe_header(tmp, offset)
+        find_ole_header(tmp, offset)
+        find_pdf_header(tmp, offset)
+        find_rtf_header(tmp, offset)
+        print
+        i += 1
 
