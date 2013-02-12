@@ -43,9 +43,11 @@ if (length > 0):
         buf[j] = chr(int(l[i % patlen], 16))
     newDocument("New file", 1)
     setDocument("".join(buf))
+    setBookmark(offset, length, hex(offset), "#c8ffff")
 
     if (length == 1):
         print "Filled one byte from offset %s to %s with the hex pattern %s." % (hex(offset), hex(offset), hex(int(pat, 16)))
     else:
         print "Filled %s bytes from offset %s to %s with the hex pattern %s." % (length, hex(offset), hex(offset + length - 1), hex(int(pat, 16)))
+    print "Added a bookmark to filled region."
 

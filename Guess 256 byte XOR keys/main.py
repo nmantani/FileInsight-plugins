@@ -42,6 +42,7 @@ def xor256(buf, key):
 def find_ole_header(buf, offset):
     i = 0
     pos = 0
+    found = 0
     length = len(buf)
     while i < length:
         pos = buf.find("".join(['\xd0', '\xcf', '\x11', '\xe0', '\xa1', '\xb1', '\x1a', '\xe1']), i)
@@ -49,11 +50,15 @@ def find_ole_header(buf, offset):
             break
         else:
             print "OLE2 Compound Document header found at offset %s" % hex(offset + pos)
+            setBookmark(offset + pos, 8, hex(offset + pos), "#c8ffff")
             i += pos + 8
+            found += 1
+    return found
 
 def find_pdf_header(buf, offset):
     i = 0
     pos = 0
+    found = 0
     length = len(buf)
     while i < length:
         pos = buf.find("%PDF", i)
@@ -61,11 +66,15 @@ def find_pdf_header(buf, offset):
             break
         else:
             print "PDF header found at offset %s" % hex(offset + pos)
+            setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
             i += pos + 4
+            found += 1
+    return found
 
 def find_pe_header(buf, offset):
     i = 0
     pos = 0
+    found = 0
     length = len(buf)
     while i < length:
         pos = buf.find("MZ", i)
@@ -83,17 +92,23 @@ def find_pe_header(buf, offset):
                             print "Win32 DLL found at offset %s" % hex(offset + pos)
                         else:
                             print "Win32 executable found at offset %s" % hex(offset + pos)
+                        setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
+                        found += 1
                     elif buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x64', '\x86']):
                         # Check characteristics
                         if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
                             print "Win64 DLL found at offset %s" % hex(offset + pos)
                         else:
                             print "Win64 executable found at offset %s" % hex(offset + pos)
+                        setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
+                        found += 1
             i += pos + 2
+    return found
 
 def find_rtf_header(buf, offset):
     i = 0
     pos = 0
+    found = 0
     length = len(buf)
     while i < length:
         pos = buf.find("{\\rtf", i)
@@ -101,7 +116,10 @@ def find_rtf_header(buf, offset):
             break
         else:
             print "RTF header found at offset %s" % hex(offset + pos)
+            setBookmark(offset + pos, 5, hex(offset + pos), "#c8ffff")
             i += pos + 5
+            found += 1
+    return found
 
 length = getSelectionLength()
 offset = getSelectionOffset()
@@ -136,10 +154,14 @@ for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         print
         print "Occurrence count: %i" % v
         tmp = xor256(buf, block[k])
-        find_pe_header(tmp, offset)
-        find_ole_header(tmp, offset)
-        find_pdf_header(tmp, offset)
-        find_rtf_header(tmp, offset)
+        num_pe = find_pe_header(tmp, offset)
+        num_ole = find_ole_header(tmp, offset)
+        num_pdf = find_pdf_header(tmp, offset)
+        num_rtf = find_rtf_header(tmp, offset)
+        if num_pe + num_ole + num_pdf + num_rtf == 1:
+            print "Added a bookmark to the search hit."
+        elif num_pe + num_ole + num_pdf + num_rtf > 1:
+            print "Added bookmarks to the search hits."
         print
         i += 1
 

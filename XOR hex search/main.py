@@ -2,7 +2,7 @@
 # XOR hex search - Search XORed / bit-rotated data in selected region (the
 # whole file if not selected)
 #
-# Copyright (c) 2012, Nobutaka Mantani
+# Copyright (c) 2012, 2013, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -94,6 +94,7 @@ def valdict(buf):
 # Search XORed string
 def search_xor(buf, offset, length, keyword):
     values = valdict(buf)
+    num_hits = 0
 
     for i in range(0, length):
         v = ord(buf[i])
@@ -141,10 +142,15 @@ def search_xor(buf, offset, length, keyword):
             hitstr = binascii.hexlify("".join(hitstr))
             hitstr = hitstr.upper()
             print "XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, hitstr)
+            setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
+            num_hits += 1
+
+    return num_hits
 
 # Search bit-rotated string
 def search_rol(buf, offset, length, keyword):
     values = valdict(buf)
+    num_hits = 0
 
     for i in range(1, 8):
         pattern = keyword[:]
@@ -187,6 +193,10 @@ def search_rol(buf, offset, length, keyword):
             hitstr = binascii.hexlify("".join(hitstr))
             hitstr = hitstr.upper()
             print "ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, hitstr)
+            setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
+            num_hits += 1
+
+    return num_hits
 
 length_sel = getSelectionLength()
 offset = getSelectionOffset()
@@ -206,6 +216,9 @@ if (len(keyword) > 0):
         offset = 0
         print "Search XORed / bit-rotated data in the whole file with keyword %s" % disp_keyword
 
-    search_xor(buf, offset, length, keyword)
-    search_rol(buf, offset, length, keyword)
-
+    num_xor = search_xor(buf, offset, length, keyword)
+    num_rol = search_rol(buf, offset, length, keyword)
+    if num_xor + num_rol == 1:
+        print "Added a bookmark to the search hit."
+    elif num_xor + num_rol > 1:
+        print "Added bookmarks to the search hits."
