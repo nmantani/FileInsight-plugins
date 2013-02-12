@@ -1,7 +1,7 @@
 #
 # Swap two bytes - Swap each pair of bytes of selected region
 #
-# Copyright (c) 2012, Nobutaka Mantani
+# Copyright (c) 2012, 2013, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,8 @@ if (length > 1):
         i += 2
     newDocument("New file", 1)
     setDocument("".join(buf))
+    setBookmark(offset, length, hex(offset), "#c8ffff")
 
     print "Swapped each pair of bytes from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length)
+    print "Added a bookmark to swapped region."
 

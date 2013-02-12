@@ -1,7 +1,7 @@
 #
 # Null-preserving XOR - XOR selected region while skipping null bytes
 #
-# Copyright (c) 2012, Nobutaka Mantani
+# Copyright (c) 2012, 2013, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -37,9 +37,11 @@ if (length > 0):
             buf[j] = chr(ord(buf[j]) ^ key)
     newDocument("New file", 1)
     setDocument("".join(buf))
+    setBookmark(offset, length, hex(offset), "#c8ffff")
 
     if (length == 1):
-        print "XORed one byte from offset %s to %s with key %s while skipping data 0x00." % (hex(offset), hex(offset), hex(key))
+        print "XORed one byte from offset %s to %s with key %s while skipping data 0x00 and %s." % (hex(offset), hex(offset), hex(key), hex(key))
     else:
-        print "XORed %s bytes from offset %s to %s with key %s while skipping data 0x00." % (length, hex(offset), hex(offset + length - 1), hex(key))
+        print "XORed %s bytes from offset %s to %s with key %s while skipping data 0x00 and %s." % (length, hex(offset), hex(offset + length - 1), hex(key), hex(key))
+    print "Added a bookmark to XORed region."
 

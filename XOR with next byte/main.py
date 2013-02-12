@@ -1,7 +1,7 @@
 #
 # XOR with next byte - XOR selected region while using next byte as XOR key
 #
-# Copyright (c) 2012, Nobutaka Mantani
+# Copyright (c) 2012, 2013, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -37,9 +37,11 @@ if (length_sel > 0):
             buf[j] = chr(ord(buf[j]) ^ ord(buf[j + 1]))
     newDocument("New file", 1)
     setDocument("".join(buf))
+    setBookmark(offset, length_sel, hex(offset), "#c8ffff")
 
     if (length_sel == 1):
         print "XORed one byte from offset %s to %s while using next byte as XOR key." % (hex(offset), hex(offset))
     else:
         print "XORed %s bytes from offset %s to %s while using next byte as XOR key." % (length_sel, hex(offset), hex(offset + length_sel - 1))
+    print "Added a bookmark to XORed region."
 

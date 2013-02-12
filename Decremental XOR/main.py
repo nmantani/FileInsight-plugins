@@ -1,7 +1,7 @@
 #
 # Decremental XOR - XOR selected region while decrementing XOR key
 #
-# Copyright (c) 2012, Nobutaka Mantani
+# Copyright (c) 2012, 2013, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -42,8 +42,11 @@ if (length > 0):
             key -= 1
     newDocument("New file", 1)
     setDocument("".join(buf))
+    setBookmark(offset, length, hex(offset), "#c8ffff")
 
     if (length == 1):
         print "XORed one byte from offset %s to %s while decrementing key %s." % (hex(offset), hex(offset), hex(init_key))
     else:
         print "XORed %s bytes from offset %s to %s while decrementing key %s." % (length, hex(offset), hex(offset + length - 1), hex(init_key))
+    print "Added a bookmark to XORed region."
+
