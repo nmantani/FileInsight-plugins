@@ -28,33 +28,6 @@
 
 LEN_AFTER_HIT = 50
 
-# Make bad-character shift table for quick search
-def make_table(pattern, size):
-    table = [size + 1] * 256
-    for i in xrange(size):
-        table[ord(pattern[i])] = size - i
-
-    return table
-
-# Sunday's Quick Search
-def quick_search(buf, pattern, start):
-    buf_end = len(buf) - 1
-    len_pat = len(pattern)
-    table = make_table(pattern, len_pat)
-    i = start
-    while i <= buf_end - len_pat:
-        j = 0
-        while j < len_pat:
-            if (buf[i + j] != pattern[j]):
-                break
-            j += 1
-        if (j == len_pat):
-            return i
-        else:
-            i += table[ord(buf[i + len_pat])]
-
-    return None
-
 # Masking bits
 def mask(x):
    if (x >= 0):
@@ -81,9 +54,11 @@ def rol(x, rot=1):
 # Make dictionary of values in data
 def valdict(buf):
     values = {}
+    b = list(buf)
+    length = len(b)
 
     for i in range(0, length):
-        v = ord(buf[i])
+        v = ord(b[i])
         if (v not in values):
             values[v] = True
 
@@ -115,23 +90,23 @@ def search_xor(buf, offset, length, keyword):
         if (notinvalues):
             continue
 
-        pos = quick_search(buf, pattern, 0)
+        pos = buf.find("".join(pattern), 0)
 
-        if (pos is not None):
+        if (pos != -1):
             hits.append(pos)
 
-        while (pos is not None):
-            pos = quick_search(buf, pattern, pos + len(pattern))
-            if (pos is not None):
+        while (pos != -1):
+            pos = buf.find("".join(pattern), pos + len(pattern))
+            if (pos != -1):
                 hits.append(pos)
 
         # Print search hits
         for j in hits:
             end = j + len(pattern) + LEN_AFTER_HIT
             if (end < length):
-                hitstr = buf[j:end]
+                hitstr = list(buf[j:end])
             else:
-                hitstr = buf[j:]
+                hitstr = list(buf[j:])
 
             for k in range(0, len(hitstr)):
                 c = ord(hitstr[k]) ^ i
@@ -166,23 +141,23 @@ def search_rol(buf, offset, length, keyword):
         if (notinvalues):
             continue
 
-        pos = quick_search(buf, pattern, 0)
+        pos = buf.find("".join(pattern), 0)
 
-        if (pos is not None):
+        if (pos != -1):
             hits.append(pos)
 
-        while (pos is not None):
-            pos = quick_search(buf, pattern, pos + len(pattern))
-            if (pos is not None):
+        while (pos != -1):
+            pos = buf.find("".join(pattern), pos + len(pattern))
+            if (pos != -1):
                 hits.append(pos)
 
         # Print search hits
         for j in hits:
             end = j + len(pattern) + LEN_AFTER_HIT
             if (end < length):
-                hitstr = buf[j:end]
+                hitstr = list(buf[j:end])
             else:
-                hitstr = buf[j:]
+                hitstr = list(buf[j:])
 
             for k in range(0, len(hitstr)):
                 c = rol(ord(hitstr[k]), i)
@@ -203,10 +178,10 @@ keyword = list(showSimpleDialog("Search keyword:"))
 if (len(keyword) > 0):
     if (length_sel > 0):
         length = length_sel
-        buf = list(getSelection())
+        buf = getSelection()
         print "Search XORed / bit-rotated string from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), "".join(keyword))
     else:
-        buf = list(getDocument())
+        buf = getDocument()
         length = getLength()
         offset = 0
         print "Search XORed / bit-rotated string in the whole file with keyword '%s'" % "".join(keyword)
