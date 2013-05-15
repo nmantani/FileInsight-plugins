@@ -29,24 +29,34 @@ offset = getSelectionOffset()
 length = getSelectionLength()
 
 if (length > 0):
-    key = int(showSimpleDialog("XOR key (in hex):"), 16)
+    key = showSimpleDialog("XOR key (in hex, default = 0x00):")
+    if (key == ""):
+        key = 0
+    else:
+        key = int(key, 16)
+
+    step = showSimpleDialog("Decrement step (in hex, default = 0x01):")
+    if (step == ""):
+        step = 1
+    else:
+        step = int(step, 16)
+
     init_key = key
     buf = list(getDocument())
 
     for i in range(0, length):
         j = offset + i
         buf[j] = chr(ord(buf[j]) ^ key)
-        if key == 0:
-            key = 0xff
-        else:
-            key -= 1
+        key -= step
+        key = key & 0xff
+
     newDocument("New file", 1)
     setDocument("".join(buf))
     setBookmark(offset, length, hex(offset), "#c8ffff")
 
     if (length == 1):
-        print "XORed one byte from offset %s to %s while decrementing key %s." % (hex(offset), hex(offset), hex(init_key))
+        print "XORed one byte from offset %s to %s while decrementing key from %s (step %s)." % (hex(offset), hex(offset), hex(init_key), hex(step))
     else:
-        print "XORed %s bytes from offset %s to %s while decrementing key %s." % (length, hex(offset), hex(offset + length - 1), hex(init_key))
+        print "XORed %s bytes from offset %s to %s while decrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), hex(step))
     print "Added a bookmark to XORed region."
 
