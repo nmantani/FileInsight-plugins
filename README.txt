@@ -34,6 +34,9 @@ List of plugins:
 * Incremental XOR
   XOR selected region while incrementing XOR key
 
+* Invert
+  Invert bits of selected region
+
 * Null-preserving XOR
   XOR selected region while skipping null bytes and XOR key itself
 
