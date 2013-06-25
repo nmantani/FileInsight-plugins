@@ -20,6 +20,9 @@ List of plugins:
 * Fill
   Fill selected region with specified hex pattern
 
+* Find PE file
+  Find PE file from selected region (the whole file if not selected)
+
 * Guess 256 byte XOR keys
   Guess 256 byte XOR keys from selected region (the whole file if not selected)
   based on the byte frequency
@@ -69,6 +72,9 @@ You need Python installed in addition to FileInsight.
 
 For the TrID plugin, please edit TRID_PATH variable in main.py according to
 your TrID installation path.
+
+For the Find PE file plugin, it requires pefile Python module.
+Please get it from https://code.google.com/p/pefile/ .
 
 Author: Nobutaka Mantani (Email: nobutaka@nobutaka.org, Twitter: nmantani)
 License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
