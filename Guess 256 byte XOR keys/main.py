@@ -51,7 +51,7 @@ def find_ole_header(buf, offset):
         else:
             print "OLE2 Compound Document header found at offset %s" % hex(offset + pos)
             setBookmark(offset + pos, 8, hex(offset + pos), "#c8ffff")
-            i += pos + 8
+            i = pos + 8
             found += 1
     return found
 
@@ -67,7 +67,7 @@ def find_pdf_header(buf, offset):
         else:
             print "PDF header found at offset %s" % hex(offset + pos)
             setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
-            i += pos + 4
+            i = pos + 4
             found += 1
     return found
 
@@ -102,7 +102,7 @@ def find_pe_header(buf, offset):
                             print "Win64 executable found at offset %s" % hex(offset + pos)
                         setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
                         found += 1
-            i += pos + 2
+            i = pos + 2
     return found
 
 def find_rtf_header(buf, offset):
@@ -117,7 +117,7 @@ def find_rtf_header(buf, offset):
         else:
             print "RTF header found at offset %s" % hex(offset + pos)
             setBookmark(offset + pos, 5, hex(offset + pos), "#c8ffff")
-            i += pos + 5
+            i = pos + 5
             found += 1
     return found
 
