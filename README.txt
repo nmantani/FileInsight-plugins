@@ -68,7 +68,7 @@ List of plugins:
 
 How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
-You need Python installed in addition to FileInsight.
+You need Python 2.7 (x86) installed in addition to FileInsight.
 
 For the TrID plugin, please edit TRID_PATH variable in main.py according to
 your TrID installation path.
