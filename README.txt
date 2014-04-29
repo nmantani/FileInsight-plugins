@@ -17,6 +17,12 @@ List of plugins:
 * Decremental XOR
   XOR selected region while decrementing XOR key
 
+* Delete after
+  Delete all region after current curor position
+
+* Delete before
+  Delete all region before current curor position
+
 * Fill
   Fill selected region with specified hex pattern
 
@@ -45,6 +51,9 @@ List of plugins:
 
 * Reverse order
   Reverse order of selected region
+
+* Send to
+  Send selected region (the whole file if not selected) to other programs
 
 * Swap nibbles
   Swap each pair of nibbles of selected region
@@ -75,6 +84,8 @@ your TrID installation path.
 
 For the Find PE file plugin, it requires pefile Python module.
 Please get it from https://code.google.com/p/pefile/ .
+
+For the "Send to" plugin, please edit launcher.py to run your favorite programs.
 
 Author: Nobutaka Mantani (Email: nobutaka@nobutaka.org, Twitter: nmantani)
 License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
