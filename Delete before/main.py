@@ -1,5 +1,5 @@
 #
-# Delete before - Delete all region before current curor position
+# Delete before - Delete all region before current cursor position
 #
 # Copyright (c) 2014, Nobutaka Mantani
 # All rights reserved.
