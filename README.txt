@@ -18,10 +18,10 @@ List of plugins:
   XOR selected region while decrementing XOR key
 
 * Delete after
-  Delete all region after current curor position
+  Delete all region after current cursor position
 
 * Delete before
-  Delete all region before current curor position
+  Delete all region before current cursor position
 
 * Fill
   Fill selected region with specified hex pattern
