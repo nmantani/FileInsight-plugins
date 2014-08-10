@@ -3,13 +3,36 @@ Tiny plugins for McAfee FileInsight
 These plugins would be useful for extracing malware executables and decoy
 documents from malicious document files.
 
+How to use:
+Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
+You need Python 2.7 (x86) installed in addition to FileInsight.
+
+For the TrID plugin, please edit TRID_PATH variable in main.py according to
+your TrID installation path.
+
+For the Find PE file plugin, it requires pefile Python module.
+Please get it from https://code.google.com/p/pefile/ .
+
+For the "Send to" plugin, please edit launcher.py to run your favorite programs.
+
+For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
+Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto .
+
 List of plugins:
+* ARC4 decrypt
+  Decrypt selected region with ARC4 (Alleged RC4)
 
 * Binary to hex text
   Convert binary of selected region into hex text
 
 * Byte frequency
   Show byte frequency of selected region (the whole file if not selected)
+
+* Bzip2 compress
+  Compress selected region with bzip2 algorithm
+
+* Bzip2 decompress
+  Decompress selected region with bzip2 algorithm
 
 * Copy to new file
   Copy selected region (the whole file if not selected) to new file
@@ -46,11 +69,20 @@ List of plugins:
 * Invert
   Invert bits of selected region
 
+* LZNT1 compress
+  Compress selected region with LZNT1 algorithm
+
+* LZNT1 decompress
+  Decompress selected region with LZNT1 algorithm
+
 * Null-preserving XOR
   XOR selected region while skipping null bytes and XOR key itself
 
 * Reverse order
   Reverse order of selected region
+
+* ROT13
+  Decode selected region with ROT13 algorithm
 
 * Send to
   Send selected region (the whole file if not selected) to other programs
@@ -64,6 +96,12 @@ List of plugins:
 * TrID
   Send selected region (the whole file if not selected) to TrID
 
+* Visual encrypt
+  Encode selected region with visual encrypt algorithm
+
+* Visual decrypt
+  Decode selected region with visual decrypt algorithm
+
 * XOR hex search
   Search XORed / bit-rotated data in selected region (the whole file
   if not selected)
@@ -74,18 +112,6 @@ List of plugins:
 
 * XOR with next byte
   XOR selected region while using next byte as XOR key
-
-How to use:
-Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
-You need Python 2.7 (x86) installed in addition to FileInsight.
-
-For the TrID plugin, please edit TRID_PATH variable in main.py according to
-your TrID installation path.
-
-For the Find PE file plugin, it requires pefile Python module.
-Please get it from https://code.google.com/p/pefile/ .
-
-For the "Send to" plugin, please edit launcher.py to run your favorite programs.
 
 Author: Nobutaka Mantani (Email: nobutaka@nobutaka.org, Twitter: nmantani)
 License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
