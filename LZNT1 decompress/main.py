@@ -35,20 +35,20 @@ if (length > 0):
     orig = list(getDocument())
     orig_len = len(orig)
 
-    uncomp_buf = ctypes.create_string_buffer(length * 40)
+    uncompressed = ctypes.create_string_buffer(length * 40)
     workspace = ctypes.create_string_buffer(length * 40)
     final_size = ctypes.c_ulong(0)
 
-    ctypes.windll.ntdll.RtlDecompressBuffer(2, uncomp_buf, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
+    ctypes.windll.ntdll.RtlDecompressBuffer(2, uncompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
 
-    uncomp_buf = list(uncomp_buf)
+    uncompressed = list(uncompressed)
     newdata = [0] * (orig_len - (length - final_size.value))
 
     for i in range(0, offset):
         newdata[i] = orig[i]
 
     for i in range(0, final_size.value):
-        newdata[offset + i] = uncomp_buf[i]
+        newdata[offset + i] = uncompressed[i]
 
     for i in range(0, orig_len - offset - length):
         newdata[offset + final_size.value + i] = orig[offset + length + i]

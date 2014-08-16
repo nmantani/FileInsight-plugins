@@ -35,15 +35,15 @@ if (length > 0):
     orig = list(getDocument())
     orig_len = len(orig)
 
-    uncomp_buf = list(bz2.decompress(data))
-    final_size = len(uncomp_buf)
+    uncompressed = list(bz2.decompress(data))
+    final_size = len(uncompressed)
     newdata = [0] * (orig_len - (length - final_size))
 
     for i in range(0, offset):
         newdata[i] = orig[i]
 
     for i in range(0, final_size):
-        newdata[offset + i] = uncomp_buf[i]
+        newdata[offset + i] = uncompressed[i]
 
     for i in range(0, orig_len - offset - length):
         newdata[offset + final_size + i] = orig[offset + length + i]
