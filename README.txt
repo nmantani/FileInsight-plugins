@@ -1,4 +1,4 @@
-Tiny plugins for McAfee FileInsight hex editor
+FileInsight-plugins: tiny plugins for McAfee FileInsight hex editor
 
 These plugins would be useful for extracing malware executables and decoy
 documents from malicious document files.
