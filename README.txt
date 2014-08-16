@@ -1,4 +1,4 @@
-Tiny plugins for McAfee FileInsight
+Tiny plugins for McAfee FileInsight hex editor
 
 These plugins would be useful for extracing malware executables and decoy
 documents from malicious document files.
@@ -97,10 +97,10 @@ List of plugins:
   Send selected region (the whole file if not selected) to TrID
 
 * Visual encrypt
-  Encode selected region with visual encrypt algorithm
+  Encode selected region with visual encrypt algorithm that is used by Zeus trojan
 
 * Visual decrypt
-  Decode selected region with visual decrypt algorithm
+  Decode selected region with visual decrypt algorithm that is used by Zeus trojan
 
 * XOR hex search
   Search XORed / bit-rotated data in selected region (the whole file
