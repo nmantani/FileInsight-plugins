@@ -56,6 +56,12 @@ List of plugins:
   Guess 256 byte XOR keys from selected region (the whole file if not selected)
   based on the byte frequency
 
+* Gzip compress
+  Compress selected region with gzip format
+
+* Gzip2 decompress
+  Decompress selected gzip compressed region
+
 * Hash values
   Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
   file if not selected)
@@ -77,6 +83,14 @@ List of plugins:
 
 * Null-preserving XOR
   XOR selected region while skipping null bytes and XOR key itself
+
+* Raw deflate
+  Compress selected region with Deflate algorithm without header and checksum
+  (Equivalent to gzdeflate() in PHP language)
+
+* Raw inflate
+  Decompress selected Deflate compressed region that does not have header and
+  checksum (Equivalent to gzinflate() in PHP language)
 
 * Reverse order
   Reverse order of selected region

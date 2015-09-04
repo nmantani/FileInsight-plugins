@@ -59,6 +59,12 @@ http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
   値の出現頻度に基づいて選択範囲から(選択していない場合は全体から) 256バイトの
   長さの XOR キーを推測します。
 
+* Gzip compress
+  選択範囲を gzip 形式で圧縮します。
+
+* Gzip2 decompress
+  gzip 形式で圧縮された選択範囲を展開します。
+  
 * Hash values
   選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256 ハッシュ値を
   計算します。
@@ -81,6 +87,14 @@ http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
 * Null-preserving XOR
   選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
 
+* Raw deflate
+  選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。
+  (PHP言語の gzdeflate() と同等)
+
+* Raw inflate
+  ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。
+  (PHP言語の gzinflate() と同等)
+  
 * Reverse order
   選択範囲のバイト列の順序を逆に並べ替えます。
 
