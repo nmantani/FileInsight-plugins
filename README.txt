@@ -34,6 +34,12 @@ List of plugins:
 * Bzip2 decompress
   Decompress selected region with bzip2 algorithm
 
+* Custom base64 decode
+  Decode selected region with custom base64 table
+
+* Custom base64 encode
+  Encode selected region with custom base64 table
+
 * Copy to new file
   Copy selected region (the whole file if not selected) to new file
 

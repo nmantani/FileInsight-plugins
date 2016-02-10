@@ -37,6 +37,12 @@ http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
 * Bzip2 decompress
   選択範囲を bzip2 アルゴリズムで展開します。
 
+* Custom base64 decode
+  選択範囲をカスタムbase64テーブルを使ってデコードします。
+
+* Custom base64 encode
+  選択範囲をカスタムbase64テーブルを使ってエンコードします。
+
 * Copy to new file
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
 
