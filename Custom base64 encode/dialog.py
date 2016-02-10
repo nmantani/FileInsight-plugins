@@ -34,7 +34,7 @@ def print_table(r, e):
 
 # Create input dialog
 root = Tkinter.Tk()
-root.title('Custom base64 decode')
+root.title('Custom base64 encode')
 label = Tkinter.Label(root, text='Enter base64 table:')
 label.grid(row=0, column=0, padx=5, pady=5)
 entry = Tkinter.Entry(root, width=80)
