@@ -58,7 +58,6 @@ if (length > 0):
             trans = string.maketrans(standard_table, custom_table)
             encoded = list(base64.b64encode(data).translate(trans))
             final_size = len(encoded)
-            newdata = [0] * (orig_len - (length - final_size))
             
             newdata = orig[:offset]
             newdata.extend(encoded)
