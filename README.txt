@@ -1,24 +1,34 @@
 FileInsight-plugins: tiny plugins for McAfee FileInsight hex editor
 
-These plugins would be useful for extracing malware executables and decoy
-documents from malicious document files.
+These plugins would be useful for various kind of decoding tasks in malware analysis
+(e.g. extracing malware executables and decoy documents from malicious document files).
 
 How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
-For the TrID plugin, please edit TRID_PATH variable in main.py according to
-your TrID installation path.
+For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
+Please download aPLib from http://ibsensoftware.com/download.html and copy
+aplib.dll (32 bits version) into these plugin folders.
+
+For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
+Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto .
 
 For the Find PE file plugin, it requires pefile Python module.
 Please get it from https://code.google.com/p/pefile/ .
 
 For the "Send to" plugin, please edit launcher.py to run your favorite programs.
 
-For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
-Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto .
+For the TrID plugin, please edit TRID_PATH variable in main.py according to
+your TrID installation path.
 
 List of plugins:
+* aPLib compress
+  Compress selected region with aPLib compression library
+
+* aPLib decompress
+  Decompress selected region with aPLib compression library
+
 * ARC4 decrypt
   Decrypt selected region with ARC4 (Alleged RC4)
 

@@ -1,15 +1,21 @@
 FileInsight-plugins: McAfee FileInsight バイナリエディタ用の小さなプラグイン
 
-これらのプラグインは文書ファイル型のマルウェアからマルウェアの実行ファイルや
-ダミーの文書ファイルを抽出するのに便利かもしれません。
+これらのプラグインは、マルウェア解析に関する様々なデコード作業に便利です。
+（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書
+ファイルを抽出する）
 
 使い方:
 プラグインのフォルダを %USERPROFILE%\Documents\FileInsight\plugins にコピー
 してください。FileInsight に加えて Python 2.7 (x86) をインストールしておく
 必要があります。
 
-TrID プラグインについては、TrID がインストールされている場所に合わせて
-main.py の変数 TRID_PATH を編集してください。
+aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
+aPLib を http://ibsensoftware.com/download.html からダウンロードして、
+aplib.dll (32ビット版) をこれらのプラグインのフォルダに置いてください。
+
+ARC4 decrypt プラグインについては、PyCrypto Python モジュールが必要です。
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
+インストールしてください。
 
 Find PE file プラグインについては、pefile Python モジュールが必要です。
 https://code.google.com/p/pefile/ からダウンロード、インストールしてください。
@@ -17,11 +23,16 @@ https://code.google.com/p/pefile/ からダウンロード、インストールしてください。
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 launcher.py を編集してください。
 
-ARC4 decrypt プラグインについては、PyCrypto Python モジュールが必要です。
-http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
-インストールしてください。
+TrID プラグインについては、TrID がインストールされている場所に合わせて
+main.py の変数 TRID_PATH を編集してください。
 
 プラグインの一覧:
+* aPLib compress
+  選択範囲を aPLib 圧縮ライブラリで圧縮します。
+
+* aPLib decompress
+  選択範囲を aPLib 圧縮ライブラリで展開します。
+
 * ARC4 decrypt
   選択範囲を ARC4 (Alleged RC4) で復号します。
 
