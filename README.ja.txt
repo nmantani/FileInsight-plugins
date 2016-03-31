@@ -9,6 +9,11 @@ FileInsight-plugins: McAfee FileInsight バイナリエディタ用の小さなプラグイン
 してください。FileInsight に加えて Python 2.7 (x86) をインストールしておく
 必要があります。
 
+※※※ 重要 ※※※
+Python 2.7.11 を使用すると FileInsight がクラッシュします。2.7.10 を使用するか
+http://www.hexblog.com/?p=949 で紹介されている回避策をとってください。
+
+
 aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
 aplib.dll (32ビット版) をこれらのプラグインのフォルダに置いてください。
@@ -25,6 +30,7 @@ launcher.py を編集してください。
 
 TrID プラグインについては、TrID がインストールされている場所に合わせて
 main.py の変数 TRID_PATH を編集してください。
+
 
 プラグインの一覧:
 * aPLib compress
