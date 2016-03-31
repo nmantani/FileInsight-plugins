@@ -7,6 +7,11 @@ How to use:
 Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
+*** IMPORTANT NOTE ***
+Python 2.7.11 causes FileInsight to crash. Please use 2.7.10 or try the workaround
+described in http://www.hexblog.com/?p=949 .
+
+
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
 aplib.dll (32 bits version) into these plugin folders.
@@ -21,6 +26,7 @@ For the "Send to" plugin, please edit launcher.py to run your favorite programs.
 
 For the TrID plugin, please edit TRID_PATH variable in main.py according to
 your TrID installation path.
+
 
 List of plugins:
 * aPLib compress
