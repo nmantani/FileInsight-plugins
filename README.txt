@@ -8,19 +8,19 @@ Please copy plugin folders to %USERPROFILE%\Documents\FileInsight\plugins .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
 *** IMPORTANT NOTE ***
-Python 2.7.11 causes FileInsight to crash. Please use 2.7.10 or try the workaround
-described in http://www.hexblog.com/?p=949 .
-
+Python 2.7.11 causes FileInsight to crash. Please use 2.7.12 or higher version.
 
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
 aplib.dll (32 bits version) into these plugin folders.
 
 For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
-Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto .
+Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto
+or execute "c:\Python27\python.exe -m pip install pycrypto" .
 
 For the Find PE file plugin, it requires pefile Python module.
-Please get it from https://code.google.com/p/pefile/ .
+Please get it from https://code.google.com/p/pefile/
+or execute "c:\Python27\python.exe -m pip install pefile" .
 
 For the "Send to" plugin, please edit launcher.py to run your favorite programs.
 
