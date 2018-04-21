@@ -10,9 +10,8 @@ FileInsight-plugins: McAfee FileInsight バイナリエディタ用の小さなプラグイン
 必要があります。
 
 ※※※ 重要 ※※※
-Python 2.7.11 を使用すると FileInsight がクラッシュします。2.7.10 を使用するか
-http://www.hexblog.com/?p=949 で紹介されている回避策をとってください。
-
+Python 2.7.11 を使用すると FileInsight がクラッシュします。2.7.12 以降を
+使用してください。
 
 aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
@@ -20,10 +19,13 @@ aplib.dll (32ビット版) をこれらのプラグインのフォルダに置いてください。
 
 ARC4 decrypt プラグインについては、PyCrypto Python モジュールが必要です。
 http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
-インストールしてください。
+インストールするか、"c:\Python27\python.exe -m pip install pycrypto" を実行
+してインストールしてください。
 
 Find PE file プラグインについては、pefile Python モジュールが必要です。
-https://code.google.com/p/pefile/ からダウンロード、インストールしてください。
+https://code.google.com/p/pefile/ からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install pefile" を実行してインストールして
+ください。
 
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 launcher.py を編集してください。
