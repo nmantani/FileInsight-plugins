@@ -1,4 +1,4 @@
-FileInsight-plugins: McAfee FileInsight バイナリエディタ用の小さなプラグイン
+FileInsight-plugins: McAfee FileInsight バイナリエディタ用のプラグイン
 
 これらのプラグインは、マルウェア解析に関する様々なデコード作業に便利です。
 （例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書
@@ -22,10 +22,18 @@ http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
 インストールするか、"c:\Python27\python.exe -m pip install pycrypto" を実行
 してインストールしてください。
 
+File type plugin プラグインについては、python-magic Python モジュールが必要です。
+https://github.com/ahupp/python-magic からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
+してください。
+
 Find PE file プラグインについては、pefile Python モジュールが必要です。
 https://code.google.com/p/pefile/ からダウンロード、インストールするか、
 "c:\Python27\python.exe -m pip install pefile" を実行してインストールして
 ください。
+
+以下のコマンドで全ての必要な Python モジュールをインストールできます。
+c:\Python27\python.exe -m pip install -r requirements.txt
 
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 launcher.py を編集してください。
@@ -73,6 +81,9 @@ main.py の変数 TRID_PATH を編集してください。
 
 * Delete before
   現在のカーソル位置より前を全て削除します。
+
+* File type
+  選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
 
 * Fill
   選択範囲を指定した16進数のパターンで埋めます。

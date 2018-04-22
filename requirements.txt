@@ -1,0 +1,3 @@
+pycrypto
+python-magic-bin
+pefile
