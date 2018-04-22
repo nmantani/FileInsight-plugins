@@ -1,4 +1,4 @@
-FileInsight-plugins: tiny plugins for McAfee FileInsight hex editor
+FileInsight-plugins: plugins for McAfee FileInsight hex editor
 
 These plugins would be useful for various kind of decoding tasks in malware analysis
 (e.g. extracing malware executables and decoy documents from malicious document files).
@@ -18,9 +18,16 @@ For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
 Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto
 or execute "c:\Python27\python.exe -m pip install pycrypto" .
 
+For the File type plugin, it requires python-magic Python module.
+Please get it from https://github.com/ahupp/python-magic
+or execute "c:\Python27\python.exe -m pip install python-magic-bin" .
+
 For the Find PE file plugin, it requires pefile Python module.
 Please get it from https://code.google.com/p/pefile/
 or execute "c:\Python27\python.exe -m pip install pefile" .
+
+You can install all required Python modules with the following command.
+c:\Python27\python.exe -m pip install -r requirements.txt
 
 For the "Send to" plugin, please edit launcher.py to run your favorite programs.
 
@@ -67,6 +74,9 @@ List of plugins:
 
 * Delete before
   Delete all region before current cursor position
+
+* File type
+  Identify file type of selected region (the whole file if not selected)
 
 * Fill
   Fill selected region with specified hex pattern
