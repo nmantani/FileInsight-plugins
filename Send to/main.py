@@ -1,7 +1,7 @@
 #
 # Send to - Send selected region (the whole file if not selected) to other programs
 #
-# Copyright (c) 2014, Nobutaka Mantani
+# Copyright (c) 2014-2018, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,8 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# TO CUSTOMIZE MENU ITEMS, PLEASE EDIT THE "PROGRAMS" VARIABLE IN LAUNCHER.PY!
+
+# TO CUSTOMIZE MENU ITEMS, PLEASE EDIT "PROGRAMS" VARIABLE IN LAUNCHER.PY.
 
 import ctypes
 import tempfile
@@ -52,9 +53,20 @@ handle = os.fdopen(fd, "w")
 handle.write(data)
 handle.close()
 
+# Get DPI values
+DEFAULT_DPI = 96
+LOGPIXELSX = 88
+LOGPIXELSY = 90
+dc = ctypes.windll.user32.GetDC(0)
+dpi_x = ctypes.windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX)
+dpi_y = ctypes.windll.gdi32.GetDeviceCaps(dc, LOGPIXELSY)
+ctypes.windll.user32.ReleaseDC(0, dc)
+
 # Get mouse cursor position
 point = _point_t()
 ctypes.windll.user32.GetCursorPos(ctypes.pointer(point))
+point.x = point.x * DEFAULT_DPI / dpi_x
+point.y = point.y * DEFAULT_DPI / dpi_y
 
 # Do not show command prompt window
 startupinfo = subprocess.STARTUPINFO()
