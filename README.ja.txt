@@ -1,173 +1,143 @@
-FileInsight-plugins: McAfee FileInsight �o�C�i���G�f�B�^�p�̃v���O�C��
+FileInsight-plugins: McAfee FileInsight バイナリエディタ用のプラグイン
 
-�����̃v���O�C���́A�}���E�F�A��͂Ɋւ���l�X�ȃf�R�[�h��Ƃɕ֗��ł��B
-�i��F�����t�@�C���^�̃}���E�F�A����}���E�F�A�̎��s�t�@�C����_�~�[�̕���
-�t�@�C���𒊏o����j
+これらのプラグインは、マルウェア解析に関する様々なデコード作業に便利です。
+（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書
+ファイルを抽出する）
 
-�g����:
-�v���O�C���̃t�H���_�� %USERPROFILE%\Documents\FileInsight\plugins �ɃR�s�[
-���Ă��������BFileInsight �ɉ����� Python 2.7 (x86) ���C���X�g�[�����Ă���
-�K�v������܂��B
+インストール方法:
+プラグインのフォルダを %USERPROFILE%\Documents\FileInsight\plugins にコピー
+してください。FileInsight に加えて Python 2.7 (x86) をインストールしておく
+必要があります。
 
-������ �d�v ������
-Python 2.7.11 ���g�p����� FileInsight ���N���b�V�����܂��B2.7.12 �ȍ~��
-�g�p���Ă��������B
+※※※ 重要 ※※※
+Python 2.7.11 を使用すると FileInsight がクラッシュします。2.7.12 以降を
+使用してください。
 
-aPLib compress �� aPLib decompress �̃v���O�C���ɂ��ẮAaplib.dll ���K�v�ł��B
-aPLib �� http://ibsensoftware.com/download.html ����_�E�����[�h���āA
-aplib.dll (32�r�b�g��) �������̃v���O�C���̃t�H���_�ɒu���Ă��������B
+使用するために必要なもの:
+aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
+aPLib を http://ibsensoftware.com/download.html からダウンロードして、
+aplib.dll (32ビット版) を "Compression operations" のフォルダに置いてください。
 
-ARC4 decrypt �v���O�C���ɂ��ẮAPyCrypto Python ���W���[�����K�v�ł��B
-http://www.voidspace.org.uk/python/modules.shtml#pycrypto ����_�E�����[�h�A
-�C���X�g�[�����邩�A"c:\Python27\python.exe -m pip install pycrypto" �����s
-���ăC���X�g�[�����Ă��������B
+ARC4 decrypt プラグインについては、PyCrypto Python モジュールが必要です。
+http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
+インストールするか、"c:\Python27\python.exe -m pip install pycrypto" を実行
+してインストールしてください。
 
-File type plugin �v���O�C���ɂ��ẮApython-magic Python ���W���[�����K�v�ł��B
-https://github.com/ahupp/python-magic ����_�E�����[�h�A�C���X�g�[�����邩�A
-"c:\Python27\python.exe -m pip install python-magic-bin" �����s���ăC���X�g�[��
-���Ă��������B
+File type plugin プラグインについては、python-magic Python モジュールが必要です。
+https://github.com/ahupp/python-magic からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
+してください。
 
-Find PE file �v���O�C���ɂ��ẮApefile Python ���W���[�����K�v�ł��B
-https://code.google.com/p/pefile/ ����_�E�����[�h�A�C���X�g�[�����邩�A
-"c:\Python27\python.exe -m pip install pefile" �����s���ăC���X�g�[������
-���������B
+Find PE file プラグインについては、pefile Python モジュールが必要です。
+https://code.google.com/p/pefile/ からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install pefile" を実行してインストールして
+ください。
 
-�ȉ��̃R�}���h�őS�Ă̕K�v�� Python ���W���[�����C���X�g�[���ł��܂��B
+以下のコマンドで全ての必要な Python モジュールをインストールできます。
 c:\Python27\python.exe -m pip install -r requirements.txt
 
-Send to �v���O�C���ɂ��ẮA���Ȃ��̂��D�݂̃v���O�������Ăяo����悤��
-launcher.py ��ҏW���Ă��������B
+カスタマイズ:
+Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
+"Misc operations\send_to.py" を編集してください。
 
-TrID �v���O�C���ɂ��ẮATrID ���C���X�g�[������Ă���ꏊ�ɍ��킹��
-main.py �̕ϐ� TRID_PATH ��ҏW���Ă��������B
+プラグインの一覧 (38個):
+* Basic operations
+  * Copy to new file
+    選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
+  * Delete before
+    現在のカーソル位置より前を全て削除します。
+  * Delete after
+    現在のカーソル位置より後を全て削除します。
+  * Fill
+    選択範囲を指定した16進数のパターンで埋めます。
+  * Invert
+    選択範囲のビットを反転します。
+  * Reverse order
+    選択範囲のバイト列の順序を逆に並べ替えます。
+  * Swap nibbles
+    選択範囲内のニブルの組を入れ替えます。
+  * Swap two bytes
+    選択範囲内のバイトの組を入れ替えます。
 
+* Compression operations
+  * aPLib compress
+    選択範囲を aPLib 圧縮ライブラリで圧縮します。
+  * aPLib decompress
+    選択範囲を aPLib 圧縮ライブラリで展開します。
+  * Bzip2 compress
+    選択範囲を bzip2 アルゴリズムで圧縮します。
+  * Bzip2 decompress
+    選択範囲を bzip2 アルゴリズムで展開します。
+  * Gzip compress
+    選択範囲を gzip 形式で圧縮します。
+  * Gzip decompress
+    gzip 形式で圧縮された選択範囲を展開します。
+  * LZNT1 compress
+    選択範囲を LZNT1 アルゴリズムで圧縮します。
+  * LZNT1 decompress
+    選択範囲を LZNT1 アルゴリズムで展開します。
+  * Raw deflate
+    選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。
+    (PHP言語の gzdeflate() と同等)
+  * Raw inflate
+    ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。
+    (PHP言語の gzinflate() と同等)
 
-�v���O�C���̈ꗗ:
-* aPLib compress
-  �I��͈͂� aPLib ���k���C�u�����ň��k���܂��B
+* Crypto operations
+  * ARC4 decrypt
+    選択範囲を ARC4 (Alleged RC4) で復号します。
 
-* aPLib decompress
-  �I��͈͂� aPLib ���k���C�u�����œW�J���܂��B
+* Encoding operations
+  * Binary to hex text
+    選択範囲のバイナリデータを16進数のテキストに変換します。
+  * Hex text to binary
+    選択範囲の16進数のテキストをバイナリデータに変換します。
+  * Custom base64 decode
+    選択範囲をカスタムbase64テーブルを使ってデコードします。
+  * Custom base64 encode
+    選択範囲をカスタムbase64テーブルを使ってエンコードします。
+  * ROT13
+    選択範囲を ROT13 アルゴリズムでデコードします。
 
-* ARC4 decrypt
-  �I��͈͂� ARC4 (Alleged RC4) �ŕ������܂��B
+* Misc operations
+  * Byte frequency
+    選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
+  * File type
+    選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
+  * Hash values
+    選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256 ハッシュ値を
+    計算します。
+  * Send to
+    選択範囲を(選択していない場合は全体を)別のプログラムで開きます。
 
-* Binary to hex text
-  �I��͈͂̃o�C�i���f�[�^��16�i���̃e�L�X�g�ɕϊ����܂��B
+* Search operations
+  * Find PE file
+    選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  * XOR hex search
+    選択範囲から(選択していない場合は全体から) XOR またはビットローテートされて
+    いるバイト列を検索します。
+  * XOR text search
+    選択範囲から(選択していない場合は全体から) XOR またはビットローテートされて
+    いる文字列を検索します。
 
-* Byte frequency
-  �I��͈͂�(�I�����Ă��Ȃ��ꍇ�͑S�̂�)�l�̏o���p�x���o�͂��܂��B
+* XOR operations
+  * Decremental XOR
+    選択範囲を XOR キーの値を減らしながら XOR します。
+  * Incremental XOR
+    選択範囲を XOR キーの値を増やしながら XOR します。
+  * Null-preserving XOR
+    選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
+  * XOR with next byte
+    選択範囲を次のバイトを XOR のキーにしながら XOR します。
+  * Guess 256 byte XOR keys
+    値の出現頻度に基づいて選択範囲から(選択していない場合は全体から) 256バイトの
+    長さの XOR キーを推測します。
+  * Visual encrypt
+    選択範囲をマルウェアの Zeus で使われている visual encrypt アルゴリズムで
+    エンコードします。
+  * Visual decrypt
+    選択範囲をマルウェアの Zeus で使われている visual decrypt アルゴリズムで
+    デコードします。
 
-* Bzip2 compress
-  �I��͈͂� bzip2 �A���S���Y���ň��k���܂��B
-
-* Bzip2 decompress
-  �I��͈͂� bzip2 �A���S���Y���œW�J���܂��B
-
-* Custom base64 decode
-  �I��͈͂��J�X�^��base64�e�[�u�����g���ăf�R�[�h���܂��B
-
-* Custom base64 encode
-  �I��͈͂��J�X�^��base64�e�[�u�����g���ăG���R�[�h���܂��B
-
-* Copy to new file
-  �I��͈͂�(�I�����Ă��Ȃ��ꍇ�͑S�̂�)�V�����t�@�C���Ƃ��ĊJ���܂��B
-
-* Decremental XOR
-  �I��͈͂� XOR �L�[�̒l�����炵�Ȃ��� XOR ���܂��B
-
-* Delete after
-  ���݂̃J�[�\���ʒu�����S�č폜���܂��B
-
-* Delete before
-  ���݂̃J�[�\���ʒu���O��S�č폜���܂��B
-
-* File type
-  �I��͈͂�(�I�����Ă��Ȃ��ꍇ�͑S�̂�)�t�@�C���̎�ނ𔻕ʂ��܂��B
-
-* Fill
-  �I��͈͂��w�肵��16�i���̃p�^�[���Ŗ��߂܂��B
-
-* Find PE file
-  �I��͈͂���(�I�����Ă��Ȃ��ꍇ�͑S�̂���) PE �t�@�C�����������܂��B
-
-* Guess 256 byte XOR keys
-  �l�̏o���p�x�Ɋ�Â��đI��͈͂���(�I�����Ă��Ȃ��ꍇ�͑S�̂���) 256�o�C�g��
-  ������ XOR �L�[�𐄑����܂��B
-
-* Gzip compress
-  �I��͈͂� gzip �`���ň��k���܂��B
-
-* Gzip2 decompress
-  gzip �`���ň��k���ꂽ�I��͈͂�W�J���܂��B
-  
-* Hash values
-  �I��͈͂�(�I�����Ă��Ȃ��ꍇ�͑S�̂�) MD5, SHA1, SHA256 �n�b�V���l��
-  �v�Z���܂��B
-
-* Hex text to binary
-  �I��͈͂�16�i���̃e�L�X�g���o�C�i���f�[�^�ɕϊ����܂��B
-
-* Incremental XOR
-  �I��͈͂� XOR �L�[�̒l�𑝂₵�Ȃ��� XOR ���܂��B
-
-* Invert
-  �I��͈͂̃r�b�g�𔽓]���܂��B
-
-* LZNT1 compress
-  �I��͈͂� LZNT1 �A���S���Y���ň��k���܂��B
-
-* LZNT1 decompress
-  �I��͈͂� LZNT1 �A���S���Y���œW�J���܂��B
-
-* Null-preserving XOR
-  �I��͈͂��k���o�C�g�� XOR �L�[���̂��X�L�b�v���Ȃ��� XOR ���܂��B
-
-* Raw deflate
-  �I��͈͂��w�b�_�ƃ`�F�b�N�T����t������ Deflate �A���S���Y���ň��k���܂��B
-  (PHP����� gzdeflate() �Ɠ���)
-
-* Raw inflate
-  �w�b�_�ƃ`�F�b�N�T����t������ Deflate ���k���ꂽ�I��͈͂�W�J���܂��B
-  (PHP����� gzinflate() �Ɠ���)
-  
-* Reverse order
-  �I��͈͂̃o�C�g��̏������t�ɕ��בւ��܂��B
-
-* ROT13
-  �I��͈͂� ROT13 �A���S���Y���Ńf�R�[�h���܂��B
-
-* Send to
-  �I��͈͂�(�I�����Ă��Ȃ��ꍇ�͑S�̂�)�ʂ̃v���O�����ŊJ���܂��B
-
-* Swap nibbles
-  �I��͈͓��̃j�u���̑g�����ւ��܂��B
-
-* Swap two bytes
-  �I��͈͓��̃o�C�g�̑g�����ւ��܂��B
-
-* TrID
-  �I��͈͂�(�I�����Ă��Ȃ��ꍇ�͑S�̂�) TrID �ŊJ���܂��B
-
-* Visual encrypt
-  �I��͈͂��}���E�F�A�� Zeus �Ŏg���Ă��� visual encrypt �A���S���Y����
-  �G���R�[�h���܂��B
-
-* Visual decrypt
-  �I��͈͂��}���E�F�A�� Zeus �Ŏg���Ă��� visual decrypt �A���S���Y����
-  �f�R�[�h���܂��B
-
-* XOR hex search
-  �I��͈͂���(�I�����Ă��Ȃ��ꍇ�͑S�̂���) XOR �܂��̓r�b�g���[�e�[�g�����
-  ����o�C�g����������܂��B
-
-* XOR text search
-  �I��͈͂���(�I�����Ă��Ȃ��ꍇ�͑S�̂���) XOR �܂��̓r�b�g���[�e�[�g�����
-  ���镶������������܂��B
-
-* XOR with next byte
-  �I��͈͂����̃o�C�g�� XOR �̃L�[�ɂ��Ȃ��� XOR ���܂��B
-
-���: �ݒJ ���� (Email: nobutaka@nobutaka.org, Twitter: nmantani)
-���C�Z���X: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
-
+作者: 萬谷 暢崇 (Email: nobutaka@nobutaka.org, Twitter: nmantani)
+ライセンス: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)

@@ -1,0 +1,12 @@
+2018-09-17 Release 1.0.0
+* Reorganize plugins into the following seven categories.
+  Plugins can be launched from pull-down menus.
+  Basic operations
+  Compression operations
+  Crypto operations
+  Encoding operations
+  Misc operations
+  Search operations
+  XOR operations
+* Remove TrID plugin (please use 'Misc operations' -> 'Send to' plugin instead).
+
