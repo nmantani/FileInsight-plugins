@@ -58,6 +58,12 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲内のニブルの組を入れ替えます。
   * Swap two bytes
     選択範囲内のバイトの組を入れ替えます。
+  * To upper case
+    選択範囲内の小文字を大文字にします。
+  * To lower case
+    選択範囲内の大文字を小文字にします。
+  * Swap case
+    選択範囲内の大文字と小文字を入れ替えます。
 
 * Compression operations
   * aPLib compress
