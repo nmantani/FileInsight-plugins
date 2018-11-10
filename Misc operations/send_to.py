@@ -25,18 +25,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import base64
 import os
 import sys
 import time
 import Tkinter
 import tkMessageBox
 import subprocess
+import winreg
 
 # PLEASE PUT YOUR FAVORITE PROGRAMS HERE!
 PROGRAMS = ("IDA Free", "C:\\Program Files\\IDA Freeware 7.0\\ida64.exe",
-            "VS Code", "C:\\Program Files\\Microsoft VS Code\\Code.exe",
-            "MS Paint", "C:\\Windows\\system32\\mspaint.exe",
-            "Customize menu", "")
+            "VS Code", "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe",
+            "MS Paint", "C:\\Windows\\system32\\mspaint.exe")
 
 filename = sys.argv[1]
 
@@ -56,13 +57,40 @@ menu1 = Tkinter.Menu(root, tearoff=False)
 menu2 = Tkinter.Menu(menu1, tearoff=False)
 menu1.add_cascade(label="Send to", menu=menu2)
 
+# Add special menu items
+PROGRAMS += ("CyberChef", "CyberChef")
+PROGRAMS += ("Customize menu", "Customize menu")
+
 for i in range(0, len(PROGRAMS), 2):
     def launch(program=PROGRAMS[i+1], filename=filename):
-        if program == "":
+        if program == "CyberChef":
+            print os.path.getsize(filename)
+            if os.path.getsize(filename) > 24000:
+                tkMessageBox.showwarning(None, message="Data size exceeds 24000 bytes. Sent data will be truncated (due to limit of command line argument length).")
+            cyberchef_input = open(filename, "rb").read(24000)
+            cyberchef_input = base64.b64encode(cyberchef_input)
+            cyberchef_input = cyberchef_input.replace("=", "")
+
+            cyberchef_url = "file:///%s%s/Desktop/cyberchef.htm#input=%s" % (os.getenv("HOMEDRIVE"), os.getenv("HOMEPATH").replace("\\", "/"), cyberchef_input)
+
+            # Get path of default browser because "start" built-in command of command prompt drops URL parameters with "file:///" URL scheme
+            reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice")
+            progid, regtype = winreg.QueryValueEx(reg_key, "ProgId")
+            winreg.CloseKey(reg_key)
+            reg_key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
+            browser_cmd, regtype = winreg.QueryValueEx(reg_key, "")
+            winreg.CloseKey(reg_key)
+            browser_cmd = browser_cmd.replace("%1", cyberchef_url)
+            p = subprocess.Popen(browser_cmd)
+            p.wait()
+        elif program == "Customize menu":
             tkMessageBox.showinfo(None, message="Please edit 'PROGRAMS' variable in send_to.py to customize menu.")
             p = subprocess.Popen(["C:\\Windows\\notepad.exe", __file__])
             p.wait()
         else:
+            localappdata = os.environ["LOCALAPPDATA"]
+            localappdata = localappdata.replace("\\", "\\\\")
+            program = program.replace("%LOCALAPPDATA%", localappdata)
             if os.path.exists(program):
                 p = subprocess.Popen([program, filename])
                 p.wait()
@@ -78,4 +106,5 @@ menu1.post(x, y) # Show popup menu
 
 root.mainloop()
 
+time.sleep(5) # Wait five seconds to open the file
 os.remove(filename) # Cleanup
