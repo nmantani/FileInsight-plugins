@@ -35,7 +35,10 @@ operations = ("Copy to new file",
               "Invert",
               "Reverse order",
               "Swap nibbles",
-              "Swap two bytes")
+              "Swap two bytes",
+              "To upper case",
+              "To lower case",
+              "Swap case")
 exit_value = -1
 
 root = Tkinter.Tk()

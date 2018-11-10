@@ -34,7 +34,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.py" to run your
 favorite programs.
 
-List of plugins (38 plugins):
+List of plugins (41 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -52,6 +52,12 @@ List of plugins (38 plugins):
     Swap each pair of nibbles of selected region
   * Swap two bytes
     Swap each pair of bytes of selected region
+  * To upper case
+    Convert text to upper case of selected region
+  * To lower case
+    Convert text to lower case of selected region
+  * Swap case
+    Swap case of selected region
 
 * Compression operations
   * aPLib compress

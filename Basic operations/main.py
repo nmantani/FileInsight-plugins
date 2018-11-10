@@ -61,7 +61,10 @@ if __name__ == "__main__":
                   basic_ops.invert,
                   basic_ops.reverse_order,
                   basic_ops.swap_nibbles,
-                  basic_ops.swap_two_bytes)
+                  basic_ops.swap_two_bytes,
+                  basic_ops.to_upper_case,
+                  basic_ops.to_lower_case,
+                  basic_ops.swap_case)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

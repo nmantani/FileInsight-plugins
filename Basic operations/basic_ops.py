@@ -193,3 +193,76 @@ def swap_two_bytes(fi):
 
         print "Swapped each pair of bytes from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length)
         print "Added a bookmark to swapped region."
+
+def to_upper_case(fi):
+    """
+    Convert text to upper case of selected region
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    if (length > 0):
+        buf = list(fi.getDocument())
+
+        for i in range(0, length):
+            j = offset + i
+            if ord(buf[j]) >= 0x61 and ord(buf[j]) <= 0x7A:
+                buf[j] = chr(ord(buf[j]) ^ 0x20)
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(buf))
+        fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Converted one byte at offset %s." % hex(offset)
+        else:
+            print "Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to converted region."
+
+def to_lower_case(fi):
+    """
+    Convert text to lower case of selected region
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    if (length > 0):
+        buf = list(fi.getDocument())
+
+        for i in range(0, length):
+            j = offset + i
+            if ord(buf[j]) >= 0x41 and ord(buf[j]) <= 0x5A:
+                buf[j] = chr(ord(buf[j]) ^ 0x20)
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(buf))
+        fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Converted one byte at offset %s." % hex(offset)
+        else:
+            print "Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to converted region."
+
+def swap_case(fi):
+    """
+    Swap case of selected region
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    if (length > 0):
+        buf = list(fi.getDocument())
+
+        for i in range(0, length):
+            j = offset + i
+            if (ord(buf[j]) >= 0x41 and ord(buf[j]) <= 0x5A) or (ord(buf[j]) >= 0x61 and ord(buf[j]) <= 0x7A):
+                buf[j] = chr(ord(buf[j]) ^ 0x20)
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(buf))
+        fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Converted one byte at offset %s." % hex(offset)
+        else:
+            print "Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to converted region."
+
