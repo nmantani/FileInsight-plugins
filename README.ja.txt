@@ -40,7 +40,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.py" を編集してください。
 
-プラグインの一覧 (43個):
+プラグインの一覧 (44個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -123,6 +123,8 @@ Send to プラグインについては、あなたのお好みのプログラム
 * Search operations
   * Find PE file
     選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  * Regex search
+    選択範囲から(選択していない場合は全体から) 正規表現で検索します。
   * XOR hex search
     選択範囲から(選択していない場合は全体から) XOR またはビットローテートされて
     いるバイト列を検索します。
