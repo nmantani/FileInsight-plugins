@@ -34,7 +34,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.py" to run your
 favorite programs.
 
-List of plugins (43 plugins):
+List of plugins (44 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -116,7 +116,10 @@ List of plugins (43 plugins):
 
 * Search operations
   * Find PE file
-    Find PE file from selected region (the whole file if not selected)  
+    Find PE file from selected region (the whole file if not selected)
+  * Regex search
+    Search with regular expression in selected region (the whole file
+    if not selected)
   * XOR hex search
     Search XORed / bit-rotated data in selected region (the whole file
     if not selected)
