@@ -34,7 +34,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.py" to run your
 favorite programs.
 
-List of plugins (41 plugins):
+List of plugins (43 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -98,6 +98,10 @@ List of plugins (41 plugins):
     Encode selected region with custom base64 table
   * ROT13
     Decode selected region with ROT13 algorithm
+  * From quoted printable
+    Decode selected region as quoted printable text
+  * To quoted printable
+    Encode selected region into quoted printable text
 
 * Misc operations
   * Byte frequency
