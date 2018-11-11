@@ -26,6 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import base64
+import binascii
 import os
 import sys
 import time
@@ -65,13 +66,18 @@ for i in range(0, len(PROGRAMS), 2):
     def launch(program=PROGRAMS[i+1], filename=filename):
         if program == "CyberChef":
             print os.path.getsize(filename)
-            if os.path.getsize(filename) > 24000:
-                tkMessageBox.showwarning(None, message="Data size exceeds 24000 bytes. Sent data will be truncated (due to limit of command line argument length).")
-            cyberchef_input = open(filename, "rb").read(24000)
+            if os.path.getsize(filename) > 12000:
+                tkMessageBox.showwarning(None, message="Data size exceeds 12000 bytes. Sent data will be truncated (due to limit of command line argument length).")
+            cyberchef_input = open(filename, "rb").read(12000)
+            # CyberChef automatically replace 0x0d with 0x0a and this breaks data integrity.
+            # So data have to be converted into hex text.
+            # Data size limit is reduced from 24000 bytes to 12000 bytes due to this conversion.
+            cyberchef_input = binascii.hexlify(cyberchef_input)
             cyberchef_input = base64.b64encode(cyberchef_input)
+            cyberchef_input = cyberchef_input.replace("+", "%2B")
             cyberchef_input = cyberchef_input.replace("=", "")
 
-            cyberchef_url = "file:///%s%s/Desktop/cyberchef.htm#input=%s" % (os.getenv("HOMEDRIVE"), os.getenv("HOMEPATH").replace("\\", "/"), cyberchef_input)
+            cyberchef_url = "file:///%s%s/Desktop/cyberchef.htm#recipe=From_Hex('Auto')&input=%s" % (os.getenv("HOMEDRIVE"), os.getenv("HOMEPATH").replace("\\", "/"), cyberchef_input)
 
             # Get path of default browser because "start" built-in command of command prompt drops URL parameters with "file:///" URL scheme
             reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice")
