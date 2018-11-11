@@ -27,6 +27,7 @@
 
 import binascii
 import pefile
+import re
 import struct
 
 def find_pe(fi, buf, offset):
@@ -441,3 +442,39 @@ def xor_text_search(fi):
         elif num_xor + num_rol > 1:
             print "Added bookmarks to the search hits."
 
+def regex_search(fi):
+    """
+    Search with regular expression in selected region (the whole file if not selected)
+    """
+    length_sel = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+    keyword = fi.showSimpleDialog("Search keyword (regular expression):")
+
+    if (len(keyword) > 0):
+        if (length_sel > 0):
+            length = length_sel
+            buf = fi.getSelection()
+            print "Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword)
+        else:
+            buf = fi.getDocument()
+            length = fi.getLength()
+            offset = 0
+            print "Search in the whole file with keyword '%s'" % keyword
+
+        try:
+            re.compile(keyword)
+        except:
+            print "Error: invalid regular expression"
+            return
+
+        num_hits = 0
+        match = re.finditer(keyword, buf)
+        for m in match:
+            print "Offset: 0x%x Search hit: %s" % (offset + m.start(), m.group())
+            fi.setBookmark(offset + m.start(), m.end() - m.start(), hex(offset + m.start()), "#c8ffff")
+            num_hits += 1
+
+        if num_hits == 1:
+            print "Added a bookmark to the search hit."
+        elif num_hits > 1:
+            print "Added bookmarks to the search hits."

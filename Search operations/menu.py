@@ -29,6 +29,7 @@ import sys
 import Tkinter
 
 operations = ("Find PE file",
+              "Regex search",
               "XOR hex search",
               "XOR text search")
 exit_value = -1
