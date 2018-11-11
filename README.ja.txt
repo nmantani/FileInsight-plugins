@@ -40,7 +40,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.py" を編集してください。
 
-プラグインの一覧 (38個):
+プラグインの一覧 (43個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -104,6 +104,10 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲をカスタムbase64テーブルを使ってエンコードします。
   * ROT13
     選択範囲を ROT13 アルゴリズムでデコードします。
+  * From quoted printable
+    選択範囲を quoted printable としてデコードします。
+  * To quoted printable
+    選択範囲を quoted printable としてエンコードします。
 
 * Misc operations
   * Byte frequency

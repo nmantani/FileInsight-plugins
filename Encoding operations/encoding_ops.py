@@ -26,6 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import base64
+import quopri
 import string
 import subprocess
 
@@ -196,3 +197,60 @@ def rot13(fi):
         else:
             print "Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
         print "Added a bookmark to decoded region."
+
+def from_quoted_printable(fi):
+    """
+    Decode selected region as quoted printable text
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        decoded = list(quopri.decodestring(data))
+        final_size = len(decoded)
+
+        newdata = orig[:offset]
+        newdata.extend(decoded)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Decoded one byte quoted printable text from offset %s to %s." % (hex(offset), hex(offset))
+        else:
+            print "Decoded %s bytes quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+
+def to_quoted_printable(fi):
+    """
+    Encode selected region into quoted printable text
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        encoded = list(quopri.encodestring(data))
+        final_size = len(encoded)
+
+        newdata = orig[:offset]
+        newdata.extend(encoded)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset))
+        else:
+            print "Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+

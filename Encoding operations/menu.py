@@ -32,7 +32,9 @@ operations = ("Binary to hex text",
               "Hex text to binary",
               "Custom base64 decode",
               "Custom base64 encode",
-              "ROT13")
+              "ROT13",
+              "From quoted printable",
+              "To quoted printable")
 exit_value = -1
 
 root = Tkinter.Tk()

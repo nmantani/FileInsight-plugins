@@ -58,7 +58,9 @@ if __name__ == "__main__":
                   encoding_ops.hex_text_to_binary,
                   encoding_ops.custom_base64_decode,
                   encoding_ops.custom_base64_encode,
-                  encoding_ops.rot13)
+                  encoding_ops.rot13,
+                  encoding_ops.from_quoted_printable,
+                  encoding_ops.to_quoted_printable)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):
