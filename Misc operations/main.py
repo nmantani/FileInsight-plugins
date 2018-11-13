@@ -55,6 +55,7 @@ class FileInsight:
 
 if __name__ == "__main__":
     operations = (misc_ops.byte_frequency,
+                  misc_ops.file_comparison,
                   misc_ops.file_type,
                   misc_ops.hash_values,
                   misc_ops.send_to)
