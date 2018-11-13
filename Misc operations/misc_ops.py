@@ -155,3 +155,83 @@ def send_to(fi):
             print "Sending the whole file (one byte) to an external program."
         else:
             print "Sending the whole file (%s bytes) to an external program." % length
+
+def file_comparison(fi):
+    """
+    Compare contents of two files
+    """
+    cp = ctypes.windll.kernel32.GetACP()
+    cp = "cp%d" % cp
+
+    num_file = fi.getDocumentCount()
+    if num_file < 2:
+        return
+
+    file_list = ""
+    for i in range(num_file):
+        fi.activateDocumentAt(i)
+        file_list += "%s\r\n" % fi.getDocumentName().decode(cp).encode("utf-8")
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute send_to.py to show GUI
+    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
+    p = subprocess.Popen(["python", "file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate(input=file_list)
+    (first_index, second_index) = stdout_data.split()
+
+    fi.activateDocumentAt(int(first_index))
+    first_data = list(fi.getDocument())
+    first_len = fi.getLength()
+    fi.activateDocumentAt(int(second_index))
+    second_data = list(fi.getDocument())
+    second_len = fi.getLength()
+
+    if first_len < second_len:
+        lower_len = first_len
+        upper_len = second_len
+    elif first_len > second_len:
+        lower_len = second_len
+        upper_len = first_len
+    else:
+        lower_len = first_len
+        upper_len = first_len
+
+    bookmark_list = []
+    offset = None
+    for i in range(lower_len):
+        if first_data[i] != second_data[i] and offset == None:
+            offset = i
+        elif first_data[i] == second_data[i] and offset != None:
+            bookmark_list.append((offset, i - offset))
+            offset = None
+
+    if offset != None:
+        bookmark_list.append((offset, i - offset + 1))
+        offset = None
+
+    fi.activateDocumentAt(int(first_index))
+    for (i, j) in bookmark_list:
+        fi.setBookmark(i, j, hex(i), "#ffaad4")
+
+    fi.activateDocumentAt(int(second_index))
+    for (i, j) in bookmark_list:
+        fi.setBookmark(i, j, hex(i), "#ffaad4")
+
+    if lower_len != upper_len:
+        if first_len > second_len:
+            fi.activateDocumentAt(int(first_index))
+        else:
+            fi.activateDocumentAt(int(second_index))
+        fi.setBookmark(lower_len, upper_len - lower_len, hex(lower_len), "#ffaad4")
+
+    fi.activateDocumentAt(int(first_index))
+
+    if lower_len != upper_len or len(bookmark_list) > 0:
+        print "Added bookmarks to the deltas."
+    else:
+        print "Both files are identical."
+

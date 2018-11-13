@@ -34,7 +34,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.py" to run your
 favorite programs.
 
-List of plugins (44 plugins):
+List of plugins (45 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -106,6 +106,8 @@ List of plugins (44 plugins):
 * Misc operations
   * Byte frequency
     Show byte frequency of selected region (the whole file if not selected)
+  * File comparison
+    Compare contents of two files
   * File type
     Identify file type of selected region (the whole file if not selected)
   * Hash values

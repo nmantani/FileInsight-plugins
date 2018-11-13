@@ -1,5 +1,5 @@
 #
-# Misc operations - Miscellaneous operations
+# File comparison - Compare contents of two files
 #
 # Copyright (c) 2018, Nobutaka Mantani
 # All rights reserved.
@@ -26,42 +26,46 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
+import time
 import Tkinter
+import ttk
+import tkMessageBox
 
-operations = ("Byte frequency",
-              "File comparison",
-              "File type",
-              "Hash values",
-              "Send to")
-exit_value = -1
+# Print selected items
+def get_selection(r, c1, c2):
+    print "%d %d" % (c1.current(), c2.current())
+    r.quit()
 
+# Read list of files from stdin
+files = sys.stdin.readlines()
+
+# Create input dialog
 root = Tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
+root.title('File comparison')
 
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
+label1 = Tkinter.Label(root, text='First file:')
+label1.grid(row=0, column=0, padx=5, pady=5)
 
-# Add menu items
-menu1 = Tkinter.Menu(root, tearoff=False)
-menu2 = Tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Misc operations", menu=menu2)
+combo1 = ttk.Combobox(root, state='readonly')
+combo1["values"] = files
+combo1.current(0)
+combo1.grid(row=0, column=2, padx=5, pady=5)
 
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
+label2 = Tkinter.Label(root, text='Second file:')
+label2.grid(row=1, column=0, padx=5, pady=5)
 
-    menu2.add_command(label=operations[i], command=index)
+combo2 = ttk.Combobox(root, state='readonly')
+combo2["values"] = files
+combo2.current(1)
+combo2.grid(row=1, column=2, padx=5, pady=5)
+combo2
+button = Tkinter.Button(root, text='OK', command=(lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2)))
+button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
 
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
+# Adjust window position
+w = root.winfo_screenwidth()
+h = root.winfo_screenheight()
+root.geometry('+%d+%d' % ((w/2.5), (h/2.5)))
 
 root.mainloop()
 
-sys.exit(exit_value)
