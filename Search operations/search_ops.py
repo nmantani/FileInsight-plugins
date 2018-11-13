@@ -448,7 +448,7 @@ def regex_search(fi):
     """
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
-    keyword = fi.showSimpleDialog("Search keyword (regular expression):")
+    keyword = fi.showSimpleDialog("Regular expression (please see https://docs.python.org/2.7/library/re.html for syntax):")
 
     if (len(keyword) > 0):
         if (length_sel > 0):
