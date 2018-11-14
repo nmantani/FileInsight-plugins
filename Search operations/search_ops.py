@@ -471,7 +471,7 @@ def regex_search(fi):
         match = re.finditer(keyword, buf)
         for m in match:
             print "Offset: 0x%x Search hit: %s" % (offset + m.start(), m.group())
-            fi.setBookmark(offset + m.start(), m.end() - m.start(), hex(offset + m.start()), "#c8ffff")
+            fi.setBookmark(offset + m.start(), m.end() - m.start(), hex(offset + m.start()), "#aaffaa")
             num_hits += 1
 
         if num_hits == 1:
