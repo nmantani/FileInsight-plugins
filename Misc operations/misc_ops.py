@@ -176,11 +176,13 @@ def file_comparison(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute send_to.py to show GUI
+    # Execute file_comparison_dialog.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
     p = subprocess.Popen(["python", "file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
+    if stdout_data == "":
+        return
     (first_index, second_index) = stdout_data.split()
 
     fi.activateDocumentAt(int(first_index))

@@ -41,31 +41,32 @@ files = sys.stdin.readlines()
 
 # Create input dialog
 root = Tkinter.Tk()
-root.title('File comparison')
+root.title("File comparison")
+root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-label1 = Tkinter.Label(root, text='First file:')
+label1 = Tkinter.Label(root, text="First file:")
 label1.grid(row=0, column=0, padx=5, pady=5)
 
-combo1 = ttk.Combobox(root, state='readonly')
+combo1 = ttk.Combobox(root, state="readonly")
 combo1["values"] = files
 combo1.current(0)
 combo1.grid(row=0, column=2, padx=5, pady=5)
 
-label2 = Tkinter.Label(root, text='Second file:')
+label2 = Tkinter.Label(root, text="Second file:")
 label2.grid(row=1, column=0, padx=5, pady=5)
 
-combo2 = ttk.Combobox(root, state='readonly')
+combo2 = ttk.Combobox(root, state="readonly")
 combo2["values"] = files
 combo2.current(1)
 combo2.grid(row=1, column=2, padx=5, pady=5)
 combo2
-button = Tkinter.Button(root, text='OK', command=(lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2)))
+button = Tkinter.Button(root, text="OK", command=(lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
 
 # Adjust window position
 w = root.winfo_screenwidth()
 h = root.winfo_screenheight()
-root.geometry('+%d+%d' % ((w/2.5), (h/2.5)))
+root.geometry("+%d+%d" % ((w/2.5), (h/2.5)))
 
 root.mainloop()
 
