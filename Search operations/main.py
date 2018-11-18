@@ -56,6 +56,7 @@ class FileInsight:
 if __name__ == "__main__":
     operations = (search_ops.find_pe_file,
                   search_ops.regex_search,
+                  search_ops.replace,
                   search_ops.xor_hex_search,
                   search_ops.xor_text_search)
 

@@ -1,5 +1,6 @@
 #
-# Search operations
+# Replace - Replace matched region with specified data in selected region
+# (the whole file if not selected)
 #
 # Copyright (c) 2018, Nobutaka Mantani
 # All rights reserved.
@@ -26,42 +27,46 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
+import time
 import Tkinter
+import ttk
+import tkMessageBox
 
-operations = ("Find PE file",
-              "Regex search",
-              "Replace",
-              "XOR hex search",
-              "XOR text search")
-exit_value = -1
+# Print selected items
+def get_input(r, e1, e2, c):
+    print e1.get()
+    print e2.get()
+    print c.get()
+    r.quit()
 
+# Create input dialog
 root = Tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
+root.title("Replace")
+root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
+label1 = Tkinter.Label(root, text="Search keyword\n(Python regular expression):", justify="left")
+label1.grid(row=0, column=0, padx=5, pady=5, columnspan=2, sticky="w")
 
-# Add menu items
-menu1 = Tkinter.Menu(root, tearoff=False)
-menu2 = Tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Search operations", menu=menu2)
+entry1 = Tkinter.Entry(root, width=40)
+entry1.grid(row=0, column=2, padx=5, pady=5)
 
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
+label2 = Tkinter.Label(root, text="Replacement:")
+label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-    menu2.add_command(label=operations[i], command=index)
+combo = ttk.Combobox(root, state="readonly", width=4)
+combo["values"] = ["Text", "Hex"]
+combo.current(0)
+combo.grid(row=1, column=1, padx=5, pady=5)
 
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
+entry2 = Tkinter.Entry(root, width=40)
+entry2.grid(row=1, column=2, padx=5, pady=5)
+
+button = Tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
+button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+
+# Adjust window position
+w = root.winfo_screenwidth()
+h = root.winfo_screenheight()
+root.geometry("+%d+%d" % ((w/3), (h/2.5)))
 
 root.mainloop()
-
-sys.exit(exit_value)
