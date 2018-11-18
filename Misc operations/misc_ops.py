@@ -31,6 +31,7 @@ import magic
 import os
 import subprocess
 import tempfile
+import time
 import zlib
 
 def byte_frequency(fi):
@@ -185,6 +186,8 @@ def file_comparison(fi):
         return
     (first_index, second_index) = stdout_data.split()
 
+    time_start = time.time()
+
     fi.activateDocumentAt(int(first_index))
     first_data = list(fi.getDocument())
     first_len = fi.getLength()
@@ -237,3 +240,4 @@ def file_comparison(fi):
     else:
         print "Both files are identical."
 
+    print "Elapsed time: %f (sec)" % (time.time() - time_start)
