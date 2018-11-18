@@ -28,7 +28,9 @@
 import binascii
 import pefile
 import re
+import subprocess
 import struct
+import time
 
 def find_pe(fi, buf, offset):
     """
@@ -448,17 +450,25 @@ def regex_search(fi):
     """
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
+    if length_sel > 0:
+        length = length_sel
+        buf = fi.getSelection()
+    else:
+        buf = fi.getDocument()
+        length = fi.getLength()
+        offset = 0
+
+    if buf == "":
+        return
+
     keyword = fi.showSimpleDialog("Regular expression (please see https://docs.python.org/2.7/library/re.html for syntax):")
 
-    if (len(keyword) > 0):
-        if (length_sel > 0):
-            length = length_sel
-            buf = fi.getSelection()
+    time_start = time.time()
+
+    if len(keyword) > 0:
+        if length_sel > 0:
             print "Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword)
         else:
-            buf = fi.getDocument()
-            length = fi.getLength()
-            offset = 0
             print "Search in the whole file with keyword '%s'" % keyword
 
         try:
@@ -469,12 +479,132 @@ def regex_search(fi):
 
         num_hits = 0
         match = re.finditer(keyword, buf)
+        bookmark_start = []
+        bookmark_end = []
         for m in match:
             print "Offset: 0x%x Search hit: %s" % (offset + m.start(), m.group())
-            fi.setBookmark(offset + m.start(), m.end() - m.start(), hex(offset + m.start()), "#aaffaa")
+            if num_hits > 0 and offset + m.start() == bookmark_end[-1]:
+                bookmark_end[-1] = offset + m.end()
+            else:
+                bookmark_start.append(offset + m.start())
+                bookmark_end.append(offset + m.end())
             num_hits += 1
+
+        print "Elapsed time (search): %f (sec)" % (time.time() - time_start)
+        time_start = time.time()
+
+        for i in range(0, len(bookmark_start)):
+            fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]), "#aaffaa")
 
         if num_hits == 1:
             print "Added a bookmark to the search hit."
         elif num_hits > 1:
             print "Added bookmarks to the search hits."
+
+        print "Elapsed time (bookmark): %f (sec)" % (time.time() - time_start)
+
+def replace(fi):
+    """
+    Replace matched region with specified data in selected region (the whole file if not selected)
+    """
+    length_sel = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length_sel > 0:
+        length = length_sel
+        buf = fi.getSelection()
+    else:
+        buf = fi.getDocument()
+        length = fi.getLength()
+        offset = 0
+
+    if buf == "":
+        return
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute send_to.py to show GUI
+    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
+    p = subprocess.Popen(["python", "replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate()
+    if stdout_data == "":
+        return
+    else:
+        (keyword, replacement, mode, dummy) = stdout_data.split("\r\n")
+        if keyword == "":
+            return
+        if mode == "Text":
+            replacement_data = list(replacement)
+        elif mode == "Hex":
+            replacement_data = list(binascii.unhexlify(replacement))
+        else:
+            return
+        replacement_len = len(replacement_data)
+
+    time_start = time.time()
+
+    if len(keyword) > 0:
+        if length_sel > 0:
+            print "Replace from offset %s to %s with keyword '%s' and replacement '%s'" % (hex(offset), hex(offset + length - 1), keyword, replacement)
+        else:
+            print "Replace in the whole file with keyword '%s' and replacement '%s'" % (keyword, replacement)
+
+        try:
+            re.compile(keyword)
+        except:
+            print "Error: invalid regular expression"
+            return
+
+        buf_list_all = list(fi.getDocument())
+        buf_all_len = fi.getLength()
+        if offset == 0:
+            new_buf = []
+        if offset > 0:
+            new_buf = buf_list_all[:offset]
+
+        num_hits = 0
+        prev_pos = 0
+        new_buf_len = 0
+        bookmark_start = []
+        bookmark_end = []
+        match = re.finditer(keyword, buf)
+        for m in match:
+            new_buf.extend(buf_list_all[offset + prev_pos:offset + m.start()])
+            new_buf.extend(replacement_data)
+            prev_pos = m.end()
+            new_buf_prev_len = new_buf_len
+            new_buf_len += m.start() - prev_pos + replacement_len
+
+            print "Offset: 0x%x Search hit: %s" % (offset + m.start(), m.group())
+
+            if num_hits > 0 and offset + new_buf_prev_len + m.start() == bookmark_end[-1]:
+                bookmark_end[-1] = offset + new_buf_prev_len + m.start() + replacement_len
+            else:
+                bookmark_start.append(offset + new_buf_prev_len + m.start())
+                bookmark_end.append(offset + new_buf_prev_len + m.start() + replacement_len)
+
+            num_hits += 1
+
+        print "Elapsed time (replace): %f (sec)" % (time.time() - time_start)
+        time_start = time.time()
+
+        if num_hits > 0:
+            if offset + m.end() < buf_all_len - 1:
+                new_buf.extend(buf_list_all[offset + m.end():])
+
+            fi.newDocument("New file", 1)
+            fi.setDocument("".join(new_buf))
+
+            for i in range(0, len(bookmark_start)):
+                fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]), "#c8ffff")
+
+        if num_hits == 1:
+            print "Added a bookmark to the replaced data."
+        elif num_hits > 1:
+            print "Added bookmarks to the replaced data."
+
+        print "Elapsed time (bookmark): %f (sec)" % (time.time() - time_start)
+
