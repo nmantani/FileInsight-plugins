@@ -101,6 +101,9 @@ def send_to(fi):
     Send selected region (the whole file if not selected) to other programs.
     TO CUSTOMIZE MENU ITEMS, PLEASE EDIT "PROGRAMS" VARIABLE IN SEND_TO.PY.
     """
+    if fi.getDocumentCount() == 0:
+        return
+
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):
         _fields_ = [

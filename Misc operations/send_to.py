@@ -27,6 +27,8 @@
 
 import base64
 import binascii
+import collections
+import json
 import os
 import sys
 import time
@@ -35,15 +37,37 @@ import tkMessageBox
 import subprocess
 import winreg
 
-# PLEASE PUT YOUR FAVORITE PROGRAMS HERE!
-PROGRAMS = ("IDA Free", "C:\\Program Files\\IDA Freeware 7.0\\ida64.exe",
-            "VS Code", "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe",
-            "MS Paint", "C:\\Windows\\system32\\mspaint.exe")
-
-filename = sys.argv[1]
-
 root = Tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
+root.withdraw() # Hide root window
+
+config_file_name = "send_to.json"
+
+# Load config file
+if os.path.exists(config_file_name):
+    try:
+        f = open(config_file_name, "rb")
+        programs = json.load(f, object_pairs_hook=collections.OrderedDict)
+        f.close()
+    except:
+        tkMessageBox.showerror("Error:", message="Failed to load %s ." % os.path.abspath(config_file_name))
+else:
+    # Default external programs
+    programs = collections.OrderedDict()
+    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 7.0\\ida64.exe"
+    programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
+    programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
+
+    # Create new config file
+    f = open(config_file_name, "wb")
+    json.dump(programs, f, indent=4)
+    f.close()
+
+# Add special menu items
+programs["CyberChef"] = "CyberChef"
+programs["Customize menu"] = "Customize menu"
+
+filename = sys.argv[1]
 
 # Adjust menu position
 x = int(sys.argv[2])
@@ -58,12 +82,8 @@ menu1 = Tkinter.Menu(root, tearoff=False)
 menu2 = Tkinter.Menu(menu1, tearoff=False)
 menu1.add_cascade(label="Send to", menu=menu2)
 
-# Add special menu items
-PROGRAMS += ("CyberChef", "CyberChef")
-PROGRAMS += ("Customize menu", "Customize menu")
-
-for i in range(0, len(PROGRAMS), 2):
-    def launch(program=PROGRAMS[i+1], filename=filename):
+for key,val in programs.iteritems():
+    def launch(program=val, filename=filename):
         if program == "CyberChef":
             print os.path.getsize(filename)
             if os.path.getsize(filename) > 12000:
@@ -90,8 +110,8 @@ for i in range(0, len(PROGRAMS), 2):
             p = subprocess.Popen(browser_cmd)
             p.wait()
         elif program == "Customize menu":
-            tkMessageBox.showinfo(None, message="Please edit 'PROGRAMS' variable in send_to.py to customize menu.")
-            p = subprocess.Popen(["C:\\Windows\\notepad.exe", __file__])
+            tkMessageBox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
+            p = subprocess.Popen(["C:\\Windows\\notepad.exe", "send_to.json"])
             p.wait()
         else:
             localappdata = os.environ["LOCALAPPDATA"]
@@ -105,9 +125,8 @@ for i in range(0, len(PROGRAMS), 2):
                 tkMessageBox.showerror("Error", msg)
         root.quit()
 
-    menu2.add_command(label=PROGRAMS[i], command=launch)
+    menu2.add_command(label=key, command=launch)
 
-root.withdraw() # Hide root window
 menu1.post(x, y) # Show popup menu
 
 root.mainloop()
