@@ -86,6 +86,9 @@ def find_pe_file(fi):
     """
     Find PE file from selected region (the whole file if not selected)
     """
+    if fi.getDocumentCount() == 0:
+        return
+
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
@@ -277,6 +280,9 @@ def xor_hex_search(fi):
     """
     Search XORed / bit-rotated data in selected region (the whole file if not selected)
     """
+    if fi.getDocumentCount() == 0:
+        return
+
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     keyword = fi.showSimpleDialog("Search keyword (in hex):")
@@ -423,6 +429,9 @@ def xor_text_search(fi):
     """
     Search XORed / bit-rotated string in selected region (the whole file if not selected)
     """
+    if fi.getDocumentCount() == 0:
+        return
+
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     keyword = list(fi.showSimpleDialog("Search keyword:"))
@@ -448,6 +457,9 @@ def regex_search(fi):
     """
     Search with regular expression in selected region (the whole file if not selected)
     """
+    if fi.getDocumentCount() == 0:
+        return
+
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     if length_sel > 0:
@@ -507,6 +519,9 @@ def replace(fi):
     """
     Replace matched region with specified data in selected region (the whole file if not selected)
     """
+    if fi.getDocumentCount() == 0:
+        return
+
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
