@@ -33,14 +33,19 @@ https://code.google.com/p/pefile/ からダウンロード、インストール�
 "c:\Python27\python.exe -m pip install pefile" を実行してインストールして
 ください。
 
+YARA scan プラグインについては、yara-python Python モジュールが必要です。
+https://github.com/VirusTotal/yara-python からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install yara-python" を実行してインストールして
+ください。
+
 以下のコマンドで全ての必要な Python モジュールをインストールできます。
 c:\Python27\python.exe -m pip install -r requirements.txt
 
 カスタマイズ:
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
-"Misc operations\send_to.py" を編集してください。
+"Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (46個):
+プラグインの一覧 (47個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -137,6 +142,8 @@ Send to プラグインについては、あなたのお好みのプログラム
   * XOR text search
     選択範囲から(選択していない場合は全体から) XOR またはビットローテートされて
     いる文字列を検索します。
+  * YARA scan
+    選択範囲を(選択していない場合は全体を) YARA でスキャンします。
 
 * XOR operations
   * Decremental XOR

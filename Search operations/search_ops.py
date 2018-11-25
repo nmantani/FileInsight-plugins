@@ -26,11 +26,25 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
-import pefile
+import ctypes
 import re
 import subprocess
+import string
 import struct
+import sys
 import time
+
+try:
+    import pefile
+    pefile_not_installed = False
+except ImportError:
+    pefile_not_installed = True
+
+try:
+    import yara
+    yara_python_not_installed = False
+except ImportError:
+    yara_python_not_installed = True
 
 def find_pe(fi, buf, offset):
     """
@@ -86,6 +100,11 @@ def find_pe_file(fi):
     """
     Find PE file from selected region (the whole file if not selected)
     """
+    if pefile_not_installed:
+        print "pefile is not installed."
+        print "Please install it with 'python -m pip install pefile' and restart FileInsight."
+        return
+
     if fi.getDocumentCount() == 0:
         return
 
@@ -453,6 +472,16 @@ def xor_text_search(fi):
         elif num_xor + num_rol > 1:
             print "Added bookmarks to the search hits."
 
+def is_printable(s):
+    """
+    Return True if 's' is printable string
+    Used by regex_search(), replace() and yara_scan()
+    """
+    try:
+        return all(c in string.printable for c in s)
+    except TypeError:
+        return False
+
 def regex_search(fi):
     """
     Search with regular expression in selected region (the whole file if not selected)
@@ -479,9 +508,9 @@ def regex_search(fi):
 
     if len(keyword) > 0:
         if length_sel > 0:
-            print "Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword)
+            print "Search from offset %s to %s with keyword '%s'\r\n" % (hex(offset), hex(offset + length - 1), keyword)
         else:
-            print "Search in the whole file with keyword '%s'" % keyword
+            print "Search in the whole file with keyword '%s'\r\n" % keyword
 
         try:
             re.compile(keyword)
@@ -494,7 +523,10 @@ def regex_search(fi):
         bookmark_start = []
         bookmark_end = []
         for m in match:
-            print "Offset: 0x%x Search hit: %s" % (offset + m.start(), m.group())
+            if is_printable(m.group()):
+                print "Offset: 0x%x Search hit: %s" % (offset + m.start(), re.sub("[\r\n\v\f]", "", m.group()))
+            else:
+                print "Offset: 0x%x Search hit: %s (hex)" % (offset + m.start(), binascii.hexlify(m.group()))
             if num_hits > 0 and offset + m.start() == bookmark_end[-1]:
                 bookmark_end[-1] = offset + m.end()
             else:
@@ -502,7 +534,7 @@ def regex_search(fi):
                 bookmark_end.append(offset + m.end())
             num_hits += 1
 
-        print "Elapsed time (search): %f (sec)" % (time.time() - time_start)
+        print "\r\nElapsed time (search): %f (sec)" % (time.time() - time_start)
         time_start = time.time()
 
         for i in range(0, len(bookmark_start)):
@@ -517,7 +549,7 @@ def regex_search(fi):
 
 def replace(fi):
     """
-    Replace matched region with specified data in selected region (the whole file if not selected)
+    Replace matched data in selected region (the whole file if not selected) with specified data
     """
     if fi.getDocumentCount() == 0:
         return
@@ -563,9 +595,9 @@ def replace(fi):
 
     if len(keyword) > 0:
         if length_sel > 0:
-            print "Replace from offset %s to %s with keyword '%s' and replacement '%s'" % (hex(offset), hex(offset + length - 1), keyword, replacement)
+            print "Replace from offset %s to %s with keyword '%s' and replacement '%s'\r\n" % (hex(offset), hex(offset + length - 1), keyword, replacement)
         else:
-            print "Replace in the whole file with keyword '%s' and replacement '%s'" % (keyword, replacement)
+            print "Replace in the whole file with keyword '%s' and replacement '%s'\r\n" % (keyword, replacement)
 
         try:
             re.compile(keyword)
@@ -593,7 +625,10 @@ def replace(fi):
             new_buf_prev_len = new_buf_len
             new_buf_len += m.start() - prev_pos + replacement_len
 
-            print "Offset: 0x%x Search hit: %s" % (offset + m.start(), m.group())
+            if is_printable(m.group()):
+                print "Offset: 0x%x Search hit: %s" % (offset + m.start(), re.sub("[\r\n\v\f]", "", m.group()))
+            else:
+                print "Offset: 0x%x Search hit: %s (hex)" % (offset + m.start(), binascii.hexlify(m.group()))
 
             if num_hits > 0 and offset + new_buf_prev_len + m.start() == bookmark_end[-1]:
                 bookmark_end[-1] = offset + new_buf_prev_len + m.start() + replacement_len
@@ -603,7 +638,7 @@ def replace(fi):
 
             num_hits += 1
 
-        print "Elapsed time (replace): %f (sec)" % (time.time() - time_start)
+        print "\r\nElapsed time (replace): %f (sec)" % (time.time() - time_start)
         time_start = time.time()
 
         if num_hits > 0:
@@ -623,3 +658,110 @@ def replace(fi):
 
         print "Elapsed time (bookmark): %f (sec)" % (time.time() - time_start)
 
+def yara_scan(fi):
+    """
+    Scan selected region (the whole file if not selected) with YARA
+    """
+    if yara_python_not_installed:
+        print "yara-python is not installed."
+        print "Please install it with 'python -m pip install yara-python' and restart FileInsight."
+        return
+
+    cp = ctypes.windll.kernel32.GetACP()
+    cp = "cp%d" % cp
+
+    num_file = fi.getDocumentCount()
+    if num_file < 2:
+        if num_file == 1:
+            print "Please open a file to be scanned and a YARA rule file before using YARA scan plugin."
+
+        return
+
+    file_list = ""
+    for i in range(num_file):
+        fi.activateDocumentAt(i)
+        file_list += "%s\r\n" % fi.getDocumentName().decode(cp).encode("utf-8")
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute file_comparison_dialog.py to show GUI
+    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
+    p = subprocess.Popen(["python", "yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate(input=file_list)
+    if stdout_data == "":
+        return
+    (scanned_file_index, rule_file_index) = stdout_data.split()
+
+    time_start = time.time()
+
+    fi.activateDocumentAt(int(scanned_file_index))
+    length_sel = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+    if length_sel > 0:
+        buf = fi.getSelection()
+        buf_len = length_sel
+    else:
+        buf = fi.getDocument()
+        buf_len = fi.getLength()
+        offset = 0
+
+    if buf == "":
+        return
+
+    fi.activateDocumentAt(int(rule_file_index))
+    rule = fi.getDocument()
+
+    try:
+        y = yara.compile(source=rule)
+    except Exception as e:
+        print "Error: invalid YARA rule"
+        print e
+        return
+
+    if length_sel > 0:
+        print "Scan from offset %s to %s.\r\n" % (hex(offset), hex(offset + buf_len - 1))
+    else:
+        print "Scan the whole file.\r\n"
+
+    match = y.match(data=buf)
+    if len(match) == 0:
+        print "No YARA rule matched."
+        print "Elapsed time (scan): %f (sec)" % (time.time() - time_start)
+        return
+
+    num_hits = 0
+    bookmark_start = []
+    bookmark_end = []
+    for m in match:
+        prev_string = ""
+        for i in range(0, len(m.strings)):
+            if is_printable(m.strings[i][2]):
+                print "Offset: 0x%x rule: %s tag: %s identifier: %s matched: %s" % (offset + m.strings[i][0], m.rule, " ".join(m.tags), m.strings[i][1], re.sub("[\r\n\v\f]", "", m.strings[i][2]))
+            else:
+                print "Offset: 0x%x rule: %s tag: %s identifier: %s matched: %s (hex)" % (offset + m.strings[i][0], m.rule, " ".join(m.tags), m.strings[i][1], binascii.hexlify(m.strings[i][2]))
+
+            if num_hits > 0 and m.strings[i][1] == prev_string and offset + m.strings[i][0] <= bookmark_end[-1]:
+                bookmark_end[-1] = offset + m.strings[i][0] + len(m.strings[i][2])
+            else:
+                bookmark_start.append(offset + m.strings[i][0])
+                bookmark_end.append(offset + m.strings[i][0] + len(m.strings[i][2]))
+            prev_string = m.strings[i][1]
+            num_hits += 1
+
+    print "\r\nElapsed time (scan): %f (sec)" % (time.time() - time_start)
+    time_start = time.time()
+
+    fi.activateDocumentAt(int(scanned_file_index))
+    for i in range(0, len(bookmark_start)):
+        fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]), "#aaffaa")
+
+    if num_hits == 1:
+        print "Added a bookmark to the search hit."
+    elif num_hits > 1:
+        print "Added bookmarks to the search hits."
+
+    if num_hits > 0:
+        print "Elapsed time (bookmark): %f (sec)" % (time.time() - time_start)

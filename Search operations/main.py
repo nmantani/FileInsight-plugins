@@ -58,7 +58,8 @@ if __name__ == "__main__":
                   search_ops.regex_search,
                   search_ops.replace,
                   search_ops.xor_hex_search,
-                  search_ops.xor_text_search)
+                  search_ops.xor_text_search,
+                  search_ops.yara_scan)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

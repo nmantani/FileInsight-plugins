@@ -1,6 +1,5 @@
 #
-# Replace - Replace matched data in selected region (the whole file if not selected)
-# with specified data
+# YARA scan - Scan selected region (the whole file if not selected) with YARA
 #
 # Copyright (c) 2018, Nobutaka Mantani
 # All rights reserved.
@@ -33,40 +32,41 @@ import ttk
 import tkMessageBox
 
 # Print selected items
-def get_input(r, e1, e2, c):
-    print e1.get()
-    print e2.get()
-    print c.get()
+def get_selection(r, c1, c2):
+    print "%d %d" % (c1.current(), c2.current())
     r.quit()
+
+# Read list of files from stdin
+files = sys.stdin.readlines()
 
 # Create input dialog
 root = Tkinter.Tk()
-root.title("Replace")
+root.title("YARA scan")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-label1 = Tkinter.Label(root, text="Search keyword\n(Python regular expression):", justify="left")
-label1.grid(row=0, column=0, padx=5, pady=5, columnspan=2, sticky="w")
+label1 = Tkinter.Label(root, text="File to be scanned:")
+label1.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-entry1 = Tkinter.Entry(root, width=40)
-entry1.grid(row=0, column=2, padx=5, pady=5)
+combo1 = ttk.Combobox(root, state="readonly")
+combo1["values"] = files
+combo1.current(0)
+combo1.grid(row=0, column=2, padx=5, pady=5)
 
-label2 = Tkinter.Label(root, text="Replacement:")
+label2 = Tkinter.Label(root, text="YARA rule file:")
 label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo = ttk.Combobox(root, state="readonly", width=4)
-combo["values"] = ["Text", "Hex"]
-combo.current(0)
-combo.grid(row=1, column=1, padx=5, pady=5)
-
-entry2 = Tkinter.Entry(root, width=40)
-entry2.grid(row=1, column=2, padx=5, pady=5)
-
-button = Tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
+combo2 = ttk.Combobox(root, state="readonly")
+combo2["values"] = files
+combo2.current(1)
+combo2.grid(row=1, column=2, padx=5, pady=5)
+combo2
+button = Tkinter.Button(root, text="OK", command=(lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
 
 # Adjust window position
 w = root.winfo_screenwidth()
 h = root.winfo_screenheight()
-root.geometry("+%d+%d" % ((w/3), (h/2.5)))
+root.geometry("+%d+%d" % ((w/2.5), (h/2.5)))
 
 root.mainloop()
+

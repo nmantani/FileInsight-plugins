@@ -19,22 +19,26 @@ For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
 Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto
 or execute "c:\Python27\python.exe -m pip install pycrypto" .
 
-For the File type plugin, it requires python-magic Python module.
+For the "File type" plugin, it requires python-magic Python module.
 Please get it from https://github.com/ahupp/python-magic
 or execute "c:\Python27\python.exe -m pip install python-magic-bin" .
 
-For the Find PE file plugin, it requires pefile Python module.
+For the "Find PE" file plugin, it requires pefile Python module.
 Please get it from https://code.google.com/p/pefile/
 or execute "c:\Python27\python.exe -m pip install pefile" .
+
+For the "YARA scan" plugin, it requires yara-python Python module.
+Please get it from https://github.com/VirusTotal/yara-python
+or execute "c:\Python27\python.exe -m pip install yara-python" .
 
 You can install all required Python modules with the following command.
 c:\Python27\python.exe -m pip install -r requirements.txt
 
 Customization:
-For the "Send to" plugin, please edit "Misc operations\send_to.py" to run your
+For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (46 plugins):
+List of plugins (47 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -123,14 +127,16 @@ List of plugins (46 plugins):
     Search with regular expression in selected region (the whole file
     if not selected)
   * Replace
-    Replace matched region with specified data in selected region
-    (the whole file if not selected)
+    Replace matched data in selected region (the whole file if not selected)
+    with specified data
   * XOR hex search
     Search XORed / bit-rotated data in selected region (the whole file
     if not selected)
   * XOR text search
     Search XORed / bit-rotated string in selected region (the whole file
     if not selected)
+  * YARA scan
+    Scan selected region (the whole file if not selected) with YARA.
 
 * XOR operations
   * Decremental XOR

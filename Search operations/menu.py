@@ -32,7 +32,8 @@ operations = ("Find PE file",
               "Regex search",
               "Replace",
               "XOR hex search",
-              "XOR text search")
+              "XOR text search",
+              "YARA scan")
 exit_value = -1
 
 root = Tkinter.Tk()
