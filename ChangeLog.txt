@@ -1,3 +1,46 @@
+2018-11-25 Release 1.2.0
+* New plugins
+  - Search operations category
+    - Replace (replace matched data in selected region (the whole file if not selected) with specified data)
+    - YARA scan (scan selected region (the whole file if not selected) with YARA)
+* Enhancements
+  - All plugins depend on additional Python modules
+    - Show instructions to install the modules if they are not installed.
+  - Misc operations category
+    - File comparison
+      - Show elapsed time at the end of execution.
+    - Send to
+      - Move menu config to the external config file "send_to.json".
+  - Search operations category
+    - Regex search, Replace and YARA scan
+      - Show matched data as hex if it contains non-printable characters
+* Bug fix
+  - Misc operations category
+    - File comparison
+      - Fix handling on window close.
+  - Search operations category
+    - All plugins
+      - Do nothing if no file is opened.
+
+2018-11-14 Release 1.1.0
+* New plugins
+  - Basic operations category
+    - To upper case
+    - To lower case
+    - Swap case
+  - Encoding operations category
+    - From quoted printable
+    - To quoted printable
+  - Misc operations
+    - File comparison
+  - Search operations
+    - Regex search (with Python re module syntax)
+* Enhancements
+  - Misc operations category
+    - Send to
+      - Change path of VS Code to the current default install location.
+      - New "CyberChef" menu to send data to CyberChef locally saved on desktop (up to 12000 bytes)
+
 2018-09-17 Release 1.0.0
 * Reorganize plugins into the following seven categories.
   Plugins can be launched from pull-down menus.
