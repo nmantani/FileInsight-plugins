@@ -25,13 +25,25 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import Crypto.Cipher.ARC4
 import binascii
+
+try:
+    import Crypto.Cipher.ARC4
+    pycrypto_not_installed = False
+except ImportError:
+    pycrypto_not_installed = True
 
 def arc4_decrypt(fi):
     """
     Decrypt selected region with ARC4 (Alleged RC4) 
     """
+    if pycrypto_not_installed:
+        print "pycrypto is not installed."
+        print "Please download the installer pycrypto-2.6.win32-py2.7.exe"
+        print "from http://www.voidspace.org.uk/python/modules.shtml#pycrypto ,"
+        print "install it and restart FileInsight."
+        return
+
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 

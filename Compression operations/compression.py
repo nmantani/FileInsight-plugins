@@ -32,11 +32,6 @@ import gzip
 import StringIO
 import zlib
 
-#import binascii
-#import hashlib
-#import struct
-#import sys
-
 def aplib_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -69,7 +64,9 @@ def aplib_compress(fi):
                 print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
             print "Added a bookmark to compressed region."
         except WindowsError:
-            print 'Error: cannot load aplib.dll.'
+            print "Error: cannot load aplib.dll."
+            print "Please download aPLib from http://ibsensoftware.com/download.html"
+            print "and copy aplib.dll (32 bits version) into 'Compression operations' folder."
 
 def aplib_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -123,6 +120,8 @@ def aplib_decompress(fi):
 
         except WindowsError:
             print 'Error: cannot load aplib.dll'
+            print "Please download aPLib from http://ibsensoftware.com/download.html"
+            print "and copy aplib.dll (32 bits version) into 'Compression operations' folder."
 
         except Exception:
             print 'Error: invalid compressed data'

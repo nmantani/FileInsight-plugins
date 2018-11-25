@@ -27,12 +27,17 @@
 
 import ctypes
 import hashlib
-import magic
 import os
 import subprocess
 import tempfile
 import time
 import zlib
+
+try:
+    import magic
+    python_magic_not_installed = False
+except ImportError:
+    python_magic_not_installed = True
 
 def byte_frequency(fi):
     """
@@ -66,6 +71,11 @@ def file_type(fi):
     """
     Identify file type of selected region (the whole file if not selected)
     """
+    if python_magic_not_installed:
+        print "python-magic is not installed."
+        print "Please install it with 'python -m pip install python-magic-bin' and restart FileInsight."
+        return
+
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
