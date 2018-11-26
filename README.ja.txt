@@ -9,9 +9,10 @@ FileInsight-plugins: McAfee FileInsight バイナリエディタ用のプラグ�
 してください。FileInsight に加えて Python 2.7 (x86) をインストールしておく
 必要があります。
 
-※※※ 重要 ※※※
-Python 2.7.11 を使用すると FileInsight がクラッシュします。2.7.12 以降を
-使用してください。
+※※※ お知らせ ※※※
+残念なことに FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
+しかしながら、FileInsight のインストーラは以下の場所から引き続きダウンロード可能です。
+https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 
 使用するために必要なもの:
 aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。

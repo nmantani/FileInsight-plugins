@@ -8,7 +8,9 @@ Please copy plugin folders into %USERPROFILE%\Documents\FileInsight\plugins .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
 *** NOTE ***
-Python 2.7.11 causes FileInsight to crash. Please use 2.7.12 or higher version.
+Sadly, FileInsight has been removed from the McAfee Free Tools website.
+However, FileInsight installer is still available from the following location.
+https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 
 Requisites:
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
