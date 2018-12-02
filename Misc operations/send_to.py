@@ -30,12 +30,23 @@ import binascii
 import collections
 import json
 import os
+import re
 import sys
 import time
 import Tkinter
 import tkMessageBox
 import subprocess
 import winreg
+
+def replace_env_in_path(s):
+    env_list = ("SYSTEMROOT", "PROGRAMFILES", "LOCALAPPDATA", "USERPROFILE")
+    for e in env_list:
+        p = os.environ[e]
+        p = p.replace("\\", "\\\\")
+        pattern = "%" + e + "%"
+        s = re.sub(pattern, p, s, flags=re.IGNORECASE)
+
+    return s
 
 root = Tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
@@ -46,7 +57,7 @@ config_file_name = "send_to.json"
 # Load config file
 if os.path.exists(config_file_name):
     try:
-        f = open(config_file_name, "rb")
+        f = open(config_file_name, "r")
         programs = json.load(f, object_pairs_hook=collections.OrderedDict)
         f.close()
     except:
@@ -59,7 +70,7 @@ else:
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
 
     # Create new config file
-    f = open(config_file_name, "wb")
+    f = open(config_file_name, "w")
     json.dump(programs, f, indent=4)
     f.close()
 
@@ -89,8 +100,9 @@ for key,val in programs.iteritems():
             if os.path.getsize(filename) > 12000:
                 tkMessageBox.showwarning(None, message="Data size exceeds 12000 bytes. Sent data will be truncated (due to limit of command line argument length).")
             cyberchef_input = open(filename, "rb").read(12000)
-            # CyberChef automatically replace 0x0d with 0x0a and this breaks data integrity.
-            # So data have to be converted into hex text.
+            # CyberChef input box automatically replace 0x0d with 0x0a and this breaks data integrity.
+            # So data have to be converted into hex text before sending to CyberChef.
+            # For the detail of the issue, please see https://github.com/gchq/CyberChef/issues/430 .
             # Data size limit is reduced from 24000 bytes to 12000 bytes due to this conversion.
             cyberchef_input = binascii.hexlify(cyberchef_input)
             cyberchef_input = base64.b64encode(cyberchef_input)
@@ -110,13 +122,27 @@ for key,val in programs.iteritems():
             p = subprocess.Popen(browser_cmd)
             p.wait()
         elif program == "Customize menu":
-            tkMessageBox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
-            p = subprocess.Popen(["C:\\Windows\\notepad.exe", "send_to.json"])
-            p.wait()
+            # Get path of default text editor
+            try:
+                reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.txt\\UserChoice")
+                progid, regtype = winreg.QueryValueEx(reg_key, "ProgId")
+                progid = progid.replace("\\", "\\\\")
+                winreg.CloseKey(reg_key)
+                reg_key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
+                editor_cmd, regtype = winreg.QueryValueEx(reg_key, "")
+                winreg.CloseKey(reg_key)
+                editor_cmd = replace_env_in_path(editor_cmd)
+                editor_cmd = editor_cmd.replace("%1", "send_to.json")
+                tkMessageBox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
+                p = subprocess.Popen(editor_cmd)
+                p.wait()
+            except Exception as e:
+                # Fallback to Notepad
+                tkMessageBox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
+                p = subprocess.Popen(["C:\\Windows\\notepad.exe", "send_to.json"])
+                p.wait()
         else:
-            localappdata = os.environ["LOCALAPPDATA"]
-            localappdata = localappdata.replace("\\", "\\\\")
-            program = program.replace("%LOCALAPPDATA%", localappdata)
+            program = replace_env_in_path(program)
             if os.path.exists(program):
                 p = subprocess.Popen([program, filename])
                 p.wait()
