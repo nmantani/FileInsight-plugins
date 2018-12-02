@@ -45,7 +45,7 @@ root.title("File comparison")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label1 = Tkinter.Label(root, text="First file:")
-label1.grid(row=0, column=0, padx=5, pady=5)
+label1.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 combo1 = ttk.Combobox(root, state="readonly")
 combo1["values"] = files
@@ -53,7 +53,7 @@ combo1.current(0)
 combo1.grid(row=0, column=2, padx=5, pady=5)
 
 label2 = Tkinter.Label(root, text="Second file:")
-label2.grid(row=1, column=0, padx=5, pady=5)
+label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
 combo2 = ttk.Combobox(root, state="readonly")
 combo2["values"] = files
