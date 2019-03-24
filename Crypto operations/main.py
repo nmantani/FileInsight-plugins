@@ -1,7 +1,7 @@
 #
 # Crypto operations - Various cryptographic operations
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -54,7 +54,9 @@ class FileInsight:
         self.activateDocumentAt = activateDocumentAt
 
 if __name__ == "__main__":
-    operations = (crypto_ops.arc4_decrypt,)
+    operations = (crypto_ops.aes_decrypt,
+                  crypto_ops.aes_encrypt,
+                  crypto_ops.arc4_decrypt)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

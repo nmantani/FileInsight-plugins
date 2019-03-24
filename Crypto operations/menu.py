@@ -1,7 +1,7 @@
 #
 # Crypto operations - Various cryptographic operations
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 import sys
 import Tkinter
 
-operations = ("ARC4 decrypt",)
+operations = ("AES decrypt", "AES encrypt", "ARC4 decrypt")
 exit_value = -1
 
 root = Tkinter.Tk()

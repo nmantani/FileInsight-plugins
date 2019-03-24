@@ -1,7 +1,7 @@
 #
 # Crypto operations - Various cryptographic operations
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,120 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
+import json
+import re
+import subprocess
 
-try:
-    import Crypto.Cipher.ARC4
-    pycrypto_not_installed = False
-except ImportError:
-    pycrypto_not_installed = True
+def aes_decrypt(fi):
+    """
+    Decrypt selected region with AES
+    """
+    do_decrypt(fi, "AES", "aes_decrypt_dialog.py")
+
+def aes_encrypt(fi):
+    """
+    Encrypt selected region with AES
+    """
+    do_encrypt(fi, "AES", "aes_encrypt_dialog.py")
 
 def arc4_decrypt(fi):
     """
     Decrypt selected region with ARC4 (Alleged RC4) 
     """
-    if pycrypto_not_installed:
-        print "pycrypto is not installed."
-        print "Please download the installer pycrypto-2.6.win32-py2.7.exe"
-        print "from http://www.voidspace.org.uk/python/modules.shtml#pycrypto ,"
-        print "install it and restart FileInsight."
-        return
+    do_decrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
+
+def do_decrypt(fi, name, script):
+    """
+    Decrypt selected region
+    """
 
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
     if (length > 0):
-        key = fi.showSimpleDialog("Decryption key (in hex):")
-        key = key.replace("0x", "")
-        key = binascii.a2b_hex(key)
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
 
-        buf = fi.getSelection()
-        newbuf = list(fi.getDocument())
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        cipher = Crypto.Cipher.ARC4.new(key)
-        decrypted_buf = list(cipher.decrypt(buf))
+        # Execute arc4_decrypt_dialog.py to show GUI
+        # GUI portion is moved to external script to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
-        for i in range(0, length):
-            newbuf[offset + i] = decrypted_buf[i]
+        # Receive decrypted data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # PyCryptodome is not installed
+            print "PyCryptodome is not installed."
+            print "Please install it with 'python -m pip install pycryptodomex' and restart FileInsight."
+            return
+        elif ret == 1: # Do nothing if not decrypted
+            return
+
+        decrypted_data = list(binascii.a2b_hex(stdout_data))
+        decrypted_len = len(decrypted_data)
+        newdata = orig[:offset]
+        newdata.extend(decrypted_data)
+        newdata.extend(orig[offset + length:])
 
         fi.newDocument("New file", 1)
-        fi.setDocument("".join(newbuf))
-        fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, decrypted_len, hex(offset), "#c8ffff")
 
         if (length == 1):
-            print "Decrypted one byte with ARC4 from offset %s to %s." % (hex(offset), hex(offset))
+            print "Decrypted one byte with %s from offset %s to %s." % (name, hex(offset), hex(offset))
         else:
-            print "Decrypted %s bytes with ARC4 from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+            print "Decrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1))
         print "Added a bookmark to decrypted region."
+
+def do_encrypt(fi, name, script):
+    """
+    Encrypt selected region
+    """
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute arc4_decrypt_dialog.py to show GUI
+        # GUI portion is moved to external script to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive decrypted data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # PyCryptodome is not installed
+            print "PyCryptodome is not installed."
+            print "Please install it with 'python -m pip install pycryptodomex' and restart FileInsight."
+            return
+        elif ret == 1: # Do nothing if not decrypted
+            return
+
+        encrypted_data = list(binascii.a2b_hex(stdout_data))
+        encrypted_len = len(encrypted_data)
+        newdata = orig[:offset]
+        newdata.extend(encrypted_data)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, encrypted_len, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Encrypted one byte with %s from offset %s to %s." % (name, hex(offset), hex(offset))
+        else:
+            print "Encrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to encrypted region."
