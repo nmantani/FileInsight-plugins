@@ -1,4 +1,4 @@
-pycrypto
+pycryptodomex
 python-magic-bin
 pefile
 yara-python

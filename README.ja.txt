@@ -19,10 +19,9 @@ aPLib compress と aPLib decompress のプラグインについては、aplib.dl
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
 aplib.dll (32ビット版) を "Compression operations" のフォルダに置いてください。
 
-ARC4 decrypt プラグインについては、PyCrypto Python モジュールが必要です。
-http://www.voidspace.org.uk/python/modules.shtml#pycrypto からダウンロード、
-インストールするか、"c:\Python27\python.exe -m pip install pycrypto" を実行
-してインストールしてください。
+ARC4 decrypt プラグインについては、PyCryptodome Python モジュールが必要です。
+https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
 
 File type plugin プラグインについては、python-magic Python モジュールが必要です。
 https://github.com/ahupp/python-magic からダウンロード、インストールするか、
@@ -46,7 +45,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (47個):
+プラグインの一覧 (49個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -96,6 +95,10 @@ Send to プラグインについては、あなたのお好みのプログラム
     (PHP言語の gzinflate() と同等)
 
 * Crypto operations
+  * AES Decrypt
+    選択範囲を AES で復号します。
+  * AES Encrypt
+    選択範囲を AES で暗号化します。
   * ARC4 decrypt
     選択範囲を ARC4 (Alleged RC4) で復号します。
 

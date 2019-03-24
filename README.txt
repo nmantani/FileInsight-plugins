@@ -17,9 +17,9 @@ For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
 aplib.dll (32 bits version) into "Compression operations" folder.
 
-For the "ARC4 decrypt" plugin, it requires PyCrypto Python module.
-Please get it from http://www.voidspace.org.uk/python/modules.shtml#pycrypto
-or execute "c:\Python27\python.exe -m pip install pycrypto" .
+For the "ARC4 decrypt" plugin, it requires PyCryptodome Python module.
+Please get it from https://github.com/Legrandin/pycryptodome
+or execute "c:\Python27\python.exe -m pip install pycryptodomex".
 
 For the "File type" plugin, it requires python-magic Python module.
 Please get it from https://github.com/ahupp/python-magic
@@ -40,7 +40,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (47 plugins):
+List of plugins (49 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -90,6 +90,10 @@ List of plugins (47 plugins):
     checksum (Equivalent to gzinflate() in PHP language)
 
 * Crypto operations
+  * AES Decrypt
+    Decrypt selected region with AES
+  * AES Encrypt
+    Encrypt selected region with AES
   * ARC4 decrypt
     Decrypt selected region with ARC4 (Alleged RC4)
 
