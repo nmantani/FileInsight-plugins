@@ -28,7 +28,11 @@
 import sys
 import Tkinter
 
-operations = ("AES decrypt", "AES encrypt", "ARC4 decrypt")
+operations = ("AES decrypt",
+              "AES encrypt",
+              "ARC4 decrypt",
+              "Blowfish decrypt",
+              "Blowfish encrypt")
 exit_value = -1
 
 root = Tkinter.Tk()

@@ -1,5 +1,5 @@
 #
-# ARC4 Decrypt - Decrypt selected region with ARC4 (Alleged RC4)
+# ARC4 decrypt - Decrypt selected region with ARC4 (Alleged RC4)
 #
 # Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.

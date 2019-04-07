@@ -1,5 +1,5 @@
 #
-# AES Encrypt - Encrypt selected region with AES
+# AES encrypt - Encrypt selected region with AES
 #
 # Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.

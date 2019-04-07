@@ -1,5 +1,5 @@
 #
-# AES decrypt - Decrypt selected region with AES
+# Blowfish encrypt - Encrypt selected region with Blowfish
 #
 # Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
@@ -34,21 +34,19 @@ import ttk
 import tkMessageBox
 
 try:
-    import Cryptodome.Cipher.AES
+    import Cryptodome.Cipher.Blowfish
     import Cryptodome.Util.Padding
 except ImportError:
     exit(-1) # PyCryptodome is not installed
 
 # Print selected items
-def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
-    aes_mode = {"ECB":Cryptodome.Cipher.AES.MODE_ECB,
-                "CBC":Cryptodome.Cipher.AES.MODE_CBC,
-                "CFB":Cryptodome.Cipher.AES.MODE_CFB,
-                "OFB":Cryptodome.Cipher.AES.MODE_OFB}
-    aes_key_length = (16, 24 ,32)
+def encrypt(data, root, cm, ckt, ek, cit, ei):
+    blowfish_mode = {"ECB":Cryptodome.Cipher.Blowfish.MODE_ECB,
+                "CBC":Cryptodome.Cipher.Blowfish.MODE_CBC,
+                "CFB":Cryptodome.Cipher.Blowfish.MODE_CFB,
+                "OFB":Cryptodome.Cipher.Blowfish.MODE_OFB}
 
     mode = cm.get()
-    key_length = aes_key_length[ckl.current()]
     key_type = ckt.get()
     key = ek.get()
     iv_type = cit.get()
@@ -68,26 +66,27 @@ def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
             tkMessageBox.showerror("Error:", message="IV is not in hex format.")
             return
 
-    if mode in ["CBC", "CFB", "OFB"] and len(iv) != Cryptodome.Cipher.AES.block_size:
-        tkMessageBox.showerror("Error:", message="IV size must be %d bytes." % Cryptodome.Cipher.AES.block_size)
+    if mode in ["CBC", "CFB", "OFB"] and len(iv) != Cryptodome.Cipher.Blowfish.block_size:
+        tkMessageBox.showerror("Error:", message="IV size must be %d bytes." % Cryptodome.Cipher.Blowfish.block_size)
         return
 
-    if len(key) != key_length:
-        tkMessageBox.showerror("Error:", message="Key size must be %d bytes." % key_length)
+    key_length = len(key)
+    if key_length < 4 or key_length > 56:
+        tkMessageBox.showerror("Error:", message="Key size must be in the range from 4 bytes and 56 bytes.")
         return
 
     try:
         if mode == "CFB":
-            cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv, segment_size=Cryptodome.Cipher.AES.block_size * 8)
+            cipher = Cryptodome.Cipher.Blowfish.new(key, blowfish_mode[mode], iv, segment_size=Cryptodome.Cipher.Blowfish.block_size * 8)
         elif mode in ["CBC", "OFB"]:
-            cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv)
+            cipher = Cryptodome.Cipher.Blowfish.new(key, blowfish_mode[mode], iv)
         else:
-            cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode])
-
-        d = cipher.decrypt(data)
+            cipher = Cryptodome.Cipher.Blowfish.new(key, blowfish_mode[mode])
 
         if mode in ["ECB", "CBC"]:
-            d = Cryptodome.Util.Padding.unpad(d, Cryptodome.Cipher.AES.block_size)
+            data = Cryptodome.Util.Padding.pad(data, Cryptodome.Cipher.Blowfish.block_size)
+
+        d = cipher.encrypt(data)
     except Exception as e:
         tkMessageBox.showerror("Error:", message=e)
         root.quit()
@@ -111,7 +110,7 @@ data = binascii.a2b_hex(sys.stdin.read())
 
 # Create input dialog
 root = Tkinter.Tk()
-root.title("AES Decrypt")
+root.title("Blowfish Encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label_mode = Tkinter.Label(root, text="Mode:")
@@ -121,14 +120,6 @@ combo_mode = ttk.Combobox(root, width=5, state="readonly")
 combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB")
 combo_mode.current(0)
 combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-
-label_key_length = Tkinter.Label(root, text="Key length:")
-label_key_length.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-
-combo_key_length = ttk.Combobox(root, width=20, state="readonly")
-combo_key_length["values"] = ("128 bits (16 bytes)", "192 bits (24 bytes)", "256 bits (32 bytes)")
-combo_key_length.current(0)
-combo_key_length.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
 label_key_type = Tkinter.Label(root, text="Key type:")
 label_key_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
@@ -158,7 +149,7 @@ label_iv.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 entry_iv = Tkinter.Entry(width=32)
 entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 
-button = Tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ckl=combo_key_length, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckl, ckt, ek, cit, ei)))
+button = Tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ckt, ek, cit, ei)))
 button.grid(row=3, column=0, padx=5, pady=5, columnspan=4)
 
 # Set callback function
