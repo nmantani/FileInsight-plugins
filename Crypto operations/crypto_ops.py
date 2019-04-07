@@ -48,6 +48,18 @@ def arc4_decrypt(fi):
     """
     do_decrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
 
+def blowfish_decrypt(fi):
+    """
+    Decrypt selected region with Blowfish
+    """
+    do_decrypt(fi, "Blowfish", "blowfish_decrypt_dialog.py")
+
+def blowfish_encrypt(fi):
+    """
+    Encrypt selected region with Blowfish
+    """
+    do_encrypt(fi, "Blowfish", "blowfish_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region
