@@ -105,6 +105,10 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を Blowfish で復号します。
   * Blowfish dncrypt
     選択範囲を Blowfish で暗号化します。
+  * DES decrypt
+    選択範囲を DES で復号します。
+  * DES dncrypt
+    選択範囲を DES で暗号化します。
 
 * Encoding operations
   * Binary to hex text

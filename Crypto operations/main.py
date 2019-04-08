@@ -58,7 +58,9 @@ if __name__ == "__main__":
                   crypto_ops.aes_encrypt,
                   crypto_ops.arc4_decrypt,
                   crypto_ops.blowfish_decrypt,
-                  crypto_ops.blowfish_encrypt)
+                  crypto_ops.blowfish_encrypt,
+                  crypto_ops.des_decrypt,
+                  crypto_ops.des_encrypt)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):
