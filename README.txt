@@ -40,7 +40,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (53 plugins):
+List of plugins (55 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -104,6 +104,10 @@ List of plugins (53 plugins):
     Decrypt selected region with DES
   * DES dncrypt
     Encrypt selected region with DES
+  * Triple DES decrypt
+    Decrypt selected region with Triple DES
+  * Triple DES dncrypt
+    Encrypt selected region with Triple DES
 
 * Encoding operations
   * Binary to hex text

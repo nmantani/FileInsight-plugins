@@ -34,7 +34,9 @@ operations = ("AES decrypt",
               "Blowfish decrypt",
               "Blowfish encrypt",
               "DES decrypt",
-              "DES encrypt")
+              "DES encrypt",
+              "Triple DES decrypt",
+              "Triple DES encrypt")
 exit_value = -1
 
 root = Tkinter.Tk()
