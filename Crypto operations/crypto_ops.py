@@ -72,6 +72,18 @@ def des_encrypt(fi):
     """
     do_encrypt(fi, "DES", "des_encrypt_dialog.py")
 
+def triple_des_decrypt(fi):
+    """
+    Decrypt selected region with Triple DES
+    """
+    do_decrypt(fi, "Triple DES", "triple_des_decrypt_dialog.py")
+
+def triple_des_encrypt(fi):
+    """
+    Encrypt selected region with Triple DES
+    """
+    do_encrypt(fi, "Triple DES", "triple_des_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region

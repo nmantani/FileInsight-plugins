@@ -45,7 +45,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (53個):
+プラグインの一覧 (55個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -109,6 +109,10 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を DES で復号します。
   * DES dncrypt
     選択範囲を DES で暗号化します。
+  * Triple DES decrypt
+    選択範囲を Triple DES で復号します。
+  * Triple DES dncrypt
+    選択範囲を Triple DES で暗号化します。
 
 * Encoding operations
   * Binary to hex text
