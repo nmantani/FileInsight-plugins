@@ -59,6 +59,7 @@ if __name__ == "__main__":
                   crypto_ops.arc4_decrypt,
                   crypto_ops.blowfish_decrypt,
                   crypto_ops.blowfish_encrypt,
+                  crypto_ops.chacha20_decrypt,
                   crypto_ops.des_decrypt,
                   crypto_ops.des_encrypt,
                   crypto_ops.triple_des_decrypt,
