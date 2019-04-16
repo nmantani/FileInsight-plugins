@@ -45,7 +45,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (55個):
+プラグインの一覧 (56個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -99,12 +99,14 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を AES で復号します。
   * AES encrypt
     選択範囲を AES で暗号化します。
-  * ARC4 decrypt
-    選択範囲を ARC4 (Alleged RC4) で復号します。
+  * ARC4 decrypt / encrypt
+    選択範囲を ARC4 (Alleged RC4) で復号 / 暗号化します。
   * Blowfish decrypt
     選択範囲を Blowfish で復号します。
   * Blowfish dncrypt
     選択範囲を Blowfish で暗号化します。
+  * ChaCha20 decrypt / encrypt
+    選択範囲を ChaCha20 で復号 / 暗号化します。
   * DES decrypt
     選択範囲を DES で復号します。
   * DES dncrypt
