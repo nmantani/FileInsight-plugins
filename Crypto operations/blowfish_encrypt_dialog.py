@@ -102,7 +102,7 @@ def combo_mode_selected(root, cm, cit, ei):
         cit.configure(state = "disabled")
         ei.configure(state = "disabled")
     else:
-        cit.configure(state = "normal")
+        cit.configure(state = "readonly")
         ei.configure(state = "normal")
 
 # Receive data
