@@ -62,6 +62,7 @@ if __name__ == "__main__":
                   crypto_ops.chacha20_decrypt,
                   crypto_ops.des_decrypt,
                   crypto_ops.des_encrypt,
+                  crypto_ops.salsa20_decrypt,
                   crypto_ops.triple_des_decrypt,
                   crypto_ops.triple_des_encrypt)
 

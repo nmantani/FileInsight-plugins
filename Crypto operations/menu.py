@@ -36,6 +36,7 @@ operations = ("AES decrypt",
               "ChaCha20 decrypt / encrypt",
               "DES decrypt",
               "DES encrypt",
+              "Salsa20 decrypt / encrypt",
               "Triple DES decrypt",
               "Triple DES encrypt")
 exit_value = -1
