@@ -40,7 +40,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (56 plugins):
+List of plugins (57 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -106,6 +106,8 @@ List of plugins (56 plugins):
     Decrypt selected region with DES
   * DES dncrypt
     Encrypt selected region with DES
+  * Salsa20 decrypt / encrypt
+    Decrypt / encrypt selected region with Salsa20
   * Triple DES decrypt
     Decrypt selected region with Triple DES
   * Triple DES dncrypt

@@ -62,7 +62,7 @@ def blowfish_encrypt(fi):
 
 def chacha20_decrypt(fi):
     """
-    Decrypt selected region with Blowfish
+    Decrypt selected region with ChaCha20
     """
     do_decrypt(fi, "ChaCha20", "chacha20_decrypt_dialog.py")
 
@@ -77,6 +77,12 @@ def des_encrypt(fi):
     Encrypt selected region with DES
     """
     do_encrypt(fi, "DES", "des_encrypt_dialog.py")
+
+def salsa20_decrypt(fi):
+    """
+    Decrypt selected region with Salsa20
+    """
+    do_decrypt(fi, "Salsa20", "salsa20_decrypt_dialog.py")
 
 def triple_des_decrypt(fi):
     """
