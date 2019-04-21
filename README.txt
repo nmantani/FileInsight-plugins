@@ -108,13 +108,13 @@ List of plugins (59 plugins):
     Decrypt / encrypt selected region with ChaCha20
   * DES decrypt
     Decrypt selected region with DES
-  * DES dncrypt
+  * DES encrypt
     Encrypt selected region with DES
   * Salsa20 decrypt / encrypt
     Decrypt / encrypt selected region with Salsa20
   * Triple DES decrypt
     Decrypt selected region with Triple DES
-  * Triple DES dncrypt
+  * Triple DES encrypt
     Encrypt selected region with Triple DES
 
 * Encoding operations

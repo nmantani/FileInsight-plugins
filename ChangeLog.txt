@@ -1,3 +1,25 @@
+2019-04-21 Release 1.3.0
+* Important change
+  - Switch from PyCrypto to PyCryptodome for crypto-related plugins.
+    Please execute "c:\Python27\python.exe -m pip install pycryptodomex".
+    to install PyCryptodome.
+* New plugins
+  - Crypto operations category
+    - AES decrypt (decrypt selected region with AES)
+    - AES encrypt (encrypt selected region with AES)
+    - ARC2 decrypt (decrypt selected region with ARC2 (Alleged RC2))
+    - ARC2 encrypt (encrypt selected region with ARC2 (Alleged RC2))
+    - Blowfish decrypt (decrypt selected region with Blowfish)
+    - Blowfish encrypt (encrypt selected region with Blowfish)
+    - ChaCha20 decrypt / encrypt (decrypt / encrypt selected region with ChaCha20)
+    - DES decrypt (decrypt selected region with DES)
+    - DES encrypt (encrypt selected region with DES)
+    - Salsa20 decrypt / encrypt (decrypt / encrypt selected region with Salsa20)
+    - Triple DES decrypt (decrypt selected region with Triple DES)
+    - Triple DES encrypt (encrypt selected region with Triple DES)
+* Other change
+  - Rename "ARC4 decrypt" plugin to "ARC4 decrypt / encrypt".
+
 2018-11-25 Release 1.2.0
 * New plugins
   - Search operations category
