@@ -19,11 +19,11 @@ aPLib compress と aPLib decompress のプラグインについては、aplib.dl
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
 aplib.dll (32ビット版) を "Compression operations" のフォルダに置いてください。
 
-ARC4 decrypt プラグインについては、PyCryptodome Python モジュールが必要です。
+AES decrypt 等の暗号関係のプラグインについては、PyCryptodome Python モジュールが必要です。
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
 "c:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
 
-File type plugin プラグインについては、python-magic Python モジュールが必要です。
+File type プラグインについては、python-magic Python モジュールが必要です。
 https://github.com/ahupp/python-magic からダウンロード、インストールするか、
 "c:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
 してください。
@@ -45,7 +45,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (57個):
+プラグインの一覧 (59個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -99,11 +99,15 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を AES で復号します。
   * AES encrypt
     選択範囲を AES で暗号化します。
+  * ARC2 decrypt
+    選択範囲を ARC2 (Alleged RC2) で復号します。
+  * ARC2 encrypt
+    選択範囲を ARC2 (Alleged RC2) で暗号化します。
   * ARC4 decrypt / encrypt
     選択範囲を ARC4 (Alleged RC4) で復号 / 暗号化します。
   * Blowfish decrypt
     選択範囲を Blowfish で復号します。
-  * Blowfish dncrypt
+  * Blowfish encrypt
     選択範囲を Blowfish で暗号化します。
   * ChaCha20 decrypt / encrypt
     選択範囲を ChaCha20 で復号 / 暗号化します。

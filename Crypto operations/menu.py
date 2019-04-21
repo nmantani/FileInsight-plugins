@@ -30,6 +30,8 @@ import Tkinter
 
 operations = ("AES decrypt",
               "AES encrypt",
+              "ARC2 decrypt",
+              "ARC2 encrypt",
               "ARC4 decrypt / encrypt",
               "Blowfish decrypt",
               "Blowfish encrypt",

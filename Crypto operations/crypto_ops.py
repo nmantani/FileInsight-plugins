@@ -42,9 +42,21 @@ def aes_encrypt(fi):
     """
     do_encrypt(fi, "AES", "aes_encrypt_dialog.py")
 
+def arc2_decrypt(fi):
+    """
+    Decrypt selected region with ARC2 (Alleged RC2)
+    """
+    do_decrypt(fi, "ARC2", "arc2_decrypt_dialog.py")
+
+def arc2_encrypt(fi):
+    """
+    Encrypt selected region with ARC2 (Alleged RC2)
+    """
+    do_encrypt(fi, "ARC2", "arc2_encrypt_dialog.py")
+
 def arc4_decrypt(fi):
     """
-    Decrypt selected region with ARC4 (Alleged RC4) 
+    Decrypt selected region with ARC4 (Alleged RC4)
     """
     do_decrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
 
