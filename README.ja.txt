@@ -113,13 +113,13 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を ChaCha20 で復号 / 暗号化します。
   * DES decrypt
     選択範囲を DES で復号します。
-  * DES dncrypt
+  * DES encrypt
     選択範囲を DES で暗号化します。
   * Salsa20 decrypt / encrypt
     選択範囲を Salsa20 で復号 / 暗号化します。
   * Triple DES decrypt
     選択範囲を Triple DES で復号します。
-  * Triple DES dncrypt
+  * Triple DES encrypt
     選択範囲を Triple DES で暗号化します。
 
 * Encoding operations
