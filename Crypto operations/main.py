@@ -56,6 +56,8 @@ class FileInsight:
 if __name__ == "__main__":
     operations = (crypto_ops.aes_decrypt,
                   crypto_ops.aes_encrypt,
+                  crypto_ops.arc2_decrypt,
+                  crypto_ops.arc2_encrypt,
                   crypto_ops.arc4_decrypt,
                   crypto_ops.blowfish_decrypt,
                   crypto_ops.blowfish_encrypt,
