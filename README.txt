@@ -40,7 +40,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (59 plugins):
+List of plugins (61 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -118,16 +118,21 @@ List of plugins (59 plugins):
     Encrypt selected region with Triple DES
 
 * Encoding operations
-  * Binary to hex text
+  * Binary data to hex text
     Convert binary of selected region into hex text
-  * Hex text to binary
+  * Hex text to binary data
     Convert hex text of selected region into binary
+  * Binary data to binary text
+    Convert binary of selected region into binary text
+  * Binary text to binary data
+    Convert binary text of selected region into binary data
   * Custom base64 decode
     Decode selected region with custom base64 table
   * Custom base64 encode
     Encode selected region with custom base64 table
   * ROT13
-    Decode selected region with ROT13 algorithm
+    Rotate alphabet characters in selected region by the specified amount
+    (default: 13)
   * From quoted printable
     Decode selected region as quoted printable text
   * To quoted printable

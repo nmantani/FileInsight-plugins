@@ -1,7 +1,7 @@
 #
-# Encoding operations - Various encoding operations
+# ROT13 - Rotate alphabet characters in selected region
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,47 +25,37 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys
+import re
 import Tkinter
 
-operations = ("Binary data to hex text",
-              "Hex text to binary data",
-              "Binary data to binary text",
-              "Binary text to binary data",
-              "Custom base64 decode",
-              "Custom base64 encode",
-              "ROT13",
-              "From quoted printable",
-              "To quoted printable")
-exit_value = -1
+# Print amount of rotation to stdout
+def print_amount(r, s):
+    if s.get() != "":
+        print s.get()
+    r.quit()
 
+def amount_changed(*args):
+    if not re.match("^-?([0-9])+$", amount.get()):
+        amount.set("13")
+
+# Create input dialog
 root = Tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
+root.title('ROT13')
+root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+label = Tkinter.Label(root, text='Amount of rotation:')
+label.grid(row=0, column=0, padx=5, pady=5)
+amount = Tkinter.StringVar()
+amount.set("13")
+amount.trace("w", amount_changed)
+spin = Tkinter.Spinbox(root, textvariable=amount, state="readonly", width=4, from_=-100, to=100)
+spin.grid(row=0, column=1, padx=5, pady=5)
+button = Tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_amount(r, s)))
+button.grid(row=0, column=2, padx=5, pady=5)
 
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
-
-# Add menu items
-menu1 = Tkinter.Menu(root, tearoff=False)
-menu2 = Tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Encoding operations", menu=menu2)
-
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
-
-    menu2.add_command(label=operations[i], command=index)
-
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
+# Adjust window position
+w = root.winfo_screenwidth()
+h = root.winfo_screenheight()
+root.geometry('+%d+%d' % ((w/4), (h/2)))
 
 root.mainloop()
 
-sys.exit(exit_value)

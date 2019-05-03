@@ -54,8 +54,10 @@ class FileInsight:
         self.activateDocumentAt = activateDocumentAt
 
 if __name__ == "__main__":
-    operations = (encoding_ops.binary_to_hex_text,
-                  encoding_ops.hex_text_to_binary,
+    operations = (encoding_ops.binary_data_to_hex_text,
+                  encoding_ops.hex_text_to_binary_data,
+                  encoding_ops.binary_data_to_binary_text,
+                  encoding_ops.binary_text_to_binary_data,
                   encoding_ops.custom_base64_decode,
                   encoding_ops.custom_base64_encode,
                   encoding_ops.rot13,
