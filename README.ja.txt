@@ -45,7 +45,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (59個):
+プラグインの一覧 (61個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -123,16 +123,21 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を Triple DES で暗号化します。
 
 * Encoding operations
-  * Binary to hex text
+  * Binary data to hex text
     選択範囲のバイナリデータを16進数のテキストに変換します。
-  * Hex text to binary
+  * Hex text to binary data
     選択範囲の16進数のテキストをバイナリデータに変換します。
+  * Binary data to binary text
+    選択範囲のバイナリデータを2進数のテキストに変換します。
+  * Binary text to binary data
+    選択範囲の2進数のテキストをバイナリデータに変換します。
   * Custom base64 decode
     選択範囲をカスタムbase64テーブルを使ってデコードします。
   * Custom base64 encode
     選択範囲をカスタムbase64テーブルを使ってエンコードします。
   * ROT13
-    選択範囲を ROT13 アルゴリズムでデコードします。
+    選択範囲のアルファベットの文字列を指定した数だけローテートします。
+    (デフォルト: 13)
   * From quoted printable
     選択範囲を quoted printable としてデコードします。
   * To quoted printable

@@ -30,9 +30,9 @@ import quopri
 import string
 import subprocess
 
-def binary_to_hex_text(fi):
+def binary_data_to_hex_text(fi):
     """
-    Convert binary of selected region into hex text
+    Convert binary data of selected region into hex text
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -48,11 +48,11 @@ def binary_to_hex_text(fi):
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newbuf))
 
-        print "Converted binary from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length)
+        print "Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length)
 
-def hex_text_to_binary(fi):
+def hex_text_to_binary_data(fi):
     """
-    Convert hex text of selected region into binary
+    Convert hex text of selected region into binary data
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -60,22 +60,24 @@ def hex_text_to_binary(fi):
 
     hexchars = list("0123456789abcdefABCDEF")
 
-    if (length > 1):
+    if (length >= 2):
         buf = []
         for i in range(0, len(string)):
             if string[i] in hexchars:
                 buf.append(string[i])
 
+        if len(buf) < 2:
+            return
+
         newbuf = []
         i = 0
-        while (i < len(buf)):
-            if i < length - 1 and buf[i]:
-                newbuf.append(chr(int(buf[i] + buf[i+1], 16)))
+        while (i < len(buf) - 1):
+            newbuf.append(chr(int(buf[i] + buf[i+1], 16)))
             i += 2
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newbuf))
 
-        print "Converted hex text from offset %s to %s (%s bytes) into binary." % (hex(offset), hex(offset + length - 1), length)
+        print "Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length)
 
 def custom_base64_decode(fi):
     """
@@ -111,7 +113,7 @@ def custom_base64_decode(fi):
                 trans = string.maketrans(custom_table, standard_table)
                 encoded = list(base64.b64decode(data.translate(trans)))
                 final_size = len(encoded)
-            
+
                 newdata = orig[:offset]
                 newdata.extend(encoded)
                 newdata.extend(orig[offset + length:])
@@ -159,7 +161,7 @@ def custom_base64_encode(fi):
                 trans = string.maketrans(standard_table, custom_table)
                 encoded = list(base64.b64encode(data).translate(trans))
                 final_size = len(encoded)
-            
+
                 newdata = orig[:offset]
                 newdata.extend(encoded)
                 newdata.extend(orig[offset + length:])
@@ -175,7 +177,7 @@ def custom_base64_encode(fi):
 
 def rot13(fi):
     """
-    Decode selected region with ROT13 algorithm
+    Rotate alphabet characters in selected region
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -183,10 +185,38 @@ def rot13(fi):
     if (length > 0):
         buf = list(fi.getDocument())
         data = fi.getSelection()
-        data = list(data.decode("rot13"))
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute rot13_dialog.py to show GUI
+        # GUI portion is moved to rot13_dialog.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", "rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get amount input
+        stdout_data, stderr_data = p.communicate()
+        amount = stdout_data.rstrip()
+        if len(amount) > 0:
+            amount = int(amount)
+
+            if amount < 0:
+                amount = 26 - (abs(amount) % 26)
+            elif amount == 0:
+                return
+            else:
+                amount = amount % 26
+        else:
+            return
+
+        # Create a dictionary for rotation
+        d = {}
+        for c in (0x41, 0x61): # "A" and "a"
+            for i in range(26):
+                d[chr(i + c)] = chr((i + amount) % 26 + c)
 
         for i in range(0, length):
-            buf[offset + i] = chr(ord(data[i]))
+            buf[offset + i] = d.get(data[i], data[i])
 
         fi.newDocument("New file", 1)
         fi.setDocument("".join(buf))
@@ -253,4 +283,53 @@ def to_quoted_printable(fi):
             print "Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset))
         else:
             print "Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+
+def binary_data_to_binary_text(fi):
+    """
+    Convert binary data of selected region into binary text
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        buf = list(fi.getDocument())
+        newbuf = []
+
+        for i in range(0, length):
+            j = offset + i
+            newbuf.append("{0:b}".format(ord(buf[j])).zfill(8))
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newbuf))
+
+        print "Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length)
+
+def binary_text_to_binary_data(fi):
+    """
+    Convert binary text of selected region into binary data
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    string = list(fi.getSelection())
+
+    binchars = list("01")
+
+    if (length >= 8):
+        buf = []
+        for i in range(0, len(string)):
+            if string[i] in binchars:
+                buf.append(string[i])
+
+        if len(buf) < 8:
+            return
+
+        newbuf = []
+        i = 0
+        while (i < len(buf) - 7):
+            newbuf.append(chr(int("".join(buf[i:i+8]), 2)))
+            i += 8
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newbuf))
+
+        print "Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)
 
