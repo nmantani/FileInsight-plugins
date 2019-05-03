@@ -34,12 +34,13 @@ import re
 import sys
 import time
 import Tkinter
+import tkFileDialog
 import tkMessageBox
 import subprocess
 import winreg
 
 def replace_env_in_path(s):
-    env_list = ("SYSTEMROOT", "PROGRAMFILES", "LOCALAPPDATA", "USERPROFILE")
+    env_list = ("SYSTEMROOT", "PROGRAMFILES", "LOCALAPPDATA", "USERPROFILE", "HOMEDRIVE", "HOMEPATH")
     for e in env_list:
         p = os.environ[e]
         p = p.replace("\\", "\\\\")
@@ -68,6 +69,7 @@ else:
     programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 7.0\\ida64.exe"
     programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\cyberchef.htm"
 
     # Create new config file
     f = open(config_file_name, "w")
@@ -75,8 +77,10 @@ else:
     f.close()
 
 # Add special menu items
-programs["CyberChef"] = "CyberChef"
-programs["Customize menu"] = "Customize menu"
+if not "CyberChef" in programs:
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\cyberchef.htm"
+if not "Customize menu" in programs:
+    programs["Customize menu"] = "Customize menu"
 
 filename = sys.argv[1]
 
@@ -94,9 +98,10 @@ menu2 = Tkinter.Menu(menu1, tearoff=False)
 menu1.add_cascade(label="Send to", menu=menu2)
 
 for key,val in programs.iteritems():
-    def launch(program=val, filename=filename):
-        if program == "CyberChef":
-            print os.path.getsize(filename)
+    def launch(name=key, program=val, filename=filename):
+        if name == "CyberChef":
+            global config_file_name, programs
+
             if os.path.getsize(filename) > 12000:
                 tkMessageBox.showwarning(None, message="Data size exceeds 12000 bytes. Sent data will be truncated (due to limit of command line argument length).")
             cyberchef_input = open(filename, "rb").read(12000)
@@ -109,7 +114,23 @@ for key,val in programs.iteritems():
             cyberchef_input = cyberchef_input.replace("+", "%2B")
             cyberchef_input = cyberchef_input.replace("=", "")
 
-            cyberchef_url = "file:///%s%s/Desktop/cyberchef.htm#recipe=From_Hex('Auto')&input=%s" % (os.getenv("HOMEDRIVE"), os.getenv("HOMEPATH").replace("\\", "/"), cyberchef_input)
+            program = replace_env_in_path(program)
+            if not os.path.exists(program):
+                tkMessageBox.showerror("Error:", message="%s is not found. Please select CyberChef HTML file." % program)
+                fTyp = [("HTML file","*.htm;*.html")]
+                iDir = os.path.abspath(os.getenv("HOMEPATH") + "\\Desktop")
+                program = tkFileDialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
+            if program == "":
+                return
+            else:
+                programs["CyberChef"] = program
+
+                # Update config file
+                f = open(config_file_name, "w")
+                json.dump(programs, f, indent=4)
+                f.close()
+
+            cyberchef_url = "file:///%s#recipe=From_Hex('Auto')&input=%s" % (program.replace("\\", "/"), cyberchef_input)
 
             # Get path of default browser because "start" built-in command of command prompt drops URL parameters with "file:///" URL scheme
             reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice")
@@ -121,7 +142,7 @@ for key,val in programs.iteritems():
             browser_cmd = browser_cmd.replace("%1", cyberchef_url)
             p = subprocess.Popen(browser_cmd)
             p.wait()
-        elif program == "Customize menu":
+        elif name == "Customize menu":
             # Get path of default text editor
             try:
                 reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.txt\\UserChoice")
