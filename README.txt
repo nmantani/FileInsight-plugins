@@ -17,6 +17,10 @@ For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
 aplib.dll (32 bits version) into "Compression operations" folder.
 
+For the "Binwalk scan" plugin, it requires binwalk Python module.
+Please get it from https://github.com/ReFirmLabs/binwalk
+(pip cannot be used to install binwalk)."
+
 For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Python module.
 Please get it from https://github.com/Legrandin/pycryptodome
 or execute "c:\Python27\python.exe -m pip install pycryptodomex".
@@ -40,7 +44,7 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (61 plugins):
+List of plugins (62 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -143,17 +147,21 @@ List of plugins (61 plugins):
     Show byte frequency of selected region (the whole file if not selected)
   * File comparison
     Compare contents of two files
-  * File type
-    Identify file type of selected region (the whole file if not selected)
   * Hash values
     Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
     file if not selected)
   * Send to
     Send selected region (the whole file if not selected) to other programs
 
-* Search operations
+* Parsing operations
+  * Binwalk scan
+    Scan selected region (the whole file if not selected) to find embedded files
+  * File type
+    Identify file type of selected region (the whole file if not selected)
   * Find PE file
     Find PE file from selected region (the whole file if not selected)
+
+* Search operations
   * Regex search
     Search with regular expression in selected region (the whole file
     if not selected)
