@@ -30,7 +30,6 @@ import Tkinter
 
 operations = ("Byte frequency",
               "File comparison",
-              "File type",
               "Hash values",
               "Send to")
 exit_value = -1

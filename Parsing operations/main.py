@@ -1,7 +1,8 @@
 #
-# Search operations
+# Parsing operations - Operations such as file type detection and embedded file
+# detection
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -27,7 +28,7 @@
 
 import ctypes
 import subprocess
-import search_ops
+import parsing_ops
 
 class FileInsight:
     """
@@ -54,11 +55,9 @@ class FileInsight:
         self.activateDocumentAt = activateDocumentAt
 
 if __name__ == "__main__":
-    operations = (search_ops.regex_search,
-                  search_ops.replace,
-                  search_ops.xor_hex_search,
-                  search_ops.xor_text_search,
-                  search_ops.yara_scan)
+    operations = (parsing_ops.binwalk_scan,
+                  parsing_ops.file_type,
+                  parsing_ops.find_pe_file)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

@@ -19,6 +19,10 @@ aPLib compress と aPLib decompress のプラグインについては、aplib.dl
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
 aplib.dll (32ビット版) を "Compression operations" のフォルダに置いてください。
 
+Binwalk scan プラグインについては、 binwalk Python モジュールが必要です。
+https://github.com/ReFirmLabs/binwalk からダウンロード、インストールしてください
+(binwalk のインストールに pip は使用できません)。
+
 AES decrypt 等の暗号関係のプラグインについては、PyCryptodome Python モジュールが必要です。
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
 "c:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
@@ -45,7 +49,7 @@ c:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (61個):
+プラグインの一覧 (62個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -148,17 +152,21 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
   * File comparison
     2つのファイルの内容を比較します。
-  * File type
-    選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Hash values
     選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256 ハッシュ値を
     計算します。
   * Send to
     選択範囲を(選択していない場合は全体を)別のプログラムで開きます。
 
-* Search operations
+* Parsing operations
+  * Binwalk scan
+    選択範囲を(選択していない場合は全体を)スキャンして埋め込まれたファイルを探します。
+  * File type
+    選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Find PE file
     選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+
+* Search operations
   * Regex search
     選択範囲から(選択していない場合は全体から) 正規表現で検索します。
   * Replace

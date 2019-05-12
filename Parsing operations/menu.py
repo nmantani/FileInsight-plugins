@@ -1,7 +1,8 @@
 #
-# Search operations
+# Parsing operations - Operations such as file type detection and embedded file
+# detection
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -28,11 +29,9 @@
 import sys
 import Tkinter
 
-operations = ("Regex search",
-              "Replace",
-              "XOR hex search",
-              "XOR text search",
-              "YARA scan")
+operations = ("Binwalk scan",
+              "File type",
+              "Find PE file")
 exit_value = -1
 
 root = Tkinter.Tk()
@@ -49,7 +48,7 @@ if y > 10:
 # Add menu items
 menu1 = Tkinter.Menu(root, tearoff=False)
 menu2 = Tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Search operations", menu=menu2)
+menu1.add_cascade(label="Parsing operations", menu=menu2)
 
 for i in range(0, len(operations)):
     def index(i=i):

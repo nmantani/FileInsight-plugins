@@ -28,16 +28,11 @@
 import ctypes
 import hashlib
 import os
+import sys
 import subprocess
 import tempfile
 import time
 import zlib
-
-try:
-    import magic
-    python_magic_not_installed = False
-except ImportError:
-    python_magic_not_installed = True
 
 def byte_frequency(fi):
     """
@@ -66,27 +61,6 @@ def byte_frequency(fi):
 
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         print "0x%02X: %d" % (k, v)
-
-def file_type(fi):
-    """
-    Identify file type of selected region (the whole file if not selected)
-    """
-    if python_magic_not_installed:
-        print "python-magic is not installed."
-        print "Please install it with 'python -m pip install python-magic-bin' and restart FileInsight."
-        return
-
-    length = fi.getSelectionLength()
-    offset = fi.getSelectionOffset()
-
-    if (length > 0):
-        buf = fi.getSelection()
-        type = magic.from_buffer(buf)
-        print "File type from offset %s to %s: %s" % (hex(offset), hex(offset + length - 1), type)
-    else:
-        buf = fi.getDocument()
-        type = magic.from_buffer(buf)
-        print "File type of the whole file: %s" % type
 
 def hash_values(fi):
     """
@@ -254,3 +228,4 @@ def file_comparison(fi):
         print "Both files are identical."
 
     print "Elapsed time: %f (sec)" % (time.time() - time_start)
+

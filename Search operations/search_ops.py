@@ -1,5 +1,5 @@
 #
-# Search operations 
+# Search operations
 #
 # Copyright (c) 2018, Nobutaka Mantani
 # All rights reserved.
@@ -30,105 +30,14 @@ import ctypes
 import re
 import subprocess
 import string
-import struct
 import sys
 import time
-
-try:
-    import pefile
-    pefile_not_installed = False
-except ImportError:
-    pefile_not_installed = True
 
 try:
     import yara
     yara_python_not_installed = False
 except ImportError:
     yara_python_not_installed = True
-
-def find_pe(fi, buf, offset):
-    """
-    Used by find_pe_file()
-    """
-    i = 0
-    pos = 0
-    found = 0
-    valid_pe = False
-    length = len(buf)
-    while i < length:
-        pos = buf.find("MZ", i)
-        if pos == -1:
-            break
-        else:
-            if pos + 64 < length:
-                # Get the offset of the "PE" characters
-                pe_offset = struct.unpack("<I", buf[pos+60:pos+64])[0]
-                if pos + pe_offset + 23 < length:
-                    # Check machine
-                    if buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x4c', '\x01']):
-                        # Check characteristics
-                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print "Win32 DLL found at offset %s" % hex(offset + pos),
-                        else:
-                            print "Win32 executable found at offset %s" % hex(offset + pos),
-                        valid_pe = True
-                    elif buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x64', '\x86']):
-                        # Check characteristics
-                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print "Win64 DLL found at offset %s" % hex(offset + pos),
-                        else:
-                            print "Win64 executable found at offset %s" % hex(offset + pos),
-                        valid_pe = True
-                    
-                    if valid_pe == True:
-                        pe = pefile.PE(data=buf[pos:], fast_load=True)
-                        pe_size = pe.OPTIONAL_HEADER.SizeOfHeaders
-                        for section in pe.sections:
-                            pe_size += section.SizeOfRawData
-                        print "size %d bytes" % pe_size
-                        if pos + pe_size > length:
-                            print "The end of PE file (offset %s) is beyond the end of search region (offset %s). Bookmarked region will be truncated." % (hex(offset+pos+pe_size), hex(offset+length))
-                            fi.setBookmark(offset + pos, length - pos, hex(offset + pos), "#c8ffff")
-                        else:
-                            fi.setBookmark(offset + pos, pe_size, hex(offset + pos), "#c8ffff")
-                        found += 1
-        valid_pe = False
-        i = pos + 2
-    return found
-
-def find_pe_file(fi):
-    """
-    Find PE file from selected region (the whole file if not selected)
-    """
-    if pefile_not_installed:
-        print "pefile is not installed."
-        print "Please install it with 'python -m pip install pefile' and restart FileInsight."
-        return
-
-    if fi.getDocumentCount() == 0:
-        return
-
-    length = fi.getSelectionLength()
-    offset = fi.getSelectionOffset()
-
-    if (length > 0):
-        buf = fi.getSelection()
-        found = find_pe(fi, buf, offset)
-        if found > 0:
-            print "%d PE file(s) found from offset %s to %s." % (found, hex(offset), hex(offset + length - 1))
-            print "Added bookmark(s) to the found PE file(s)."
-        else:
-            print "No PE file found from offset %s to %s." % (hex(offset), hex(offset + length - 1))
-    else:
-        offset = 0
-        buf = fi.getDocument()
-        length = fi.getLength()
-        found = find_pe(fi, buf, offset)
-        if found > 0:
-            print "%d PE file(s) found from the whole file." % found
-            print "Added bookmark(s) to the found PE file(s)."
-        else:
-            print "No PE file found from the whole file."
 
 def mask(x):
     """
