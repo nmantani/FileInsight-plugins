@@ -32,6 +32,12 @@ import gzip
 import StringIO
 import zlib
 
+try:
+    import backports.lzma
+    lzma_not_installed = False
+except ImportError:
+    lzma_not_installed = True
+
 def aplib_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -234,7 +240,7 @@ def gzip_decompress(fi):
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
-    
+
         strio = StringIO.StringIO(data)
         gz = gzip.GzipFile(fileobj=strio)
         decompressed = gz.read()
@@ -400,3 +406,168 @@ def raw_inflate(fi):
         else:
             print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
         print "Added a bookmark to decompressed region."
+
+def lzma_compress(fi):
+    """
+    Compress selected region with LZMA algorithm
+    """
+    if lzma_not_installed:
+        print "backport.lzma is not installed."
+        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
+        print "and restart FileInsight."
+        return
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        compressed = list(backports.lzma.compress(data, format=backports.lzma.FORMAT_ALONE))
+        final_size = len(compressed)
+        newdata = [0] * (orig_len - (length - final_size))
+
+        for i in range(0, offset):
+            newdata[i] = orig[i]
+
+        for i in range(0, final_size):
+            newdata[offset + i] = compressed[i]
+
+        for i in range(0, orig_len - offset - length):
+            newdata[offset + final_size + i] = orig[offset + length + i]
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        else:
+            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to compressed region."
+
+def lzma_decompress(fi):
+    """
+    Decompress selected region with LZMA algorithm
+    """
+    if lzma_not_installed:
+        print "backport.lzma is not installed."
+        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
+        print "and restart FileInsight."
+        return
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        decompressed = list(backports.lzma.decompress(data, format=backports.lzma.FORMAT_ALONE))
+        final_size = len(decompressed)
+        newdata = [0] * (orig_len - (length - final_size))
+
+        for i in range(0, offset):
+            newdata[i] = orig[i]
+
+        for i in range(0, final_size):
+            newdata[offset + i] = decompressed[i]
+
+        for i in range(0, orig_len - offset - length):
+            newdata[offset + final_size + i] = orig[offset + length + i]
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        else:
+            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to decompressed region."
+
+def xz_compress(fi):
+    """
+    Compress selected region with XZ format
+    """
+    if lzma_not_installed:
+        print "backport.lzma is not installed."
+        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
+        print "and restart FileInsight."
+        return
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        compressed = list(backports.lzma.compress(data))
+        final_size = len(compressed)
+        newdata = [0] * (orig_len - (length - final_size))
+
+        for i in range(0, offset):
+            newdata[i] = orig[i]
+
+        for i in range(0, final_size):
+            newdata[offset + i] = compressed[i]
+
+        for i in range(0, orig_len - offset - length):
+            newdata[offset + final_size + i] = orig[offset + length + i]
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        else:
+            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to compressed region."
+
+def xz_decompress(fi):
+    """
+    Decompress selected XZ compressed region
+    """
+    if lzma_not_installed:
+        print "backport.lzma is not installed."
+        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
+        print "and restart FileInsight."
+        return
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if (length > 0):
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        decompressed = list(backports.lzma.decompress(data))
+        final_size = len(decompressed)
+        newdata = [0] * (orig_len - (length - final_size))
+
+        for i in range(0, offset):
+            newdata[i] = orig[i]
+
+        for i in range(0, final_size):
+            newdata[offset + i] = decompressed[i]
+
+        for i in range(0, orig_len - offset - length):
+            newdata[offset + final_size + i] = orig[offset + length + i]
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if (length == 1):
+            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        else:
+            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+        print "Added a bookmark to decompressed region."
+

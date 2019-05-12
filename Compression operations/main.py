@@ -61,10 +61,14 @@ if __name__ == "__main__":
                   compression.bzip2_decompress,
                   compression.gzip_compress,
                   compression.gzip_decompress,
+                  compression.lzma_compress,
+                  compression.lzma_decompress,
                   compression.lznt1_compress,
                   compression.lznt1_decompress,
                   compression.raw_deflate,
-                  compression.raw_inflate)
+                  compression.raw_inflate,
+                  compression.xz_compress,
+                  compression.xz_decompress)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

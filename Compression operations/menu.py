@@ -35,10 +35,14 @@ operations = ("aPLib compress",
               "Bzip2 decompress",
               "Gzip compress",
               "Gzip decompress",
+              "LZMA compress",
+              "LZMA decompress",
               "LZNT1 compress",
               "LZNT1 decompress",
               "Raw deflate",
-              "Raw inflate")
+              "Raw inflate",
+              "XZ compress",
+              "XZ decompress")
 exit_value = -1
 
 root = Tkinter.Tk()

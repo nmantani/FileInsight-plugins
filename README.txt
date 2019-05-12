@@ -25,6 +25,10 @@ For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Pytho
 Please get it from https://github.com/Legrandin/pycryptodome
 or execute "c:\Python27\python.exe -m pip install pycryptodomex".
 
+For LZMA-related plugins such as "LZMA Compress", it requires backports.lzma Python module.
+Please get it from https://github.com/peterjc/backports.lzma/
+or execute "c:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma".
+
 For the "File type" plugin, it requires python-magic Python module.
 Please get it from https://github.com/ahupp/python-magic
 or execute "c:\Python27\python.exe -m pip install python-magic-bin" .
@@ -37,14 +41,14 @@ For the "YARA scan" plugin, it requires yara-python Python module.
 Please get it from https://github.com/VirusTotal/yara-python
 or execute "c:\Python27\python.exe -m pip install yara-python" .
 
-You can install all required Python modules with the following command.
+You can install some of required Python modules with the following command.
 c:\Python27\python.exe -m pip install -r requirements.txt
 
 Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (62 plugins):
+List of plugins (66 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -82,6 +86,10 @@ List of plugins (62 plugins):
     Compress selected region with gzip format
   * Gzip decompress
     Decompress selected gzip compressed region
+  * LZMA compress
+    Compress selected region with LZMA algorithm
+  * LZMA decompress
+    Decompress selected region with LZMA algorithm
   * LZNT1 compress
     Compress selected region with LZNT1 algorithm
   * LZNT1 decompress
@@ -92,6 +100,10 @@ List of plugins (62 plugins):
   * Raw inflate
     Decompress selected Deflate compressed region that does not have header and
     checksum (Equivalent to gzinflate() in PHP language)
+  * XZ compress
+    Compress selected region with XZ format
+  * XZ decompress
+    Decompress selected XZ compressed region
 
 * Crypto operations
   * AES decrypt

@@ -27,6 +27,11 @@ AES decrypt 等の暗号関係のプラグインについては、PyCryptodome P
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
 "c:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
 
+LZMA Compress 等の LZMA 関係のプラグインについては、backports.lzma Python モジュールが必要です。
+https://github.com/peterjc/backports.lzma/ からダウンロード、インストールするか、
+"c:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
+を実行してインストールしてください。
+
 File type プラグインについては、python-magic Python モジュールが必要です。
 https://github.com/ahupp/python-magic からダウンロード、インストールするか、
 "c:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
@@ -42,14 +47,14 @@ https://github.com/VirusTotal/yara-python からダウンロード、インス�
 "c:\Python27\python.exe -m pip install yara-python" を実行してインストールして
 ください。
 
-以下のコマンドで全ての必要な Python モジュールをインストールできます。
+以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
 c:\Python27\python.exe -m pip install -r requirements.txt
 
 カスタマイズ:
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (62個):
+プラグインの一覧 (66個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -87,6 +92,10 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を gzip 形式で圧縮します。
   * Gzip decompress
     gzip 形式で圧縮された選択範囲を展開します。
+  * LZMA compress
+    選択範囲を LZMA アルゴリズムで圧縮します。
+  * LZMA decompress
+    選択範囲を LZMA アルゴリズムで展開します。
   * LZNT1 compress
     選択範囲を LZNT1 アルゴリズムで圧縮します。
   * LZNT1 decompress
@@ -97,6 +106,10 @@ Send to プラグインについては、あなたのお好みのプログラム
   * Raw inflate
     ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。
     (PHP言語の gzinflate() と同等)
+  * XZ compress
+    選択範囲を XZ 形式で圧縮します。
+  * XZ decompress
+    選択範囲を XZ 形式として展開します。
 
 * Crypto operations
   * AES decrypt
