@@ -1,3 +1,37 @@
+2019-05-25 Release 1.4.0
+* Important change
+  - New "Parsing operations" category has been created.
+  - Misc operations category
+    - "File type" plugin and "Find PE file" plugin have been moved to the new "Parsing operations" category.
+  - New Python module dependencies
+    - backport.lzma (for new "LZMA compress", "LZMA decompress", "XZ compress" and "XZ decompress" plugins)
+    - binwalk (for new "Binwalk scan" plugin)
+  - Encoding operations category
+    - "Binary to hex text" plugin has been renamed to "Binary data to hex text".
+    - "Hex text to binary" plugin has been renamed to "Hex text to binary data".
+* New plugins
+  - Compression operations
+    - LZMA compress (compresses selected region with LZMA algorithm)
+    - LZMA decompress (decompresses selected region with LZMA algorithm)
+    - XZ compress (compresses selected region with XZ format)
+    - XZ decompress (decompresses selected XZ compressed region)
+  - Encoding operations caterogy
+    - Binary data to binary text (converts binary of selected region into binary text)
+    - Binary text to binary data (converts binary text of selected region into binary data)
+  - Parsing operations category
+    - Binwalk scan (scans selected region (the whole file if not selected) to find embedded files)
+* Enhancements
+  - Encoding operations category
+    - ROT13 plugin becomes capable to rotate by the specified amount.
+  - Misc operations category
+    - Send to plugin
+      - CyberChef file path has become customizable.
+      - File input dialog will be shown if CyberChef file is not found.
+* Bug fix
+  - Encoding operations
+    - Custom base64 decode / Custom base64 encode
+      - Exit GUI script when a dialog is closed
+
 2019-04-21 Release 1.3.0
 * Important change
   - Switch from PyCrypto to PyCryptodome for crypto-related plugins.
