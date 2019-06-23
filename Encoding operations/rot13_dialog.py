@@ -55,7 +55,7 @@ button.grid(row=0, column=2, padx=5, pady=5)
 # Adjust window position
 w = root.winfo_screenwidth()
 h = root.winfo_screenheight()
-root.geometry('+%d+%d' % ((w/4), (h/2)))
+root.geometry('+%d+%d' % ((w/2.5), (h/2)))
 
 root.mainloop()
 
