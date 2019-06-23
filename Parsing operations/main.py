@@ -57,7 +57,8 @@ class FileInsight:
 if __name__ == "__main__":
     operations = (parsing_ops.binwalk_scan,
                   parsing_ops.file_type,
-                  parsing_ops.find_pe_file)
+                  parsing_ops.find_pe_file,
+                  parsing_ops.strings)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

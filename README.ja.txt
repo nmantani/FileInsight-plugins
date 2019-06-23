@@ -25,36 +25,36 @@ https://github.com/ReFirmLabs/binwalk からダウンロード、インストー
 
 AES decrypt 等の暗号関係のプラグインについては、PyCryptodome Python モジュールが必要です。
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
-"c:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
+"C:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
 
 LZMA Compress 等の LZMA 関係のプラグインについては、backports.lzma Python モジュールが必要です。
 https://github.com/peterjc/backports.lzma/ からダウンロード、インストールするか、
-"c:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
+"C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
 を実行してインストールしてください。
 
 File type プラグインについては、python-magic Python モジュールが必要です。
 https://github.com/ahupp/python-magic からダウンロード、インストールするか、
-"c:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
+"C:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
 してください。
 
 Find PE file プラグインについては、pefile Python モジュールが必要です。
 https://code.google.com/p/pefile/ からダウンロード、インストールするか、
-"c:\Python27\python.exe -m pip install pefile" を実行してインストールして
+"C:\Python27\python.exe -m pip install pefile" を実行してインストールして
 ください。
 
 YARA scan プラグインについては、yara-python Python モジュールが必要です。
 https://github.com/VirusTotal/yara-python からダウンロード、インストールするか、
-"c:\Python27\python.exe -m pip install yara-python" を実行してインストールして
+"C:\Python27\python.exe -m pip install yara-python" を実行してインストールして
 ください。
 
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
-c:\Python27\python.exe -m pip install -r requirements.txt
+C:\Python27\python.exe -m pip install -r requirements.txt
 
 カスタマイズ:
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
-プラグインの一覧 (66個):
+プラグインの一覧 (67個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -178,6 +178,8 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Find PE file
     選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  * Strings
+    選択範囲から(選択していない場合は全体から)文字列を抽出します。
 
 * Search operations
   * Regex search
@@ -214,5 +216,5 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲をマルウェアの Zeus で使われている visual decrypt アルゴリズムで
     デコードします。
 
-作者: 萬谷 暢崇 (Email: nobutaka@nobutaka.org, Twitter: nmantani)
+作者: 萬谷 暢崇 (Twitter: @nmantani)
 ライセンス: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)

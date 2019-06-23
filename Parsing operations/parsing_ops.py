@@ -26,7 +26,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
+import re
 import struct
+import subprocess
 import sys
 import time
 
@@ -57,6 +60,9 @@ def binwalk_scan(fi):
         print "binwalk is not installed."
         print "Please get it from https://github.com/ReFirmLabs/binwalk"
         print "(pip cannot be used to install binwalk)."
+        return
+
+    if fi.getDocumentCount() == 0:
         return
 
     length = fi.getSelectionLength()
@@ -200,4 +206,144 @@ def find_pe_file(fi):
         else:
             print "No PE file found from the whole file."
 
+def strings_dedupe(matched, unicode, decode):
+    """
+    Used by strings()
+    """
+    unique = []
+    for m in matched:
+        if unicode:
+            s = re.sub("\x00+", "", m.group())
+            s = strings_decode_hex(s, decode)
+        else:
+            s = strings_decode_hex(m.group(), decode)
+        unique.append(s)
 
+    unique = list(set(unique))
+    unique.sort()
+
+    return unique
+
+def strings_decode_hex(s, decode):
+    """
+    Used by strings() and strings_dedupe()
+    """
+    if decode:
+        if re.match("^([0-9A-Fa-f]{2})+$", s):
+            s_orig = s
+            s = binascii.a2b_hex(s)
+            if re.match("^[ -~]+$", s):
+                return "Decoded: %s\tOriginal: %s" % (s, s_orig)
+            elif re.match("^(?:(?:[ -~]\x00)|(?:\x00[ -~]))+$", s):
+                s = re.sub("\x00", "", s)
+                return "Decoded: %s\tOriginal: %s" % (s, s_orig)
+            else:
+                return s_orig
+        else:
+            return s
+    else:
+        return s
+
+def strings(fi):
+    """
+    Extract text strings from selected region (the whole file if not selected)
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if (length > 0):
+        data = fi.getSelection()
+    else:
+        offset = 0
+        data = fi.getDocument()
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute arc4_decrypt_dialog.py to show GUI
+    # GUI portion is moved to external script to avoid hangup of FileInsight
+    p = subprocess.Popen(["python", "strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive parameters
+    stdout_data, stderr_data = p.communicate()
+    if stdout_data == "":
+        return
+
+    stdout_data = stdout_data.rstrip()
+    (mode, min_len, postprocess, decode_hex) = stdout_data.split("\t")
+    min_len = int(min_len)
+    if decode_hex == "True":
+        decode_hex = True
+    else:
+        decode_hex = False
+    newdata = ""
+
+    if mode == "ASCII + UTF-16":
+        expression = "[ -~]{%d,}" % min_len
+        matched = re.finditer(expression, data)
+        newdata += "ASCII strings:\r\n"
+        if postprocess == "Remove duplicates":
+            for d in strings_dedupe(matched, False, decode_hex):
+                newdata += d + "\r\n"
+        else:
+            for m in matched:
+                if postprocess == "Show offset":
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(m.group(), decode_hex))
+                else:
+                    newdata += strings_decode_hex(m.group(), decode_hex) + "\r\n"
+
+        expression = "(?:(?:[ -~]\x00)|(?:\x00[ -~])){%d,}" % min_len
+        matched = re.finditer(expression, data)
+        newdata += "\nUTF-16 strings:\r\n"
+        if postprocess == "Remove duplicates":
+            for d in strings_dedupe(matched, True, decode_hex):
+                newdata += d + "\r\n"
+        else:
+            for m in matched:
+                s = re.sub("\x00+", "", m.group())
+                if postprocess == "Show offset":
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(s, decode_hex))
+                else:
+                    newdata += strings_decode_hex(s, decode_hex) + "\r\n"
+    elif mode == "ASCII":
+        expression = "[ -~]{%d,}" % min_len
+        matched = re.finditer(expression, data)
+        newdata += "ASCII strings:\r\n"
+        if postprocess == "Remove duplicates":
+            for d in strings_dedupe(matched, False, decode_hex):
+                newdata += d + "\r\n"
+        else:
+            for m in matched:
+                if postprocess == "Show offset":
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(m.group(), decode_hex))
+                else:
+                    newdata += strings_decode_hex(m.group(), decode_hex) + "\r\n"
+    elif mode == "UTF-16":
+        expression = "(?:(?:[ -~]\x00)|(?:\x00[ -~])){%d,}" % min_len
+        matched = re.finditer(expression, data)
+        newdata += "UTF-16 strings:\r\n"
+        if postprocess == "Remove duplicates":
+            for d in strings_dedupe(matched, True, decode_hex):
+                newdata += d + "\r\n"
+        else:
+            for m in matched:
+                s = re.sub("\x00+", "", m.group())
+                if postprocess == "Show offset":
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(s, decode_hex))
+                else:
+                    newdata += strings_decode_hex(s, decode_hex) + "\r\n"
+
+    fi.newDocument("New file", 0) # Open a new tab with text mode
+    fi.setDocument(newdata)
+
+    if length > 0:
+        print "Extracted text strings from offset %s to %s." % (hex(offset), hex(offset + length))
+    else:
+        print "Extracted text strings from the whole file."
+
+    if decode_hex:
+        print "Please search 'Decoded: ***\tOriginal: ***' lines to find decoded hex strings."
