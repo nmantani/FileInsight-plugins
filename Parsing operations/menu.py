@@ -31,7 +31,8 @@ import Tkinter
 
 operations = ("Binwalk scan",
               "File type",
-              "Find PE file")
+              "Find PE file",
+              "Strings")
 exit_value = -1
 
 root = Tkinter.Tk()

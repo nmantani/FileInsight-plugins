@@ -23,32 +23,32 @@ Please get it from https://github.com/ReFirmLabs/binwalk
 
 For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Python module.
 Please get it from https://github.com/Legrandin/pycryptodome
-or execute "c:\Python27\python.exe -m pip install pycryptodomex".
+or execute "C:\Python27\python.exe -m pip install pycryptodomex".
 
 For LZMA-related plugins such as "LZMA Compress", it requires backports.lzma Python module.
 Please get it from https://github.com/peterjc/backports.lzma/
-or execute "c:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma".
+or execute "C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma".
 
 For the "File type" plugin, it requires python-magic Python module.
 Please get it from https://github.com/ahupp/python-magic
-or execute "c:\Python27\python.exe -m pip install python-magic-bin" .
+or execute "C:\Python27\python.exe -m pip install python-magic-bin" .
 
 For the "Find PE" file plugin, it requires pefile Python module.
 Please get it from https://code.google.com/p/pefile/
-or execute "c:\Python27\python.exe -m pip install pefile" .
+or execute "C:\Python27\python.exe -m pip install pefile" .
 
 For the "YARA scan" plugin, it requires yara-python Python module.
 Please get it from https://github.com/VirusTotal/yara-python
-or execute "c:\Python27\python.exe -m pip install yara-python" .
+or execute "C:\Python27\python.exe -m pip install yara-python" .
 
 You can install some of required Python modules with the following command.
-c:\Python27\python.exe -m pip install -r requirements.txt
+C:\Python27\python.exe -m pip install -r requirements.txt
 
 Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
-List of plugins (66 plugins):
+List of plugins (67 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -172,6 +172,8 @@ List of plugins (66 plugins):
     Identify file type of selected region (the whole file if not selected)
   * Find PE file
     Find PE file from selected region (the whole file if not selected)
+  * Strings
+    Extract text strings from selected region (the whole file if not selected)
 
 * Search operations
   * Regex search
@@ -206,5 +208,5 @@ List of plugins (66 plugins):
   * Visual decrypt
     Decode selected region with visual decrypt algorithm that is used by Zeus trojan
 
-Author: Nobutaka Mantani (Email: nobutaka@nobutaka.org, Twitter: nmantani)
+Author: Nobutaka Mantani (Twitter: @nmantani)
 License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
