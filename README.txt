@@ -12,7 +12,7 @@ Sadly, FileInsight has been removed from the McAfee Free Tools website.
 However, FileInsight installer is still available from the following location.
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 
-Requisites:
+Pre-requisites:
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
 aplib.dll (32 bits version) into "Compression operations" folder.
