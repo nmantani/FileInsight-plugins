@@ -337,7 +337,7 @@ def strings(fi):
                 else:
                     newdata += strings_decode_hex(s, decode_hex) + "\r\n"
 
-    fi.newDocument("New file", 0) # Open a new tab with text mode
+    fi.newDocument("Strings output", 0) # Open a new tab with text mode
     fi.setDocument(newdata)
 
     if length > 0:
