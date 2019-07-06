@@ -37,7 +37,7 @@ import Tkinter
 import tkFileDialog
 import tkMessageBox
 import subprocess
-import winreg
+import _winreg
 
 def replace_env_in_path(s):
     env_list = ("SYSTEMROOT", "PROGRAMFILES", "LOCALAPPDATA", "USERPROFILE", "HOMEDRIVE", "HOMEPATH")
