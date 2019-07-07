@@ -226,5 +226,8 @@ Plugins タブにあるカテゴリをクリックしてプラグインを選択
   * Visual decrypt  
     選択範囲をマルウェアの Zeus で使われている visual decrypt アルゴリズムでデコードします。
 
-作者: 萬谷 暢崇 (Twitter: @nmantani)  
-ライセンス: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
+## 作者
+萬谷 暢崇 (Twitter: @nmantani)
+
+## ライセンス
+The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)

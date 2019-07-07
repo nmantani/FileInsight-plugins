@@ -220,5 +220,8 @@ Some plugins show an additional dialog for plugin settings at use of them.
   * Visual decrypt  
     Decode selected region with visual decrypt algorithm that is used by Zeus trojan
 
-Author: Nobutaka Mantani (Twitter: @nmantani)  
-License: The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
+## Author
+Nobutaka Mantani (Twitter: @nmantani)
+
+## License
+The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
