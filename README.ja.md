@@ -1,6 +1,8 @@
-# FileInsight-plugins: McAfee FileInsight バイナリエディタ用のプラグイン
+# FileInsight-plugins: McAfee FileInsight バイナリエディタ用の解析ツールボックス
 
-これらのプラグインは、マルウェア解析に関する様々なデコード作業に便利です。（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書ファイルを抽出する）
+FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラグイン集です。
+暗号の復号、圧縮の展開、XOR された文字列の検索、YARA ルールでのスキャン等、多数の機能を追加できます。
+マルウェア解析に関する様々なデコード作業に便利です。（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書ファイルを抽出する）
 
 ## スクリーンショット
 ![screenshot1.png](screenshot1.png)
