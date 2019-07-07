@@ -48,6 +48,11 @@ Customization:
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
 favorite programs.
 
+How to use:
+Please click a category from the "Plugins" tab then select a plugin.
+You can also use plugins from the right-click menu.
+Some plugins show an additional dialog for plugin settings at use of them.
+
 List of plugins (67 plugins):
 * Basic operations
   * Copy to new file

@@ -54,6 +54,11 @@ C:\Python27\python.exe -m pip install -r requirements.txt
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "Misc operations\send_to.json" を編集してください。
 
+使い方:
+Plugins タブにあるカテゴリをクリックして、プラグインを選択してください。
+右クリックのメニューからプラグインを使用することもできます。
+いくつかのプラグインは設定のための追加のダイアログを表示します。
+
 プラグインの一覧 (67個):
 * Basic operations
   * Copy to new file
