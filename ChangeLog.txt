@@ -1,3 +1,15 @@
+2019-07-07 Relase 1.4.1
+* New plugins
+  - Parsing operations category
+    - Strings (extracts text strings from selected region (the whole file if not selected))
+* Enhancements
+  - Markdown version of README has been added.
+* Bug fix
+  - Encoding operations category
+    - Dialog position of ROT13 plugin has been adjusted.
+  - Misc operations category
+    - Breakage of "Send to" plugin has been fixed.
+
 2019-05-25 Release 1.4.0
 * Important changes
   - New "Parsing operations" category has been created.
