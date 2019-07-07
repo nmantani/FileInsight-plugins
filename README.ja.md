@@ -11,6 +11,8 @@
 プラグインのフォルダを %USERPROFILE%\Documents\FileInsight\plugins
 にコピーしてください。FileInsight に加えて Python 2.7 (x86) をインストールしておく必要があります。
 
+![folders.png](folders.png)
+
 ### **お知らせ**
 残念なことに FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
 しかしながら、FileInsight のインストーラは以下の場所から引き続きダウンロード可能です。
