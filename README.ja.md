@@ -5,18 +5,18 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 マルウェア解析に関する様々なデコード作業に便利です。（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書ファイルを抽出する）
 
 ## スクリーンショット
-![screenshot1.png](screenshot1.png)
+![screenshot1.png](docs/screenshot1.png)
 
-![screenshot2.png](screenshot2.png)
+![screenshot2.png](docs/screenshot2.png)
 
 ## インストール方法
-プラグインのフォルダを %USERPROFILE%\Documents\FileInsight\plugins
+plugins フォルダを %USERPROFILE%\Documents\FileInsight
 にコピーしてください。FileInsight に加えて Python 2.7 (x86) をインストールしておく必要があります。
 
-![folders.png](folders.png)
+![folders.png](docs/folders.png)
 
 ### **お知らせ**
-残念なことに FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
+FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
 しかしながら、FileInsight のインストーラは以下の場所から引き続きダウンロード可能です。
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 
@@ -63,15 +63,15 @@ Send to プラグインについては、あなたのお好みのプログラム
 ## 使い方
 Plugins タブにあるカテゴリをクリックしてプラグインを選択してください。
 
-![how_to_use1.png](how_to_use1.png)
+![how_to_use1.png](docs/how_to_use1.png)
 
 右クリックのメニューからプラグインを使用することもできます。
 
-![how_to_use2.png](how_to_use2.png)
+![how_to_use2.png](docs/how_to_use2.png)
 
 いくつかのプラグインは使用時に設定のダイアログを表示します。
 
-![how_to_use3.png](how_to_use3.png)
+![how_to_use3.png](docs/how_to_use3.png)
 
 ## プラグインの一覧 (67個)
 * Basic operations
