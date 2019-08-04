@@ -7,11 +7,11 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 malware executables and decoy documents from malicious document files).
 
 How to install:
-Please copy plugin folders into %USERPROFILE%\Documents\FileInsight\plugins .
+Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
 *** NOTE ***
-Sadly, FileInsight has been removed from the McAfee Free Tools website.
+FileInsight was removed from the McAfee Free Tools website.
 However, FileInsight installer is still available from the following location.
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 

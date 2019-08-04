@@ -5,18 +5,18 @@ It adds many capabilities such as decryption, decompression, searching XOR-ed te
 It is useful for various kind of decoding tasks in malware analysis (e.g. extracing malware executables and decoy documents from malicious document files).
 
 ## Screenshots
-![screenshot1.png](screenshot1.png)
+![screenshot1.png](docs/screenshot1.png)
 
-![screenshot2.png](screenshot2.png)
+![screenshot2.png](docs/screenshot2.png)
 
 ## How to install
-Please copy plugin folders into %USERPROFILE%\Documents\FileInsight\plugins .
+Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
-![folders.png](folders.png)
+![folders.png](docs/folders.png)
 
 ### **NOTE**
-Sadly, FileInsight has been removed from the McAfee Free Tools website.
+FileInsight was removed from the McAfee Free Tools website.
 However, FileInsight installer is still available from the following location.
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 
@@ -59,15 +59,15 @@ favorite programs.
 ## How to use
 Please click a category from the "Plugins" tab then select a plugin.
 
-![how_to_use1.png](how_to_use1.png)
+![how_to_use1.png](docs/how_to_use1.png)
 
 You can also use plugins from the right-click menu.
 
-![how_to_use2.png](how_to_use2.png)
+![how_to_use2.png](docs/how_to_use2.png)
 
 Some plugins show an additional dialog for plugin settings at use of them.
 
-![how_to_use3.png](how_to_use3.png)
+![how_to_use3.png](docs/how_to_use3.png)
 
 ## List of plugins (67 plugins)
 * Basic operations

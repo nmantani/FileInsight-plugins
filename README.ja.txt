@@ -7,12 +7,12 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 を抽出する）
 
 インストール方法:
-プラグインのフォルダを %USERPROFILE%\Documents\FileInsight\plugins にコピー
+plugins フォルダを %USERPROFILE%\Documents\FileInsight にコピー
 してください。FileInsight に加えて Python 2.7 (x86) をインストールしておく
 必要があります。
 
 ※※※ お知らせ ※※※
-残念なことに FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
+FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
 しかしながら、FileInsight のインストーラは以下の場所から引き続きダウンロード可能です。
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
 
