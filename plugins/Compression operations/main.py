@@ -105,3 +105,6 @@ if __name__ == "__main__":
         fi = FileInsight()
         operations[index](fi)
 
+    # Workaround to avoid crash of FileInsight on Windows 7
+    if "threading" in sys.modules:
+        sys.modules.pop("threading")
