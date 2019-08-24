@@ -3,8 +3,10 @@
   - Add workarounds to avoid crash of FileInsight on closing on Windows 7
     (reported by: You Nakatsuru (@you0708)).
 * Enhancement
-  - Show a file selection dialog when a selected program file is missing.
-    send_to.json file will be updated accordingly with the new file location.
+  - Misc operations category
+    - Send to
+      - Show a file selection dialog when a selected program file is missing.
+        send_to.json file will be updated accordingly with the new file location.
 * Other changes
   - Move plugin folders into the "plugins" folder.
   - Move screenshots into the "docs" folder.
