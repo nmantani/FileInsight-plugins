@@ -1,10 +1,21 @@
-2019-07-07 Relase 1.4.1
+2019-08-24 Release 1.4.2
+* Bug fix
+  - Add workarounds to avoid crash of FileInsight on closing on Windows 7
+    (reported by: You Nakatsuru (@you0708)).
+* Enhancement
+  - Show a file selection dialog when a selected program file is missing.
+    send_to.json file will be updated accordingly with the new file location.
+* Other changes
+  - Move plugin folders into the "plugins" folder.
+  - Move screenshots into the "docs" folder.
+
+2019-07-07 Release 1.4.1
 * New plugins
   - Parsing operations category
     - Strings (extracts text strings from selected region (the whole file if not selected))
-* Enhancements
+* Enhancement
   - Markdown version of README has been added.
-* Bug fix
+* Bug fixes
   - Encoding operations category
     - Dialog position of ROT13 plugin has been adjusted.
   - Misc operations category
