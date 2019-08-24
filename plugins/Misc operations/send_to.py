@@ -168,8 +168,22 @@ for key,val in programs.iteritems():
                 p = subprocess.Popen([program, filename])
                 p.wait()
             else:
-                msg = "%s does not exist." % program
-                tkMessageBox.showerror("Error", msg)
+                tkMessageBox.showerror("Error:", message="%s is not found. Please select the file." % program)
+                fTyp = [("Executable file","*.exe")]
+                iDir = os.path.abspath(os.getenv("PROGRAMFILES"))
+                program = tkFileDialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
+            if program == "":
+                return
+            else:
+                programs[name] = program
+
+                # Update config file
+                f = open(config_file_name, "w")
+                json.dump(programs, f, indent=4)
+                f.close()
+
+                p = subprocess.Popen([program, filename])
+                p.wait()
         root.quit()
 
     menu2.add_command(label=key, command=launch)
