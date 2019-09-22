@@ -15,6 +15,11 @@ plugins フォルダを %USERPROFILE%\Documents\FileInsight
 
 ![folders.png](docs/folders.png)
 
+FileInsight は Python 3 と互換性が無いためプラグインを Python 3 で使用することはできません。
+<u>もし他のツール等で Python 3 を使用したい場合は Python 2.7 を "Install just for me"
+でインストールしてください。</u>Python 2.7 を "Install for all users" でインストールすると
+FileInsight が Python 2.7 ではなく Python 3 を使用しようとしてプラグインを実行できなくなります。
+
 ### **お知らせ**
 FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
 しかしながら、FileInsight のインストーラは以下の場所から引き続きダウンロード可能です。
