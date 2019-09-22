@@ -10,6 +10,12 @@ How to install:
 Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
+FileInsight is incompatible with Python 3 and plugins can not be used with Python 3.
+If you would like to use Python 3 for other tools, please install Python 2.7 with the
+"Install just for me" option. If you install Python 2.7 with the "Install for all users"
+option, FileInsight tries to use Python 3 rather than Python 2.7 and it fails to execute
+plugins.
+
 *** NOTE ***
 FileInsight was removed from the McAfee Free Tools website.
 However, FileInsight installer is still available from the following location.
