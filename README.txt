@@ -16,7 +16,7 @@ If you would like to use Python 3 for other tools, please install Python 2.7 wit
 option, FileInsight tries to use Python 3 rather than Python 2.7 and it fails to execute
 plugins.
 
-*** NOTE ***
+*** Note regarding FileInsight installer ***
 FileInsight was removed from the McAfee Free Tools website.
 However, FileInsight installer is still available from the following location.
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
