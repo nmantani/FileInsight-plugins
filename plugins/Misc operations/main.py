@@ -26,6 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import ctypes
+import os
 import subprocess
 import misc_ops
 
@@ -84,6 +85,10 @@ if __name__ == "__main__":
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Workaround not to execute python.exe of Microsoft Store (on Windows 10 version 1903)
+    path_to_remove = os.environ["HOMEDRIVE"] + os.environ["HOMEPATH"] + "\\AppData\\Local\\Microsoft\\WindowsApps"
+    os.environ["PATH"] = os.environ["PATH"].replace(path_to_remove, "")
 
     # Execute menu.py to show GUI
     # GUI portion is moved to menu.py to avoid hangup of FileInsight
