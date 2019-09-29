@@ -172,18 +172,18 @@ for key,val in programs.iteritems():
                 fTyp = [("Executable file","*.exe")]
                 iDir = os.path.abspath(os.getenv("PROGRAMFILES"))
                 program = tkFileDialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
-            if program == "":
-                return
-            else:
-                programs[name] = program
+                if program == "":
+                    return
+                else:
+                    programs[name] = program
 
-                # Update config file
-                f = open(config_file_name, "w")
-                json.dump(programs, f, indent=4)
-                f.close()
+                    # Update config file
+                    f = open(config_file_name, "w")
+                    json.dump(programs, f, indent=4)
+                    f.close()
 
-                p = subprocess.Popen([program, filename])
-                p.wait()
+                    p = subprocess.Popen([program, filename])
+                    p.wait()
         root.quit()
 
     menu2.add_command(label=key, command=launch)
