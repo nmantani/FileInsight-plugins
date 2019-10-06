@@ -1,3 +1,17 @@
+2019-10-07 Release 1.4.3
+* Enhancement
+  - Search operations category
+    - "XOR hex search" and "XOR text search" plugins
+      -  Add capability to search data encoded with combination of XOR and bit rotate at one time.
+* Bug fixes
+  - Misc operations category
+    - "Send to" plugin
+      - Fix the bug that an external program is executed twice.
+  - All plugins
+    - Add a workaround not to execute python.exe of Microsoft Store (for Windows 10 version 1903)
+* Other change
+  - Add notes regarding Python 3 to README.
+
 2019-08-24 Release 1.4.2
 * Bug fix
   - Add workarounds to avoid crash of FileInsight on closing on Windows 7
