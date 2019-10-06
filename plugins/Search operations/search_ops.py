@@ -87,9 +87,9 @@ def valdict(buf):
 
     return values
 
-def search_xor_hex(fi, buf, offset, length, keyword):
+def search_xor_rol_hex(fi, buf, offset, length, keyword):
     """
-    Search XORed string
+    Search XORed and bit-rotated string
     Used by xor_hex_search()
     """
     LEN_AFTER_HIT = 30
@@ -97,110 +97,50 @@ def search_xor_hex(fi, buf, offset, length, keyword):
     values = valdict(buf)
     num_hits = 0
 
-    for i in range(0, length):
-        v = ord(buf[i])
-        if (v not in values):
-            values[v] = True
+    for i in range(0, 8):
+        for j in range(0, 256):
+            pattern = keyword[:]
+            notinvalues = False
+            hits = []
 
-    for i in range(0, 256):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
+            # Encode search string and check whether the values of encoded string exist in data
+            for k in range(0, len(pattern)):
+                pattern[k] = chr(ror(ord(pattern[k]), i) ^ j)
+                if (ord(pattern[k]) not in values):
+                    notinvalues = True
+                    break
 
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ord(pattern[j]) ^ i)
-            if (ord(pattern[j]) not in values):
-                notinvalues = True
-                break
+            # Skip search if the values of encoded string don't exist in data
+            if (notinvalues):
+                continue
 
-        # Skip search if the values of encoded string don't exist in data
-        if (notinvalues):
-            continue
+            pos = buf.find("".join(pattern), 0)
 
-        pos = buf.find("".join(pattern), 0)
-
-        if (pos != -1):
-            hits.append(pos)
-
-        while (pos != -1):
-            pos = buf.find("".join(pattern), pos + len(pattern))
             if (pos != -1):
                 hits.append(pos)
 
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if (end < length):
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
+            while (pos != -1):
+                pos = buf.find("".join(pattern), pos + len(pattern))
+                if (pos != -1):
+                    hits.append(pos)
 
-            for k in range(0, len(hitstr)):
-                c = ord(hitstr[k]) ^ i
-                hitstr[k] = chr(c)
+            # Print search hits
+            for k in hits:
+                end = k + len(pattern) + LEN_AFTER_HIT
+                if (end < length):
+                    hitstr = list(buf[k:end])
+                else:
+                    hitstr = list(buf[k:])
 
-            hitstr = binascii.hexlify("".join(hitstr))
-            hitstr = hitstr.upper()
-            print "XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, hitstr)
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
+                for l in range(0, len(hitstr)):
+                    c = rol(ord(hitstr[l]) ^ j, i)
+                    hitstr[l] = chr(c)
 
-    return num_hits
-
-def search_rol_hex(fi, buf, offset, length, keyword):
-    """
-    Search bit-rotated string
-    Used by xor_hex_search()
-    """
-    LEN_AFTER_HIT = 30
-
-    values = valdict(buf)
-    num_hits = 0
-
-    for i in range(1, 8):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
-
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ror(ord(pattern[j]), i))
-            if (ord(pattern[j]) not in values):
-                notinvalues = True
-                break
-
-        # Skip search if the values of encoded string don't exist in data
-        if (notinvalues):
-            continue
-
-        pos = buf.find("".join(pattern), 0)
-
-        if (pos != -1):
-            hits.append(pos)
-
-        while (pos != -1):
-            pos = buf.find("".join(pattern), pos + len(pattern))
-            if (pos != -1):
-                hits.append(pos)
-
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if (end < length):
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
-
-            for k in range(0, len(hitstr)):
-                c = rol(ord(hitstr[k]), i)
-                hitstr[k] = chr(c)
-
-            hitstr = binascii.hexlify("".join(hitstr))
-            hitstr = hitstr.upper()
-            print "ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, hitstr)
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
+                hitstr = binascii.hexlify("".join(hitstr))
+                hitstr = hitstr.upper()
+                print "XOR key: 0x%02x -> ROL bit: %d offset: 0x%x search hit: %s" % (j, i, offset + k, "".join(hitstr))
+                fi.setBookmark(offset + k, len(keyword), hex(offset + k), "#c8ffff")
+                num_hits += 1
 
     return num_hits
 
@@ -229,16 +169,15 @@ def xor_hex_search(fi):
             offset = 0
             print "Search XORed / bit-rotated data in the whole file with keyword %s" % disp_keyword
 
-        num_xor = search_xor_hex(fi, buf, offset, length, keyword)
-        num_rol = search_rol_hex(fi, buf, offset, length, keyword)
-        if num_xor + num_rol == 1:
+        num_hit = search_xor_rol_hex(fi, buf, offset, length, keyword)
+        if num_hit == 1:
             print "Added a bookmark to the search hit."
-        elif num_xor + num_rol > 1:
+        elif num_hit > 1:
             print "Added bookmarks to the search hits."
 
-def search_xor_text(fi, buf, offset, length, keyword):
+def search_xor_rol_text(fi, buf, offset, length, keyword):
     """
-    Search XORed string
+    Search XORed and bit-rotated string
     Used by xor_text_search()
     """
     LEN_AFTER_HIT = 50
@@ -246,110 +185,50 @@ def search_xor_text(fi, buf, offset, length, keyword):
     values = valdict(buf)
     num_hits = 0
 
-    for i in range(0, length):
-        v = ord(buf[i])
-        if (v not in values):
-            values[v] = True
+    for i in range(0, 8):
+        for j in range(0, 256):
+            pattern = keyword[:]
+            notinvalues = False
+            hits = []
 
-    for i in range(0, 256):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
+            # Encode search string and check whether the values of encoded string exist in data
+            for k in range(0, len(pattern)):
+                pattern[k] = chr(ror(ord(pattern[k]), i) ^ j)
+                if (ord(pattern[k]) not in values):
+                    notinvalues = True
+                    break
 
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ord(pattern[j]) ^ i)
-            if (ord(pattern[j]) not in values):
-                notinvalues = True
-                break
+            # Skip search if the values of encoded string don't exist in data
+            if (notinvalues):
+                continue
 
-        # Skip search if the values of encoded string don't exist in data
-        if (notinvalues):
-            continue
+            pos = buf.find("".join(pattern), 0)
 
-        pos = buf.find("".join(pattern), 0)
-
-        if (pos != -1):
-            hits.append(pos)
-
-        while (pos != -1):
-            pos = buf.find("".join(pattern), pos + len(pattern))
             if (pos != -1):
                 hits.append(pos)
 
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if (end < length):
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
+            while (pos != -1):
+                pos = buf.find("".join(pattern), pos + len(pattern))
+                if (pos != -1):
+                    hits.append(pos)
 
-            for k in range(0, len(hitstr)):
-                c = ord(hitstr[k]) ^ i
-                if (c < 0x20 or c > 0x126):
-                    c = 0x2e
-                hitstr[k] = chr(c)
+            # Print search hits
+            for k in hits:
+                end = k + len(pattern) + LEN_AFTER_HIT
+                if (end < length):
+                    hitstr = list(buf[k:end])
+                else:
+                    hitstr = list(buf[k:])
 
-            print "XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, "".join(hitstr))
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
+                for l in range(0, len(hitstr)):
+                    c = rol(ord(hitstr[l]) ^ j, i)
+                    if (c < 0x20 or c > 0x126):
+                        c = 0x2e
+                    hitstr[l] = chr(c)
 
-    return num_hits
-
-def search_rol_text(fi, buf, offset, length, keyword):
-    """
-    Search bit-rotated string
-    Used by xor_text_search()
-    """
-    LEN_AFTER_HIT = 50
-
-    values = valdict(buf)
-    num_hits = 0
-
-    for i in range(1, 8):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
-
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ror(ord(pattern[j]), i))
-            if (ord(pattern[j]) not in values):
-                notinvalues = True
-                break
-
-        # Skip search if the values of encoded string don't exist in data
-        if (notinvalues):
-            continue
-
-        pos = buf.find("".join(pattern), 0)
-
-        if (pos != -1):
-            hits.append(pos)
-
-        while (pos != -1):
-            pos = buf.find("".join(pattern), pos + len(pattern))
-            if (pos != -1):
-                hits.append(pos)
-
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if (end < length):
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
-
-            for k in range(0, len(hitstr)):
-                c = rol(ord(hitstr[k]), i)
-                if (c < 0x20 or c > 0x126):
-                    c = 0x2e
-                hitstr[k] = chr(c)
-
-            print "ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, "".join(hitstr))
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
+                print "XOR key: 0x%02x -> ROL bit: %d offset: 0x%x search hit: %s" % (j, i, offset + k, "".join(hitstr))
+                fi.setBookmark(offset + k, len(keyword), hex(offset + k), "#c8ffff")
+                num_hits += 1
 
     return num_hits
 
@@ -374,11 +253,10 @@ def xor_text_search(fi):
             length = fi.getLength()
             offset = 0
             print "Search XORed / bit-rotated string in the whole file with keyword '%s'" % "".join(keyword)
-        num_xor = search_xor_text(fi, buf, offset, length, keyword)
-        num_rol = search_rol_text(fi, buf, offset, length, keyword)
-        if num_xor + num_rol == 1:
+        num_hit = search_xor_rol_text(fi, buf, offset, length, keyword)
+        if num_hit == 1:
             print "Added a bookmark to the search hit."
-        elif num_xor + num_rol > 1:
+        elif num_hit > 1:
             print "Added bookmarks to the search hits."
 
 def is_printable(s):
