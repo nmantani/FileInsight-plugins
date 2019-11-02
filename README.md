@@ -19,7 +19,10 @@ FileInsight is incompatible with Python 3 and plugins can not be used with Pytho
 **If you would like to use Python 3 for other tools, please install Python 2.7 with
 the "Install just for me" option.** If you install Python 2.7 with the "Install for
 all users" option, FileInsight tries to use Python 3 rather than Python 2.7 and it
-fails to execute plugins.
+fails to execute plugins. And please execute the following command with administrator
+privilege to make sure that python.exe of Python 2.7 will be executed from FileInsight.
+
+mklink "C:\Program Files (x86)\FileInsight\python.exe" C:\Python27\python.exe
 
 ### **Note regarding FileInsight installer**
 FileInsight was removed from the McAfee Free Tools website.

@@ -19,6 +19,10 @@ FileInsight は Python 3 と互換性が無いためプラグインを Python 3 
 **もし他のツール等で Python 3 を使用したい場合は Python 2.7 を "Install just for me"
 でインストールしてください。** Python 2.7 を "Install for all users" でインストールすると
 FileInsight が Python 2.7 ではなく Python 3 を使用しようとしてプラグインを実行できなくなります。
+また、Python 2.7 の python.exe が FileInsight から確実に実行されるように以下のコマンドを管理者
+権限で実行してください。
+
+mklink "C:\Program Files (x86)\FileInsight\python.exe" C:\Python27\python.exe
 
 ### **FileInsight のインストーラについて**
 FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
