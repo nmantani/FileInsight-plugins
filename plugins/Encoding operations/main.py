@@ -27,6 +27,7 @@
 
 import ctypes
 import os
+import re
 import subprocess
 import encoding_ops
 
@@ -92,8 +93,17 @@ if __name__ == "__main__":
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Workaround not to execute python.exe of Microsoft Store (on Windows 10 version 1903)
-    path_to_remove = os.environ["HOMEDRIVE"] + os.environ["HOMEPATH"] + "\\AppData\\Local\\Microsoft\\WindowsApps"
-    os.environ["PATH"] = os.environ["PATH"].replace(path_to_remove, "")
+    path_to_remove = os.environ["HOMEDRIVE"] + os.environ["HOMEPATH"] + "\\AppData\\Local\\Microsoft\\WindowsApps\\?;"
+    path_to_remove = re.sub(r"\\", r"\\\\", path_to_remove)
+    os.environ["PATH"] = re.sub(path_to_remove, "", os.environ["PATH"])
+
+    # Workaround not to execute python.exe of Python 3
+    path_to_remove = os.environ["HOMEDRIVE"] + os.environ["HOMEPATH"] + "\\AppData\\Local\\Programs\\Python\\Python3[0-9]+(-32)?\\?.*?;"
+    path_to_remove = re.sub(r"\\", r"\\\\", path_to_remove)
+    os.environ["PATH"] = re.sub(path_to_remove, "", os.environ["PATH"])
+    path_to_remove = os.environ["HOMEDRIVE"] + "\\Python3[0-9]+\\?.*?;"
+    path_to_remove = re.sub(r"\\", r"\\\\", path_to_remove)
+    os.environ["PATH"] = re.sub(path_to_remove, "", os.environ["PATH"])
 
     # Execute menu.py to show GUI
     # GUI portion is moved to menu.py to avoid hangup of FileInsight
