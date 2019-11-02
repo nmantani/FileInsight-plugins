@@ -1,8 +1,8 @@
 2019-11-02 Release 1.4.3.1
-* Bug fixes
+* Bug fix
   - All plugins
     - Add a workaround not to execute python.exe of Python 3.
-* Other change
+* Other changes
   - Add the slide deck presented at Bluebox of CODE BLUE 2019 to "doc" folder.
   - Add an instruction to make sure that python.exe of Python 2.7 will be executed from FileInsight.
 
