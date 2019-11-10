@@ -7,6 +7,18 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 malware executables and decoy documents from malicious document files).
 
 How to install:
+Automatic installation:
+Please execute the following command. FileInsight-plugins and all pre-requisites will
+be installed.
+
+powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
+
+If you use a HTTP proxy, please download install.ps1 and edit $PROXY_HOST and $PROXY_PORT variables in it,
+then please execute the following command.
+
+powershell -exec bypass .\install.ps1
+
+Manual installation:
 Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
