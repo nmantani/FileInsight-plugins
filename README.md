@@ -55,7 +55,7 @@ Please get it from https://github.com/Legrandin/pycryptodome
 or execute "C:\Python27\python.exe -m pip install pycryptodomex".
 
 For LZMA-related plugins such as "LZMA Compress", it requires backports.lzma Python module.
-Please get it from https://github.com/peterjc/backports.lzma/
+Please get it from https://github.com/peterjc/backports.lzma
 or execute "C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma".
 
 For the "File type" plugin, it requires python-magic Python module.
@@ -63,7 +63,7 @@ Please get it from https://github.com/ahupp/python-magic
 or execute "C:\Python27\python.exe -m pip install python-magic-bin" .
 
 For the "Find PE" file plugin, it requires pefile Python module.
-Please get it from https://code.google.com/p/pefile/
+Please get it from https://github.com/erocarrera/pefile
 or execute "C:\Python27\python.exe -m pip install pefile" .
 
 For the "YARA scan" plugin, it requires yara-python Python module.
