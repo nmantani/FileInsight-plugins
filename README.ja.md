@@ -54,7 +54,7 @@ https://github.com/Legrandin/pycryptodome からダウンロード、インス�
 "C:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
 
 LZMA Compress 等の LZMA 関係のプラグインについては、backports.lzma Python モジュールが必要です。
-https://github.com/peterjc/backports.lzma/ からダウンロード、インストールするか、
+https://github.com/peterjc/backports.lzma からダウンロード、インストールするか、
 "C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
 を実行してインストールしてください。
 
@@ -64,7 +64,7 @@ https://github.com/ahupp/python-magic からダウンロード、インストー
 してください。
 
 Find PE file プラグインについては、pefile Python モジュールが必要です。
-https://code.google.com/p/pefile/ からダウンロード、インストールするか、
+https://github.com/erocarrera/pefile からダウンロード、インストールするか、
 "C:\Python27\python.exe -m pip install pefile" を実行してインストールして
 ください。
 
