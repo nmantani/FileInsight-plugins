@@ -30,7 +30,7 @@
 #     powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 #     powershell -exec bypass .\install.ps1
 #   Update:
-#     powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1') -update)"
+#     powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
 #     powershell -exec bypass .\install.ps1 -update
 #
 
@@ -474,7 +474,7 @@ Write-Host ""
 $work_dir = create_working_directory
 
 if ($Args[0] -eq "-update") {
-    Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Current files will be overwritten."
+    Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
     install_fileinsight_plugins $work_dir $true
 } else {
     install_fileinsight $work_dir
