@@ -190,7 +190,7 @@ function install_fileinsight_plugins($work_dir, $update) {
             mkdir $dest_dir | Out-Null
         }
         Write-Host "[+] Copying FileInsight-plugins to $dest_dir..."
-        Copy-Item "$extract_dir\*" -Destination $dest_dir -Recurse
+        Copy-Item "$extract_dir\*" -Destination $dest_dir -Recurse -Force
         if (!(Test-Path "$dest_dir\plugins\XOR operations\main.py")) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
@@ -447,7 +447,7 @@ function install_aplib($work_dir) {
 
         $dest_dir = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Compression operations"
         Write-Host "[+] Copying aplib.dll to $dest_dir ..."
-        Copy-Item $file_path -Destination $dest_dir -Recurse
+        Copy-Item $file_path -Destination $dest_dir -Recurse -Force
         if (!(Test-Path "$dest_dir\aplib.dll")) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
