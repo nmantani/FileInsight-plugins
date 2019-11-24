@@ -113,6 +113,7 @@ Plugins タブにあるカテゴリをクリックしてプラグインを選択
 ![how_to_use3.png](docs/how_to_use3.png)
 
 ## アップデート方法
+### 半自動でのアップデート
 FileInsight-plugins を最新のリリース版にアップデートしたい場合は以下のコマンドを実行してください。既存のファイルは上書きされます。
 
 ```
@@ -125,6 +126,10 @@ $PROXY_PORT の変数を編集してから以下のコマンドを実行して�
 ```
 powershell -exec bypass .\install.ps1 -update
 ```
+
+### 手動でのアップデート
+最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\FileInsight
+に上書きコピーしてください。
 
 ## プラグインの一覧 (67個)
 * Basic operations
