@@ -14,12 +14,16 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 Please execute the following command. FileInsight-plugins and all pre-requisites will
 be installed.
 
+```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
+```
 
 If you use a HTTP proxy, please download install.ps1 and edit $PROXY_HOST and $PROXY_PORT variables in it,
 then please execute the following command.
 
+```
 powershell -exec bypass .\install.ps1
+```
 
 ### Manual installation
 Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
@@ -33,8 +37,9 @@ the "Install just for me" option.** If you install Python 2.7 with the "Install 
 all users" option, FileInsight tries to use Python 3 rather than Python 2.7 and it
 fails to execute plugins. And please execute the following command with administrator
 privilege to make sure that python.exe of Python 2.7 will be executed from FileInsight.
-
+```
 mklink "C:\Program Files (x86)\FileInsight\python.exe" C:\Python27\python.exe
+```
 
 ### **Note regarding FileInsight installer**
 FileInsight was removed from the McAfee Free Tools website.
@@ -52,26 +57,43 @@ Please get it from https://github.com/ReFirmLabs/binwalk
 
 For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Python module.
 Please get it from https://github.com/Legrandin/pycryptodome
-or execute "C:\Python27\python.exe -m pip install pycryptodomex".
+or execute the following command.
+```
+C:\Python27\python.exe -m pip install pycryptodomex
+```
 
 For LZMA-related plugins such as "LZMA Compress", it requires backports.lzma Python module.
 Please get it from https://github.com/peterjc/backports.lzma
-or execute "C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma".
+or execute the following command.
+```
+C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma
+```
 
 For the "File type" plugin, it requires python-magic Python module.
 Please get it from https://github.com/ahupp/python-magic
-or execute "C:\Python27\python.exe -m pip install python-magic-bin" .
+or execute the following command.
+```
+C:\Python27\python.exe -m pip install python-magic-bin
+```
 
 For the "Find PE" file plugin, it requires pefile Python module.
 Please get it from https://github.com/erocarrera/pefile
-or execute "C:\Python27\python.exe -m pip install pefile" .
+or execute the following command.
+```
+C:\Python27\python.exe -m pip install pefile
+```
 
 For the "YARA scan" plugin, it requires yara-python Python module.
 Please get it from https://github.com/VirusTotal/yara-python
-or execute "C:\Python27\python.exe -m pip install yara-python" .
+or execute the following command.
+```
+C:\Python27\python.exe -m pip install yara-python
+```
 
 You can install some of required Python modules with the following command.
+```
 C:\Python27\python.exe -m pip install -r requirements.txt
+```
 
 ## Customization
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
@@ -89,6 +111,21 @@ You can also use plugins from the right-click menu.
 Some plugins show an additional dialog for plugin settings at use of them.
 
 ![how_to_use3.png](docs/how_to_use3.png)
+
+## How to update
+If you would like to update FileInsight-plugins to the latest release version,
+please execute the following command. Existing files will be overwritten.
+
+```
+powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
+```
+
+If you use a HTTP proxy, please download install.ps1 and edit $PROXY_HOST
+and $PROXY_PORT variables in it, then please execute the following command.
+
+```
+powershell -exec bypass .\install.ps1 -update
+```
 
 ## List of plugins (67 plugins)
 * Basic operations

@@ -13,12 +13,16 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 ### 自動でのインストール
 以下のコマンドを実行してください。FileInsight-plugins と全ての必要なものがインストールされます。
 
+```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
+```
 
 HTTP プロキシをお使いの場合は install.ps1 をダウンロードして、ファイル中の $PROXY_HOST と
 $PROXY_PORT の変数を編集してから以下のコマンドを実行してください。
 
+```
 powershell -exec bypass .\install.ps1
+```
 
 ### 手動でのインストール
 plugins フォルダを %USERPROFILE%\Documents\FileInsight
@@ -33,7 +37,9 @@ FileInsight が Python 2.7 ではなく Python 3 を使用しようとしてプ�
 また、Python 2.7 の python.exe が FileInsight から確実に実行されるように以下のコマンドを管理者
 権限で実行してください。
 
+```
 mklink "C:\Program Files (x86)\FileInsight\python.exe" C:\Python27\python.exe
+```
 
 ### **FileInsight のインストーラについて**
 FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
@@ -51,30 +57,43 @@ https://github.com/ReFirmLabs/binwalk からダウンロード、インストー
 
 AES decrypt 等の暗号関係のプラグインについては、PyCryptodome Python モジュールが必要です。
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
-"C:\Python27\python.exe -m pip install pycryptodomex" を実行してインストールしてください。
+```
+C:\Python27\python.exe -m pip install pycryptodomex
+```
+を実行してインストールしてください。
 
 LZMA Compress 等の LZMA 関係のプラグインについては、backports.lzma Python モジュールが必要です。
 https://github.com/peterjc/backports.lzma からダウンロード、インストールするか、
-"C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
+```
+C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma
+```
 を実行してインストールしてください。
 
 File type プラグインについては、python-magic Python モジュールが必要です。
 https://github.com/ahupp/python-magic からダウンロード、インストールするか、
-"C:\Python27\python.exe -m pip install python-magic-bin" を実行してインストール
-してください。
+```
+C:\Python27\python.exe -m pip install python-magic-bin
+```
+を実行してインストールしてください。
 
 Find PE file プラグインについては、pefile Python モジュールが必要です。
 https://github.com/erocarrera/pefile からダウンロード、インストールするか、
-"C:\Python27\python.exe -m pip install pefile" を実行してインストールして
-ください。
+```
+C:\Python27\python.exe -m pip install pefile
+```
+を実行してインストールしてください。
 
 YARA scan プラグインについては、yara-python Python モジュールが必要です。
 https://github.com/VirusTotal/yara-python からダウンロード、インストールするか、
-"C:\Python27\python.exe -m pip install yara-python" を実行してインストールして
-ください。
+```
+C:\Python27\python.exe -m pip install yara-python
+```
+を実行してインストールしてください。
 
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
+```
 C:\Python27\python.exe -m pip install -r requirements.txt
+```
 
 ## カスタマイズ
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
@@ -92,6 +111,20 @@ Plugins タブにあるカテゴリをクリックしてプラグインを選択
 いくつかのプラグインは使用時に設定のダイアログを表示します。
 
 ![how_to_use3.png](docs/how_to_use3.png)
+
+## アップデート方法
+FileInsight-plugins を最新のリリース版にアップデートしたい場合は以下のコマンドを実行してください。既存のファイルは上書きされます。
+
+```
+powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
+```
+
+HTTP プロキシをお使いの場合は install.ps1 をダウンロードして、ファイル中の $PROXY_HOST と
+$PROXY_PORT の変数を編集してから以下のコマンドを実行してください
+
+```
+powershell -exec bypass .\install.ps1 -update
+```
 
 ## プラグインの一覧 (67個)
 * Basic operations

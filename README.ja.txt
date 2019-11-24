@@ -81,6 +81,16 @@ Plugins タブにあるカテゴリをクリックして、プラグインを選
 右クリックのメニューからプラグインを使用することもできます。
 いくつかのプラグインは設定のための追加のダイアログを表示します。
 
+アップデート方法:
+FileInsight-plugins を最新のリリース版にアップデートしたい場合は以下のコマンドを実行してください。既存のファイルは上書きされます。
+
+powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
+
+HTTP プロキシをお使いの場合は install.ps1 をダウンロードして、ファイル中の $PROXY_HOST と
+$PROXY_PORT の変数を編集してから以下のコマンドを実行してください
+
+powershell -exec bypass .\install.ps1 -update
+
 プラグインの一覧 (67個):
 * Basic operations
   * Copy to new file
