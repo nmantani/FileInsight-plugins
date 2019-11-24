@@ -77,6 +77,17 @@ Please click a category from the "Plugins" tab then select a plugin.
 You can also use plugins from the right-click menu.
 Some plugins show an additional dialog for plugin settings at use of them.
 
+How to update:
+If you would like to update FileInsight-plugins to the latest release version,
+please execute the following command. Existing files will be overwritten.
+
+powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
+
+If you use a HTTP proxy, please download install.ps1 and edit $PROXY_HOST
+and $PROXY_PORT variables in it, then please execute the following command.
+
+powershell -exec bypass .\install.ps1 -update
+
 List of plugins (67 plugins):
 * Basic operations
   * Copy to new file
