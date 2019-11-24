@@ -25,6 +25,15 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Usage:
+#   Installation:
+#     powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
+#     powershell -exec bypass .\install.ps1
+#   Update:
+#     powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1') -update)"
+#     powershell -exec bypass .\install.ps1 -update
+#
+
 # Please edit these variables if you use a HTTP proxy server
 $PROXY_HOST = "" # example: 10.0.0.1
 $PROXY_PORT = "" # example: 8080
@@ -36,6 +45,12 @@ if ($PROXY_HOST -and $PROXY_PORT) {
 $RELEASE_VERSION = "1.4.3.1"
 $PYTHON_EXE = "C:\Python27\python.exe"
 $PYTHON_VERSION = "2.7.17"
+
+# Hash values of files that will be downloaded
+$FILEINSIGHT_HASH = "E099B2D0BFB3D2A92F31B2CB5286206E219670FC1D25CD029830832E9CDF4ADD"
+$FILEINSIGHT_PLUGINS_HASH = "1AE95445B75AE79DF4ACACE8772D109BC9E2F9BB431CB481F0CB75B252783B75"
+$PYTHON_HASH = "A4E3A321517C6B0C2693D6F712A0D18C82600B3D0C759C299B3D14384A17F863"
+$APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 
 function create_working_directory {
     .{ # Only $temp_dir is used as return value
@@ -105,6 +120,16 @@ function download_file($url, $save_path) {
     }
 }
 
+function compute_hash($path) {
+    if ((Get-Host).Version.Major -ge 4) {
+        $val = (Get-FileHash -Algorithm SHA256 $path).Hash
+    } else {
+        $val = (certutil -hashfile $path sha256 | select-string "[0-9a-f]{64}" | % { $_.Matches.Value })
+    }
+
+    return $val
+}
+
 function extract_zip($zip_path, $dest_path) {
     if ((Get-Host).Version.Major -ge 5) {
         Expand-Archive -Path $zip_path -DestinationPath $dest_path
@@ -116,11 +141,11 @@ function extract_zip($zip_path, $dest_path) {
     }
 }
 
-function install_fileinsight_plugins($work_dir) {
+function install_fileinsight_plugins($work_dir, $update) {
     Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
 
     $file_path = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Basic operations\main.py"
-    if (Test-Path $file_path) {
+    if ((Test-Path $file_path) -and !$update) {
         Write-Host "[*] FileInsight-plugins is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading FileInsight-plugins-$RELEASE_VERSION..."
@@ -135,6 +160,17 @@ function install_fileinsight_plugins($work_dir) {
             exit
         }
         Write-Host "[+] Done."
+
+        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $FILEINSIGHT_PLUGINS_HASH)..."
+        $val = compute_hash $zip_archive_path
+        if ($val -eq $FILEINSIGHT_PLUGINS_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
 
         Write-Host "[+] Extracting FileInsight-plugins-$RELEASE_VERSION.zip..."
         $extract_dir = "$work_dir\FileInsight-plugins-$RELEASE_VERSION"
@@ -186,6 +222,17 @@ function install_fileinsight($work_dir) {
         }
         Write-Host "[+] Done."
 
+        Write-Host "[+] Verifying SHA256 hash value of $installer_zip_path (with $FILEINSIGHT_HASH)..."
+        $val = compute_hash $installer_zip_path
+        if ($val -eq $FILEINSIGHT_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
         Write-Host "[+] Extracting fileinsight.zip..."
         extract_zip $installer_zip_path $work_dir
         $installer_exe_path = "$work_dir\fileinsight.exe"
@@ -230,8 +277,18 @@ function install_python2($work_dir) {
             Write-Host "[+] Aborting installation."
             exit
         }
-
         Write-Host "[+] Done."
+
+        Write-Host "[+] Verifying SHA256 hash value of $installer_msi_path (with $PYTHON_HASH)..."
+        $val = compute_hash $installer_msi_path
+        if ($val -eq $PYTHON_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
 
         Write-Host "[+] Executing Python 2 installer (automatic installation)..."
         msiexec /i "$work_dir\python-$PYTHON_VERSION.msi" /passive /norestart ADDLOCAL=ALL | Out-Null
@@ -364,6 +421,17 @@ function install_aplib($work_dir) {
         }
         Write-Host "[+] Done."
 
+        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $APLIB_HASH)..."
+        $val = compute_hash $zip_archive_path
+        if ($val -eq $APLIB_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
         Write-Host "[+] Extracting aPLib-$version.zip..."
         $extract_dir = "$work_dir\aPLib-$version"
         extract_zip $zip_archive_path $extract_dir
@@ -405,11 +473,16 @@ if ($PROXY_HOST -and $PROXY_PORT) {
 Write-Host ""
 $work_dir = create_working_directory
 
-install_fileinsight $work_dir
-install_fileinsight_plugins $work_dir
-install_python2 $work_dir
-install_python_modules $work_dir
-install_aplib $work_dir
+if ($Args[0] -eq "-update") {
+    Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Current files will be overwritten."
+    install_fileinsight_plugins $work_dir $true
+} else {
+    install_fileinsight $work_dir
+    install_fileinsight_plugins $work_dir $false
+    install_python2 $work_dir
+    install_python_modules $work_dir
+    install_aplib $work_dir
+}
 
 remove_working_directory $work_dir
 Write-Host "[+] All installation has been finished successfully!"
