@@ -1,7 +1,11 @@
 #
-# Encoding operations - Various encoding operations
+# Delimiter setting dialog for the following plugins:
+#   Binary data to decimal text
+#   Decimal text to binary data
+#   Binary data to octal text
+#   Octal text to binary data
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,51 +29,31 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys
+import re
 import Tkinter
+import ttk
 
-operations = ("Binary data to hex text",
-              "Hex text to binary data",
-              "Binary data to decimal text",
-              "Decimal text to binary data",
-              "Binary data to octal text",
-              "Octal text to binary data",
-              "Binary data to binary text",
-              "Binary text to binary data",
-              "Custom base64 decode",
-              "Custom base64 encode",
-              "ROT13",
-              "From quoted printable",
-              "To quoted printable")
-exit_value = -1
+# Print delimiter setting to stdout
+def print_setting(r, c):
+    print c.get()
+    r.quit()
 
+# Create input dialog
 root = Tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
+root.title('Delimiter setting')
+root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+label = Tkinter.Label(root, text='Delimiter:')
+label.grid(row=0, column=0, padx=5, pady=5)
+combo_delimiter = ttk.Combobox(root, width=10, state="readonly")
+combo_delimiter["values"] = ("Space", "Comma", "Semi-colon", "Colon", "Tab", "LF", "CRLF")
+combo_delimiter.current(0)
+combo_delimiter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+button = Tkinter.Button(root, text='OK', command=(lambda r=root, c=combo_delimiter: print_setting(r, c)))
+button.grid(row=0, column=2, padx=5, pady=5)
 
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
-
-# Add menu items
-menu1 = Tkinter.Menu(root, tearoff=False)
-menu2 = Tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Encoding operations", menu=menu2)
-
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
-
-    menu2.add_command(label=operations[i], command=index)
-
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
+# Adjust window position
+w = root.winfo_screenwidth()
+h = root.winfo_screenheight()
+root.geometry('+%d+%d' % ((w/2.5), (h/2)))
 
 root.mainloop()
-
-sys.exit(exit_value)

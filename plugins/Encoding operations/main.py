@@ -58,6 +58,10 @@ class FileInsight:
 if __name__ == "__main__":
     operations = (encoding_ops.binary_data_to_hex_text,
                   encoding_ops.hex_text_to_binary_data,
+                  encoding_ops.binary_data_to_decimal_text,
+                  encoding_ops.decimal_text_to_binary_data,
+                  encoding_ops.binary_data_to_octal_text,
+                  encoding_ops.octal_text_to_binary_data,
                   encoding_ops.binary_data_to_binary_text,
                   encoding_ops.binary_text_to_binary_data,
                   encoding_ops.custom_base64_decode,

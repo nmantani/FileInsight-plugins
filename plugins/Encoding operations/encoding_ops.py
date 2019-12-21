@@ -27,6 +27,7 @@
 
 import base64
 import quopri
+import re
 import string
 import subprocess
 
@@ -38,15 +39,15 @@ def binary_data_to_hex_text(fi):
     length = fi.getSelectionLength()
 
     if (length > 0):
-        buf = list(fi.getDocument())
-        newbuf = []
+        data = list(fi.getDocument())
+        newdata = []
 
         for i in range(0, length):
             j = offset + i
-            newbuf.append("%02x" % ord(buf[j]))
+            newdata.append("%02x" % ord(data[j]))
 
         fi.newDocument("New file", 1)
-        fi.setDocument("".join(newbuf))
+        fi.setDocument("".join(newdata))
 
         print "Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length)
 
@@ -61,21 +62,21 @@ def hex_text_to_binary_data(fi):
     hexchars = list("0123456789abcdefABCDEF")
 
     if (length >= 2):
-        buf = []
+        data = []
         for i in range(0, len(string)):
             if string[i] in hexchars:
-                buf.append(string[i])
+                data.append(string[i])
 
-        if len(buf) < 2:
+        if len(data) < 2:
             return
 
-        newbuf = []
+        newdata = []
         i = 0
-        while (i < len(buf) - 1):
-            newbuf.append(chr(int(buf[i] + buf[i+1], 16)))
+        while (i < len(data) - 1):
+            newdata.append(chr(int(data[i] + data[i+1], 16)))
             i += 2
         fi.newDocument("New file", 1)
-        fi.setDocument("".join(newbuf))
+        fi.setDocument("".join(newdata))
 
         print "Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length)
 
@@ -292,15 +293,15 @@ def binary_data_to_binary_text(fi):
     length = fi.getSelectionLength()
 
     if (length > 0):
-        buf = list(fi.getDocument())
-        newbuf = []
+        data = list(fi.getDocument())
+        newdata = []
 
         for i in range(0, length):
             j = offset + i
-            newbuf.append("{0:b}".format(ord(buf[j])).zfill(8))
+            newdata.append("{0:b}".format(ord(data[j])).zfill(8))
 
         fi.newDocument("New file", 1)
-        fi.setDocument("".join(newbuf))
+        fi.setDocument("".join(newdata))
 
         print "Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length)
 
@@ -315,21 +316,222 @@ def binary_text_to_binary_data(fi):
     binchars = list("01")
 
     if (length >= 8):
-        buf = []
+        data = []
         for i in range(0, len(string)):
             if string[i] in binchars:
-                buf.append(string[i])
+                data.append(string[i])
 
-        if len(buf) < 8:
+        if len(data) < 8:
             return
 
-        newbuf = []
+        newdata = []
         i = 0
-        while (i < len(buf) - 7):
-            newbuf.append(chr(int("".join(buf[i:i+8]), 2)))
+        while (i < len(data) - 7):
+            newdata.append(chr(int("".join(data[i:i+8]), 2)))
             i += 8
         fi.newDocument("New file", 1)
-        fi.setDocument("".join(newbuf))
+        fi.setDocument("".join(newdata))
 
         print "Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)
 
+def binary_data_to_decimal_text(fi):
+    """
+    Convert binary data of selected region into decimal text
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = list(fi.getDocument())
+        newdata = []
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute delimiter_dialog.py to show GUI
+        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get delimiter setting
+        stdout_data, stderr_data = p.communicate()
+        setting = stdout_data.rstrip()
+
+        if setting == "":
+            return
+
+        delimiters = {"Space": " ",
+                      "Comma": ",",
+                      "Semi-colon": ";",
+                      "Colon": ":",
+                      "Tab": "\t",
+                      "LF": "\x0a",
+                      "CRLF": "\x0d\x0a"}
+
+        for i in range(0, length):
+            j = offset + i
+            if i > 0:
+                newdata.append(delimiters[setting])
+            newdata.append(str(ord(data[j])))
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+
+        print "Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length)
+
+def decimal_text_to_binary_data(fi):
+    """
+    Convert decimal text of selected region into binary data
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    data = fi.getSelection()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute delimiter_dialog.py to show GUI
+        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get delimiter setting
+        stdout_data, stderr_data = p.communicate()
+        setting = stdout_data.rstrip()
+
+        if setting == "":
+            return
+
+        delimiters = {"Space": " ",
+                      "Comma": ",",
+                      "Semi-colon": ";",
+                      "Colon": ":",
+                      "Tab": "\t",
+                      "LF": "\x0a",
+                      "CRLF": "\x0d\x0a"}
+
+        pattern = "([0-9]{1,3}),"
+        values = re.split(delimiters[setting], data, flags=re.MULTILINE | re.DOTALL)
+
+        # Check of splitted data
+        for i in range(0, len(values)):
+            if values[i] == "":
+                print "The selected region contains empty values (extra delimiters)."
+                return
+            if re.search("[^0-9]", values[i]):
+                print "The selected region contains non-numeric or non-delimiter characters."
+                return
+            if int(values[i]) < 0 or int(values[i]) > 255:
+                print "The selected region contains values out of range (0-255)."
+                return
+
+        newdata = []
+        for i in range(0, len(values)):
+            newdata.append(chr(int(values[i])))
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+
+        print "Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)
+
+def binary_data_to_octal_text(fi):
+    """
+    Convert binary data of selected region into octal text
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = list(fi.getDocument())
+        newdata = []
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute delimiter_dialog.py to show GUI
+        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get delimiter setting
+        stdout_data, stderr_data = p.communicate()
+        setting = stdout_data.rstrip()
+
+        if setting == "":
+            return
+
+        delimiters = {"Space": " ",
+                      "Comma": ",",
+                      "Semi-colon": ";",
+                      "Colon": ":",
+                      "Tab": "\t",
+                      "LF": "\x0a",
+                      "CRLF": "\x0d\x0a"}
+
+        for i in range(0, length):
+            j = offset + i
+            if i > 0:
+                newdata.append(delimiters[setting])
+            newdata.append(oct(ord(data[j])))
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+
+        print "Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length)
+
+def octal_text_to_binary_data(fi):
+    """
+    Convert octal text of selected region into binary data
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    data = fi.getSelection()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute delimiter_dialog.py to show GUI
+        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get delimiter setting
+        stdout_data, stderr_data = p.communicate()
+        setting = stdout_data.rstrip()
+
+        if setting == "":
+            return
+
+        delimiters = {"Space": " ",
+                      "Comma": ",",
+                      "Semi-colon": ";",
+                      "Colon": ":",
+                      "Tab": "\t",
+                      "LF": "\x0a",
+                      "CRLF": "\x0d\x0a"}
+
+        pattern = "([0-9]{1,3}),"
+        values = re.split(delimiters[setting], data, flags=re.MULTILINE | re.DOTALL)
+
+        # Check of splitted data
+        for i in range(0, len(values)):
+            if values[i] == "":
+                print "The selected region contains empty values (extra delimiters)."
+                return
+            if re.search("[^0-9]", values[i]):
+                print "The selected region contains non-numeric or non-delimiter characters."
+                return
+            if int(values[i], 8) < 0 or int(values[i], 8) > 255:
+                print "The selected region contains values out of range (0-255)."
+                return
+
+        newdata = []
+        for i in range(0, len(values)):
+            newdata.append(chr(int(values[i], 8)))
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+
+        print "Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)

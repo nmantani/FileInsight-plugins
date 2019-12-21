@@ -132,7 +132,7 @@ powershell -exec bypass .\install.ps1 -update
 Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\FileInsight to overwrite with the new version.
 
-## List of plugins (67 plugins)
+## List of plugins (71 plugins)
 * Basic operations
   * Copy to new file  
     Copy selected region (the whole file if not selected) to new file
@@ -220,6 +220,14 @@ Please download the latest release version and copy "plugins" folder into
     Convert binary of selected region into hex text
   * Hex text to binary data  
     Convert hex text of selected region into binary
+  * Binary data to decimal text  
+    Convert binary of selected region into decimal text
+  * Decimal text to binary data  
+    Convert decimal text of selected region into binary data
+  * Binary data to octal text  
+    Convert binary of selected region into octal text
+  * Octal text to binary data  
+    Convert octal text of selected region into binary data
   * Binary data to binary text  
     Convert binary of selected region into binary text
   * Binary text to binary data  
