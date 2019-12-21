@@ -1,3 +1,24 @@
+2019-12-22 Release 1.5
+* New plugins
+  - Binary data to decimal text
+    - Convert binary of selected region into decimal text
+  - Decimal text to binary data
+    - Convert decimal text of selected region into binary data
+  - Binary data to octal text
+    - Convert binary of selected region into octal text
+  - Octal text to binary data
+    - Convert octal text of selected region into binary data
+* Enhancement
+  - Installation script install.ps1 has been added. It installs the latest release version of
+    FileInsight-plugins and all all pre-requisites.
+    install.ps1 is not included in the release archive because it checks hash value of the archive.
+    Please download it from the repository then execute "powershell -exec bypass .\install.ps1" to
+    use it or please execute the following command to directly execute it.
+
+    powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
+* Other changes
+  - The slide deck files of CODE BLUE 2019 are excluded from the release archive.
+
 2019-11-02 Release 1.4.3.1
 * Bug fix
   - All plugins
