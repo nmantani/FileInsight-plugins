@@ -42,13 +42,13 @@ if ($PROXY_HOST -and $PROXY_PORT) {
     $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
 }
 
-$RELEASE_VERSION = "1.4.3.1"
+$RELEASE_VERSION = "1.5"
 $PYTHON_EXE = "C:\Python27\python.exe"
 $PYTHON_VERSION = "2.7.17"
 
 # Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "E099B2D0BFB3D2A92F31B2CB5286206E219670FC1D25CD029830832E9CDF4ADD"
-$FILEINSIGHT_PLUGINS_HASH = "1AE95445B75AE79DF4ACACE8772D109BC9E2F9BB431CB481F0CB75B252783B75"
+$FILEINSIGHT_PLUGINS_HASH = "7DD2A0598836C95CA65CDC02C4FD9AB772FF54B9D3D82A6FE8C7757FDE66F250"
 $PYTHON_HASH = "A4E3A321517C6B0C2693D6F712A0D18C82600B3D0C759C299B3D14384A17F863"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 
@@ -198,7 +198,7 @@ function install_fileinsight_plugins($work_dir, $update) {
             exit
         }
         Write-Host "[+] Done."
-        Write-Host "[+] FileInsight-plugins has been installed."
+        Write-Host "[+] FileInsight-plugins $RELEASE_VERSION has been installed."
     }
     Write-Host ""
 }
@@ -255,7 +255,7 @@ function install_fileinsight($work_dir) {
             exit
         }
         Write-Host "[+] Done."
-        Write-Host "[+] FileInsight has been installed."
+        Write-Host "[+] FileInsight $RELEASE_VERSION has been installed."
     }
     Write-Host ""
 }
