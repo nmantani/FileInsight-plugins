@@ -131,7 +131,7 @@ powershell -exec bypass .\install.ps1 -update
 最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\FileInsight
 に上書きコピーしてください。
 
-## プラグインの一覧 (67個)
+## プラグインの一覧 (71個)
 * Basic operations
   * Copy to new file  
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -219,6 +219,14 @@ powershell -exec bypass .\install.ps1 -update
     選択範囲のバイナリデータを16進数のテキストに変換します。
   * Hex text to binary data  
     選択範囲の16進数のテキストをバイナリデータに変換します。
+  * Binary data to decimal text  
+    選択範囲のバイナリデータを10進数のテキストに変換します。
+  * Decimal text to binary data  
+    選択範囲の10進数のテキストをバイナリデータに変換します。
+  * Binary data to octal text  
+    選択範囲のバイナリデータを8進数のテキストに変換します。
+  * Octal text to binary data  
+    選択範囲の8進数のテキストをバイナリデータに変換します。
   * Binary data to binary text  
     選択範囲のバイナリデータを2進数のテキストに変換します。
   * Binary text to binary data  
