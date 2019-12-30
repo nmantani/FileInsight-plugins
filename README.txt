@@ -22,6 +22,7 @@ Manual installation:
 Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
 You need Python 2.7 (x86) installed in addition to FileInsight.
 
+*** Note regarding Python ***
 FileInsight is incompatible with Python 3 and plugins can not be used with Python 3.
 If you would like to use Python 3 for other tools, please install Python 2.7 with the
 "Install just for me" option. If you install Python 2.7 with the "Install for all users"

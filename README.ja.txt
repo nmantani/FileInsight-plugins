@@ -22,6 +22,7 @@ plugins フォルダを %USERPROFILE%\Documents\FileInsight にコピー
 してください。FileInsight に加えて Python 2.7 (x86) をインストールしておく
 必要があります。
 
+※※※ Python について ※※※
 FileInsight は Python 3 と互換性が無いためプラグインを Python 3 で使用することはできません。
 もし他のツール等で Python 3 を使用したい場合は Python 2.7 を "Install just for me"
 でインストールしてください。Python 2.7 を "Install for all users" でインストールすると
