@@ -255,16 +255,39 @@ function install_fileinsight($work_dir) {
             exit
         }
         Write-Host "[+] Done."
-        Write-Host "[+] FileInsight $RELEASE_VERSION has been installed."
+        Write-Host "[+] FileInsight has been installed."
     }
     Write-Host ""
 }
 
 function install_python2($work_dir) {
-    Write-Host "[+] Installing Python 2..."
+    Write-Host "[+] Installing Python 2 (x86)..."
 
     if (Test-Path $PYTHON_EXE) {
-        Write-Host "[*] Python 2 is already installed. Skipping installation."
+        $is_x64 = &"$PYTHON_EXE" "-c" "import sys; print sys.maxsize > 2**32"
+        if ($is_x64 -eq "True") {
+            Write-Host "[!] Python 2 (x64) is already installed and it is not compatible with FileInsight."
+            Write-Host "[!] Please uninstall it and try again."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        } else {
+            if ((Get-Command py -ErrorAction SilentlyContinue) `
+                -and ((&"py" "-h") -cmatch "Python Launcher") `
+                -and ((Test-Path "HKLM:\SOFTWARE\Python\PythonCore\2.7\InstallPath") `
+                -or (Test-Path "HKLM:\SOFTWARE\WOW6432Node\Python\PythonCore\2.7\InstallPath"))) {
+                Write-Host "[!] Python 2 (x86) and Python 3 are already installed,"
+                Write-Host "[!] but Python 2 (x86) is installed with 'Install for all users' option."
+                Write-Host "[!] This situation causes freeze of FileInsight when you use Python plugins."
+                Write-Host "[!] Python 2 (x86) has to be reinstalled with 'Install just for me' option to avoid freeze."
+                Write-Host "[!] Please uninstall Python 2 (x86) and try again."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            } else {
+                Write-Host "[*] Python 2 (x86) is already installed. Skipping installation."
+            }
+        }
     } else {
         Write-Host "[+] Downloading Python 2 installer..."
         $installer_url = "https://www.python.org/ftp/python/$PYTHON_VERSION/python-$PYTHON_VERSION.msi"
