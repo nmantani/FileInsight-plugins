@@ -330,6 +330,13 @@ function install_python2($work_dir) {
         Write-Host "[+] Done."
         Write-Host "[+] Python 2 has been installed."
     }
+
+    $link_target = "C:\Program Files (x86)\FileInsight\python.exe"
+    if (!(Test-Path $link_target)) {
+        Write-Host "[+] Creating symbolic link of ""$PYTHON_EXE"" to ""$link_target""..."
+        Write-Host "[+] (executing ""mklink '$link_target' '$PYTHON_EXE')"
+        Start-Process "cmd" -ArgumentList "/c mklink ""$link_target"" ""$PYTHON_EXE""" -verb runas
+    }
     Write-Host ""
 }
 
