@@ -1,7 +1,7 @@
 #
-# Basic operations - Various editing operations
+# Paste from clipboard - Paste binary data (converted from hex-encoded text) from clipboard
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,52 +25,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
 import sys
 import tkinter
 
-operations = ("Copy to new file",
-              "Cut binary to clipboard",
-              "Copy binary to clipboard",
-              "Paste binary from clipboard",
-              "Delete before",
-              "Delete after",
-              "Fill",
-              "Invert",
-              "Reverse order",
-              "Swap nibbles",
-              "Swap two bytes",
-              "To upper case",
-              "To lower case",
-              "Swap case")
-exit_value = -1
-
 root = tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
-
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
-
-# Add menu items
-menu1 = tkinter.Menu(root, tearoff=False)
-menu2 = tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Basic operations", menu=menu2)
-
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
-
-    menu2.add_command(label=operations[i], command=index)
-
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
-
-root.mainloop()
-
-sys.exit(exit_value)
+root.withdraw()
+cb = root.clipboard_get()
+sys.stdout.write(cb)
