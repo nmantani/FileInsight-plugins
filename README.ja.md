@@ -25,27 +25,19 @@ powershell -exec bypass .\install.ps1
 ```
 
 ### 手動でのインストール
-plugins フォルダを %USERPROFILE%\Documents\FileInsight
-にコピーしてください。FileInsight に加えて Python 2.7 (x86) をインストールしておく必要があります。
+plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
+にコピーしてください。FileInsight に加えて Python 3 をインストールしておく必要があります。
 
 ![folders.png](docs/folders.png)
 
 ### **Python について**
-FileInsight は Python 3 と互換性が無いためプラグインを Python 3 で使用することはできません。
-**もし他のツール等で Python 3 を使用したい場合は Python 2.7 を "Install just for me"
-でインストールしてください。** Python 2.7 を "Install for all users" でインストールすると
-FileInsight が Python 2.7 ではなく Python 3 を使用しようとしてプラグインを実行できなくなります。
-また、Python 2.7 の python.exe が FileInsight から確実に実行されるように以下のコマンドを管理者
-権限で実行してください。
-
-```
-mklink "C:\Program Files (x86)\FileInsight\python.exe" C:\Python27\python.exe
-```
+FileInsight のビルトインの Python インタプリタは Python 2 ですが、FileInsight-plugins は 2.0 以降
+Python 3 が必要です（過去のバージョンでは Python 2 (x86) が必要でした）。 最新バージョン (3.5) の
+FileInsight ではもう Python 2 (x86) をインストールする必要はありません。
 
 ### **FileInsight のインストーラについて**
-FileInsight は McAfee 社の Free Tools のウェブサイトから削除されました。
-しかしながら、FileInsight のインストーラは以下の場所から引き続きダウンロード可能です。
-https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
+FileInsight のインストーラは McAfee Free Tools のウェブサイトから入手可能です。こちらからダウンロードしてください。  
+https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html
 
 ## 使用するために必要なもの
 aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
@@ -59,42 +51,38 @@ https://github.com/ReFirmLabs/binwalk からダウンロード、インストー
 AES decrypt 等の暗号関係のプラグインについては、PyCryptodome Python モジュールが必要です。
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
 ```
-C:\Python27\python.exe -m pip install pycryptodomex
-```
-を実行してインストールしてください。
-
-LZMA Compress 等の LZMA 関係のプラグインについては、backports.lzma Python モジュールが必要です。
-https://github.com/peterjc/backports.lzma からダウンロード、インストールするか、
-```
-C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma
+py.exe -3 -m pip install pycryptodomex
 ```
 を実行してインストールしてください。
 
 File type プラグインについては、python-magic Python モジュールが必要です。
 https://github.com/ahupp/python-magic からダウンロード、インストールするか、
 ```
-C:\Python27\python.exe -m pip install python-magic-bin
+py.exe -3 -m pip install python-magic-bin
 ```
 を実行してインストールしてください。
 
 Find PE file プラグインについては、pefile Python モジュールが必要です。
 https://github.com/erocarrera/pefile からダウンロード、インストールするか、
 ```
-C:\Python27\python.exe -m pip install pefile
+py.exe -3 -m pip install pefile
 ```
 を実行してインストールしてください。
 
 YARA scan プラグインについては、yara-python Python モジュールが必要です。
 https://github.com/VirusTotal/yara-python からダウンロード、インストールするか、
 ```
-C:\Python27\python.exe -m pip install yara-python
+py.exe -3 -m pip install yara-python
 ```
 を実行してインストールしてください。
 
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
 ```
-C:\Python27\python.exe -m pip install -r requirements.txt
+py.exe -3 -m pip install -r requirements.txt
 ```
+Show metadata プラグインについては、ExifTool が必要です。
+https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
+exiftool.exe という名前で "Parsing Operations" フォルダにコピーしてください。
 
 ## カスタマイズ
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
@@ -129,13 +117,20 @@ powershell -exec bypass .\install.ps1 -update
 ```
 
 ### 手動でのアップデート
-最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\FileInsight
+最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 に上書きコピーしてください。
 
-## プラグインの一覧 (71個)
+## プラグインの一覧 (75個)
 * Basic operations
   * Copy to new file  
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
+  * Cut binary to clipboard  
+    選択範囲のバイナリデータをクリップボードに切り取ります(16進テキストとして)。
+  * Copy binary to clipboard  
+    選択範囲のバイナリデータをクリップボードにコピーします(16進テキストとして)。
+  * Paste binary from clipboard  
+    クリップボードからバイナリデータをペーストします(16進テキストから変換)。
+    Paste binary data (converted from hex-encoded text) from clipboard
   * Delete before  
     現在のカーソル位置より前を全て削除します。
   * Delete after  
@@ -260,6 +255,8 @@ powershell -exec bypass .\install.ps1 -update
     選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Find PE file  
     選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  * Show metadata  
+    選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
   * Strings  
     選択範囲から(選択していない場合は全体から)文字列を抽出します。
 
