@@ -473,7 +473,11 @@ $work_dir = create_working_directory
 
 if ($Args[0] -eq "-update") {
     Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
+    install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir $true
+    install_python3 $work_dir
+    install_python_modules $work_dir
+    install_aplib $work_dir
 } else {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir $false
