@@ -26,26 +26,17 @@ powershell -exec bypass .\install.ps1
 ```
 
 ### Manual installation
-Please copy "plugins" folder into %USERPROFILE%\Documents\FileInsight .
-You need Python 2.7 (x86) installed in addition to FileInsight.
+Please copy "plugins" folder into %USERPROFILE%\Documents\McAfee FileInsight .
+**You need Python 3 installed in addition to FileInsight.**
 
 ![folders.png](docs/folders.png)
 
 ### **Note regarding Python**
-FileInsight is incompatible with Python 3 and plugins can not be used with Python 3.
-**If you would like to use Python 3 for other tools, please install Python 2.7 with
-the "Install just for me" option.** If you install Python 2.7 with the "Install for
-all users" option, FileInsight tries to use Python 3 rather than Python 2.7 and it
-fails to execute plugins. And please execute the following command with administrator
-privilege to make sure that python.exe of Python 2.7 will be executed from FileInsight.
-```
-mklink "C:\Program Files (x86)\FileInsight\python.exe" C:\Python27\python.exe
-```
+FileInsight-plugins requires Python 3 since version 2.0 (older versions require Python 2 (x86)), though the built-in Python interpreter of FileInsight is Python 2. You no longer need to install Python 2 (x86) with the latest version (3.5) of FileInsight.
 
 ### **Note regarding FileInsight installer**
-FileInsight was removed from the McAfee Free Tools website.
-However, FileInsight installer is still available from the following location.
-https://www.mcafee.com/enterprise/en-us/downloads/free-tools/terms-of-use.html?url=http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip
+FileInsight installer is available at the McAfee Free Tools website.
+Please get it from https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html .
 
 ## Pre-requisites
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
@@ -60,41 +51,38 @@ For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Pytho
 Please get it from https://github.com/Legrandin/pycryptodome
 or execute the following command.
 ```
-C:\Python27\python.exe -m pip install pycryptodomex
-```
-
-For LZMA-related plugins such as "LZMA Compress", it requires backports.lzma Python module.
-Please get it from https://github.com/peterjc/backports.lzma
-or execute the following command.
-```
-C:\Python27\python.exe -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma
+py.exe -3 -m pip install pycryptodomex
 ```
 
 For the "File type" plugin, it requires python-magic Python module.
 Please get it from https://github.com/ahupp/python-magic
 or execute the following command.
 ```
-C:\Python27\python.exe -m pip install python-magic-bin
+py.exe -3 -m pip install python-magic-bin
 ```
 
 For the "Find PE" file plugin, it requires pefile Python module.
 Please get it from https://github.com/erocarrera/pefile
 or execute the following command.
 ```
-C:\Python27\python.exe -m pip install pefile
+py.exe -3 -m pip install pefile
 ```
 
 For the "YARA scan" plugin, it requires yara-python Python module.
 Please get it from https://github.com/VirusTotal/yara-python
 or execute the following command.
 ```
-C:\Python27\python.exe -m pip install yara-python
+py.exe -m pip install yara-python
 ```
 
 You can install some of required Python modules with the following command.
 ```
-C:\Python27\python.exe -m pip install -r requirements.txt
+py.exe -3 -m pip install -r requirements.txt
 ```
+
+For the "Show metadata" plugin, it requires ExifTool.
+Please download ExifTool from https://exiftool.org/
+and copy exiftool(-k).exe as exiftool.exe into "Parsing Operations" folder.
 
 ## Customization
 For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
@@ -131,12 +119,18 @@ powershell -exec bypass .\install.ps1 -update
 
 ### Manual update
 Please download the latest release version and copy "plugins" folder into
-%USERPROFILE%\Documents\FileInsight to overwrite with the new version.
+%USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
-## List of plugins (71 plugins)
+## List of plugins (75 plugins)
 * Basic operations
   * Copy to new file  
     Copy selected region (the whole file if not selected) to new file
+  * Cut binary to clipboard  
+    Cut binary data of selected region to clipboard as hex-encoded text
+  * Copy binary to clipboard  
+    Copy binary data of selected region to clipboard as hex-encoded text
+  * Paste binary from clipboard  
+    Paste binary data (converted from hex-encoded text) from clipboard
   * Delete before  
     Delete all region before current cursor position
   * Delete after  
@@ -261,6 +255,8 @@ Please download the latest release version and copy "plugins" folder into
     Identify file type of selected region (the whole file if not selected)
   * Find PE file  
     Find PE file from selected region (the whole file if not selected)
+  * Show metadata  
+    Show metadata of selected region (the whole file if not selected) with ExifTool
   * Strings  
     Extract text strings from selected region (the whole file if not selected)
 
