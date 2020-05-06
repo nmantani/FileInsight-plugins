@@ -34,6 +34,24 @@ import tempfile
 import time
 import zlib
 
+def bookmark_yesno_dialog(num_bookmark):
+    """
+    Show a confirmation dialog of adding many bookmarks
+    Used by file_comparison()
+    """
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute bookmark_yesno_dialog.py to show confirmation dialog
+    p = subprocess.Popen(["py.exe", "-3", "bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    return ret
+
 def byte_frequency(fi):
     """
     Show byte frequency of selected region (the whole file if not selected)
@@ -41,13 +59,13 @@ def byte_frequency(fi):
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
-    if (length > 0):
+    if length > 0:
         buf = fi.getSelection()
-        print "Byte frequency from offset %s to %s" % (hex(offset), hex(offset + length - 1))
+        print("Byte frequency from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
     else:
         buf = fi.getDocument()
         length = fi.getLength()
-        print "Byte frequency of the whole file"
+        print("Byte frequency of the whole file")
 
     freq = {}
 
@@ -56,11 +74,13 @@ def byte_frequency(fi):
 
     for i in range(0, length):
         v = ord(buf[i])
-        if (v in freq):
+        if v in freq:
             freq[v] += 1
 
+    output = ""
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
-        print "0x%02X: %d" % (k, v)
+        output += "0x%02X: %d\n" % (k, v)
+    print(output)
 
 def hash_values(fi):
     """
@@ -68,17 +88,17 @@ def hash_values(fi):
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
-        print "Hash values from offset %s to %s" % (hex(offset), hex(offset + length - 1))
+        print("Hash values from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
     else:
         data = fi.getDocument()
-        print "Hash values of the whole file"
+        print("Hash values of the whole file")
 
-    print "CRC32: %x" % (zlib.crc32(data) & 0xffffffff)
-    print "MD5: %s" % hashlib.md5(data).hexdigest()
-    print "SHA1: %s" % hashlib.sha1(data).hexdigest()
-    print "SHA256: %s" % hashlib.sha256(data).hexdigest()
+    print("CRC32: %x" % (zlib.crc32(data) & 0xffffffff))
+    print("MD5: %s" % hashlib.md5(data).hexdigest())
+    print("SHA1: %s" % hashlib.sha1(data).hexdigest())
+    print("SHA256: %s" % hashlib.sha256(data).hexdigest())
 
 def send_to(fi):
     """
@@ -98,7 +118,7 @@ def send_to(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
     else:
         data = fi.getDocument()
@@ -130,19 +150,19 @@ def send_to(fi):
 
     # Execute send_to.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["python", "send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
+    p = subprocess.Popen(["py.exe", "-3", "send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
 
-    if (length > 0):
-        if (length == 1):
-            print "Sending one byte from offset %s to %s to an external program." % (hex(offset), hex(offset))
+    if length > 0:
+        if length == 1:
+            print("Sending one byte from offset %s to %s to an external program." % (hex(offset), hex(offset)))
         else:
-            print "Sending %s bytes from offset %s to %s to an external program." % (length, hex(offset), hex(offset + length - 1))
+            print("Sending %s bytes from offset %s to %s to an external program." % (length, hex(offset), hex(offset + length - 1)))
     else:
         length = fi.getLength()
-        if (length == 1):
-            print "Sending the whole file (one byte) to an external program."
+        if length == 1:
+            print("Sending the whole file (one byte) to an external program.")
         else:
-            print "Sending the whole file (%s bytes) to an external program." % length
+            print("Sending the whole file (%s bytes) to an external program." % length)
 
 def file_comparison(fi):
     """
@@ -166,7 +186,7 @@ def file_comparison(fi):
 
     # Execute file_comparison_dialog.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["python", "file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     if stdout_data == "":
@@ -205,27 +225,37 @@ def file_comparison(fi):
         bookmark_list.append((offset, i - offset + 1))
         offset = None
 
-    fi.activateDocumentAt(int(first_index))
-    for (i, j) in bookmark_list:
-        fi.setBookmark(i, j, hex(i), "#ffaad4")
-
-    fi.activateDocumentAt(int(second_index))
-    for (i, j) in bookmark_list:
-        fi.setBookmark(i, j, hex(i), "#ffaad4")
-
-    if lower_len != upper_len:
-        if first_len > second_len:
-            fi.activateDocumentAt(int(first_index))
-        else:
-            fi.activateDocumentAt(int(second_index))
-        fi.setBookmark(lower_len, upper_len - lower_len, hex(lower_len), "#ffaad4")
-
-    fi.activateDocumentAt(int(first_index))
-
-    if lower_len != upper_len or len(bookmark_list) > 0:
-        print "Added bookmarks to the deltas."
+    if len(bookmark_list) > 100 and not bookmark_yesno_dialog(len(bookmark_list)):
+        do_bookmark = False
     else:
-        print "Both files are identical."
+        do_bookmark = True
 
-    print "Elapsed time: %f (sec)" % (time.time() - time_start)
+    if lower_len == upper_len and len(bookmark_list) == 0:
+        print("Both files are identical.")
+        return
+    else:
+        print("Delta:")
+        output = ""
+        fi.activateDocumentAt(int(first_index))
+        for (i, j) in bookmark_list:
+            if do_bookmark: fi.setBookmark(i, j, hex(i), "#ffaad4")
+            output += "Offset: %s - %s\n" % (hex(i), hex(i + j - 1))
 
+        fi.activateDocumentAt(int(second_index))
+        for (i, j) in bookmark_list:
+            if do_bookmark: fi.setBookmark(i, j, hex(i), "#ffaad4")
+            output += "Offset: %s - %s\n" % (hex(i), hex(i + j - 1))
+
+        if lower_len != upper_len:
+            if first_len > second_len:
+                fi.activateDocumentAt(int(first_index))
+            else:
+                fi.activateDocumentAt(int(second_index))
+            if do_bookmark: fi.setBookmark(lower_len, upper_len - lower_len, hex(lower_len), "#ffaad4")
+            output += "Offset: %s - %s\n" % (hex(lower_len), hex(upper_len - 1))
+
+        fi.activateDocumentAt(int(first_index))
+        print(output)
+        print("Added bookmarks to the deltas.")
+
+    print("Elapsed time: %f (sec)" % (time.time() - time_start))
