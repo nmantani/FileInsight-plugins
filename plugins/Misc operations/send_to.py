@@ -33,11 +33,11 @@ import os
 import re
 import sys
 import time
-import Tkinter
-import tkFileDialog
-import tkMessageBox
+import tkinter
+import tkinter.filedialog
+import tkinter.messagebox
 import subprocess
-import _winreg
+import winreg
 
 def replace_env_in_path(s):
     env_list = ("SYSTEMROOT", "PROGRAMFILES", "LOCALAPPDATA", "USERPROFILE", "HOMEDRIVE", "HOMEPATH")
@@ -49,7 +49,7 @@ def replace_env_in_path(s):
 
     return s
 
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
 root.withdraw() # Hide root window
 
@@ -62,7 +62,7 @@ if os.path.exists(config_file_name):
         programs = json.load(f, object_pairs_hook=collections.OrderedDict)
         f.close()
     except:
-        tkMessageBox.showerror("Error:", message="Failed to load %s ." % os.path.abspath(config_file_name))
+        tkinter.messagebox.showerror("Error:", message="Failed to load %s ." % os.path.abspath(config_file_name))
 else:
     # Default external programs
     programs = collections.OrderedDict()
@@ -93,33 +93,36 @@ if y > 10:
     y = y - 10
 
 # Add menu items
-menu1 = Tkinter.Menu(root, tearoff=False)
-menu2 = Tkinter.Menu(menu1, tearoff=False)
+menu1 = tkinter.Menu(root, tearoff=False)
+menu2 = tkinter.Menu(menu1, tearoff=False)
 menu1.add_cascade(label="Send to", menu=menu2)
 
-for key,val in programs.iteritems():
+for key,val in programs.items():
     def launch(name=key, program=val, filename=filename):
         if name == "CyberChef":
             global config_file_name, programs
 
-            if os.path.getsize(filename) > 12000:
-                tkMessageBox.showwarning(None, message="Data size exceeds 12000 bytes. Sent data will be truncated (due to limit of command line argument length).")
-            cyberchef_input = open(filename, "rb").read(12000)
-            # CyberChef input box automatically replace 0x0d with 0x0a and this breaks data integrity.
-            # So data have to be converted into hex text before sending to CyberChef.
-            # For the detail of the issue, please see https://github.com/gchq/CyberChef/issues/430 .
-            # Data size limit is reduced from 24000 bytes to 12000 bytes due to this conversion.
-            cyberchef_input = binascii.hexlify(cyberchef_input)
-            cyberchef_input = base64.b64encode(cyberchef_input)
-            cyberchef_input = cyberchef_input.replace("+", "%2B")
-            cyberchef_input = cyberchef_input.replace("=", "")
+            try:
+                if os.path.getsize(filename) > 12000:
+                    tkinter.messagebox.showwarning(None, message="Data size exceeds 12000 bytes. Sent data will be truncated (due to limit of command line argument length).")
+                cyberchef_input = open(filename, "rb").read(12000)
+                # CyberChef input box automatically replace 0x0d with 0x0a and this breaks data integrity.
+                # So data have to be converted into hex text before sending to CyberChef.
+                # For the detail of the issue, please see https://github.com/gchq/CyberChef/issues/430 .
+                # Data size limit is reduced from 24000 bytes to 12000 bytes due to this conversion.
+                cyberchef_input = binascii.hexlify(cyberchef_input)
+                cyberchef_input = base64.b64encode(cyberchef_input).decode()
+                cyberchef_input = cyberchef_input.replace("+", "%2B")
+                cyberchef_input = cyberchef_input.replace("=", "")
+            except Exception as e:
+                tkinter.messagebox.showerror("Error:", message=e)
 
             program = replace_env_in_path(program)
             if not os.path.exists(program):
-                tkMessageBox.showerror("Error:", message="%s is not found. Please select CyberChef HTML file." % program)
+                tkinter.messagebox.showerror("Error:", message="%s is not found. Please select CyberChef HTML file." % program)
                 fTyp = [("HTML file","*.htm;*.html")]
                 iDir = os.path.abspath(os.getenv("HOMEPATH") + "\\Desktop")
-                program = tkFileDialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
+                program = tkinter.filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
             if program == "":
                 return
             else:
@@ -133,33 +136,33 @@ for key,val in programs.iteritems():
             cyberchef_url = "file:///%s#recipe=From_Hex('Auto')&input=%s" % (program.replace("\\", "/"), cyberchef_input)
 
             # Get path of default browser because "start" built-in command of command prompt drops URL parameters with "file:///" URL scheme
-            reg_key = _winreg.OpenKeyEx(_winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice")
-            progid, regtype = _winreg.QueryValueEx(reg_key, "ProgId")
-            _winreg.CloseKey(reg_key)
-            reg_key = _winreg.OpenKeyEx(_winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
-            browser_cmd, regtype = _winreg.QueryValueEx(reg_key, "")
-            _winreg.CloseKey(reg_key)
+            reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice")
+            progid, regtype = winreg.QueryValueEx(reg_key, "ProgId")
+            winreg.CloseKey(reg_key)
+            reg_key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
+            browser_cmd, regtype = winreg.QueryValueEx(reg_key, "")
+            winreg.CloseKey(reg_key)
             browser_cmd = browser_cmd.replace("%1", cyberchef_url)
             p = subprocess.Popen(browser_cmd)
             p.wait()
         elif name == "Customize menu":
             # Get path of default text editor
             try:
-                reg_key = _winreg.OpenKeyEx(_winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.txt\\UserChoice")
-                progid, regtype = _winreg.QueryValueEx(reg_key, "ProgId")
+                reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.txt\\UserChoice")
+                progid, regtype = winreg.QueryValueEx(reg_key, "ProgId")
                 progid = progid.replace("\\", "\\\\")
-                _winreg.CloseKey(reg_key)
-                reg_key = _winreg.OpenKeyEx(_winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
-                editor_cmd, regtype = _winreg.QueryValueEx(reg_key, "")
-                _winreg.CloseKey(reg_key)
+                winreg.CloseKey(reg_key)
+                reg_key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
+                editor_cmd, regtype = winreg.QueryValueEx(reg_key, "")
+                winreg.CloseKey(reg_key)
                 editor_cmd = replace_env_in_path(editor_cmd)
                 editor_cmd = editor_cmd.replace("%1", "send_to.json")
-                tkMessageBox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
+                tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
                 p = subprocess.Popen(editor_cmd)
                 p.wait()
             except Exception as e:
                 # Fallback to Notepad
-                tkMessageBox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
+                tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
                 p = subprocess.Popen(["C:\\Windows\\notepad.exe", "send_to.json"])
                 p.wait()
         else:
@@ -168,10 +171,10 @@ for key,val in programs.iteritems():
                 p = subprocess.Popen([program, filename])
                 p.wait()
             else:
-                tkMessageBox.showerror("Error:", message="%s is not found. Please select the file." % program)
+                tkinter.messagebox.showerror("Error:", message="%s is not found. Please select the file." % program)
                 fTyp = [("Executable file","*.exe")]
                 iDir = os.path.abspath(os.getenv("PROGRAMFILES"))
-                program = tkFileDialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
+                program = tkinter.filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
                 if program == "":
                     return
                 else:
