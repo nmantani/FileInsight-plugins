@@ -29,9 +29,9 @@ import binascii
 import re
 import sys
 import time
-import Tkinter
-import ttk
-import tkMessageBox
+import tkinter
+import tkinter.ttk
+import tkinter.messagebox
 
 try:
     import Cryptodome.Cipher.ChaCha20
@@ -49,34 +49,38 @@ def decrypt(data, root, ckt, ek, cnt, en):
         if re.match("^([0-9A-Fa-f]{2})+$", key):
             key = binascii.a2b_hex(key)
         else:
-            tkMessageBox.showerror("Error:", message="Key is not in hex format.")
+            tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
             return
+    else:
+        key = key.encode()
 
     if nonce_type == "Hex":
         if re.match("^([0-9A-Fa-f]{2})+$", nonce):
             nonce = binascii.a2b_hex(nonce)
         else:
-            tkMessageBox.showerror("Error:", message="Nonce is not in hex format.")
+            tkinter.messagebox.showerror("Error:", message="Nonce is not in hex format.")
             return
+    else:
+        nonce = nonce.encode()
 
     if len(key) != 32:
-        tkMessageBox.showerror("Error:", message="Key size must be 32 bytes.")
+        tkinter.messagebox.showerror("Error:", message="Key size must be 32 bytes.")
         return
 
     len_nonce = len(nonce)
     if len_nonce != 8 and len_nonce != 12:
-        tkMessageBox.showerror("Error:", message="Nonce size must be 8 bytes or 12 bytes.")
+        tkinter.messagebox.showerror("Error:", message="Nonce size must be 8 bytes or 12 bytes.")
         return
 
     try:
         cipher = Cryptodome.Cipher.ChaCha20.new(key=key, nonce=nonce)
         d = cipher.decrypt(data)
     except Exception as e:
-        tkMessageBox.showerror("Error:", message=e)
+        tkinter.messagebox.showerror("Error:", message=e)
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.write(binascii.b2a_hex(d))
+    sys.stdout.write(str(binascii.b2a_hex(d).decode()))
     root.quit()
     exit(0) # Decrypted successfully
 
@@ -84,39 +88,39 @@ def decrypt(data, root, ckt, ek, cnt, en):
 data = binascii.a2b_hex(sys.stdin.read())
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title("ChaCha20 decrypt / encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-label_key_type = Tkinter.Label(root, text="Key type:")
+label_key_type = tkinter.Label(root, text="Key type:")
 label_key_type.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo_key_type = ttk.Combobox(root, width=5, state="readonly")
+combo_key_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
 combo_key_type["values"] = ("Text", "Hex")
 combo_key_type.current(0)
 combo_key_type.grid(row=0, column=1, padx=5, pady=5)
 
-label_key = Tkinter.Label(root, text="Key:")
+label_key = tkinter.Label(root, text="Key:")
 label_key.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-entry_key = Tkinter.Entry(width=32)
+entry_key = tkinter.Entry(width=32)
 entry_key.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-label_nonce_type = Tkinter.Label(root, text="Nonce type:")
+label_nonce_type = tkinter.Label(root, text="Nonce type:")
 label_nonce_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo_nonce_type = ttk.Combobox(root, width=5, state="readonly")
+combo_nonce_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
 combo_nonce_type["values"] = ("Text", "Hex")
 combo_nonce_type.current(0)
 combo_nonce_type.grid(row=1, column=1, padx=5, pady=5)
 
-label_nonce = Tkinter.Label(root, text="Nonce:")
+label_nonce = tkinter.Label(root, text="Nonce:")
 label_nonce.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
-entry_nonce = Tkinter.Entry(width=32)
+entry_nonce = tkinter.Entry(width=32)
 entry_nonce.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-button = Tkinter.Button(root, text="OK", command=(lambda data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en)))
+button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=4)
 
 # Adjust window position

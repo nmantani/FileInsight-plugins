@@ -29,9 +29,9 @@ import binascii
 import re
 import sys
 import time
-import Tkinter
-import ttk
-import tkMessageBox
+import tkinter
+import tkinter.ttk
+import tkinter.messagebox
 
 try:
     import Cryptodome.Cipher.AES
@@ -58,22 +58,26 @@ def encrypt(data, root, cm, ckl, ckt, ek, cit, ei):
         if re.match("^([0-9A-Fa-f]{2})+$", key):
             key = binascii.a2b_hex(key)
         else:
-            tkMessageBox.showerror("Error:", message="Key is not in hex format.")
+            tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
             return
+    else:
+        key = key.encode()
 
     if mode in ["CBC", "CFB", "OFB"] and iv_type == "Hex":
         if re.match("^([0-9A-Fa-f]{2})+$", iv):
             iv = binascii.a2b_hex(iv)
         else:
-            tkMessageBox.showerror("Error:", message="IV is not in hex format.")
+            tkinter.messagebox.showerror("Error:", message="IV is not in hex format.")
             return
+    else:
+        iv = iv.encode()
 
     if mode in ["CBC", "CFB", "OFB"] and len(iv) != Cryptodome.Cipher.AES.block_size:
-        tkMessageBox.showerror("Error:", message="IV size must be %d bytes." % Cryptodome.Cipher.AES.block_size)
+        tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % Cryptodome.Cipher.AES.block_size)
         return
 
     if len(key) != key_length:
-        tkMessageBox.showerror("Error:", message="Key size must be %d bytes." % key_length)
+        tkinter.messagebox.showerror("Error:", message="Key size must be %d bytes." % key_length)
         return
 
     try:
@@ -89,11 +93,11 @@ def encrypt(data, root, cm, ckl, ckt, ek, cit, ei):
 
         d = cipher.encrypt(data)
     except Exception as e:
-        tkMessageBox.showerror("Error:", message=e)
+        tkinter.messagebox.showerror("Error:", message=e)
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.write(binascii.b2a_hex(d))
+    sys.stdout.write(str(binascii.b2a_hex(d).decode()))
     root.quit()
     exit(0) # Decrypted successfully
 
@@ -110,55 +114,55 @@ def combo_mode_selected(root, cm, cit, ei):
 data = binascii.a2b_hex(sys.stdin.read())
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title("AES Encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-label_mode = Tkinter.Label(root, text="Mode:")
+label_mode = tkinter.Label(root, text="Mode:")
 label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo_mode = ttk.Combobox(root, width=5, state="readonly")
+combo_mode = tkinter.ttk.Combobox(root, width=5, state="readonly")
 combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB")
 combo_mode.current(0)
 combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-label_key_length = Tkinter.Label(root, text="Key length:")
+label_key_length = tkinter.Label(root, text="Key length:")
 label_key_length.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-combo_key_length = ttk.Combobox(root, width=20, state="readonly")
+combo_key_length = tkinter.ttk.Combobox(root, width=20, state="readonly")
 combo_key_length["values"] = ("128 bits (16 bytes)", "192 bits (24 bytes)", "256 bits (32 bytes)")
 combo_key_length.current(0)
 combo_key_length.grid(row=0, column=3, padx=5, pady=5, sticky="w")
 
-label_key_type = Tkinter.Label(root, text="Key type:")
+label_key_type = tkinter.Label(root, text="Key type:")
 label_key_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo_key_type = ttk.Combobox(root, width=5, state="readonly")
+combo_key_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
 combo_key_type["values"] = ("Text", "Hex")
 combo_key_type.current(0)
 combo_key_type.grid(row=1, column=1, padx=5, pady=5)
 
-label_key = Tkinter.Label(root, text="Key:")
+label_key = tkinter.Label(root, text="Key:")
 label_key.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
-entry_key = Tkinter.Entry(width=32)
+entry_key = tkinter.Entry(width=32)
 entry_key.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
-label_iv_type = Tkinter.Label(root, text="IV type:")
+label_iv_type = tkinter.Label(root, text="IV type:")
 label_iv_type.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
-combo_iv_type = ttk.Combobox(root, width=5, state="readonly")
+combo_iv_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
 combo_iv_type["values"] = ("Text", "Hex")
 combo_iv_type.current(0)
 combo_iv_type.grid(row=2, column=1, padx=5, pady=5)
 
-label_iv = Tkinter.Label(root, text="IV:")
+label_iv = tkinter.Label(root, text="IV:")
 label_iv.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
-entry_iv = Tkinter.Entry(width=32)
+entry_iv = tkinter.Entry(width=32)
 entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 
-button = Tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ckl=combo_key_length, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ckl, ckt, ek, cit, ei)))
+button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ckl=combo_key_length, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ckl, ckt, ek, cit, ei)))
 button.grid(row=3, column=0, padx=5, pady=5, columnspan=4)
 
 # Set callback function

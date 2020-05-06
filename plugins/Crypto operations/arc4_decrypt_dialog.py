@@ -29,9 +29,9 @@ import binascii
 import re
 import sys
 import time
-import Tkinter
-import ttk
-import tkMessageBox
+import tkinter
+import tkinter.ttk
+import tkinter.messagebox
 
 try:
     import Cryptodome.Cipher.ARC4
@@ -46,11 +46,13 @@ def decrypt(data, root, combo, entry):
         if re.match("^([0-9A-Fa-f]{2})+$", key):
             key = binascii.a2b_hex(key)
         else:
-            tkMessageBox.showerror("Error:", message="Key is not in hex format.")
+            tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
             return
+    else:
+        key = key.encode()
 
     if len(key) < 5 or len(key) > 256:
-        tkMessageBox.showerror("Error:", message="Key length is invalid (it must be in the range [5..256] bytes).")
+        tkinter.messagebox.showerror("Error:", message="Key length is invalid (it must be in the range [5..256] bytes).")
         return
 
     try:
@@ -60,7 +62,7 @@ def decrypt(data, root, combo, entry):
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.write(binascii.b2a_hex(d))
+    sys.stdout.write(str(binascii.b2a_hex(d).decode()))
     root.quit()
     exit(0) # Decrypted successfully
 
@@ -68,22 +70,22 @@ def decrypt(data, root, combo, entry):
 data = binascii.a2b_hex(sys.stdin.read())
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title("ARC4 decrypt / encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda root=root: root.quit()))
 
-label = Tkinter.Label(root, text="Key:")
+label = tkinter.Label(root, text="Key:")
 label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo = ttk.Combobox(root, width=5, state="readonly")
+combo = tkinter.ttk.Combobox(root, width=5, state="readonly")
 combo["values"] = ("Text", "Hex")
 combo.current(0)
 combo.grid(row=0, column=1, padx=5, pady=5)
 
-entry = Tkinter.Entry(width=40)
+entry = tkinter.Entry(width=40)
 entry.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-button = Tkinter.Button(root, text="OK", command=(lambda data=data, root=root, combo=combo, entry=entry: decrypt(data, root, combo, entry)))
+button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, combo=combo, entry=entry: decrypt(data, root, combo, entry)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
 
 # Adjust window position
