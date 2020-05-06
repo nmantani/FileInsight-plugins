@@ -25,23 +25,23 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import Tkinter
+import tkinter
 
 # Print entered base64 table to stdout
 def print_table(r, e):
-    print e.get()
+    print(e.get())
     r.quit()
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title('Custom base64 decode')
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = Tkinter.Label(root, text='Enter base64 table:')
+label = tkinter.Label(root, text='Enter base64 table:')
 label.grid(row=0, column=0, padx=5, pady=5)
-entry = Tkinter.Entry(root, width=80)
-entry.insert(Tkinter.END, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
+entry = tkinter.Entry(root, width=80)
+entry.insert(tkinter.END, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
 entry.grid(row=0, column=1, padx=5, pady=5)
-button = Tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_table(r, e)))
+button = tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_table(r, e)))
 button.grid(row=0, column=2, padx=5, pady=5)
 
 # Adjust window position

@@ -26,12 +26,12 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
-import Tkinter
+import tkinter
 
 # Print amount of rotation to stdout
 def print_amount(r, s):
     if s.get() != "":
-        print s.get()
+        print(s.get())
     r.quit()
 
 def amount_changed(*args):
@@ -39,17 +39,17 @@ def amount_changed(*args):
         amount.set("13")
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title('ROT13')
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = Tkinter.Label(root, text='Amount of rotation:')
+label = tkinter.Label(root, text='Amount of rotation:')
 label.grid(row=0, column=0, padx=5, pady=5)
-amount = Tkinter.StringVar()
+amount = tkinter.StringVar()
 amount.set("13")
 amount.trace("w", amount_changed)
-spin = Tkinter.Spinbox(root, textvariable=amount, state="readonly", width=4, from_=-100, to=100)
+spin = tkinter.Spinbox(root, textvariable=amount, state="readonly", width=4, from_=-100, to=100)
 spin.grid(row=0, column=1, padx=5, pady=5)
-button = Tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_amount(r, s)))
+button = tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_amount(r, s)))
 button.grid(row=0, column=2, padx=5, pady=5)
 
 # Adjust window position

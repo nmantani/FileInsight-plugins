@@ -30,25 +30,25 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
-import Tkinter
-import ttk
+import tkinter
+import tkinter.ttk
 
 # Print delimiter setting to stdout
 def print_setting(r, c):
-    print c.get()
+    print(c.get())
     r.quit()
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title('Delimiter setting')
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = Tkinter.Label(root, text='Delimiter:')
+label = tkinter.Label(root, text='Delimiter:')
 label.grid(row=0, column=0, padx=5, pady=5)
-combo_delimiter = ttk.Combobox(root, width=10, state="readonly")
+combo_delimiter = tkinter.ttk.Combobox(root, width=10, state="readonly")
 combo_delimiter["values"] = ("Space", "Comma", "Semi-colon", "Colon", "Tab", "LF", "CRLF")
 combo_delimiter.current(0)
 combo_delimiter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-button = Tkinter.Button(root, text='OK', command=(lambda r=root, c=combo_delimiter: print_setting(r, c)))
+button = tkinter.Button(root, text='OK', command=(lambda r=root, c=combo_delimiter: print_setting(r, c)))
 button.grid(row=0, column=2, padx=5, pady=5)
 
 # Adjust window position

@@ -39,17 +39,16 @@ def binary_data_to_hex_text(fi):
     length = fi.getSelectionLength()
 
     if (length > 0):
-        data = list(fi.getDocument())
+        data = list(fi.getSelection())
         newdata = []
 
         for i in range(0, length):
-            j = offset + i
-            newdata.append("%02x" % ord(data[j]))
+            newdata.append("%02x" % ord(data[i]))
 
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length))
 
 def hex_text_to_binary_data(fi):
     """
@@ -78,7 +77,7 @@ def hex_text_to_binary_data(fi):
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length))
 
 def custom_base64_decode(fi):
     """
@@ -96,7 +95,7 @@ def custom_base64_decode(fi):
 
         # Execute dialog.py to show GUI
         # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "custom_base64_decode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "custom_base64_decode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -105,7 +104,7 @@ def custom_base64_decode(fi):
 
         if (custom_table_length > 0):
             if (custom_table_length != 65):
-                print "Error: base64 table must be 65 characters (including padding)."
+                print("Error: base64 table must be 65 characters (including padding).")
             else:
                 data = fi.getSelection()
                 orig = list(fi.getDocument())
@@ -124,9 +123,9 @@ def custom_base64_decode(fi):
                 fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
                 if (length == 1):
-                    print "Decoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset))
+                    print("Decoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
-                    print "Decoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+                    print("Decoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
 
 def custom_base64_encode(fi):
     """
@@ -144,7 +143,7 @@ def custom_base64_encode(fi):
 
         # Execute dialog.py to show GUI
         # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "custom_base64_encode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "custom_base64_encode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -153,7 +152,7 @@ def custom_base64_encode(fi):
 
         if (custom_table_length > 0):
             if (custom_table_length != 65):
-                print "Error: base64 table must be 65 characters (including padding)."
+                print("Error: base64 table must be 65 characters (including padding).")
             else:
                 data = fi.getSelection()
                 orig = list(fi.getDocument())
@@ -172,9 +171,9 @@ def custom_base64_encode(fi):
                 fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
                 if (length == 1):
-                    print "Encoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset))
+                    print("Encoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
-                    print "Encoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+                    print("Encoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
 
 def rot13(fi):
     """
@@ -193,7 +192,7 @@ def rot13(fi):
 
         # Execute rot13_dialog.py to show GUI
         # GUI portion is moved to rot13_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
@@ -224,10 +223,10 @@ def rot13(fi):
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if (length == 1):
-            print "Decoded one byte from offset %s to %s." % (hex(offset), hex(offset))
+            print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decoded region."
+            print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decoded region.")
 
 def from_quoted_printable(fi):
     """
@@ -253,9 +252,9 @@ def from_quoted_printable(fi):
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if (length == 1):
-            print "Decoded one byte quoted printable text from offset %s to %s." % (hex(offset), hex(offset))
+            print("Decoded one byte quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decoded %s bytes quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+            print("Decoded %s bytes quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
 
 def to_quoted_printable(fi):
     """
@@ -281,9 +280,9 @@ def to_quoted_printable(fi):
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if (length == 1):
-            print "Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset))
+            print("Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
+            print("Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
 
 def binary_data_to_binary_text(fi):
     """
@@ -293,17 +292,16 @@ def binary_data_to_binary_text(fi):
     length = fi.getSelectionLength()
 
     if (length > 0):
-        data = list(fi.getDocument())
+        data = list(fi.getSelection())
         newdata = []
 
         for i in range(0, length):
-            j = offset + i
-            newdata.append("{0:b}".format(ord(data[j])).zfill(8))
+            newdata.append("{0:b}".format(ord(data[i])).zfill(8))
 
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length))
 
 def binary_text_to_binary_data(fi):
     """
@@ -332,7 +330,7 @@ def binary_text_to_binary_data(fi):
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
 
 def binary_data_to_decimal_text(fi):
     """
@@ -342,7 +340,7 @@ def binary_data_to_decimal_text(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        data = list(fi.getDocument())
+        data = list(fi.getSelection())
         newdata = []
 
         # Do not show command prompt window
@@ -351,7 +349,7 @@ def binary_data_to_decimal_text(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -369,15 +367,14 @@ def binary_data_to_decimal_text(fi):
                       "CRLF": "\x0d\x0a"}
 
         for i in range(0, length):
-            j = offset + i
             if i > 0:
                 newdata.append(delimiters[setting])
-            newdata.append(str(ord(data[j])))
+            newdata.append(str(ord(data[i])))
 
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length))
 
 def decimal_text_to_binary_data(fi):
     """
@@ -394,7 +391,7 @@ def decimal_text_to_binary_data(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -417,13 +414,13 @@ def decimal_text_to_binary_data(fi):
         # Check of splitted data
         for i in range(0, len(values)):
             if values[i] == "":
-                print "The selected region contains empty values (extra delimiters)."
+                print("The selected region contains empty values (extra delimiters).")
                 return
             if re.search("[^0-9]", values[i]):
-                print "The selected region contains non-numeric or non-delimiter characters."
+                print("The selected region contains non-numeric or non-delimiter characters.")
                 return
             if int(values[i]) < 0 or int(values[i]) > 255:
-                print "The selected region contains values out of range (0-255)."
+                print("The selected region contains values out of range (0-255).")
                 return
 
         newdata = []
@@ -433,7 +430,7 @@ def decimal_text_to_binary_data(fi):
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
 
 def binary_data_to_octal_text(fi):
     """
@@ -443,7 +440,7 @@ def binary_data_to_octal_text(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        data = list(fi.getDocument())
+        data = list(fi.getSelection())
         newdata = []
 
         # Do not show command prompt window
@@ -452,7 +449,7 @@ def binary_data_to_octal_text(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -470,15 +467,14 @@ def binary_data_to_octal_text(fi):
                       "CRLF": "\x0d\x0a"}
 
         for i in range(0, length):
-            j = offset + i
             if i > 0:
                 newdata.append(delimiters[setting])
-            newdata.append(oct(ord(data[j])))
+            newdata.append(oct(ord(data[i])))
 
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length))
 
 def octal_text_to_binary_data(fi):
     """
@@ -495,7 +491,7 @@ def octal_text_to_binary_data(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -518,13 +514,13 @@ def octal_text_to_binary_data(fi):
         # Check of splitted data
         for i in range(0, len(values)):
             if values[i] == "":
-                print "The selected region contains empty values (extra delimiters)."
+                print("The selected region contains empty values (extra delimiters).")
                 return
             if re.search("[^0-9]", values[i]):
-                print "The selected region contains non-numeric or non-delimiter characters."
+                print("The selected region contains non-numeric or non-delimiter characters.")
                 return
             if int(values[i], 8) < 0 or int(values[i], 8) > 255:
-                print "The selected region contains values out of range (0-255)."
+                print("The selected region contains values out of range (0-255).")
                 return
 
         newdata = []
@@ -534,4 +530,4 @@ def octal_text_to_binary_data(fi):
         fi.newDocument("New file", 1)
         fi.setDocument("".join(newdata))
 
-        print "Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length)
+        print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
