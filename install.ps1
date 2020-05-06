@@ -42,14 +42,14 @@ if ($PROXY_HOST -and $PROXY_PORT) {
     $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
 }
 
-$RELEASE_VERSION = "1.5"
-$PYTHON_EXE = "C:\Python27\python.exe"
-$PYTHON_VERSION = "2.7.17"
+$RELEASE_VERSION = "2.0"
+$PYTHON_EXE = "C:\Windows\py.exe"
+$PYTHON_VERSION = "3.8.2"
 
 # Hash values of files that will be downloaded
-$FILEINSIGHT_HASH = "E099B2D0BFB3D2A92F31B2CB5286206E219670FC1D25CD029830832E9CDF4ADD"
-$FILEINSIGHT_PLUGINS_HASH = "7DD2A0598836C95CA65CDC02C4FD9AB772FF54B9D3D82A6FE8C7757FDE66F250"
-$PYTHON_HASH = "A4E3A321517C6B0C2693D6F712A0D18C82600B3D0C759C299B3D14384A17F863"
+$FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
+$FILEINSIGHT_PLUGINS_HASH = "8BE35C247C5812AEA2EDA06D51D0B4B7348C74C9BB1192AC7B1C442E6DB0339D"
+$PYTHON_HASH = "8E400E3F32CDCB746E62E0DB4D3AE4CBA1F927141EBC4D0D5A4006B0DAEE8921"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 
 function create_working_directory {
@@ -144,7 +144,7 @@ function extract_zip($zip_path, $dest_path) {
 function install_fileinsight_plugins($work_dir, $update) {
     Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
 
-    $file_path = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Basic operations\main.py"
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Basic operations\main.py"
     if ((Test-Path $file_path) -and !$update) {
         Write-Host "[*] FileInsight-plugins is already installed. Skipping installation."
     } else {
@@ -185,7 +185,7 @@ function install_fileinsight_plugins($work_dir, $update) {
         }
         Write-Host "[+] Done."
 
-        $dest_dir = [Environment]::GetFolderPath('Personal') + "\FileInsight"
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight"
         if (!(Test-Path $dest_dir)) {
             mkdir $dest_dir | Out-Null
         }
@@ -205,16 +205,16 @@ function install_fileinsight_plugins($work_dir, $update) {
 
 function install_fileinsight($work_dir) {
     Write-Host "[+] Installing FileInsight..."
-    $fileinsight_exe = "C:\Program Files (x86)\FileInsight\FileInsight.exe"
+    $fileinsight_exe = "C:\Program Files (x86)\McAfee\FileInsight\FileInsight.exe"
     if (Test-Path $fileinsight_exe) {
         Write-Host "[*] FileInsight is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading FileInsight installer..."
-        $installer_url = "http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.zip"
-        $installer_zip_path = "$work_dir\fileinsight.zip"
-        download_file $installer_url $installer_zip_path
+        $installer_url = "http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.msi"
+        $installer_msi_path = "$work_dir\fileinsight.msi"
+        download_file $installer_url $installer_msi_path
 
-        if (!(Test-Path $installer_zip_path)) {
+        if (!(Test-Path $installer_msi_path)) {
             Write-Host "[!] Download has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
@@ -222,8 +222,8 @@ function install_fileinsight($work_dir) {
         }
         Write-Host "[+] Done."
 
-        Write-Host "[+] Verifying SHA256 hash value of $installer_zip_path (with $FILEINSIGHT_HASH)..."
-        $val = compute_hash $installer_zip_path
+        Write-Host "[+] Verifying SHA256 hash value of $installer_msi_path (with $FILEINSIGHT_HASH)..."
+        $val = compute_hash $installer_msi_path
         if ($val -eq $FILEINSIGHT_HASH) {
             Write-Host "[+] OK."
         } else {
@@ -233,21 +233,8 @@ function install_fileinsight($work_dir) {
             exit
         }
 
-        Write-Host "[+] Extracting fileinsight.zip..."
-        extract_zip $installer_zip_path $work_dir
-        $installer_exe_path = "$work_dir\fileinsight.exe"
-
-        if (!(Test-Path $installer_exe_path)) {
-            Write-Host "[!] Extraction has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-        Write-Host "[+] Done."
-
         Write-Host "[+] Executing FileInsight installer (silent installation)..."
-        $process = Start-Process -FilePath "$installer_exe_path" -ArgumentList "/S" -Verb runas -PassThru
-        $process.WaitForExit()
+        msiexec /i "$installer_msi_path" /passive /norestart ADDLOCAL=ALL | Out-Null
         if (!(Test-Path $fileinsight_exe)) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
@@ -260,41 +247,18 @@ function install_fileinsight($work_dir) {
     Write-Host ""
 }
 
-function install_python2($work_dir) {
-    Write-Host "[+] Installing Python 2 (x86)..."
+function install_python3($work_dir) {
+    Write-Host "[+] Installing Python 3 (x64)..."
 
     if (Test-Path $PYTHON_EXE) {
-        $is_x64 = &"$PYTHON_EXE" "-c" "import sys; print sys.maxsize > 2**32"
-        if ($is_x64 -eq "True") {
-            Write-Host "[!] Python 2 (x64) is already installed and it is not compatible with FileInsight."
-            Write-Host "[!] Please uninstall it and try again."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        } else {
-            if ((Get-Command py -ErrorAction SilentlyContinue) `
-                -and ((&"py" "-h") -cmatch "Python Launcher") `
-                -and ((Test-Path "HKLM:\SOFTWARE\Python\PythonCore\2.7\InstallPath") `
-                -or (Test-Path "HKLM:\SOFTWARE\WOW6432Node\Python\PythonCore\2.7\InstallPath"))) {
-                Write-Host "[!] Python 2 (x86) and Python 3 are already installed,"
-                Write-Host "[!] but Python 2 (x86) is installed with 'Install for all users' option."
-                Write-Host "[!] This situation causes freeze of FileInsight when you use Python plugins."
-                Write-Host "[!] Python 2 (x86) has to be reinstalled with 'Install just for me' option to avoid freeze."
-                Write-Host "[!] Please uninstall Python 2 (x86) and try again."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            } else {
-                Write-Host "[*] Python 2 (x86) is already installed. Skipping installation."
-            }
-        }
+        Write-Host "[*] Python 3 is already installed. Skipping installation."
     } else {
-        Write-Host "[+] Downloading Python 2 installer..."
-        $installer_url = "https://www.python.org/ftp/python/$PYTHON_VERSION/python-$PYTHON_VERSION.msi"
-        $installer_msi_path = "$work_dir\python-$PYTHON_VERSION.msi"
-        download_file $installer_url $installer_msi_path
+        Write-Host "[+] Downloading Python 3 installer..."
+        $installer_url = "https://www.python.org/ftp/python/$PYTHON_VERSION/python-$PYTHON_VERSION-amd64.exe"
+        $installer_exe_path = "$work_dir\python-$PYTHON_VERSION-amd64.exe"
+        download_file $installer_url $installer_exe_path
 
-        if (!(Test-Path $installer_msi_path)) {
+        if (!(Test-Path $installer_exe_path)) {
             Write-Host "[!] Download has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
@@ -302,8 +266,8 @@ function install_python2($work_dir) {
         }
         Write-Host "[+] Done."
 
-        Write-Host "[+] Verifying SHA256 hash value of $installer_msi_path (with $PYTHON_HASH)..."
-        $val = compute_hash $installer_msi_path
+        Write-Host "[+] Verifying SHA256 hash value of $installer_exe_path (with $PYTHON_HASH)..."
+        $val = compute_hash $installer_exe_path
         if ($val -eq $PYTHON_HASH) {
             Write-Host "[+] OK."
         } else {
@@ -313,8 +277,9 @@ function install_python2($work_dir) {
             exit
         }
 
-        Write-Host "[+] Executing Python 2 installer (automatic installation)..."
-        msiexec /i "$work_dir\python-$PYTHON_VERSION.msi" /passive /norestart ADDLOCAL=ALL | Out-Null
+        Write-Host "[+] Executing Python 3 installer (automatic installation)..."
+        $process = Start-Process -FilePath "$installer_exe_path" -ArgumentList "/passive" -Verb runas -PassThru
+        $process.WaitForExit()
 
         if (!(Test-Path $PYTHON_EXE)) {
             Write-Host "[!] Installation has been failed."
@@ -323,37 +288,37 @@ function install_python2($work_dir) {
             exit
         } else {
             Write-Host "[+] Done."
-            Write-Host "[+] Installing pip for Python 2..."
-            Write-Host "$PYTHON_EXE -m ensurepip"
-            Invoke-Expression "$PYTHON_EXE -m ensurepip"
+            Write-Host "[+] Installing pip for Python 3..."
+            Write-Host "$PYTHON_EXE -3 -m ensurepip"
+            Invoke-Expression "$PYTHON_EXE -3 -m ensurepip"
         }
         Write-Host "[+] Done."
-        Write-Host "[+] Python 2 has been installed."
-    }
-
-    $link_target = "C:\Program Files (x86)\FileInsight\python.exe"
-    if (!(Test-Path $link_target)) {
-        Write-Host "[+] Creating symbolic link of ""$PYTHON_EXE"" to ""$link_target""..."
-        Write-Host "[+] (executing ""mklink '$link_target' '$PYTHON_EXE')"
-        Start-Process "cmd" -ArgumentList "/c mklink ""$link_target"" ""$PYTHON_EXE""" -verb runas
+        Write-Host "[+] Python 3 has been installed."
     }
     Write-Host ""
 }
 
-function install_with_pip($name, $file_path) {
+function install_with_pip($name) {
     Write-Host "[+] Installing $name Python module..."
-    if (Test-Path $file_path) {
+    $installed = &$PYTHON_EXE -3 -m pip show $name
+    if ([bool]$installed) {
         Write-Host "[*] $name Python module is already installed. Skipping installation."
     } else {
         if ($PROXY_HOST -and $PROXY_PORT) {
-            Write-Host "$PYTHON_EXE -m pip install $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
-            Invoke-Expression "$PYTHON_EXE -m pip install $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
+            Write-Host "$PYTHON_EXE -3 -m pip install $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
         } else {
-            Write-Host "$PYTHON_EXE -m pip install $name"
-            Invoke-Expression "$PYTHON_EXE -m pip install $name"
+            Write-Host "$PYTHON_EXE -3 -m pip install $name"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install $name"
         }
-        Write-Host "[+] Done."
-        Write-Host "[+] $name Python module has been installed."
+        $installed = &$PYTHON_EXE -3 -m pip show $name
+        if ([bool]$installed) {
+            Write-Host "[+] Done."
+            Write-Host "[+] $name Python module has been installed."
+        } else {
+            Write-Host "[!] Failed to install $name Python module."
+            Write-Host "[!] Please install it manually."
+        }
     }
     Write-Host ""
 }
@@ -361,29 +326,15 @@ function install_with_pip($name, $file_path) {
 function install_python_modules($work_dir) {
     Write-Host "[+] Installing Python modules..."
 
-    install_with_pip "pycryptodomex" "C:\Python27\Lib\site-packages\Cryptodome\__init__.py"
-    install_with_pip "python-magic-bin" "C:\Python27\Lib\site-packages\magic\__init__.py"
-    install_with_pip "pefile" "C:\Python27\Lib\site-packages\pefile.py"
-    install_with_pip "yara-python" "C:\Python27\Lib\site-packages\yara.pyd"
-
-    Write-Host "[+] Installing backports.lzma Python module..."
-    if (Test-Path "C:\Python27\Lib\site-packages\backports\lzma\__init__.py") {
-        Write-Host "[*] backports.lzma Python module is already installed. Skipping installation."
-    } else {
-        if ($PROXY_HOST -and $PROXY_PORT) {
-            Write-Host "$PYTHON_EXE -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma --proxy ${PROXY_HOST}:${PROXY_PORT}"
-            Invoke-Expression "$PYTHON_EXE -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma --proxy ${PROXY_HOST}:${PROXY_PORT}"
-        } else {
-            Write-Host "$PYTHON_EXE -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
-            Invoke-Expression "$PYTHON_EXE -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma"
-        }
-        Write-Host "[+] Done."
-        Write-Host "[+] backports.lzma Python module has been installed."
-    }
-    Write-Host ""
+    install_with_pip "pycryptodomex"
+    install_with_pip "python-magic-bin"
+    install_with_pip "pefile"
+    install_with_pip "yara-python"
 
     Write-Host "[+] Installing binwalk Python module..."
-    if (Test-Path "C:\Python27\Lib\site-packages\binwalk\__init__.py") {
+
+    $installed = &$PYTHON_EXE -3 -m pip show binwalk
+    if ([bool]$installed) {
         Write-Host "[*] binwalk Python module is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading binwalk..."
@@ -414,11 +365,12 @@ function install_python_modules($work_dir) {
 
         $cwd = Convert-Path .
         cd $extract_dir
-        Write-Host "$PYTHON_EXE setup.py install"
-        Invoke-Expression "$PYTHON_EXE setup.py install"
+        Write-Host "$PYTHON_EXE -3 setup.py install"
+        Invoke-Expression "$PYTHON_EXE -3 setup.py install"
         cd $cwd
 
-        if (!(Test-Path "C:\Python27\Lib\site-packages\binwalk\__init__.py")) {
+        $installed = &$PYTHON_EXE -3 -m pip show binwalk
+        if (![bool]$insalled) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
@@ -490,6 +442,22 @@ function install_aplib($work_dir) {
     Write-Host ""
 }
 
+function migrate_plugin_config() {
+    $old_file_path = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Misc operations\send_to.json"
+    $new_file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Misc operations\send_to.json"
+
+    if ((Test-Path $old_file_path) -and !(Test-Path $new_file_path)) {
+        Write-Host "[+] Migrating existing config file from $old_file_path to $new_file_path..."
+        Copy-Item "$old_file_path" -Destination "$new_file_path"
+        if (!(Test-Path $new_file_path)) {
+            Write-Host "[!] Migration failed."
+        } else {
+            Write-Host "[+] Done."
+        }
+        Write-Host ""
+    }
+}
+
 #
 # Main section
 #
@@ -509,10 +477,11 @@ if ($Args[0] -eq "-update") {
 } else {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir $false
-    install_python2 $work_dir
+    install_python3 $work_dir
     install_python_modules $work_dir
     install_aplib $work_dir
 }
+migrate_plugin_config
 
 remove_working_directory $work_dir
 Write-Host "[+] All installation has been finished successfully!"
