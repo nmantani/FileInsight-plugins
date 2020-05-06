@@ -116,7 +116,7 @@ def do_decrypt(fi, name, script):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -127,15 +127,15 @@ def do_decrypt(fi, name, script):
 
         # Execute arc4_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
         if ret == -1: # PyCryptodome is not installed
-            print "PyCryptodome is not installed."
-            print "Please install it with 'python -m pip install pycryptodomex' and restart FileInsight."
+            print("PyCryptodome is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install pycryptodomex' and try again.")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
@@ -150,11 +150,11 @@ def do_decrypt(fi, name, script):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, decrypted_len, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decrypted one byte with %s from offset %s to %s." % (name, hex(offset), hex(offset))
+        if length == 1:
+            print("Decrypted one byte with %s from offset %s to %s." % (name, hex(offset), hex(offset)))
         else:
-            print "Decrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decrypted region."
+            print("Decrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decrypted region.")
 
 def do_encrypt(fi, name, script):
     """
@@ -164,7 +164,7 @@ def do_encrypt(fi, name, script):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -175,15 +175,15 @@ def do_encrypt(fi, name, script):
 
         # Execute arc4_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
-        p = subprocess.Popen(["python", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
         if ret == -1: # PyCryptodome is not installed
-            print "PyCryptodome is not installed."
-            print "Please install it with 'python -m pip install pycryptodomex' and restart FileInsight."
+            print("PyCryptodome is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install pycryptodomex' and restart FileInsight.")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
@@ -198,8 +198,8 @@ def do_encrypt(fi, name, script):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, encrypted_len, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Encrypted one byte with %s from offset %s to %s." % (name, hex(offset), hex(offset))
+        if length == 1:
+            print("Encrypted one byte with %s from offset %s to %s." % (name, hex(offset), hex(offset)))
         else:
-            print "Encrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to encrypted region."
+            print("Encrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to encrypted region.")
