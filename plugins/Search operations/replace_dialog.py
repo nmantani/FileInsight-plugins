@@ -28,40 +28,39 @@
 
 import sys
 import time
-import Tkinter
-import ttk
-import tkMessageBox
+import tkinter
+import tkinter.ttk
 
 # Print selected items
 def get_input(r, e1, e2, c):
-    print e1.get()
-    print e2.get()
-    print c.get()
+    print(e1.get())
+    print(e2.get())
+    print(c.get())
     r.quit()
 
 # Create input dialog
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.title("Replace")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-label1 = Tkinter.Label(root, text="Search keyword\n(Python regular expression):", justify="left")
+label1 = tkinter.Label(root, text="Search keyword\n(Python regular expression):", justify="left")
 label1.grid(row=0, column=0, padx=5, pady=5, columnspan=2, sticky="w")
 
-entry1 = Tkinter.Entry(root, width=40)
+entry1 = tkinter.Entry(root, width=40)
 entry1.grid(row=0, column=2, padx=5, pady=5)
 
-label2 = Tkinter.Label(root, text="Replacement:")
+label2 = tkinter.Label(root, text="Replacement:")
 label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo = ttk.Combobox(root, state="readonly", width=4)
+combo = tkinter.ttk.Combobox(root, state="readonly", width=4)
 combo["values"] = ["Text", "Hex"]
 combo.current(0)
 combo.grid(row=1, column=1, padx=5, pady=5)
 
-entry2 = Tkinter.Entry(root, width=40)
+entry2 = tkinter.Entry(root, width=40)
 entry2.grid(row=1, column=2, padx=5, pady=5)
 
-button = Tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
+button = tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
 
 # Adjust window position
