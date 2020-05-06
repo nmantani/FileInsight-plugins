@@ -27,184 +27,240 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
+import os
 import re
 import struct
 import subprocess
 import sys
+import tempfile
 import time
 
-try:
-    sys.argv = [""]
-    import binwalk
-    binwalk_not_installed = False
-except ImportError:
-    binwalk_not_installed = True
+def bookmark_yesno_dialog(num_bookmark):
+    """
+    Show a confirmation dialog of adding many bookmarks
+    Used by binwalk_scan()
+    """
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-try:
-    import magic
-    python_magic_not_installed = False
-except ImportError:
-    python_magic_not_installed = True
+    # Execute bookmark_yesno_dialog.py to show confirmation dialog
+    p = subprocess.Popen(["py.exe", "-3", "../Misc operations/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
-try:
-    import pefile
-    pefile_not_installed = False
-except ImportError:
-    pefile_not_installed = True
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    return ret
 
 def binwalk_scan(fi):
     """
     Scan selected region (the whole file if not selected) to find embedded files
     """
-    if binwalk_not_installed:
-        print "binwalk is not installed."
-        print "Please get it from https://github.com/ReFirmLabs/binwalk"
-        print "(pip cannot be used to install binwalk)."
-        return
-
     if fi.getDocumentCount() == 0:
         return
+
+    time_start = time.time()
 
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
     offset_found = []
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
-        print "Scanned from offset %s to %s:" % (hex(offset), hex(offset + length))
     else:
         offset = 0
         data = fi.getDocument()
         length = fi.getLength()
-        print "Scanned the whole file:"
 
-    time_start = time.time()
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
 
-    for module in binwalk.scan(data, signature=True, quiet=True, string=True):
-        for result in module.results:
-            print "Offset: 0x%x\t%s" % (offset + result.offset, result.description)
-            offset_found.append(offset + result.offset)
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute binwalk_scan.py for scanning with binwalk
+    p = subprocess.Popen(["py.exe", "-3", "binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    os.remove(filepath) # Cleanup
+
+    if ret == -1:
+        print("binwalk is not installed.")
+        print("Please get it from https://github.com/ReFirmLabs/binwalk and install it (pip cannot be used to install binwalk).")
+        return
+
+    if fi.getSelectionLength() > 0:
+        print("Scanned from offset %s to %s:" % (hex(offset), hex(offset + length)))
+    else:
+        print("Scanned the whole file:")
+
+    print(stdout_data),
+
+    for l in stdout_data.splitlines():
+        offset_found.append(int(l.split()[1], 0))
 
     num_found = len(offset_found)
     if num_found == 0:
-        print "No file has been detected."
-    print "Elapsed time (scan): %f (sec)" % (time.time() - time_start)
+        print("No file has been detected.")
+    print("Elapsed time (scan): %f (sec)" % (time.time() - time_start))
     time_start = time.time()
 
     if num_found > 0:
-        for i in range(0, num_found):
-            if i + 1 == num_found:
-                fi.setBookmark(offset_found[i], offset + length - offset_found[i], hex(offset_found[i]), "#c8ffff")
-            else:
-                fi.setBookmark(offset_found[i], offset_found[i + 1] - offset_found[i], hex(offset_found[i]), "#c8ffff")
+        if num_found > 100 and not bookmark_yesno_dialog(num_found):
+            return # "No" is clicked
+        else:
+            for i in range(0, num_found):
+                if i + 1 == num_found:
+                    fi.setBookmark(offset_found[i], offset + length - offset_found[i], hex(offset_found[i]), "#c8ffff")
+                else:
+                    fi.setBookmark(offset_found[i], offset_found[i + 1] - offset_found[i], hex(offset_found[i]), "#c8ffff")
 
-        print "\r\nAdded bookmarks to the detected files."
-        print "Elapsed time (bookmark): %f (sec)" % (time.time() - time_start)
+            print("\r\nAdded bookmarks to the detected files.")
+            print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
 
 def file_type(fi):
     """
     Identify file type of selected region (the whole file if not selected)
     """
-    if python_magic_not_installed:
-        print "python-magic is not installed."
-        print "Please install it with 'python -m pip install python-magic-bin' and restart FileInsight."
-        return
-
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
-    if (length > 0):
-        buf = fi.getSelection()
-        type = magic.from_buffer(buf)
-        print "File type from offset %s to %s: %s" % (hex(offset), hex(offset + length - 1), type)
+    if length > 0:
+        data = fi.getSelection()
     else:
-        buf = fi.getDocument()
-        type = magic.from_buffer(buf)
-        print "File type of the whole file: %s" % type
+        data = fi.getDocument()
 
-def find_pe(fi, buf, offset):
-    """
-    Used by find_pe_file()
-    """
-    i = 0
-    pos = 0
-    found = 0
-    valid_pe = False
-    length = len(buf)
-    while i < length:
-        pos = buf.find("MZ", i)
-        if pos == -1:
-            break
-        else:
-            if pos + 64 < length:
-                # Get the offset of the "PE" characters
-                pe_offset = struct.unpack("<I", buf[pos+60:pos+64])[0]
-                if pos + pe_offset + 23 < length:
-                    # Check machine
-                    if buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x4c', '\x01']):
-                        # Check characteristics
-                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print "Win32 DLL found at offset %s" % hex(offset + pos),
-                        else:
-                            print "Win32 executable found at offset %s" % hex(offset + pos),
-                        valid_pe = True
-                    elif buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x64', '\x86']):
-                        # Check characteristics
-                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print "Win64 DLL found at offset %s" % hex(offset + pos),
-                        else:
-                            print "Win64 executable found at offset %s" % hex(offset + pos),
-                        valid_pe = True
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-                    if valid_pe == True:
-                        pe = pefile.PE(data=buf[pos:], fast_load=True)
-                        pe_size = pe.OPTIONAL_HEADER.SizeOfHeaders
-                        for section in pe.sections:
-                            pe_size += section.SizeOfRawData
-                        print "size %d bytes" % pe_size
-                        if pos + pe_size > length:
-                            print "The end of PE file (offset %s) is beyond the end of search region (offset %s). Bookmarked region will be truncated." % (hex(offset+pos+pe_size), hex(offset+length))
-                            fi.setBookmark(offset + pos, length - pos, hex(offset + pos), "#c8ffff")
-                        else:
-                            fi.setBookmark(offset + pos, pe_size, hex(offset + pos), "#c8ffff")
-                        found += 1
-        valid_pe = False
-        i = pos + 2
-    return found
+    # Execute file_type.py for file type identification
+    p = subprocess.Popen(["py.exe", "-3", "file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive file type
+    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    ret = p.wait()
+
+    if ret == -1:
+        print("python-magic is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
+        return
+
+    ftype = stdout_data
+
+    if length > 0:
+        print("File type from offset %s to %s: %s" % (hex(offset), hex(offset + length - 1), ftype))
+    else:
+        print("File type of the whole file: %s" % ftype)
 
 def find_pe_file(fi):
     """
     Find PE file from selected region (the whole file if not selected)
     """
-    if pefile_not_installed:
-        print "pefile is not installed."
-        print "Please install it with 'python -m pip install pefile' and restart FileInsight."
-        return
-
     if fi.getDocumentCount() == 0:
         return
 
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
-    if (length > 0):
-        buf = fi.getSelection()
-        found = find_pe(fi, buf, offset)
-        if found > 0:
-            print "%d PE file(s) found from offset %s to %s." % (found, hex(offset), hex(offset + length - 1))
-            print "Added bookmark(s) to the found PE file(s)."
-        else:
-            print "No PE file found from offset %s to %s." % (hex(offset), hex(offset + length - 1))
+    if length > 0:
+        data = fi.getSelection()
     else:
         offset = 0
-        buf = fi.getDocument()
+        data = fi.getDocument()
         length = fi.getLength()
-        found = find_pe(fi, buf, offset)
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute find_pe_file.py for finding PE files
+    p = subprocess.Popen(["py.exe", "-3", "find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    ret = p.wait()
+
+    if ret == -1:
+        print("pefile is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        return
+
+    found = ret
+    print(stdout_data),
+
+    for l in stdout_data.splitlines():
+        if l[0:5] == "Win32" or l[0:5] == "Win64":
+            off = int(l.split()[5], 0)
+            size = int(l.split()[7], 0)
+            if off + size > length:
+                fi.setBookmark(off, length - off, hex(off), "#c8ffff")
+            else:
+                fi.setBookmark(off, size, hex(off), "#c8ffff")
+
+    if fi.getSelectionLength() > 0:
         if found > 0:
-            print "%d PE file(s) found from the whole file." % found
-            print "Added bookmark(s) to the found PE file(s)."
+            print("%d PE file(s) found from offset %s to %s." % (found, hex(offset), hex(offset + length - 1)))
+            print("Added bookmark(s) to the found PE file(s).")
         else:
-            print "No PE file found from the whole file."
+            print("No PE file found from offset %s to %s." % (hex(offset), hex(offset + length - 1)))
+    else:
+        if found > 0:
+            print("%d PE file(s) found from the whole file." % found)
+            print("Added bookmark(s) to the found PE file(s).")
+        else:
+            print("No PE file found from the whole file.")
+
+def show_metadata(fi):
+    """
+    Show metadata of selected region (the whole file if not selected) with ExifTool
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length > 0:
+        data = fi.getSelection()
+    else:
+        offset = 0
+        data = fi.getDocument()
+        length = fi.getLength()
+
+    if not os.path.exists("exiftool.exe"):
+        print("ExifTool is not installed.")
+        print("Please download ExifTool from https://exiftool.org/")
+        print("and copy exiftool(-k).exe as exiftool.exe into '%s' folder." % os.getcwd())
+        return
+
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute binwalk_scan.py for scanning with binwalk
+    p = subprocess.Popen(["exiftool.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    os.remove(filepath) # Cleanup
+    print(stdout_data),
 
 def strings_dedupe(matched, unicode, decode):
     """
@@ -254,7 +310,7 @@ def strings(fi):
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
     else:
         offset = 0
@@ -264,9 +320,9 @@ def strings(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute arc4_decrypt_dialog.py to show GUI
+    # Execute strings_dialog.py to show GUI
     # GUI portion is moved to external script to avoid hangup of FileInsight
-    p = subprocess.Popen(["python", "strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive parameters
     stdout_data, stderr_data = p.communicate()
@@ -341,9 +397,9 @@ def strings(fi):
     fi.setDocument(newdata)
 
     if length > 0:
-        print "Extracted text strings from offset %s to %s." % (hex(offset), hex(offset + length))
+        print("Extracted text strings from offset %s to %s." % (hex(offset), hex(offset + length)))
     else:
-        print "Extracted text strings from the whole file."
+        print("Extracted text strings from the whole file.")
 
     if decode_hex:
-        print "Please search 'Decoded: ***\tOriginal: ***' lines to find decoded hex strings."
+        print("Please search 'Decoded: ***\tOriginal: ***' lines to find decoded hex strings.")
