@@ -370,7 +370,7 @@ function install_python_modules($work_dir) {
         cd $cwd
 
         $installed = &$PYTHON_EXE -3 -m pip show binwalk
-        if (![bool]$insalled) {
+        if (![bool]$installed) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
