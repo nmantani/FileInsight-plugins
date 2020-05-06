@@ -26,23 +26,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
 import bz2
 import ctypes
 import gzip
 import StringIO
+import subprocess
 import zlib
-
-try:
-    import backports.lzma
-    lzma_not_installed = False
-except ImportError:
-    lzma_not_installed = True
 
 def aplib_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -64,21 +60,21 @@ def aplib_compress(fi):
             fi.setDocument("".join(newdata))
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if (length == 1):
-                print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
             else:
-                print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-            print "Added a bookmark to compressed region."
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
         except WindowsError:
-            print "Error: cannot load aplib.dll."
-            print "Please download aPLib from http://ibsensoftware.com/download.html"
-            print "and copy aplib.dll (32 bits version) into 'Compression operations' folder."
+            print("Error: cannot load aplib.dll.")
+            print("Please download aPLib from http://ibsensoftware.com/download.html")
+            print("and copy aplib.dll (32 bits version) into 'Compression operations' folder.")
 
 def aplib_decompress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -88,7 +84,7 @@ def aplib_decompress(fi):
 
             final_size = aplib.aPsafe_get_orig_size(ctypes.c_char_p(data))
 
-            if (final_size == -1):
+            if final_size == -1:
                 final_size = length
                 count = 0
                 ret = -1
@@ -104,7 +100,7 @@ def aplib_decompress(fi):
                 uncompressed = ctypes.create_string_buffer(final_size)
                 final_size = aplib.aPsafe_depack(ctypes.c_char_p(data), length, uncompressed, final_size)
 
-            if (final_size == -1):
+            if final_size == -1:
                 raise Exception
 
             uncompressed = list(uncompressed)
@@ -118,25 +114,25 @@ def aplib_decompress(fi):
             fi.setDocument("".join(newdata))
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if (length == 1):
-                print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
             else:
-                print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-            print "Added a bookmark to decompressed region."
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
 
         except WindowsError:
-            print 'Error: cannot load aplib.dll'
-            print "Please download aPLib from http://ibsensoftware.com/download.html"
-            print "and copy aplib.dll (32 bits version) into 'Compression operations' folder."
+            print("Error: cannot load aplib.dll")
+            print("Please download aPLib from http://ibsensoftware.com/download.html")
+            print("and copy aplib.dll (32 bits version) into 'Compression operations' folder.")
 
         except Exception:
-            print 'Error: invalid compressed data'
+            print("Error: invalid compressed data")
 
 def bzip2_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -158,17 +154,17 @@ def bzip2_compress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to compressed region."
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
 
 def bzip2_decompress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -190,17 +186,17 @@ def bzip2_decompress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decompressed region."
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
 
 def gzip_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -226,17 +222,17 @@ def gzip_compress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to compressed region."
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
 
 def gzip_decompress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -260,17 +256,17 @@ def gzip_decompress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decompressed region."
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
 
 def lznt1_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -299,17 +295,17 @@ def lznt1_compress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to compressed region."
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
 
 def lznt1_decompress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -336,17 +332,17 @@ def lznt1_decompress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decompressed region."
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
 
 def raw_deflate(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -369,17 +365,17 @@ def raw_deflate(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to compressed region."
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
 
 def raw_inflate(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -401,31 +397,36 @@ def raw_inflate(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decompressed region."
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
 
 def lzma_compress(fi):
     """
     Compress selected region with LZMA algorithm
     """
-    if lzma_not_installed:
-        print "backport.lzma is not installed."
-        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
-        print "and restart FileInsight."
-        return
-
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        compressed = list(backports.lzma.compress(data, format=backports.lzma.FORMAT_ALONE))
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzma_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        compressed = list(binascii.a2b_hex(stdout_data))
         final_size = len(compressed)
         newdata = [0] * (orig_len - (length - final_size))
 
@@ -442,31 +443,36 @@ def lzma_compress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to compressed region."
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
 
 def lzma_decompress(fi):
     """
     Decompress selected region with LZMA algorithm
     """
-    if lzma_not_installed:
-        print "backport.lzma is not installed."
-        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
-        print "and restart FileInsight."
-        return
-
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        decompressed = list(backports.lzma.decompress(data, format=backports.lzma.FORMAT_ALONE))
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzma_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        decompressed = list(binascii.a2b_hex(stdout_data))
         final_size = len(decompressed)
         newdata = [0] * (orig_len - (length - final_size))
 
@@ -483,31 +489,36 @@ def lzma_decompress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decompressed region."
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
 
 def xz_compress(fi):
     """
     Compress selected region with XZ format
     """
-    if lzma_not_installed:
-        print "backport.lzma is not installed."
-        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
-        print "and restart FileInsight."
-        return
-
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        compressed = list(backports.lzma.compress(data))
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute xz_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        compressed = list(binascii.a2b_hex(stdout_data))
         final_size = len(compressed)
         newdata = [0] * (orig_len - (length - final_size))
 
@@ -524,31 +535,36 @@ def xz_compress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Compressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to compressed region."
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
 
 def xz_decompress(fi):
     """
     Decompress selected XZ compressed region
     """
-    if lzma_not_installed:
-        print "backport.lzma is not installed."
-        print "Please install it with 'python -m pip install -i https://pypi.anaconda.org/nehaljwani/simple backports.lzma'"
-        print "and restart FileInsight."
-        return
-
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        decompressed = list(backports.lzma.decompress(data))
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute xz_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        decompressed = list(binascii.a2b_hex(stdout_data))
         final_size = len(decompressed)
         newdata = [0] * (orig_len - (length - final_size))
 
@@ -565,9 +581,8 @@ def xz_decompress(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
-            print "Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset))
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
-            print "Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1))
-        print "Added a bookmark to decompressed region."
-
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")

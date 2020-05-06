@@ -1,8 +1,7 @@
 #
-# Compression operations - Various compression / decompression operations to
-# selected region
+# XZ decompress - Decompress selected XZ compressed region
 #
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,52 +25,10 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
+import lzma
 import sys
-import tkinter
 
-operations = ("aPLib compress",
-              "aPLib decompress",
-              "Bzip2 compress",
-              "Bzip2 decompress",
-              "Gzip compress",
-              "Gzip decompress",
-              "LZMA compress",
-              "LZMA decompress",
-              "LZNT1 compress",
-              "LZNT1 decompress",
-              "Raw deflate",
-              "Raw inflate",
-              "XZ compress",
-              "XZ decompress")
-exit_value = -1
-
-root = tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
-
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
-
-# Add menu items
-menu1 = tkinter.Menu(root, tearoff=False)
-menu2 = tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Compression operations", menu=menu2)
-
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
-
-    menu2.add_command(label=operations[i], command=index)
-
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
-
-root.mainloop()
-
-sys.exit(exit_value)
+data = binascii.a2b_hex(sys.stdin.read())
+data = lzma.decompress(data)
+sys.stdout.write(str(binascii.b2a_hex(data).decode()))
