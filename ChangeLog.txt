@@ -1,3 +1,29 @@
+2020-05-06 Release 2.0
+* Important changes
+  - FileInsight-plugins now requires Python 3 and You no longer need to install Python 2 (x86)
+    to use FileInsight-plugins.
+  - This version is compatible only with the latest version (3.5) of FileInsight and not compatible
+    with older version (such as 2.1) of FileInsight.
+* New plugins
+  - Basic operations
+    - Cut binary to clipboard
+      Cut binary data of selected region to clipboard as hex-encoded text
+    - Copy binary to clipboard
+      Copy binary data of selected region to clipboard as hex-encoded text
+    - Paste binary from clipboard
+      Paste binary data (converted from hex-encoded text) from clipboard
+  - Parsing operations
+    - Show metadata
+      Show metadata of selected region (the whole file if not selected) with ExifTool
+* Enhancement
+  - Added checks of Python 3 installation
+  - Show confirmation dialog before adding many (over 100) bookmarks because it takes long time
+  - Speeding up log display by reducing number of print() calls
+* Other changes
+  - Added a workaround for the truncation bug of getDocument() brought in FileInsight 3.5
+  - Removed existing workarounds regarding Python 3
+  - Removed dependency on backports.lzma module because Python 3 has lzma module
+
 2019-12-22 Release 1.5
 * New plugins
   - Binary data to decimal text
