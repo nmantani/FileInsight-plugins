@@ -26,7 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-import Tkinter
+import tkinter
 
 operations = ("Regex search",
               "Replace",
@@ -35,7 +35,7 @@ operations = ("Regex search",
               "YARA scan")
 exit_value = -1
 
-root = Tkinter.Tk()
+root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
 
 # Adjust menu position
@@ -47,8 +47,8 @@ if y > 10:
     y = y - 10
 
 # Add menu items
-menu1 = Tkinter.Menu(root, tearoff=False)
-menu2 = Tkinter.Menu(menu1, tearoff=False)
+menu1 = tkinter.Menu(root, tearoff=False)
+menu2 = tkinter.Menu(menu1, tearoff=False)
 menu1.add_cascade(label="Search operations", menu=menu2)
 
 for i in range(0, len(operations)):

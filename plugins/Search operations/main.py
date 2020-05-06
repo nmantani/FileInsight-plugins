@@ -49,11 +49,43 @@ class FileInsight:
         self.showSimpleDialog = showSimpleDialog
         self.decode = decode
         self.setDocument = setDocument
-        self.getDocument = getDocument
         self.getDocumentName = getDocumentName
         self.getDocumentCount = getDocumentCount
         self.getDocumentURL = getDocumentURL
         self.activateDocumentAt = activateDocumentAt
+
+    # Workaround for the truncation bug of getDocument()
+    def getDocument(self):
+        length = getLength()
+        data = getDocument()
+        if length - len(data) > 0:
+            for i in range(len(data), length):
+                data += getByteAt(i)
+
+        return data
+
+def find_python3():
+    pyexe_found = False
+    if os.path.exists("C:/Windows/py.exe") or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Launcher/py.exe"):
+        pyexe_found = True
+    
+    if not pyexe_found:
+        print("Error: py.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
+
+    python3_version = ["30", "31", "33", "34", "35", "36", "37", "38", "39"]
+    python3_found = False
+    for v in python3_version:
+        if os.path.exists("C:/Program Files/Python%s/python.exe" % v) \
+           or os.path.exists("C:/Program Files (x86)/Python%s-32/python.exe" % v) \
+           or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Python%s/python.exe" % v) \
+           or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Python%s-32/python.exe" % v):
+           python3_found = True
+           break
+    
+    if not python3_found:
+       print("Error: python.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
+
+    return pyexe_found and python3_found
 
 if __name__ == "__main__":
     operations = (search_ops.regex_search,
@@ -88,27 +120,15 @@ if __name__ == "__main__":
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Workaround not to execute python.exe of Microsoft Store (on Windows 10 version 1903)
-    path_to_remove = os.environ["HOMEDRIVE"] + os.environ["HOMEPATH"] + "\\AppData\\Local\\Microsoft\\WindowsApps\\?;"
-    path_to_remove = re.sub(r"\\", r"\\\\", path_to_remove)
-    os.environ["PATH"] = re.sub(path_to_remove, "", os.environ["PATH"])
+    if find_python3():
+        # Execute menu.py to show GUI
+        # GUI portion is moved to menu.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["py.exe", "menu.py", str(point.x), str(point.y)], startupinfo=startupinfo)
+        index = p.wait() # Receive exit value as index of selected plugin
 
-    # Workaround not to execute python.exe of Python 3
-    path_to_remove = os.environ["HOMEDRIVE"] + os.environ["HOMEPATH"] + "\\AppData\\Local\\Programs\\Python\\Python3[0-9]+(-32)?\\?.*?;"
-    path_to_remove = re.sub(r"\\", r"\\\\", path_to_remove)
-    os.environ["PATH"] = re.sub(path_to_remove, "", os.environ["PATH"])
-    path_to_remove = os.environ["HOMEDRIVE"] + "\\Python3[0-9]+\\?.*?;"
-    path_to_remove = re.sub(r"\\", r"\\\\", path_to_remove)
-    os.environ["PATH"] = re.sub(path_to_remove, "", os.environ["PATH"])
-
-    # Execute menu.py to show GUI
-    # GUI portion is moved to menu.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["python", "menu.py", str(point.x), str(point.y)], startupinfo=startupinfo)
-    index = p.wait() # Receive exit value as index of selected plugin
-
-    if index >= 0:
-        fi = FileInsight()
-        operations[index](fi)
+        if index >= 0:
+            fi = FileInsight()
+            operations[index](fi)
 
     # Workaround to avoid crash of FileInsight on Windows 7
     if "threading" in sys.modules:
