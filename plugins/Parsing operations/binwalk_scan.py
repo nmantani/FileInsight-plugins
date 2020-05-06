@@ -1,8 +1,7 @@
 #
-# Parsing operations - Operations such as file type detection and embedded file
-# detection
+# Binwalk scan - Scan selected region (the whole file if not selected) to find embedded files
 #
-# Copyright (c) 2019, Nobutaka Mantani
+# Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,43 +25,16 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
 import sys
-import tkinter
 
-operations = ("Binwalk scan",
-              "File type",
-              "Find PE file",
-              "Show metadata",
-              "Strings")
-exit_value = -1
+try:
+    import binwalk
+except ImportError:
+    exit(-1)
 
-root = tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
-
-# Adjust menu position
-x = int(sys.argv[1])
-if x > 10:
-    x = x - 10
-y = int(sys.argv[2])
-if y > 10:
-    y = y - 10
-
-# Add menu items
-menu1 = tkinter.Menu(root, tearoff=False)
-menu2 = tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Parsing operations", menu=menu2)
-
-for i in range(0, len(operations)):
-    def index(i=i):
-        global exit_value
-        exit_value = i
-        root.quit()
-
-    menu2.add_command(label=operations[i], command=index)
-
-root.withdraw() # Hide root window
-menu1.post(x, y) # Show popup menu
-
-root.mainloop()
-
-sys.exit(exit_value)
+filepath = sys.argv[1]
+offset = int(sys.argv[2])
+for module in binwalk.scan(sys.argv[1], signature=True, quiet=True, string=False):
+    for result in module.results:
+        print("Offset: 0x%x\t%s" % (offset + result.offset, result.description))
