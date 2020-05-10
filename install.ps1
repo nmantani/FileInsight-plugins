@@ -291,6 +291,10 @@ function install_python3($work_dir) {
             Write-Host "[+] Installing pip for Python 3..."
             Write-Host "$PYTHON_EXE -3 -m ensurepip"
             Invoke-Expression "$PYTHON_EXE -3 -m ensurepip"
+            Write-Host "[+] Done."
+            Write-Host "[+] Updating pip for Python 3..."
+            Write-Host "$PYTHON_EXE -3 -m pip install --upgrade pip"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install --upgrade pip"
         }
         Write-Host "[+] Done."
         Write-Host "[+] Python 3 has been installed."
