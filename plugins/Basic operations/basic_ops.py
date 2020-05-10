@@ -163,12 +163,12 @@ def delete_after(fi):
     length = fi.getSelectionLength()
 
     data = list(fi.getDocument())
-    data = data[:offset+1]
+    data = data[:offset]
 
     fi.newDocument("New file", 1)
     fi.setDocument("".join(data))
 
-    print("Deleted from offset %s to the end of the file." % hex(offset+1))
+    print("Deleted from offset %s to the end of the file." % hex(offset))
 
 def fill(fi):
     """
