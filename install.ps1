@@ -390,7 +390,7 @@ function install_aplib($work_dir) {
     $version = "1.1.1"
     Write-Host "[+] Installing aPLib..."
 
-    $file_path = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Compression operations\aplib.dll"
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Compression operations\aplib.dll"
     if (Test-Path $file_path) {
         Write-Host "[*] aPLib is already installed. Skipping installation."
     } else {
@@ -431,7 +431,7 @@ function install_aplib($work_dir) {
         }
         Write-Host "[+] Done."
 
-        $dest_dir = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Compression operations"
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Compression operations"
         Write-Host "[+] Copying aplib.dll to $dest_dir ..."
         Copy-Item $file_path -Destination $dest_dir -Recurse -Force
         if (!(Test-Path "$dest_dir\aplib.dll")) {
