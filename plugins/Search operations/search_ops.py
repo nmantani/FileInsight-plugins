@@ -624,7 +624,7 @@ def yara_scan(fi):
     for l in stdout_data.splitlines():
         offset_matched = int(l.split()[1], 0)
         size_matched = int(l.split()[3], 0)
-        m = re.match("^Offset: (.+) size: (.+) rule: (.+) tag: (.+) identifier: (.+) matched: (.+)$", l)
+        m = re.match("^Offset: (.+) size: (.+) rule: (.+) tag: (.*) identifier: (.+) matched: (.+)$", l)
         identifier_matched = m.groups()[4]
         if num_hits > 0 and identifier_matched == prev_string and offset_matched <= bookmark_end[-1]:
             bookmark_end[-1] = offset_matched + size_matched
