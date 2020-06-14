@@ -44,7 +44,8 @@ def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
     aes_mode = {"ECB":Cryptodome.Cipher.AES.MODE_ECB,
                 "CBC":Cryptodome.Cipher.AES.MODE_CBC,
                 "CFB":Cryptodome.Cipher.AES.MODE_CFB,
-                "OFB":Cryptodome.Cipher.AES.MODE_OFB}
+                "OFB":Cryptodome.Cipher.AES.MODE_OFB,
+                "CTR":Cryptodome.Cipher.AES.MODE_CTR}
     aes_key_length = (16, 24 ,32)
 
     mode = cm.get()
@@ -63,7 +64,7 @@ def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
     else:
         key = key.encode()
 
-    if mode in ["CBC", "CFB", "OFB"] and iv_type == "Hex":
+    if mode in ["CBC", "CFB", "OFB", "CTR"] and iv_type == "Hex":
         if re.match("^([0-9A-Fa-f]{2})+$", iv):
             iv = binascii.a2b_hex(iv)
         else:
@@ -72,7 +73,7 @@ def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
     else:
         iv = iv.encode()
 
-    if mode in ["CBC", "CFB", "OFB"] and len(iv) != Cryptodome.Cipher.AES.block_size:
+    if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != Cryptodome.Cipher.AES.block_size:
         tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % Cryptodome.Cipher.AES.block_size)
         return
 
@@ -85,6 +86,8 @@ def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
             cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv, segment_size=Cryptodome.Cipher.AES.block_size * 8)
         elif mode in ["CBC", "OFB"]:
             cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv)
+        elif mode == "CTR": # The first half of IV is used as nonce and the second half is used as initial_value (compatible with CyberChef).
+            cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], nonce=iv[0:8], initial_value=iv[8:16])
         else:
             cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode])
 
@@ -101,7 +104,7 @@ def decrypt(data, root, cm, ckl, ckt, ek, cit, ei):
     root.quit()
     exit(0) # Decrypted successfully
 
-def combo_mode_selected(root, cm, cit, ei):
+def combo_mode_selected(root, cm, cit, ei, lc):
     mode = cm.get()
     if mode == "ECB":
         cit.configure(state = "disabled")
@@ -109,6 +112,11 @@ def combo_mode_selected(root, cm, cit, ei):
     else:
         cit.configure(state = "readonly")
         ei.configure(state = "normal")
+
+    if mode == "CTR":
+        lc.grid()
+    else:
+        lc.grid_remove()
 
 # Receive data
 data = binascii.a2b_hex(sys.stdin.read())
@@ -122,7 +130,7 @@ label_mode = tkinter.Label(root, text="Mode:")
 label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 combo_mode = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB")
+combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB", "CTR")
 combo_mode.current(0)
 combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
@@ -165,8 +173,12 @@ entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ckl=combo_key_length, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckl, ckt, ek, cit, ei)))
 button.grid(row=3, column=0, padx=5, pady=5, columnspan=4)
 
+label_ctr = tkinter.Label(root, text="Note:\nThe first half of IV is used as the nonce and the second half is used as\nthe initial value of the counter (compatible with CyberChef).", justify="left")
+label_ctr.grid(row=4, column=0, padx=5, pady=5, columnspan=4, sticky="w")
+label_ctr.grid_remove()
+
 # Set callback function
-combo_mode.bind('<<ComboboxSelected>>', (lambda root=root, cm=combo_mode, cit=combo_iv_type, ei=entry_iv: combo_mode_selected(root, cm, cit, ei)))
+combo_mode.bind('<<ComboboxSelected>>', (lambda root=root, cm=combo_mode, cit=combo_iv_type, ei=entry_iv, lc=label_ctr: combo_mode_selected(root, cm, cit, ei, lc)))
 # These are disabled in the initial state (ECB mode)
 combo_iv_type.configure(state = "disabled")
 entry_iv.configure(state = "disabled")
