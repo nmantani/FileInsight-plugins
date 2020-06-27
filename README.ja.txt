@@ -34,7 +34,7 @@ https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html
 使用するために必要なもの:
 aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
-aplib.dll (32ビット版) を "Compression operations" のフォルダに置いてください。
+aplib.dll (32ビット版) を "plugins\Operations\Compression" のフォルダに置いてください。
 
 Binwalk scan プラグインについては、 binwalk Python モジュールが必要です。
 https://github.com/ReFirmLabs/binwalk からダウンロード、インストールしてください
@@ -64,11 +64,11 @@ py.exe -3 -m pip install -r requirements.txt
 
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
-exiftool.exe という名前で "Parsing Operations" フォルダにコピーしてください。
+exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。
 
 カスタマイズ:
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
-"Misc operations\send_to.json" を編集してください。
+"plugins\Operations\Misc\send_to.json" を編集してください。
 
 使い方:
 Plugins タブにあるカテゴリをクリックして、プラグインを選択してください。
