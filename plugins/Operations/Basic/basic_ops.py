@@ -58,7 +58,7 @@ def cut_binary_to_clipboard(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute copy_to_clipboard.py
-        p = subprocess.Popen(["py.exe", "-3", "copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive result
         stdout_data, stderr_data = p.communicate(binstr)
@@ -92,7 +92,7 @@ def copy_binary_to_clipboard(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute copy_to_clipboard.py
-        p = subprocess.Popen(["py.exe", "-3", "copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive result
         stdout_data, stderr_data = p.communicate(binstr)
@@ -120,7 +120,7 @@ def paste_binary_from_clipboard(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute paste_from_clipboard.py
-    p = subprocess.Popen(["py.exe", "-3", "paste_from_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Basic/paste_from_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive result
     stdout_data, stderr_data = p.communicate()

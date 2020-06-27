@@ -44,7 +44,7 @@ def bookmark_yesno_dialog(num_bookmark):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "../Misc operations/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -414,7 +414,7 @@ def replace(fi):
 
     # Execute send_to.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Search/replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     if stdout_data == "":
@@ -533,7 +533,7 @@ def yara_scan(fi):
 
     # Execute file_comparison_dialog.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Search/yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     ret = p.wait()
@@ -583,7 +583,7 @@ def yara_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute binwalk_scan.py for scanning with binwalk
-    p = subprocess.Popen(["py.exe", "-3", "yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Search/yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()

@@ -95,7 +95,7 @@ def custom_base64_decode(fi):
 
         # Execute dialog.py to show GUI
         # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "custom_base64_decode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_base64_decode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -143,7 +143,7 @@ def custom_base64_encode(fi):
 
         # Execute dialog.py to show GUI
         # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "custom_base64_encode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_base64_encode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -192,7 +192,7 @@ def rot13(fi):
 
         # Execute rot13_dialog.py to show GUI
         # GUI portion is moved to rot13_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
@@ -349,7 +349,7 @@ def binary_data_to_decimal_text(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -391,7 +391,7 @@ def decimal_text_to_binary_data(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -449,7 +449,7 @@ def binary_data_to_octal_text(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -491,7 +491,7 @@ def octal_text_to_binary_data(fi):
 
         # Execute delimiter_dialog.py to show GUI
         # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
