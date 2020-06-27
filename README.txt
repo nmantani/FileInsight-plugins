@@ -34,7 +34,7 @@ Please get it from https://www.mcafee.com/enterprise/en-us/downloads/free-tools/
 Pre-requisites:
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
-aplib.dll (32 bits version) into "Compression operations" folder.
+aplib.dll (32 bits version) into "plugins\Operations\Compression" folder.
 
 For the "Binwalk scan" plugin, it requires binwalk Python module.
 Please get it from https://github.com/ReFirmLabs/binwalk
@@ -61,10 +61,10 @@ py.exe -3 -m pip install -r requirements.txt
 
 For the "Show metadata" plugin, it requires ExifTool.
 Please download ExifTool from https://exiftool.org/
-and copy exiftool(-k).exe as exiftool.exe into "Parsing Operations" folder.
+and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.
 
 Customization:
-For the "Send to" plugin, please edit "Misc operations\send_to.json" to run your
+For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
 How to use:

@@ -1,3 +1,23 @@
+2020-06-28 Release 2.1
+* Important changes
+  - Plugin menus are integrated into the single menu tree.
+  - The plugin menu is displayed by clicking "Operations" in the "Plugin" tab.
+  - All category folders are moved into the "Operations" folder.
+    If you manually install version 2.1, please remove old "plugins" folder or rename it for safekeeping before installation.
+* Enhancement
+  - CTR (Counter) mode is added to AES, Blowfish, DES and Triple DES plugins.
+    Use of the IV parameter in CTR mode is compatible with CyberChef.
+    The first half of IV is used as the nonce and the second half is used as the initial value of the counter for AES.
+    The first seven bytes of IV are used as the nonce and the last one byte is used as the initial value of the counter for Blowfish, DES and Triple DES.
+* Other changes
+  - "Delete after" plugin deletes from current cursor position.
+  - install.ps1 installs FileInsight, Python 3 and so on with "-update" option.
+  - install.ps1 updates pip during installation.
+* Bug fixes
+  - Error of "YARA scan" plugin with YARA rules that does not have tag has been fixed.
+  - Binwalk installation failure of install.ps1 has been fixed.
+  - aPLib installation failure of install.ps1 has been fixed.
+
 2020-05-06 Release 2.0
 * Important changes
   - FileInsight-plugins now requires Python 3 and You no longer need to install Python 2 (x86)
