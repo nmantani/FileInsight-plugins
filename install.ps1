@@ -42,14 +42,14 @@ if ($PROXY_HOST -and $PROXY_PORT) {
     $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
 }
 
-$RELEASE_VERSION = "2.0"
+$RELEASE_VERSION = "2.1"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.8.2"
+$PYTHON_VERSION = "3.8.3"
 
 # Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "8BE35C247C5812AEA2EDA06D51D0B4B7348C74C9BB1192AC7B1C442E6DB0339D"
-$PYTHON_HASH = "8E400E3F32CDCB746E62E0DB4D3AE4CBA1F927141EBC4D0D5A4006B0DAEE8921"
+$FILEINSIGHT_PLUGINS_HASH = "0A5A381BDF1190FEBCE93A042493CEBDB45D367BEB085355CF073AF367146151"
+$PYTHON_HASH = "C74898382A5192D4B506767CBB4B41B8E80B734B8A7CE1FBB13E4ABA8FFE5BF6"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 
 function create_working_directory {
@@ -144,10 +144,27 @@ function extract_zip($zip_path, $dest_path) {
 function install_fileinsight_plugins($work_dir, $update) {
     Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
 
-    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Basic operations\main.py"
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\main.py"
     if ((Test-Path $file_path) -and !$update) {
         Write-Host "[*] FileInsight-plugins is already installed. Skipping installation."
     } else {
+        $old_file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Basic operations\main.py"
+
+        if (Test-Path $old_file_path) {
+            Write-Host "[+] Old plugin foler structure has been found. Renaming the 'plugins' folder to 'plugins-old' folder for safekeeping..."
+            $from_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins"
+            $to_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins-old"
+            Move-Item $from_path $to_path
+
+            if (!(Test-Path $to_path)) {
+                Write-Host "[!] Rename has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+        }
+
         Write-Host "[+] Downloading FileInsight-plugins-$RELEASE_VERSION..."
         $plugins_url = "https://github.com/nmantani/FileInsight-plugins/archive/v$RELEASE_VERSION.zip"
         $zip_archive_path = "$work_dir\FileInsight-plugins-$RELEASE_VERSION.zip"
@@ -175,7 +192,7 @@ function install_fileinsight_plugins($work_dir, $update) {
         Write-Host "[+] Extracting FileInsight-plugins-$RELEASE_VERSION.zip..."
         $extract_dir = "$work_dir\FileInsight-plugins-$RELEASE_VERSION"
         extract_zip $zip_archive_path $work_dir
-        $file_path = "$extract_dir\plugins\XOR operations\main.py"
+        $file_path = "$extract_dir\plugins\Operations\XOR\xor_ops.py"
 
         if (!(Test-Path $file_path)) {
             Write-Host "[!] Extraction has been failed."
@@ -191,7 +208,7 @@ function install_fileinsight_plugins($work_dir, $update) {
         }
         Write-Host "[+] Copying FileInsight-plugins to $dest_dir..."
         Copy-Item "$extract_dir\*" -Destination $dest_dir -Recurse -Force
-        if (!(Test-Path "$dest_dir\plugins\XOR operations\main.py")) {
+        if (!(Test-Path "$dest_dir\plugins\Operations\XOR\xor_ops.py")) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
@@ -390,7 +407,7 @@ function install_aplib($work_dir) {
     $version = "1.1.1"
     Write-Host "[+] Installing aPLib..."
 
-    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Compression operations\aplib.dll"
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Compression\aplib.dll"
     if (Test-Path $file_path) {
         Write-Host "[*] aPLib is already installed. Skipping installation."
     } else {
@@ -431,7 +448,7 @@ function install_aplib($work_dir) {
         }
         Write-Host "[+] Done."
 
-        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Compression operations"
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Compression"
         Write-Host "[+] Copying aplib.dll to $dest_dir ..."
         Copy-Item $file_path -Destination $dest_dir -Recurse -Force
         if (!(Test-Path "$dest_dir\aplib.dll")) {
@@ -447,12 +464,22 @@ function install_aplib($work_dir) {
 }
 
 function migrate_plugin_config() {
-    $old_file_path = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Misc operations\send_to.json"
-    $new_file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Misc operations\send_to.json"
+    $old_file_path1 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins-old\Misc operations\send_to.json"
+    $old_file_path2 = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Misc operations\send_to.json"
+    $new_file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\send_to.json"
 
-    if ((Test-Path $old_file_path) -and !(Test-Path $new_file_path)) {
-        Write-Host "[+] Migrating existing config file from $old_file_path to $new_file_path..."
-        Copy-Item "$old_file_path" -Destination "$new_file_path"
+    if ((Test-Path $old_file_path1) -and !(Test-Path $new_file_path)) {
+        Write-Host "[+] Migrating existing config file from $old_file_path1 to $new_file_path..."
+        Copy-Item "$old_file_path1" -Destination "$new_file_path"
+        if (!(Test-Path $new_file_path)) {
+            Write-Host "[!] Migration failed."
+        } else {
+            Write-Host "[+] Done."
+        }
+        Write-Host ""
+    } elseif ((Test-Path $old_file_path2) -and !(Test-Path $new_file_path)) {
+        Write-Host "[+] Migrating existing config file from $old_file_path2 to $new_file_path..."
+        Copy-Item "$old_file_path2" -Destination "$new_file_path"
         if (!(Test-Path $new_file_path)) {
             Write-Host "[!] Migration failed."
         } else {
