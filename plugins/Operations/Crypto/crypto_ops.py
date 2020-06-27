@@ -127,6 +127,7 @@ def do_decrypt(fi, name, script):
 
         # Execute arc4_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
+        script = "Crypto/" + script
         p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
@@ -175,6 +176,7 @@ def do_encrypt(fi, name, script):
 
         # Execute arc4_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
+        script = "Crypto/" + script
         p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data

@@ -1,7 +1,5 @@
 #
-# Misc operations - Miscellaneous operations
-#
-# Copyright (c) 2018, Nobutaka Mantani
+# Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -29,7 +27,31 @@ import ctypes
 import os
 import re
 import subprocess
+import sys
+
+sys.path.append("./Basic")
+import basic_ops
+
+sys.path.append("./Compression")
+import compression_ops
+
+sys.path.append("./Crypto")
+import crypto_ops
+
+sys.path.append("./Encoding")
+import encoding_ops
+
+sys.path.append("./Misc")
 import misc_ops
+
+sys.path.append("./Parsing")
+import parsing_ops
+
+sys.path.append("./Search")
+import search_ops
+
+sys.path.append("./XOR")
+import xor_ops
 
 class FileInsight:
     """
@@ -68,7 +90,7 @@ def find_python3():
     pyexe_found = False
     if os.path.exists("C:/Windows/py.exe") or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Launcher/py.exe"):
         pyexe_found = True
-    
+
     if not pyexe_found:
         print("Error: py.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
 
@@ -81,17 +103,96 @@ def find_python3():
            or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Python%s-32/python.exe" % v):
            python3_found = True
            break
-    
+
     if not python3_found:
        print("Error: python.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
 
     return pyexe_found and python3_found
 
 if __name__ == "__main__":
-    operations = (misc_ops.byte_frequency,
-                  misc_ops.file_comparison,
-                  misc_ops.hash_values,
-                  misc_ops.send_to)
+    # Tuple of plugin operations
+    operations = (basic_ops.copy_to_new_file,
+                  basic_ops.cut_binary_to_clipboard,
+                  basic_ops.copy_binary_to_clipboard,
+                  basic_ops.paste_binary_from_clipboard,
+                  basic_ops.delete_before,
+                  basic_ops.delete_after,
+                  basic_ops.fill,
+                  basic_ops.invert,
+                  basic_ops.reverse_order,
+                  basic_ops.swap_nibbles,
+                  basic_ops.swap_two_bytes,
+                  basic_ops.to_upper_case,
+                  basic_ops.to_lower_case,
+                  basic_ops.swap_case)
+
+    operations += (compression_ops.aplib_compress,
+                   compression_ops.aplib_decompress,
+                   compression_ops.bzip2_compress,
+                   compression_ops.bzip2_decompress,
+                   compression_ops.gzip_compress,
+                   compression_ops.gzip_decompress,
+                   compression_ops.lzma_compress,
+                   compression_ops.lzma_decompress,
+                   compression_ops.lznt1_compress,
+                   compression_ops.lznt1_decompress,
+                   compression_ops.raw_deflate,
+                   compression_ops.raw_inflate,
+                   compression_ops.xz_compress,
+                   compression_ops.xz_decompress)
+
+    operations += (crypto_ops.aes_decrypt,
+                   crypto_ops.aes_encrypt,
+                   crypto_ops.arc2_decrypt,
+                   crypto_ops.arc2_encrypt,
+                   crypto_ops.arc4_decrypt,
+                   crypto_ops.blowfish_decrypt,
+                   crypto_ops.blowfish_encrypt,
+                   crypto_ops.chacha20_decrypt,
+                   crypto_ops.des_decrypt,
+                   crypto_ops.des_encrypt,
+                   crypto_ops.salsa20_decrypt,
+                   crypto_ops.triple_des_decrypt,
+                   crypto_ops.triple_des_encrypt)
+
+    operations += (encoding_ops.binary_data_to_hex_text,
+                   encoding_ops.hex_text_to_binary_data,
+                   encoding_ops.binary_data_to_decimal_text,
+                   encoding_ops.decimal_text_to_binary_data,
+                   encoding_ops.binary_data_to_octal_text,
+                   encoding_ops.octal_text_to_binary_data,
+                   encoding_ops.binary_data_to_binary_text,
+                   encoding_ops.binary_text_to_binary_data,
+                   encoding_ops.custom_base64_decode,
+                   encoding_ops.custom_base64_encode,
+                   encoding_ops.rot13,
+                   encoding_ops.from_quoted_printable,
+                   encoding_ops.to_quoted_printable)
+
+    operations += (misc_ops.byte_frequency,
+                   misc_ops.file_comparison,
+                   misc_ops.hash_values,
+                   misc_ops.send_to)
+
+    operations += (parsing_ops.binwalk_scan,
+                   parsing_ops.file_type,
+                   parsing_ops.find_pe_file,
+                   parsing_ops.show_metadata,
+                   parsing_ops.strings)
+
+    operations += (search_ops.regex_search,
+                   search_ops.replace,
+                   search_ops.xor_hex_search,
+                   search_ops.xor_text_search,
+                   search_ops.yara_scan)
+
+    operations += (xor_ops.decremental_xor,
+                   xor_ops.incremental_xor,
+                   xor_ops.null_preserving_xor,
+                   xor_ops.xor_with_next_byte,
+                   xor_ops.guess_256_byte_xor_keys,
+                   xor_ops.visual_decrypt,
+                   xor_ops.visual_encrypt)
 
     # Structure for mouse cursor position
     class _point_t(ctypes.Structure):

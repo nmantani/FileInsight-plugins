@@ -30,6 +30,7 @@ import binascii
 import bz2
 import ctypes
 import gzip
+import os
 import StringIO
 import subprocess
 import zlib
@@ -44,7 +45,7 @@ def aplib_compress(fi):
         orig_len = len(orig)
 
         try:
-            aplib = ctypes.windll.LoadLibrary('aplib.dll')
+            aplib = ctypes.windll.LoadLibrary("Compression/aplib.dll")
 
             compressed = ctypes.create_string_buffer(aplib.aP_max_packed_size(length))
             workspace = ctypes.create_string_buffer(aplib.aP_workmem_size(length))
@@ -68,7 +69,7 @@ def aplib_compress(fi):
         except WindowsError:
             print("Error: cannot load aplib.dll.")
             print("Please download aPLib from http://ibsensoftware.com/download.html")
-            print("and copy aplib.dll (32 bits version) into 'Compression operations' folder.")
+            print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
 
 def aplib_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -80,7 +81,7 @@ def aplib_decompress(fi):
         orig_len = len(orig)
 
         try:
-            aplib = ctypes.windll.LoadLibrary('aplib.dll')
+            aplib = ctypes.windll.LoadLibrary("Compression/aplib.dll")
 
             final_size = aplib.aPsafe_get_orig_size(ctypes.c_char_p(data))
 
@@ -123,7 +124,7 @@ def aplib_decompress(fi):
         except WindowsError:
             print("Error: cannot load aplib.dll")
             print("Please download aPLib from http://ibsensoftware.com/download.html")
-            print("and copy aplib.dll (32 bits version) into 'Compression operations' folder.")
+            print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
 
         except Exception:
             print("Error: invalid compressed data")
@@ -420,7 +421,7 @@ def lzma_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzma_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -466,7 +467,7 @@ def lzma_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzma_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -512,7 +513,7 @@ def xz_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute xz_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -558,7 +559,7 @@ def xz_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute xz_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))

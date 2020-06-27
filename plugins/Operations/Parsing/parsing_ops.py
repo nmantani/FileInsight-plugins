@@ -45,7 +45,7 @@ def bookmark_yesno_dialog(num_bookmark):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "../Misc operations/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -84,7 +84,7 @@ def binwalk_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute binwalk_scan.py for scanning with binwalk
-    p = subprocess.Popen(["py.exe", "-3", "binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -143,7 +143,7 @@ def file_type(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute file_type.py for file type identification
-    p = subprocess.Popen(["py.exe", "-3", "file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive file type
     stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -183,7 +183,7 @@ def find_pe_file(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute find_pe_file.py for finding PE files
-    p = subprocess.Popen(["py.exe", "-3", "find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -236,10 +236,10 @@ def show_metadata(fi):
         data = fi.getDocument()
         length = fi.getLength()
 
-    if not os.path.exists("exiftool.exe"):
+    if not os.path.exists("Parsing/exiftool.exe"):
         print("ExifTool is not installed.")
         print("Please download ExifTool from https://exiftool.org/")
-        print("and copy exiftool(-k).exe as exiftool.exe into '%s' folder." % os.getcwd())
+        print("and copy exiftool(-k).exe as exiftool.exe into '%s' folder." % (os.getcwd() + "\\Parsing"))
         return
 
     # Create a temporary file
@@ -253,7 +253,7 @@ def show_metadata(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute binwalk_scan.py for scanning with binwalk
-    p = subprocess.Popen(["exiftool.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["Parsing/exiftool.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -322,7 +322,7 @@ def strings(fi):
 
     # Execute strings_dialog.py to show GUI
     # GUI portion is moved to external script to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive parameters
     stdout_data, stderr_data = p.communicate()

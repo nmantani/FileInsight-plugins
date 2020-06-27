@@ -44,7 +44,7 @@ def bookmark_yesno_dialog(num_bookmark):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -150,7 +150,7 @@ def send_to(fi):
 
     # Execute send_to.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
 
     if length > 0:
         if length == 1:
@@ -186,7 +186,7 @@ def file_comparison(fi):
 
     # Execute file_comparison_dialog.py to show GUI
     # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     if stdout_data == "":

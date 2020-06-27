@@ -53,7 +53,7 @@ root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
 root.withdraw() # Hide root window
 
-config_file_name = "send_to.json"
+config_file_name = "Misc/send_to.json"
 
 # Load config file
 if os.path.exists(config_file_name):
