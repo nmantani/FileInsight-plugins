@@ -42,13 +42,21 @@ def decremental_xor(fi):
         if key == "":
             key = 0
         else:
-            key = int(key, 16)
+            try:
+                key = int(key, 16)
+            except:
+                print("Error: XOR key is not hexadecimal.")
+                return
 
         step = fi.showSimpleDialog("Decrement step (in hex, default = 0x01):")
         if step == "":
             step = 1
         else:
-            step = int(step, 16)
+            try:
+                step = int(step, 16)
+            except:
+                print("Error: decrement step is not hexadecimal.")
+                return
 
         init_key = key
         buf = list(fi.getDocument())
@@ -81,13 +89,21 @@ def incremental_xor(fi):
         if key == "":
             key = 0
         else:
-            key = int(key, 16)
+            try:
+                key = int(key, 16)
+            except:
+                print("Error: XOR key is not hexadecimal.")
+                return
 
         step = fi.showSimpleDialog("Increment step (in hex, default = 0x01):")
         if step == "":
             step = 1
         else:
-            step = int(step, 16)
+            try:
+                step = int(step, 16)
+            except:
+                print("Error: increment step is not hexadecimal.")
+                return
 
         init_key = key
         buf = list(fi.getDocument())
@@ -116,7 +132,13 @@ def null_preserving_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = int(fi.showSimpleDialog("XOR key (in hex):"), 16)
+        key = fi.showSimpleDialog("XOR key (in hex):")
+        try:
+            key = int(key, 16)
+        except:
+            print("Error: XOR key is not hexadecimal.")
+            return
+
         buf = list(fi.getDocument())
         for i in range(0, length):
             j = offset + i
@@ -308,342 +330,6 @@ def guess_256_byte_xor_keys(fi):
                 print("Added bookmarks to the search hits.")
             print
             i += 1
-
-def mask(x):
-    """
-    Masking bits
-    Used by xor_hex_search() and xor_text_search()
-    """
-    if x >= 0:
-        return 2 ** x - 1
-    else:
-        return 0
-
-def ror(x, rot=1):
-    """
-    Bitwise rotate right
-    Used by xor_hex_search() and xor_text_search()
-    """
-    rot %= 8
-    if rot < 1:
-        return x
-    x &= mask(8)
-    return (x >> rot) | ((x << (8 - rot)) & mask(8))
-
-def rol(x, rot=1):
-    """
-    Bitwise rotate left
-    Used by xor_hex_search() and xor_text_search()
-    """
-    rot %= 8
-    if rot < 1:
-        return x
-    x &= mask(8)
-    return ((x << rot) & mask(8)) | (x >> (8 - rot))
-
-def valdict(buf):
-    """
-    Make dictionary of values in data
-    Used by xor_hex_search() and xor_text_search()
-    """
-    values = {}
-    b = list(buf)
-    length = len(b)
-
-    for i in range(0, length):
-        v = ord(buf[i])
-        if v not in values:
-            values[v] = True
-
-    return values
-
-def search_xor_hex(fi, buf, offset, length, keyword):
-    """
-    Search XORed string
-    Used by xor_hex_search()
-    """
-    LEN_AFTER_HIT = 30
-
-    values = valdict(buf)
-    num_hits = 0
-
-    for i in range(0, length):
-        v = ord(buf[i])
-        if v not in values:
-            values[v] = True
-
-    for i in range(0, 256):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
-
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ord(pattern[j]) ^ i)
-            if ord(pattern[j]) not in values:
-                notinvalues = True
-                break
-
-        # Skip search if the values of encoded string don't exist in data
-        if notinvalues:
-            continue
-
-        pos = buf.find("".join(pattern), 0)
-
-        if pos != -1:
-            hits.append(pos)
-
-        while pos != -1:
-            pos = buf.find("".join(pattern), pos + len(pattern))
-            if pos != -1:
-                hits.append(pos)
-
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if end < length:
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
-
-            for k in range(0, len(hitstr)):
-                c = ord(hitstr[k]) ^ i
-                hitstr[k] = chr(c)
-
-            hitstr = binascii.hexlify("".join(hitstr))
-            hitstr = hitstr.upper()
-            print("XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, hitstr))
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
-
-    return num_hits
-
-def search_rol_hex(fi, buf, offset, length, keyword):
-    """
-    Search bit-rotated string
-    Used by xor_hex_search()
-    """
-    LEN_AFTER_HIT = 30
-
-    values = valdict(buf)
-    num_hits = 0
-
-    for i in range(1, 8):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
-
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ror(ord(pattern[j]), i))
-            if ord(pattern[j]) not in values:
-                notinvalues = True
-                break
-
-        # Skip search if the values of encoded string don't exist in data
-        if notinvalues:
-            continue
-
-        pos = buf.find("".join(pattern), 0)
-
-        if pos != -1:
-            hits.append(pos)
-
-        while pos != -1:
-            pos = buf.find("".join(pattern), pos + len(pattern))
-            if pos != -1:
-                hits.append(pos)
-
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if end < length:
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
-
-            for k in range(0, len(hitstr)):
-                c = rol(ord(hitstr[k]), i)
-                hitstr[k] = chr(c)
-
-            hitstr = binascii.hexlify("".join(hitstr))
-            hitstr = hitstr.upper()
-            print("ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, hitstr))
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
-
-    return num_hits
-
-def xor_hex_search(fi):
-    """
-    Search XORed / bit-rotated data in selected region (the whole file if not selected)
-    """
-    length_sel = fi.getSelectionLength()
-    offset = fi.getSelectionOffset()
-    keyword = fi.showSimpleDialog("Search keyword (in hex):")
-    keyword = keyword.replace("0x", "")
-    disp_keyword = "0x" + keyword.lower()
-    keyword = list(binascii.unhexlify(keyword))
-
-    if len(keyword) > 0:
-        if length_sel > 0:
-            length = length_sel
-            buf = fi.getSelection()
-            print("Search XORed / bit-rotated data from offset %s to %s with keyword %s" % (hex(offset), hex(offset + length - 1), disp_keyword))
-        else:
-            buf = fi.getDocument()
-            length = fi.getLength()
-            offset = 0
-            print("Search XORed / bit-rotated data in the whole file with keyword %s" % disp_keyword)
-
-        num_xor = search_xor_hex(fi, buf, offset, length, keyword)
-        num_rol = search_rol_hex(fi, buf, offset, length, keyword)
-        if num_xor + num_rol == 1:
-            print("Added a bookmark to the search hit.")
-        elif num_xor + num_rol > 1:
-            print("Added bookmarks to the search hits.")
-
-def search_xor_text(fi, buf, offset, length, keyword):
-    """
-    Search XORed string
-    Used by xor_text_search()
-    """
-    LEN_AFTER_HIT = 50
-
-    values = valdict(buf)
-    num_hits = 0
-
-    for i in range(0, length):
-        v = ord(buf[i])
-        if v not in values:
-            values[v] = True
-
-    for i in range(0, 256):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
-
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ord(pattern[j]) ^ i)
-            if ord(pattern[j]) not in values:
-                notinvalues = True
-                break
-
-        # Skip search if the values of encoded string don't exist in data
-        if notinvalues:
-            continue
-
-        pos = buf.find("".join(pattern), 0)
-
-        if pos != -1:
-            hits.append(pos)
-
-        while (pos != -1):
-            pos = buf.find("".join(pattern), pos + len(pattern))
-            if pos != -1:
-                hits.append(pos)
-
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if end < length:
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
-
-            for k in range(0, len(hitstr)):
-                c = ord(hitstr[k]) ^ i
-                if c < 0x20 or c > 0x126:
-                    c = 0x2e
-                hitstr[k] = chr(c)
-
-            print("XOR key: 0x%02x offset: 0x%x search hit: %s" % (i, offset + j, "".join(hitstr)))
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
-
-    return num_hits
-
-def search_rol_text(fi, buf, offset, length, keyword):
-    """
-    Search bit-rotated string
-    Used by xor_text_search()
-    """
-    LEN_AFTER_HIT = 50
-
-    values = valdict(buf)
-    num_hits = 0
-
-    for i in range(1, 8):
-        pattern = keyword[:]
-        notinvalues = False
-        hits = []
-
-        # Encode search string and check whether the values of encoded string exist in data
-        for j in range(0, len(pattern)):
-            pattern[j] = chr(ror(ord(pattern[j]), i))
-            if ord(pattern[j]) not in values:
-                notinvalues = True
-                break
-
-        # Skip search if the values of encoded string don't exist in data
-        if notinvalues:
-            continue
-
-        pos = buf.find("".join(pattern), 0)
-
-        if pos != -1:
-            hits.append(pos)
-
-        while pos != -1:
-            pos = buf.find("".join(pattern), pos + len(pattern))
-            if pos != -1:
-                hits.append(pos)
-
-        # Print search hits
-        for j in hits:
-            end = j + len(pattern) + LEN_AFTER_HIT
-            if end < length:
-                hitstr = list(buf[j:end])
-            else:
-                hitstr = list(buf[j:])
-
-            for k in range(0, len(hitstr)):
-                c = rol(ord(hitstr[k]), i)
-                if c < 0x20 or c > 0x126:
-                    c = 0x2e
-                hitstr[k] = chr(c)
-
-            print("ROL bit: %d offset: 0x%x search hit: %s" % (i, offset + j, "".join(hitstr)))
-            fi.setBookmark(offset + j, len(keyword), hex(offset + j), "#c8ffff")
-            num_hits += 1
-
-    return num_hits
-
-def xor_text_search(fi):
-    """
-    Search XORed / bit-rotated string in selected region (the whole file if not selected)
-    """
-    length_sel = fi.getSelectionLength()
-    offset = fi.getSelectionOffset()
-    keyword = list(fi.showSimpleDialog("Search keyword:"))
-
-    if len(keyword) > 0:
-        if length_sel > 0:
-            length = length_sel
-            buf = fi.getSelection()
-            print("Search XORed / bit-rotated string from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), "".join(keyword)))
-        else:
-            buf = fi.getDocument()
-            length = fi.getLength()
-            offset = 0
-            print("Search XORed / bit-rotated string in the whole file with keyword '%s'" % "".join(keyword))
-        num_xor = search_xor_text(fi, buf, offset, length, keyword)
-        num_rol = search_rol_text(fi, buf, offset, length, keyword)
-        if num_xor + num_rol == 1:
-            print("Added a bookmark to the search hit.")
-        elif num_xor + num_rol > 1:
-            print("Added bookmarks to the search hits.")
 
 def visual_decrypt(fi):
     """
