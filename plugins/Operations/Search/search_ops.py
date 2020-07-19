@@ -187,6 +187,13 @@ def xor_hex_search(fi):
     offset = fi.getSelectionOffset()
     keyword = fi.showSimpleDialog("Search keyword (in hex):")
     keyword = keyword.replace("0x", "")
+
+    try:
+        dummy = int(keyword, 16)
+    except:
+        print("Error: search keyword is not hexadecimal.")
+        return
+
     disp_keyword = "0x" + keyword.lower()
     keyword = list(binascii.unhexlify(keyword))
 
