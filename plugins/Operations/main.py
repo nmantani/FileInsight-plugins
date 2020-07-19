@@ -68,7 +68,6 @@ class FileInsight:
         self.gotoBookmark = gotoBookmark
         self.download = download
         self.newDocument = newDocument
-        self.showSimpleDialog = showSimpleDialog
         self.decode = decode
         self.setDocument = setDocument
         self.getDocumentName = getDocumentName
@@ -85,6 +84,21 @@ class FileInsight:
                 data += getByteAt(i)
 
         return data
+
+    # Workaround for the bug of showSimpleDialog()
+    def showSimpleDialog(self, prompt):
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute dialog.py to show GUI
+        # GUI portion is moved to dialog.py to avoid hangup of FileInsight
+        p = subprocess.Popen(["py.exe", "-3", "show_simple_dialog.py", prompt], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get input
+        stdout_data, stderr_data = p.communicate()
+
+        return(stdout_data.rstrip())
 
 def find_python3():
     pyexe_found = False
