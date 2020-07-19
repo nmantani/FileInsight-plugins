@@ -181,6 +181,12 @@ def fill(fi):
         pat = fi.showSimpleDialog("Pattern (in hex):")
         pat = pat.replace("0x", "")
 
+        try:
+            dummy = int(pat, 16)
+        except:
+            print("Error: pattern is not hexadecimal.")
+            return
+
         l = []
         for i in range(0, len(pat), 2):
             l.append(pat[i:i+2])
