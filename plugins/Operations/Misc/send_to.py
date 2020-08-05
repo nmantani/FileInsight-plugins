@@ -156,14 +156,14 @@ for key,val in programs.items():
                 editor_cmd, regtype = winreg.QueryValueEx(reg_key, "")
                 winreg.CloseKey(reg_key)
                 editor_cmd = replace_env_in_path(editor_cmd)
-                editor_cmd = editor_cmd.replace("%1", "send_to.json")
+                editor_cmd = editor_cmd.replace("%1", "Misc\\send_to.json")
                 tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
                 p = subprocess.Popen(editor_cmd)
                 p.wait()
             except Exception as e:
                 # Fallback to Notepad
                 tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
-                p = subprocess.Popen(["C:\\Windows\\notepad.exe", "send_to.json"])
+                p = subprocess.Popen(["C:\\Windows\\notepad.exe", "Misc\\send_to.json"])
                 p.wait()
         else:
             program = replace_env_in_path(program)
