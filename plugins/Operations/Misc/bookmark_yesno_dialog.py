@@ -31,5 +31,5 @@ import tkinter.messagebox
 
 root = tkinter.Tk()
 root.withdraw() # Hide root window
-ret = tkinter.messagebox.askyesno("Confirmation", "Adding many bookmarks (over 100) may take long time (over ten seconds).\r\nWould you like to add %s bookmarks?" % sys.argv[1])
+ret = tkinter.messagebox.askyesno("Confirmation", "Adding many bookmarks (over 100) may take long time.\r\nWould you like to add %s bookmarks?" % sys.argv[1])
 exit(ret) # Yes: True, No: False
