@@ -27,6 +27,9 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
+import collections
+import ctypes
+import json
 import os
 import re
 import struct
@@ -403,3 +406,134 @@ def strings(fi):
 
     if decode_hex:
         print("Please search 'Decoded: ***\tOriginal: ***' lines to find decoded hex strings.")
+
+def bookmark_yesno_dialog(num_bookmark):
+    """
+    Show a confirmation dialog of adding many bookmarks
+    Used by parse_file_structure()
+    """
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute bookmark_yesno_dialog.py to show confirmation dialog
+    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    return ret
+
+def parse_file_structure(fi):
+    """
+    Parsing file structure from selected region (the whole file if not selected)
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length > 0:
+        data = fi.getSelection()
+    else:
+        offset = 0
+        data = fi.getDocument()
+        length = fi.getLength()
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Structure for mouse cursor position
+    class _point_t(ctypes.Structure):
+        _fields_ = [
+                    ("x",  ctypes.c_long),
+                    ("y",  ctypes.c_long),
+                   ]
+
+    # Get DPI values
+    DEFAULT_DPI = 96
+    LOGPIXELSX = 88
+    LOGPIXELSY = 90
+    dc = ctypes.windll.user32.GetDC(0)
+    dpi_x = ctypes.windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX)
+    dpi_y = ctypes.windll.gdi32.GetDeviceCaps(dc, LOGPIXELSY)
+    ctypes.windll.user32.ReleaseDC(0, dc)
+
+    # Get mouse cursor position
+    point = _point_t()
+    ctypes.windll.user32.GetCursorPos(ctypes.pointer(point))
+    point.x = point.x * DEFAULT_DPI / dpi_x
+    point.y = point.y * DEFAULT_DPI / dpi_y
+
+    # Show menu
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure_menu.py", str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive selection
+    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    ret = p.wait()
+
+    if stdout_data == "":
+        return
+    else:
+        parser = stdout_data
+
+    # Execute find_pe_file.py for finding PE files
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    ret = p.wait()
+
+    if ret == 1:
+        print("Error: parse failed.")
+        print(stderr_data)
+        m = re.search(r": at pos (\d+):", stderr_data)
+        if not m == None:
+            failed_pos = int(m.group(1))
+            fi.setBookmark(offset + failed_pos, 1, hex(offset + failed_pos) + " position of parse error", "#ff0000")
+            print("Added bookmark to the position of parse error.")
+        return
+
+    if fi.getSelectionLength() > 0:
+        print("Parsed from offset %s to %s as %s." % (hex(offset), hex(offset + length), parser))
+    else:
+        print("Parsed the whole file as %s." % parser)
+
+    parsed_dict = json.loads(stdout_data, object_pairs_hook=collections.OrderedDict)
+    parsed_dict = collections.OrderedDict(sorted(parsed_dict.items(), key=lambda x: x[1]["start"]))
+    i = 0
+    parsed_data = ""
+    parsed_dict_len = len(parsed_dict)
+
+    if parsed_dict_len > 100 and not bookmark_yesno_dialog(parsed_dict_len):
+        do_bookmark = False
+    else:
+        do_bookmark = True
+
+    for k in parsed_dict.keys():
+        if do_bookmark:
+            # Adjust start offset for one byte data
+            if parsed_dict[k]["start"] - parsed_dict[k]["end"] == 1:
+                parsed_dict[k]["start"] -= 1
+
+            if i % 2 == 0:
+                fi.setBookmark(offset + parsed_dict[k]["start"], parsed_dict[k]["end"] - parsed_dict[k]["start"] + 1, hex(offset + parsed_dict[k]["start"]) + " " + str(k), "#6d6dff")
+            else:
+                fi.setBookmark(offset + parsed_dict[k]["start"], parsed_dict[k]["end"] - parsed_dict[k]["start"] + 1, hex(offset + parsed_dict[k]["start"]) + " " + str(k), "#9f9fff")
+
+        parsed_data += "%s - %s: %s -> %s\n" % (hex(offset + parsed_dict[k]["start"]), hex(offset + parsed_dict[k]["end"]), k, parsed_dict[k]["data"])
+        i += 1
+
+    if do_bookmark:
+        print("Added bookmarks to the parsed data structure.")
+    else:
+        print("Skipped bookmarking.")
+
+    fi.newDocument("Parsed data", 0)
+    fi.setDocument("".join(parsed_data))
+    print("Parsed data is shown in the new \"Parsed data\" tab.")
+    print(stderr_data)
+

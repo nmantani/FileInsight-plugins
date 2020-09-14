@@ -152,11 +152,13 @@ tooltip_dict["Misc"] = ("Show byte frequency of selected region\n(the whole file
 ops_dict["Parsing"] = ("Binwalk scan",
                        "File type",
                        "Find PE file",
+                       "Parse file structure",
                        "Show metadata",
                        "Strings")
 tooltip_dict["Parsing"] = ("Scan selected region (the whole file if not selected)\nto find embedded files",
                            "Identify file type of selected region\n(the whole file if not selected)",
                            "Find PE file from selected region\n(the whole file if not selected)",
+                           "Parse file structure of selected region\n(the whole file if not selected) with Kaitai Struct",
                            "Show metadata of selected region\n(the whole file if not selected) with ExifTool",
                            "Extract text strings from selected region\n(the whole file if not selected)")
 
