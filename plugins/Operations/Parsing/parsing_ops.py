@@ -534,6 +534,6 @@ def parse_file_structure(fi):
 
     fi.newDocument("Parsed data", 0)
     fi.setDocument("".join(parsed_data))
-    print("Parsed data is shown in the new \"Parsed data\" tab.")
+    print('Parsed data is shown in the new "Parsed data" tab.')
+    print('Please use "Windows" tab -> "New Vertical Tab Group" to see parsed data and original data side by side.')
     print(stderr_data)
-
