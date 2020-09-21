@@ -1,7 +1,7 @@
 * License of FileInsight-plugins
 FileInsight-plugins is distributed under the BSD 2-Clause license.
 
-Copyright (c) 2012-2019 Nobutaka Mantani
+Copyright (c) 2012-2020 Nobutaka Mantani
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -25,16 +25,45 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-* License of third party software
+* License of bundled third party software
+Kaitai Struct runtime library for Python (plugins/Operations/Parsing/kaitaistruct.py)
+is distributed under the MIT License.
+https://github.com/kaitai-io/kaitai_struct_python_runtime/blob/master/LICENSE
+
+File format parser Python modules (files in plugins/Operations/Parsing/Kaitai Struct)
+are generated from file format description files (.ksy files) with kaitai-struct-compiler.
+.ksy files used by FileInsight-plugins are distributed under the CC0 1.0 Universal
+(CC0 1.0) Public Domain Dedication.
+https://github.com/kaitai-io/kaitai_struct_formats/blob/master/README.md
+https://creativecommons.org/publicdomain/zero/1.0/
+
+* License of other third party software
 FileInsight-plugins uses the following software.
 
-Python is distributed under the PSF License. (https://docs.python.org/2.7/license.html#terms-and-conditions-for-accessing-or-otherwise-using-python)
-binwalk is distributed under the MIT License. (https://github.com/ReFirmLabs/binwalk/blob/master/LICENSE)
-PyCryptodome is distributed under the BSD 2-Clause license. (https://github.com/Legrandin/pycryptodome/blob/master/LICENSE.rst)
-backports.lzma is distributed under the BSD 3-Clause license. (https://github.com/peterjc/backports.lzma/blob/master/LICENSE)
-python-magic is distributed under the MIT License. (https://github.com/ahupp/python-magic/blob/master/LICENSE)
-pefile is distributed under the MIT License. (https://github.com/erocarrera/pefile/blob/master/LICENSE)
-yara-python is distributed under the Apache License 2.0. (https://github.com/VirusTotal/yara-python/blob/master/LICENSE)
+FileInsight is distributed under the McAfee Software Royalty-free License.
+https://www.mcafee.com/enterprise/en-in/downloads/free-tools/terms-of-use.html
+
+Python is distributed under the PSF License.
+https://docs.python.org/3.8/license.html#terms-and-conditions-for-accessing-or-otherwise-using-python
+
+binwalk is distributed under the MIT License.
+https://github.com/ReFirmLabs/binwalk/blob/master/LICENSE
+
+PyCryptodome is distributed under the BSD 2-Clause license.
+https://github.com/Legrandin/pycryptodome/blob/master/LICENSE.rst
+
+backports.lzma is distributed under the BSD 3-Clause license.
+https://github.com/peterjc/backports.lzma/blob/master/LICENSE
+
+python-magic is distributed under the MIT License.
+https://github.com/ahupp/python-magic/blob/master/LICENSE
+
+pefile is distributed under the MIT License.
+https://github.com/erocarrera/pefile/blob/master/LICENSE
+
+yara-python is distributed under the Apache License 2.0.
+https://github.com/VirusTotal/yara-python/blob/master/LICENSE
+
 aPLib is distributed under the license as follows:
 
 aPLib is freeware. If you use aPLib in a product, an acknowledgement would be
