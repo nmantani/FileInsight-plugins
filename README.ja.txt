@@ -90,7 +90,7 @@ powershell -exec bypass .\install.ps1 -update
 最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 に上書きコピーしてください。
 
-プラグインの一覧 (75個):
+プラグインの一覧 (76個):
 * Basic operations
   * Copy to new file
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -228,6 +228,8 @@ powershell -exec bypass .\install.ps1 -update
     選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Find PE file
     選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  * Parse file structure
+    選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。
   * Show metadata
     選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
   * Strings
