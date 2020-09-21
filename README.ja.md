@@ -9,6 +9,8 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 
 ![screenshot2.png](docs/screenshot2.png)
 
+![screenshot3.png](docs/screenshot3.png)
+
 ## インストール方法
 ### 自動でのインストール
 以下のコマンドを実行してください。FileInsight-plugins と全ての必要なものがインストールされます。
@@ -36,7 +38,7 @@ Python 3 が必要です（過去のバージョンでは Python 2 (x86) が必�
 FileInsight ではもう Python 2 (x86) をインストールする必要はありません。
 
 ### **FileInsight のインストーラについて**
-FileInsight のインストーラは McAfee Free Tools のウェブサイトから入手可能です。こちらからダウンロードしてください。  
+FileInsight のインストーラは McAfee Free Tools のウェブサイトから入手可能です。こちらからダウンロードしてください。
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html
 
 ## 使用するために必要なもの
@@ -120,7 +122,7 @@ powershell -exec bypass .\install.ps1 -update
 最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 に上書きコピーしてください。
 
-## プラグインの一覧 (75個)
+## プラグインの一覧 (76個)
 * Basic operations
   * Copy to new file  
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -255,6 +257,8 @@ powershell -exec bypass .\install.ps1 -update
     選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Find PE file  
     選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  * Parse file structure  
+    選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。
   * Show metadata  
     選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
   * Strings  

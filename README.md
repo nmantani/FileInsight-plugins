@@ -9,6 +9,8 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 
 ![screenshot2.png](docs/screenshot2.png)
 
+![screenshot3.png](docs/screenshot3.png)
+
 ## How to install
 ### Automatic installation
 Please execute the following command. FileInsight-plugins and all pre-requisites will
@@ -121,7 +123,7 @@ powershell -exec bypass .\install.ps1 -update
 Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
-## List of plugins (75 plugins)
+## List of plugins (76 plugins)
 * Basic operations
   * Copy to new file  
     Copy selected region (the whole file if not selected) to new file
@@ -255,6 +257,8 @@ Please download the latest release version and copy "plugins" folder into
     Identify file type of selected region (the whole file if not selected)
   * Find PE file  
     Find PE file from selected region (the whole file if not selected)
+  * Parse file structure  
+    Parse file structure of selected region (the whole file if not selected) with Kaitai Struct
   * Show metadata  
     Show metadata of selected region (the whole file if not selected) with ExifTool
   * Strings  

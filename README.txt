@@ -88,7 +88,7 @@ Manual update:
 Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
-List of plugins (75 plugins):
+List of plugins (76 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -226,6 +226,8 @@ List of plugins (75 plugins):
     Identify file type of selected region (the whole file if not selected)
   * Find PE file
     Find PE file from selected region (the whole file if not selected)
+  * Parse file structure
+    Parse file structure of selected region (the whole file if not selected) with Kaitai Struct
   * Show metadata
     Show metadata of selected region (the whole file if not selected) with ExifTool
   * Strings
