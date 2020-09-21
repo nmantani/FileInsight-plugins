@@ -1,3 +1,16 @@
+2020-09-21 Release 2.2
+* New plugin
+  - Parsing operations
+    - Parse file structure
+      Parse file structure of selected region (the whole file if not selected) with Kaitai Struct
+      Supported file formats: gzip, rar, zip, elf, microsoft_pe, mbr_partition_table, bmp, gif, jpeg, png, windows_lnk_file
+* Enhancement
+  - Implement tooltip for plugin menu.
+* Bug fixes
+  - Replace showSimpleDialog() with show_simple_dialog.py that is implemented with tkinter.
+    showSimpleDialog() of FileInsight 3.5 has a bug that causes freeze when a dialog loses focus.
+  - Fix the path of send_to.json in the "Send to" plugin.
+
 2020-06-28 Release 2.1
 * Important changes
   - Plugin menus are integrated into the single menu tree.
