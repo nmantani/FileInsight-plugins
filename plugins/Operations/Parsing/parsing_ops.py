@@ -480,7 +480,7 @@ def parse_file_structure(fi):
     else:
         parser = stdout_data
 
-    # Execute find_pe_file.py for finding PE files
+    # Execute parse_file_structure.py to parse data
     p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
