@@ -1,6 +1,6 @@
 #
-# Parsing file structure of selected region (the whole file if not selected)
-# with Kaitai Struct
+# Parse file structure - Parsing file structure of selected region
+# (the whole file if not selected) with Kaitai Struct
 #
 # Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
