@@ -78,6 +78,27 @@ py.exe -3 -m pip install yara-python
 ```
 を実行してインストールしてください。
 
+Emulate code プラグインについては、Qiling Framework が必要です。
+https://github.com/qilingframework/qiling/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install qiling
+```
+を実行してインストールしてください。
+
+また、Qiling Framework の rootfs ファイルをセットアップする
+必要があります。https://github.com/qilingframework/qiling/archive/master.zip
+をダウンロードして、展開された qiling-master フォルダを
+"plugins\Operations\Misc" フォルダにコピーしてください。
+
+それから PowerShell で以下のコマンドを実行して、rootfs の
+DLL ファイルとレジストリのセットアップを行ってください。
+
+```powershell
+$dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
+
+Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
+```
+
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
 ```
 py.exe -3 -m pip install -r requirements.txt
@@ -122,7 +143,7 @@ powershell -exec bypass .\install.ps1 -update
 最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 に上書きコピーしてください。
 
-## プラグインの一覧 (76個)
+## プラグインの一覧 (77個)
 * Basic operations
   * Copy to new file  
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -243,6 +264,8 @@ powershell -exec bypass .\install.ps1 -update
 * Misc operations
   * Byte frequency  
     選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
+  * Emulate code  
+    選択範囲を(選択していない場合は全体を) Qiling Framework でエミュレートします。
   * File comparison  
     2つのファイルの内容を比較します。
   * Hash values  
