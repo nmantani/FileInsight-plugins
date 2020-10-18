@@ -56,6 +56,19 @@ For the "YARA scan" plugin, it requires yara-python Python module.
 Please get it from https://github.com/VirusTotal/yara-python
 or execute "py.exe -3 -m pip install yara-python" .
 
+For the "Emulate code" plugin, it requires Qiling Framework.
+Please get it from https://github.com/qilingframework/qiling/
+or execute "py.exe -3 -m pip install qiling"
+
+You also need to set up rootfs files of Qiling Framework.
+Please download them from https://github.com/qilingframework/qiling/archive/master.zip
+and copy extracted "qiling-master" folder into "plugins\Operations\Misc" folder.
+
+Then please setup DLL files and registry files of rootfs with the following commands on PowerShell:
+
+$dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
+Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
+
 You can install some of required Python modules with the following command.
 py.exe -3 -m pip install -r requirements.txt
 
@@ -88,7 +101,7 @@ Manual update:
 Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
-List of plugins (76 plugins):
+List of plugins (77 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -211,6 +224,8 @@ List of plugins (76 plugins):
 * Misc operations
   * Byte frequency
     Show byte frequency of selected region (the whole file if not selected)
+  * Emulate code
+    Emulate selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
   * File comparison
     Compare contents of two files
   * Hash values
