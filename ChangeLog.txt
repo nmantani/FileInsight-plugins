@@ -1,16 +1,18 @@
-2020-10-18 Release 2.3
+2020-10-18 version 2.3
 * New plugin
   - Misc operations
     - Emulate code
       This plugin emulates selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
-      Supported operating system: Windows and Linux
-      Supported architectures: x64, x86, arm, arm64, mips
-      You need to set up Qiling Framework to use this plugin. I recommend to use the following command to update to 2.3.
-      If you would like to set up manually, please read the instructions in the README files.
+      - Supported operating system: Windows and Linux
+      - Supported architectures: x64, x86, arm, arm64, mips
+      You need to set up Qiling Framework (https://github.com/qilingframework/qiling/) to use this plugin.
+      I recommend to use the following command to update to 2.3.
 
       powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
 
-2020-09-21 Release 2.2
+      If you would like to set up manually, please read the instructions in the README files.
+
+2020-09-21 version 2.2
 * New plugin
   - Parsing operations
     - Parse file structure
@@ -23,7 +25,7 @@
     showSimpleDialog() of FileInsight 3.5 has a bug that causes freeze when a dialog loses focus.
   - Fix the path of send_to.json in the "Send to" plugin.
 
-2020-06-28 Release 2.1
+2020-06-28 version 2.1
 * Important changes
   - Plugin menus are integrated into the single menu tree.
   - The plugin menu is displayed by clicking "Operations" in the "Plugin" tab.
@@ -43,7 +45,7 @@
   - Binwalk installation failure of install.ps1 has been fixed.
   - aPLib installation failure of install.ps1 has been fixed.
 
-2020-05-06 Release 2.0
+2020-05-06 version 2.0
 * Important changes
   - FileInsight-plugins now requires Python 3 and You no longer need to install Python 2 (x86)
     to use FileInsight-plugins.
@@ -69,7 +71,7 @@
   - Removed existing workarounds regarding Python 3
   - Removed dependency on backports.lzma module because Python 3 has lzma module
 
-2019-12-22 Release 1.5
+2019-12-22 version 1.5
 * New plugins
   - Binary data to decimal text
     - Convert binary of selected region into decimal text
@@ -90,7 +92,7 @@
 * Other changes
   - The slide deck files of CODE BLUE 2019 are excluded from the release archive.
 
-2019-11-02 Release 1.4.3.1
+2019-11-02 version 1.4.3.1
 * Bug fix
   - All plugins
     - Add a workaround not to execute python.exe of Python 3.
@@ -99,7 +101,7 @@
   - Add an instruction to make sure that python.exe of Python 2.7 will be executed from FileInsight.
     (reported by graneed (@graneed111))
 
-2019-10-07 Release 1.4.3
+2019-10-07 version 1.4.3
 * Enhancement
   - Search operations category
     - "XOR hex search" and "XOR text search" plugins
@@ -113,7 +115,7 @@
 * Other change
   - Add notes regarding Python 3 to README.
 
-2019-08-24 Release 1.4.2
+2019-08-24 version 1.4.2
 * Bug fix
   - Add workarounds to avoid crash of FileInsight on closing on Windows 7
     (reported by: You Nakatsuru (@you0708)).
@@ -126,7 +128,7 @@
   - Move plugin folders into the "plugins" folder.
   - Move screenshots into the "docs" folder.
 
-2019-07-07 Release 1.4.1
+2019-07-07 version 1.4.1
 * New plugins
   - Parsing operations category
     - Strings (extracts text strings from selected region (the whole file if not selected))
@@ -138,7 +140,7 @@
   - Misc operations category
     - Breakage of "Send to" plugin has been fixed.
 
-2019-05-25 Release 1.4.0
+2019-05-25 version 1.4.0
 * Important changes
   - New "Parsing operations" category has been created.
   - Misc operations category
@@ -172,7 +174,7 @@
     - Custom base64 decode / Custom base64 encode
       - Exit GUI script when a dialog is closed
 
-2019-04-21 Release 1.3.0
+2019-04-21 version 1.3.0
 * Important change
   - Switch from PyCrypto to PyCryptodome for crypto-related plugins.
     Please execute "c:\Python27\python.exe -m pip install pycryptodomex".
@@ -194,7 +196,7 @@
 * Other change
   - Rename "ARC4 decrypt" plugin to "ARC4 decrypt / encrypt".
 
-2018-11-25 Release 1.2.0
+2018-11-25 version 1.2.0
 * New plugins
   - Search operations category
     - Replace (replace matched data in selected region (the whole file if not selected) with specified data)
@@ -218,7 +220,7 @@
     - All plugins
       - Do nothing if no file is opened.
 
-2018-11-14 Release 1.1.0
+2018-11-14 version 1.1.0
 * New plugins
   - Basic operations category
     - To upper case
@@ -237,7 +239,7 @@
       - Change path of VS Code to the current default install location.
       - New "CyberChef" menu to send data to CyberChef locally saved on desktop (up to 12000 bytes)
 
-2018-09-17 Release 1.0.0
+2018-09-17 version 1.0.0
 * Reorganize plugins into the following seven categories.
   Plugins can be launched from pull-down menus.
   Basic operations
