@@ -42,14 +42,14 @@ if ($PROXY_HOST -and $PROXY_PORT) {
     $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
 }
 
-$RELEASE_VERSION = "2.2"
+$RELEASE_VERSION = "2.3"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.8.5"
+$PYTHON_VERSION = "3.8.6"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "16DC8ADED4B181B187207E5EC62014FFFB74FCD6D9613F1FDF792DDAAC668A33"
-$PYTHON_HASH = "CD427C7B17337D7C13761CA20877D2D8BE661BD30415DDC17072A31A65A91B64"
+$FILEINSIGHT_PLUGINS_HASH = "4F670145417683C3FF009B7107E122C912DE8B347EFDE0B192970D66BDB60B8A"
+$PYTHON_HASH = "328A257F189CB500606BB26AB0FBDD298ED0E05D8C36540A322A1744F489A0A0"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 
 function create_working_directory {
@@ -101,12 +101,9 @@ function download_file($url, $save_path) {
         return
     }
 
-    if ((Get-Host).Version.Major -ge 3) {
-        if ($PROXY_URL) {
-            Invoke-WebRequest -Uri $url -OutFile $save_path -Proxy $PROXY_URL
-        } else {
-            Invoke-WebRequest -Uri $url -OutFile $save_path
-        }
+    # curl.exe has been available since Windows 10 version 1803
+    if (Get-Command curl.exe -ea SilentlyContinue) {
+        curl.exe -Lo "$save_path" "$url"
     } else {
         Write-Host "[+] Progress of download is not shown. Please be patient."
 
@@ -319,18 +316,24 @@ function install_python3($work_dir) {
     Write-Host ""
 }
 
-function install_with_pip($name) {
+function install_with_pip($name, $update) {
     Write-Host "[+] Installing $name Python module..."
     $installed = &$PYTHON_EXE -3 -m pip show $name
-    if ([bool]$installed) {
+    if ([bool]$installed -and !$update) {
         Write-Host "[*] $name Python module is already installed. Skipping installation."
     } else {
-        if ($PROXY_HOST -and $PROXY_PORT) {
-            Write-Host "$PYTHON_EXE -3 -m pip install $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
+        if ($update) {
+            $upgrade_opt = "--upgrade"
         } else {
-            Write-Host "$PYTHON_EXE -3 -m pip install $name"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install $name"
+            $upgrade_opt = ""
+        }
+
+        if ($PROXY_HOST -and $PROXY_PORT) {
+            Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
+        } else {
+            Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $name"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $name"
         }
         $installed = &$PYTHON_EXE -3 -m pip show $name
         if ([bool]$installed) {
@@ -344,18 +347,19 @@ function install_with_pip($name) {
     Write-Host ""
 }
 
-function install_python_modules($work_dir) {
+function install_python_modules($work_dir, $update) {
     Write-Host "[+] Installing Python modules..."
 
-    install_with_pip "pycryptodomex"
-    install_with_pip "python-magic-bin"
-    install_with_pip "pefile"
-    install_with_pip "yara-python"
+    install_with_pip "pycryptodomex" $update
+    install_with_pip "python-magic-bin" $update
+    install_with_pip "pefile" $update
+    install_with_pip "qiling" $update
+    install_with_pip "yara-python" $update
 
     Write-Host "[+] Installing binwalk Python module..."
 
     $installed = &$PYTHON_EXE -3 -m pip show binwalk
-    if ([bool]$installed) {
+    if ([bool]$installed -and !$update) {
         Write-Host "[*] binwalk Python module is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading binwalk..."
@@ -399,6 +403,69 @@ function install_python_modules($work_dir) {
         }
         Write-Host "[+] Done."
         Write-Host "[+] binwalk Python module has been installed."
+    }
+    Write-Host ""
+}
+
+function install_qiling_rootfs($work_dir, $update) {
+    Write-Host "[+] Installing rootfs files of Qiling Framework..."
+
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\kernel32.dll"
+    if ((Test-Path $file_path) -and !$update) {
+        Write-Host "[*] rootfs files of Qiling Framework are already installed. Skipping installation."
+    } else {
+        Write-Host "[+] Downloading Qiling Framework..."
+        $qiling_url = "https://github.com/qilingframework/qiling/archive/master.zip"
+        $zip_archive_path = "$work_dir\qiling-master.zip"
+        download_file $qiling_url $zip_archive_path
+
+        if (!(Test-Path $zip_archive_path)) {
+            Write-Host "[!] Download has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        Write-Host "[+] Extracting qiling-master.zip..."
+        $extract_dir = "$work_dir\qiling-master"
+        extract_zip $zip_archive_path $work_dir
+        $file_path = "$extract_dir\README.md"
+
+        if (!(Test-Path $file_path)) {
+            Write-Host "[!] Extraction has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
+        Write-Host "[+] Copying qiling-master to $dest_dir ..."
+        Copy-Item $extract_dir -Destination $dest_dir -Recurse -Force
+        $file_path = "${dest_dir}\qiling-master\examples\rootfs\x8664_windows\bin\argv.exe"
+        if (!(Test-Path $file_path)) {
+            Write-Host "[!] Installation has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
+        $cwd = Convert-Path .
+        cd "${dest_dir}\qiling-master"
+        Write-Host "[+] Setting up DLL files and registry files in ${dest_dir}\qiling-master\examples\rootfs ..."
+        Write-Host "[+] Executing ${dest_dir}\qiling-master\examples\scripts\dllscollector.bat ..."
+        Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
+        $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\kernel32.dll"
+        if (!(Test-Path $file_path)) {
+            Write-Host "[!] Installation has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        cd $cwd
+        Write-Host "[+] Done."
+        Write-Host "[+] rootfs files of Qiling Framework have been installed."
     }
     Write-Host ""
 }
@@ -507,13 +574,15 @@ if ($Args[0] -eq "-update") {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir $true
     install_python3 $work_dir
-    install_python_modules $work_dir
+    install_python_modules $work_dir $true
+    install_qiling_rootfs $work_dir $true
     install_aplib $work_dir
 } else {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir $false
     install_python3 $work_dir
     install_python_modules $work_dir
+    install_qiling_rootfs $work_dir
     install_aplib $work_dir
 }
 migrate_plugin_config
