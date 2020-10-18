@@ -1,3 +1,15 @@
+2020-10-18 Release 2.3
+* New plugin
+  - Misc operations
+    - Emulate code
+      Emulate selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
+      Supported operating system: Windows and Linux
+      Supported architectures: x64, x86, arm, arm64, mips
+      You need to set up Qiling Framework to use this plugin. I recommend to use the following command to update to 2.3.
+      If you would like to set up manually, please read the instructions in README files.
+
+      powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
+
 2020-09-21 Release 2.2
 * New plugin
   - Parsing operations
