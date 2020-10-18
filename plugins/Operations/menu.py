@@ -141,10 +141,12 @@ tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
                             "Encode selected region into quoted printable text")
 
 ops_dict["Misc"] = ("Byte frequency",
+                    "Emulate code",
                     "File comparison",
                     "Hash values",
                     "Send to")
 tooltip_dict["Misc"] = ("Show byte frequency of selected region\n(the whole file if not selected)",
+                        "Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
                         "Compare contents of two files",
                         "Calculate MD5, SHA1, SHA256 hash values of selected region\n(the whole file if not selected)",
                         "Send selected region (the whole file if not selected) to other programs")

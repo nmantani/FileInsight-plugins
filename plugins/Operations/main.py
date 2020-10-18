@@ -184,6 +184,7 @@ if __name__ == "__main__":
                    encoding_ops.to_quoted_printable)
 
     operations += (misc_ops.byte_frequency,
+                   misc_ops.emulate_code,
                    misc_ops.file_comparison,
                    misc_ops.hash_values,
                    misc_ops.send_to)
