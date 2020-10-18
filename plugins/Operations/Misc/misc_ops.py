@@ -25,9 +25,11 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
 import ctypes
 import hashlib
 import os
+import re
 import sys
 import subprocess
 import tempfile
@@ -185,7 +187,6 @@ def file_comparison(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute file_comparison_dialog.py to show GUI
-    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
     p = subprocess.Popen(["py.exe", "-3", "Misc/file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
@@ -259,3 +260,127 @@ def file_comparison(fi):
         print("Added bookmarks to the deltas.")
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))
+
+def emulate_code(fi):
+    """
+    Emulate selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length > 0:
+        data = fi.getSelection()
+    else:
+        offset = 0
+        data = fi.getDocument()
+        length = fi.getLength()
+
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute emulate_shellcode_dialog.py to show GUI
+    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate()
+    if stdout_data == "":
+        return
+
+    # Get parameters from emulate_code_dialog.py
+    (file_type, os_type, arch, big_endian, cmd_args) = stdout_data.split("\t")
+
+    # Create a temporary file to write data
+    fd, file_path = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
+
+    # Execute emulate_code.py to emulate code
+    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    os.remove(file_path) # Cleanup temporary file
+
+    # emulate_code.py exited with error
+    if ret == 1:
+        print(stderr_data.replace("\x0d\x0a", "\x0a")),
+        return
+    elif ret == -1 or ret == -2:
+        if ret == -1: # Qiling Framework is not installed
+            print("Qiling Framework is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install qiling'.")
+            print("")
+
+        if ret == -2: # rootfs files are not installed
+            print("Rootfs files of Qiling Framework are not installed.")
+            print("Please download them from https://github.com/qilingframework/qiling/archive/master.zip")
+            print("and copy extracted 'qiling-master' folder into '%s' folder." % (os.getcwd() + "\\Misc"))
+            print("")
+            print("Then please setup DLL files and registry files of rootfs with the following command on PowerShell:")
+            print("Start-Process powershell -Verb RunAs -Wait -ArgumentList \"-Command `\"cd '%s\qiling-master'; examples\scripts\dllscollector.bat`\"\"" % (os.getcwd() + "\\Misc"))
+            print("")
+
+        print("You can also do the setup with install.ps1:")
+        print("powershell -exec bypass -command \"IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))\"")
+        return
+
+    if fi.getSelectionLength() > 0:
+        print("Emulated from offset %s to %s as %s.\n" % (file_type.lower(), hex(offset), hex(offset + length)))
+    else:
+        print("Emulated the whole file as %s.\n" % file_type.lower())
+
+    print("Emulation setting:")
+    print("File type: %s" % file_type.lower())
+    print("OS: %s" % os_type)
+    print("Architecture: %s" % arch)
+    print("Big endian: %s" % str(big_endian).lower())
+    print("Command line arguments: %s" % cmd_args)
+
+    print("Emulation trace:")
+    print(stderr_data.replace("\x0d\x0a", "\x0a")),
+
+    # For the case that emulate_code.py exited during ql.run()
+    if stdout_data == "":
+        print("Emulation aborted.")
+        return
+
+    # Split stdout_data into stdout_written that is written by emulated code and memory dumps
+    stdout_splitted = stdout_data.split("****MEMDUMP****")
+    stdout_written = stdout_splitted[0]
+    print("Output of the emulated code:")
+    print(stdout_written)
+
+    if len(stdout_splitted) > 1:
+        bookmarked = False
+        for i in range(1, len(stdout_splitted)):
+            memory_dump = binascii.a2b_hex(stdout_splitted[i])
+            fi.newDocument("Memory dump %d" % (i - 1), 1)
+            fi.setDocument("".join(memory_dump))
+
+            start = None
+            end = None
+            for j in range(0, len(memory_dump)):
+                if memory_dump[j] != b"\x00":
+                    start = j
+                    break
+
+            for j in range(len(memory_dump) - 1, 0, -1):
+                if memory_dump[j] != b"\x00":
+                    end = j
+                    break
+
+            if start != None and end != None:
+                fi.setBookmark(start, end - start + 1, hex(start), "#c8ffff")
+                bookmarked = True
+
+        if bookmarked == True:
+            print("Added bookmarks to the region that contains non-zero value.")
+
+    print('Memory dumps after execution are shown in the new "Memory dump" tabs.')
