@@ -109,6 +109,9 @@ ql.mem.show_mapinfo()
 print("", file=sys.stderr)
 
 num_dump = 0
+heap = ""
+heap_start = None
+heap_end = None
 for i in range(1, len(all_mem) + 1):
     start = all_mem[i][0]
     end = all_mem[i][1]
@@ -121,6 +124,18 @@ for i in range(1, len(all_mem) + 1):
         print("Extracted region %s (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (info, start, end, end - start, num_dump), file=sys.stderr)
         print("****MEMDUMP****" + binascii.b2a_hex(ql.mem.read(start, end - start)).decode(), end="")
         num_dump += 1
+    elif info == "[heap]":
+        # Concatenate multiple heap regions
+        if heap_start == None:
+            heap = "****MEMDUMP****"
+            heap_start = start
+        if heap_end == None or end > heap_end:
+            heap_end = end
+        heap += binascii.b2a_hex(ql.mem.read(start, end - start)).decode()
+
+if len(heap) > 0:
+    print("Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (heap_start, heap_end, heap_end - heap_start, num_dump), file=sys.stderr)
+    print(heap, end="")
 
 print("", file=sys.stderr)
 sys.exit(0)
