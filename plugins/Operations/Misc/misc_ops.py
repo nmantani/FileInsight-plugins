@@ -365,19 +365,25 @@ def emulate_code(fi):
             fi.setDocument("".join(memory_dump))
 
             start = None
-            end = None
+            num_zero = 0
             for j in range(0, len(memory_dump)):
-                if memory_dump[j] != b"\x00":
-                    start = j
-                    break
+                if memory_dump[j] == b"\x00":
+                    if start != None:
+                        num_zero += 1
+                else:
+                    if start == None:
+                        start = j
+                    last_nonzero = j
+                    num_zero = 0
 
-            for j in range(len(memory_dump) - 1, 0, -1):
-                if memory_dump[j] != b"\x00":
-                    end = j
-                    break
+                # Split bookmark regions if there is continuous zeros more than 1024 bytes
+                if start != None and num_zero > 1024:
+                    fi.setBookmark(start, last_nonzero - start + 1, hex(start), "#c8ffff")
+                    start = None
+                    num_zero = 0
 
-            if start != None and end != None:
-                fi.setBookmark(start, end - start + 1, hex(start), "#c8ffff")
+            if start != None:
+                fi.setBookmark(start, last_nonzero - start + 1, hex(start), "#c8ffff")
                 bookmarked = True
 
         if bookmarked == True:
