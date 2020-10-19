@@ -3,7 +3,7 @@
   - Misc operations
     - Emulate code
       This plugin emulates selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
-      - Supported operating system: Windows and Linux
+      - Supported operating systems: Windows and Linux
       - Supported architectures: x64, x86, arm, arm64, mips
       You need to set up Qiling Framework (https://github.com/qilingframework/qiling/) to use this plugin.
       I recommend to use the following command to update to 2.3.
