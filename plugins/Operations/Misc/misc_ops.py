@@ -332,7 +332,7 @@ def emulate_code(fi):
         return
 
     if fi.getSelectionLength() > 0:
-        print("Emulated from offset %s to %s as %s.\n" % (file_type.lower(), hex(offset), hex(offset + length)))
+        print("Emulated from offset %s to %s as %s.\n" % (hex(offset), hex(offset + length), file_type.lower()))
     else:
         print("Emulated the whole file as %s.\n" % file_type.lower())
 
