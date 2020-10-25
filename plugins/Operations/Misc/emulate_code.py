@@ -25,7 +25,6 @@ import binascii
 import os
 import shlex
 import sys
-import tempfile
 
 try:
     import qiling
