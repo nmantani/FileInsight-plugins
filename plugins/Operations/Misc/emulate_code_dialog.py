@@ -34,12 +34,12 @@ import tkinter.messagebox
 
 # Print selected items
 def get_selection(r, ct, co, ca, ce, ea):
-    print("%s\t%s\t%s\t%s\t%s" % (ct.get(), co.get(), ca.get(), ce.get(), ea.get()))
+    print("%s\t%s\t%s\t%s\t%s" % (ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get()))
     r.quit()
 
 def combo_arch_selected(r, ca, le, ce):
     # Hide / show endian combobox
-    if ca.get() in ("arm", "arm64", "mips"):
+    if ca.get() in ("ARM", "ARM64", "MIPS"):
         le.grid()
         ce.grid()
     else:
@@ -81,7 +81,7 @@ label_arch = tkinter.Label(root, text="Architecture:")
 label_arch.grid(row=2, column=0, padx=5, pady=5, sticky="w")
 
 combo_arch = tkinter.ttk.Combobox(root, state="readonly")
-combo_arch["values"] = ("x64", "x86", "arm", "arm64", "mips")
+combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS")
 combo_arch.current(0)
 combo_arch.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
