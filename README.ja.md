@@ -99,6 +99,13 @@ $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plug
 Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
 ```
 
+Disassemble プラグインについては、Capstone が必要です。
+https://github.com/aquynh/capstone/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install capstone
+```
+を実行してインストールしてください。
+
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
 ```
 py.exe -3 -m pip install -r requirements.txt
@@ -143,7 +150,7 @@ powershell -exec bypass .\install.ps1 -update
 最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 に上書きコピーしてください。
 
-## プラグインの一覧 (77個)
+## プラグインの一覧 (78個)
 * Basic operations
   * Copy to new file  
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -276,6 +283,8 @@ powershell -exec bypass .\install.ps1 -update
 * Parsing operations
   * Binwalk scan  
     選択範囲を(選択していない場合は全体を)スキャンして埋め込まれたファイルを探します。
+  * Disassemble  
+    選択範囲を(選択していない場合は全体を)逆アセンブルします。
   * File type  
     選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
   * Find PE file  

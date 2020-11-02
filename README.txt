@@ -58,7 +58,7 @@ or execute "py.exe -3 -m pip install yara-python" .
 
 For the "Emulate code" plugin, it requires Qiling Framework.
 Please get it from https://github.com/qilingframework/qiling/
-or execute "py.exe -3 -m pip install qiling"
+or execute "py.exe -3 -m pip install qiling" .
 
 You also need to set up rootfs files of Qiling Framework.
 Please download them from https://github.com/qilingframework/qiling/archive/master.zip
@@ -68,6 +68,10 @@ Then please setup DLL files and registry files of rootfs with the following comm
 
 $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
 Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
+
+For the "Disassemble" plugin, it requires Capstone.
+Please get it from https://github.com/aquynh/capstone/
+or execute "py.exe -3 -m pip install capstone" .
 
 You can install some of required Python modules with the following command.
 py.exe -3 -m pip install -r requirements.txt
@@ -101,7 +105,7 @@ Manual update:
 Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
-List of plugins (77 plugins):
+List of plugins (78 plugins):
 * Basic operations
   * Copy to new file
     Copy selected region (the whole file if not selected) to new file
@@ -237,6 +241,8 @@ List of plugins (77 plugins):
 * Parsing operations
   * Binwalk scan
     Scan selected region (the whole file if not selected) to find embedded files
+  * Disassemble
+    Disassemble selected region (the whole file if not selected)
   * File type
     Identify file type of selected region (the whole file if not selected)
   * Find PE file
