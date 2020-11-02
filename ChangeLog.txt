@@ -1,3 +1,17 @@
+2020-11-02 version 2.4
+* New plugin
+  - Parsing operations
+    - Disassemble plugin
+      This plugin disassembles selected region (the whole file if not selected).
+      Supported architectures: x64, x86, ARM, ARM64, MIPS, PowerPC, PowerPC64, SPARC
+      You need to install Capstone (https://github.com/aquynh/capstone/) to use this plugin.
+      Please execute "py.exe -3 -m pip install capstone" to install it.
+* Enhancement
+  - Misc operations
+    - Emulate code plugin
+      - Memory dump of heap region will be created
+      - Bookmark regions will be splitted if there is continuous zeros more than 1024 bytes
+
 2020-10-18 version 2.3
 * New plugin
   - Misc operations
