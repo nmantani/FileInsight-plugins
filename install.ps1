@@ -42,13 +42,13 @@ if ($PROXY_HOST -and $PROXY_PORT) {
     $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
 }
 
-$RELEASE_VERSION = "2.3"
+$RELEASE_VERSION = "2.4"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.8.6"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "4F670145417683C3FF009B7107E122C912DE8B347EFDE0B192970D66BDB60B8A"
+$FILEINSIGHT_PLUGINS_HASH = "2866B7646F9092DA08ACDD06F20AD9FE5FBD185B5CD2A3BC9DC3C56DA903242F"
 $PYTHON_HASH = "328A257F189CB500606BB26AB0FBDD298ED0E05D8C36540A322A1744F489A0A0"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 
@@ -353,6 +353,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "pycryptodomex" $update
     install_with_pip "python-magic-bin" $update
     install_with_pip "pefile" $update
+    install_with_pip "capstone" $update
     install_with_pip "qiling" $update
     install_with_pip "yara-python" $update
 
