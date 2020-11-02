@@ -336,12 +336,12 @@ def emulate_code(fi):
     else:
         print("Emulated the whole file as %s.\n" % file_type.lower())
 
-    print("Emulation setting:")
-    print("File type: %s" % file_type.lower())
-    print("OS: %s" % os_type)
-    print("Architecture: %s" % arch)
-    print("Big endian: %s" % str(big_endian).lower())
-    print("Command line arguments: %s" % cmd_args)
+    print("Emulation settings:")
+    print("  File type: %s" % file_type.lower())
+    print("  OS: %s" % os_type)
+    print("  Architecture: %s" % arch)
+    print("  Big endian: %s" % str(big_endian).lower())
+    print("  Command line arguments: %s" % cmd_args)
 
     print("Emulation trace:")
     print(stderr_data.replace("\x0d\x0a", "\x0a")),
