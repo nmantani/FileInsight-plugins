@@ -190,6 +190,7 @@ if __name__ == "__main__":
                    misc_ops.send_to)
 
     operations += (parsing_ops.binwalk_scan,
+                   parsing_ops.disassemble,
                    parsing_ops.file_type,
                    parsing_ops.find_pe_file,
                    parsing_ops.parse_file_structure,
