@@ -537,3 +537,87 @@ def parse_file_structure(fi):
     print('Parsed data is shown in the new "Parsed data" tab.')
     print('Please use "Windows" tab -> "New Vertical Tab Group" to see parsed data and file contents side by side.')
     print(stderr_data)
+
+def disassemble(fi):
+    """
+    Disassemble selected region (the whole file if not selected)
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length > 0:
+        data = fi.getSelection()
+    else:
+        offset = 0
+        data = fi.getDocument()
+        length = fi.getLength()
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute disassemble_dialog.py to show GUI
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/disassemble_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    # Capstone is not installed
+    if ret == -1:
+        print("Capstone is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install capstone'.")
+        print("")
+        return
+
+    # dialog is closed
+    if stdout_data == "":
+        return
+
+    # Get parameters from disassemble_dialog.py
+    (arch, mode) = stdout_data.split("\t")
+    disasm_setting = stderr_data
+
+    # Create a temporary file to write data
+    fd, file_path = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
+
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/disassemble.py", file_path, str(offset), arch, mode], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive disassembly result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    os.remove(file_path) # Cleanup temporary file
+
+    # disassembly.py exited with error
+    if ret == 1:
+        print(stderr_data.replace("\x0d\x0a", "\x0a")),
+        return
+    elif ret == -1: # Capstone is not installed
+        print("Capstone is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install capstone'.")
+        print("")
+        return
+
+    if fi.getSelectionLength() > 0:
+        print("Disassembled from offset %s to %s." % (hex(offset), hex(offset + length)))
+    else:
+        print("Disassembled the whole file.")
+    print('Disassembly code is shown in the new "Disassembly" tab.')
+
+    # Show disassembly settings
+    print(disasm_setting),
+
+    if not stderr_data == "":
+        end_pos = offset + int(stderr_data)
+        fi.setBookmark(end_pos, 1, hex(end_pos) + " end of disassembly", "#ff0000")
+        print("Disassembly finished prematurely at offset %s." % hex(end_pos))
+        print("Added bookmark to the end of disassembly.")
+
+    fi.newDocument("Disassembly")
+    fi.setDocument("".join(stdout_data))
