@@ -3,6 +3,7 @@
 # with Qiling Framework (the whole file if not selected)
 #
 # Copyright (c) 2020, Nobutaka Mantani
+# All rights reserved.
 #
 # This file is distributed under GPLv2 because it uses qiling
 # Python module that is distributed under GPLv2.
