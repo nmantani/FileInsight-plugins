@@ -56,7 +56,7 @@ except Exception as e:
     print("Error: %s" % e, file=sys.stderr)
     sys.exit(1)
 
-if end < len(data):
+if end < offset + len(data):
     print("%d" % end, file=sys.stderr)
 
 sys.exit(0)
