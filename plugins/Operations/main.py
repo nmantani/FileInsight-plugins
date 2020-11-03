@@ -93,7 +93,7 @@ class FileInsight:
 
         # Execute dialog.py to show GUI
         # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "show_simple_dialog.py", prompt], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "show_simple_dialog.py", prompt], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get input
         stdout_data, stderr_data = p.communicate()
@@ -102,24 +102,26 @@ class FileInsight:
 
 def find_python3():
     pyexe_found = False
+    python3_found = False
+
     if os.path.exists("C:/Windows/py.exe") or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Launcher/py.exe"):
         pyexe_found = True
 
     if not pyexe_found:
         print("Error: py.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
+    else:
+        # List Python installation
+        p = subprocess.Popen(["py.exe", "--list"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-    python3_version = ["30", "31", "33", "34", "35", "36", "37", "38", "39"]
-    python3_found = False
-    for v in python3_version:
-        if os.path.exists("C:/Program Files/Python%s/python.exe" % v) \
-           or os.path.exists("C:/Program Files (x86)/Python%s-32/python.exe" % v) \
-           or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Python%s/python.exe" % v) \
-           or os.path.exists(os.environ["LOCALAPPDATA"].replace("\\", "/") + "/Programs/Python/Python%s-32/python.exe" % v):
-           python3_found = True
-           break
+        # Get py.exe output
+        stdout_data, stderr_data = p.communicate()
+
+        # Check whether Python 3 is installed
+        if re.search("-3.[0-9]{1,2}-(64|32)", stdout_data):
+            python3_found = True
 
     if not python3_found:
-       print("Error: python.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
+       print("Error: no Python 3 installation is found. You need to install Python 3 to use FileInsight-plugins.")
 
     return pyexe_found and python3_found
 
