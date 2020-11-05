@@ -58,6 +58,12 @@ class FileInsight:
     Class for FileInsight built-in functions
     """
     def __init__(self):
+        """
+        Initialize the document
+
+        Args:
+            self: (todo): write your description
+        """
         self.getLength = getLength
         self.getByteAt = getByteAt
         self.setByteAt = setByteAt
@@ -77,6 +83,12 @@ class FileInsight:
 
     # Workaround for the truncation bug of getDocument()
     def getDocument(self):
+        """
+        Returns the document content
+
+        Args:
+            self: (todo): write your description
+        """
         length = getLength()
         data = getDocument()
         if length - len(data) > 0:
@@ -87,6 +99,13 @@ class FileInsight:
 
     # Workaround for the bug of showSimpleDialog()
     def showSimpleDialog(self, prompt):
+        """
+        Show the user input.
+
+        Args:
+            self: (todo): write your description
+            prompt: (todo): write your description
+        """
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -101,6 +120,11 @@ class FileInsight:
         return(stdout_data.rstrip())
 
 def find_python3():
+    """
+    Try to finder. pyexe.
+
+    Args:
+    """
     pyexe_found = False
     python3_found = False
 

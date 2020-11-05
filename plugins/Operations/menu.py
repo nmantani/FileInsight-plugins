@@ -218,6 +218,15 @@ for c in categories:
 
     # Callback to show tooltip of menu items
     def menuselect_callback(event, tooltip_dict=tooltip_dict[c]):
+        """
+        Callback function that executes the main window
+
+        Args:
+            event: (todo): write your description
+            tooltip_dict: (dict): write your description
+            tooltip_dict: (dict): write your description
+            c: (todo): write your description
+        """
         global tooltip_window
         # Ignore events when the menu is opened or closed
         if event.y != 0:
@@ -250,6 +259,15 @@ for c in categories:
     for i in range(0, len(ops_dict[c])):
         # When a menu item is clicked, exit_value is set to the corresponding index number of operation.
         def menuclick_callback(index_start=index_start, i=i):
+            """
+            Function called when the menu is clicked
+
+            Args:
+                index_start: (int): write your description
+                index_start: (int): write your description
+                i: (todo): write your description
+                i: (todo): write your description
+            """
             global exit_value
             exit_value = index_start + i
             root.quit()

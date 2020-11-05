@@ -34,10 +34,30 @@ import tkinter.messagebox
 
 # Print selected items
 def get_selection(r, ct, co, ca, ce, ea):
+    """
+    Get selection
+
+    Args:
+        r: (str): write your description
+        ct: (dict): write your description
+        co: (dict): write your description
+        ca: (dict): write your description
+        ce: (dict): write your description
+        ea: (dict): write your description
+    """
     print("%s\t%s\t%s\t%s\t%s" % (ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get()))
     r.quit()
 
 def combo_arch_selected(r, ca, le, ce):
+    """
+    Remove selected selected selected selected architecture.
+
+    Args:
+        r: (todo): write your description
+        ca: (dict): write your description
+        le: (todo): write your description
+        ce: (todo): write your description
+    """
     # Hide / show endian combobox
     if ca.get() in ("ARM", "ARM64", "MIPS"):
         le.grid()
@@ -48,6 +68,15 @@ def combo_arch_selected(r, ca, le, ce):
         ce.grid_remove()
 
 def combo_type_selected(r, ct, la, ea):
+    """
+    Removes the selected type from the grid.
+
+    Args:
+        r: (todo): write your description
+        ct: (dict): write your description
+        la: (todo): write your description
+        ea: (todo): write your description
+    """
     # Hide / show arguments entry
     if ct.get() == "Executable":
         la.grid()

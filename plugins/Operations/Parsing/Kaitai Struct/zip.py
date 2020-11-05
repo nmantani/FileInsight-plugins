@@ -66,12 +66,27 @@ class Zip(KaitaiStruct):
         infozip_unix_var_size = 30837
     SEQ_FIELDS = ["sections"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Reads the internal state.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['sections']['start'] = self._io.pos()
         self.sections = []
         i = 0
@@ -90,12 +105,27 @@ class Zip(KaitaiStruct):
     class LocalFile(KaitaiStruct):
         SEQ_FIELDS = ["header", "body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the message.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['header']['start'] = self._io.pos()
             self.header = Zip.LocalFileHeader(self._io, self, self._root)
             self.header._read()
@@ -108,12 +138,27 @@ class Zip(KaitaiStruct):
     class DataDescriptor(KaitaiStruct):
         SEQ_FIELDS = ["crc32", "len_body_compressed", "len_body_uncompressed"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the body.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['crc32']['start'] = self._io.pos()
             self.crc32 = self._io.read_u4le()
             self._debug['crc32']['end'] = self._io.pos()
@@ -128,12 +173,27 @@ class Zip(KaitaiStruct):
     class ExtraField(KaitaiStruct):
         SEQ_FIELDS = ["code", "len_body", "body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the response body.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['code']['start'] = self._io.pos()
             self.code = KaitaiStream.resolve_enum(Zip.ExtraCodes, self._io.read_u2le())
             self._debug['code']['end'] = self._io.pos()
@@ -168,12 +228,27 @@ class Zip(KaitaiStruct):
             """
             SEQ_FIELDS = ["reserved", "attributes"]
             def __init__(self, _io, _parent=None, _root=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Reads a single character from the object.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['reserved']['start'] = self._io.pos()
                 self.reserved = self._io.read_u4le()
                 self._debug['reserved']['end'] = self._io.pos()
@@ -195,12 +270,27 @@ class Zip(KaitaiStruct):
             class Attribute(KaitaiStruct):
                 SEQ_FIELDS = ["tag", "len_body", "body"]
                 def __init__(self, _io, _parent=None, _root=None):
+                    """
+                    Initialize the object.
+
+                    Args:
+                        self: (todo): write your description
+                        _io: (todo): write your description
+                        _parent: (todo): write your description
+                        _root: (todo): write your description
+                    """
                     self._io = _io
                     self._parent = _parent
                     self._root = _root if _root else self
                     self._debug = collections.defaultdict(dict)
 
                 def _read(self):
+                    """
+                    Reads a message.
+
+                    Args:
+                        self: (todo): write your description
+                    """
                     self._debug['tag']['start'] = self._io.pos()
                     self.tag = self._io.read_u2le()
                     self._debug['tag']['end'] = self._io.pos()
@@ -222,12 +312,27 @@ class Zip(KaitaiStruct):
             class Attribute1(KaitaiStruct):
                 SEQ_FIELDS = ["last_mod_time", "last_access_time", "creation_time"]
                 def __init__(self, _io, _parent=None, _root=None):
+                    """
+                    Initialize the object.
+
+                    Args:
+                        self: (todo): write your description
+                        _io: (todo): write your description
+                        _parent: (todo): write your description
+                        _root: (todo): write your description
+                    """
                     self._io = _io
                     self._parent = _parent
                     self._root = _root if _root else self
                     self._debug = collections.defaultdict(dict)
 
                 def _read(self):
+                    """
+                    Read the last read - read - only.
+
+                    Args:
+                        self: (todo): write your description
+                    """
                     self._debug['last_mod_time']['start'] = self._io.pos()
                     self.last_mod_time = self._io.read_u8le()
                     self._debug['last_mod_time']['end'] = self._io.pos()
@@ -247,12 +352,27 @@ class Zip(KaitaiStruct):
             """
             SEQ_FIELDS = ["flags", "mod_time", "access_time", "create_time"]
             def __init__(self, _io, _parent=None, _root=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Reads a single packet.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['flags']['start'] = self._io.pos()
                 self.flags = self._io.read_u1()
                 self._debug['flags']['end'] = self._io.pos()
@@ -278,12 +398,27 @@ class Zip(KaitaiStruct):
             """
             SEQ_FIELDS = ["version", "len_uid", "uid", "len_gid", "gid"]
             def __init__(self, _io, _parent=None, _root=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Reads the uuid.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['version']['start'] = self._io.pos()
                 self.version = self._io.read_u1()
                 self._debug['version']['end'] = self._io.pos()
@@ -309,12 +444,27 @@ class Zip(KaitaiStruct):
         """
         SEQ_FIELDS = ["version_made_by", "version_needed_to_extract", "flags", "compression_method", "last_mod_file_time", "last_mod_file_date", "crc32", "len_body_compressed", "len_body_uncompressed", "len_file_name", "len_extra", "len_comment", "disk_number_start", "int_file_attr", "ext_file_attr", "ofs_local_header", "file_name", "extra", "comment"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the internal read.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['version_made_by']['start'] = self._io.pos()
             self.version_made_by = self._io.read_u2le()
             self._debug['version_made_by']['end'] = self._io.pos()
@@ -378,6 +528,12 @@ class Zip(KaitaiStruct):
 
         @property
         def local_header(self):
+            """
+            The local header.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_local_header'):
                 return self._m_local_header if hasattr(self, '_m_local_header') else None
 
@@ -394,12 +550,27 @@ class Zip(KaitaiStruct):
     class PkSection(KaitaiStruct):
         SEQ_FIELDS = ["magic", "section_type", "body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['magic']['start'] = self._io.pos()
             self.magic = self._io.read_bytes(2)
             self._debug['magic']['end'] = self._io.pos()
@@ -428,12 +599,27 @@ class Zip(KaitaiStruct):
     class Extras(KaitaiStruct):
         SEQ_FIELDS = ["entries"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read data read from the packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['entries']['start'] = self._io.pos()
             self.entries = []
             i = 0
@@ -453,12 +639,27 @@ class Zip(KaitaiStruct):
     class LocalFileHeader(KaitaiStruct):
         SEQ_FIELDS = ["version", "flags", "compression_method", "file_mod_time", "file_mod_date", "crc32", "len_body_compressed", "len_body_uncompressed", "len_file_name", "len_extra", "file_name", "extra"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the data readmeans.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['version']['start'] = self._io.pos()
             self.version = self._io.read_u2le()
             self._debug['version']['end'] = self._io.pos()
@@ -503,12 +704,27 @@ class Zip(KaitaiStruct):
     class EndOfCentralDir(KaitaiStruct):
         SEQ_FIELDS = ["disk_of_end_of_central_dir", "disk_of_central_dir", "num_central_dir_entries_on_disk", "num_central_dir_entries_total", "len_central_dir", "ofs_central_dir", "len_comment", "comment"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read internal read the read from disk.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['disk_of_end_of_central_dir']['start'] = self._io.pos()
             self.disk_of_end_of_central_dir = self._io.read_u2le()
             self._debug['disk_of_end_of_central_dir']['end'] = self._io.pos()

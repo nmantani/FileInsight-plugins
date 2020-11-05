@@ -41,12 +41,27 @@ class Gif(KaitaiStruct):
         application = 255
     SEQ_FIELDS = ["hdr", "logical_screen_descriptor", "global_color_table", "blocks"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Reads a single character
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['hdr']['start'] = self._io.pos()
         self.hdr = Gif.Header(self._io, self, self._root)
         self.hdr._read()
@@ -87,12 +102,27 @@ class Gif(KaitaiStruct):
         """
         SEQ_FIELDS = ["lzw_min_code_size", "subblocks"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the next byte from the stream.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['lzw_min_code_size']['start'] = self._io.pos()
             self.lzw_min_code_size = self._io.read_u1()
             self._debug['lzw_min_code_size']['end'] = self._io.pos()
@@ -105,12 +135,27 @@ class Gif(KaitaiStruct):
     class ColorTableEntry(KaitaiStruct):
         SEQ_FIELDS = ["red", "green", "blue"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the amq.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['red']['start'] = self._io.pos()
             self.red = self._io.read_u1()
             self._debug['red']['end'] = self._io.pos()
@@ -129,12 +174,27 @@ class Gif(KaitaiStruct):
         """
         SEQ_FIELDS = ["screen_width", "screen_height", "flags", "bg_color_index", "pixel_aspect_ratio"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single color.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['screen_width']['start'] = self._io.pos()
             self.screen_width = self._io.read_u2le()
             self._debug['screen_width']['end'] = self._io.pos()
@@ -153,6 +213,12 @@ class Gif(KaitaiStruct):
 
         @property
         def has_color_table(self):
+            """
+            Returns true if the table has a color table.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_has_color_table'):
                 return self._m_has_color_table if hasattr(self, '_m_has_color_table') else None
 
@@ -161,6 +227,12 @@ class Gif(KaitaiStruct):
 
         @property
         def color_table_size(self):
+            """
+            The color size.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_color_table_size'):
                 return self._m_color_table_size if hasattr(self, '_m_color_table_size') else None
 
@@ -171,12 +243,27 @@ class Gif(KaitaiStruct):
     class LocalImageDescriptor(KaitaiStruct):
         SEQ_FIELDS = ["left", "top", "width", "height", "flags", "local_color_table", "image_data"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the color information.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['left']['start'] = self._io.pos()
             self.left = self._io.read_u2le()
             self._debug['left']['end'] = self._io.pos()
@@ -207,6 +294,12 @@ class Gif(KaitaiStruct):
 
         @property
         def has_color_table(self):
+            """
+            Returns true if the table has a color table.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_has_color_table'):
                 return self._m_has_color_table if hasattr(self, '_m_has_color_table') else None
 
@@ -215,6 +308,12 @@ class Gif(KaitaiStruct):
 
         @property
         def has_interlace(self):
+            """
+            Returns true if there is_interlace.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_has_interlace'):
                 return self._m_has_interlace if hasattr(self, '_m_has_interlace') else None
 
@@ -223,6 +322,12 @@ class Gif(KaitaiStruct):
 
         @property
         def has_sorted_color_table(self):
+            """
+            Return true if the table has a color table.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_has_sorted_color_table'):
                 return self._m_has_sorted_color_table if hasattr(self, '_m_has_sorted_color_table') else None
 
@@ -231,6 +336,12 @@ class Gif(KaitaiStruct):
 
         @property
         def color_table_size(self):
+            """
+            The color size.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_color_table_size'):
                 return self._m_color_table_size if hasattr(self, '_m_color_table_size') else None
 
@@ -241,12 +352,27 @@ class Gif(KaitaiStruct):
     class Block(KaitaiStruct):
         SEQ_FIELDS = ["block_type", "body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a single block of the document.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['block_type']['start'] = self._io.pos()
             self.block_type = KaitaiStream.resolve_enum(Gif.BlockType, self._io.read_u1())
             self._debug['block_type']['end'] = self._io.pos()
@@ -268,12 +394,27 @@ class Gif(KaitaiStruct):
         """
         SEQ_FIELDS = ["entries"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the next character from the input stream.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['entries']['start'] = self._io.pos()
             self.entries = []
             i = 0
@@ -297,12 +438,27 @@ class Gif(KaitaiStruct):
         """
         SEQ_FIELDS = ["magic", "version"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the next message.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['magic']['start'] = self._io.pos()
             self.magic = self._io.read_bytes(3)
             self._debug['magic']['end'] = self._io.pos()
@@ -320,12 +476,27 @@ class Gif(KaitaiStruct):
         """
         SEQ_FIELDS = ["block_size", "flags", "delay_time", "transparent_idx", "terminator"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a single bytes from the stream.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['block_size']['start'] = self._io.pos()
             self.block_size = self._io.read_bytes(1)
             self._debug['block_size']['end'] = self._io.pos()
@@ -348,6 +519,12 @@ class Gif(KaitaiStruct):
 
         @property
         def transparent_color_flag(self):
+            """
+            The transparent color.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_transparent_color_flag'):
                 return self._m_transparent_color_flag if hasattr(self, '_m_transparent_color_flag') else None
 
@@ -356,6 +533,12 @@ class Gif(KaitaiStruct):
 
         @property
         def user_input_flag(self):
+            """
+            Returns the user - user input.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_user_input_flag'):
                 return self._m_user_input_flag if hasattr(self, '_m_user_input_flag') else None
 
@@ -366,12 +549,27 @@ class Gif(KaitaiStruct):
     class Subblock(KaitaiStruct):
         SEQ_FIELDS = ["len_bytes", "bytes"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['len_bytes']['start'] = self._io.pos()
             self.len_bytes = self._io.read_u1()
             self._debug['len_bytes']['end'] = self._io.pos()
@@ -383,12 +581,27 @@ class Gif(KaitaiStruct):
     class ExtApplication(KaitaiStruct):
         SEQ_FIELDS = ["application_id", "subblocks"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a subblock block.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['application_id']['start'] = self._io.pos()
             self.application_id = Gif.Subblock(self._io, self, self._root)
             self.application_id._read()
@@ -414,12 +627,27 @@ class Gif(KaitaiStruct):
     class Subblocks(KaitaiStruct):
         SEQ_FIELDS = ["entries"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a single character from the packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['entries']['start'] = self._io.pos()
             self.entries = []
             i = 0
@@ -441,12 +669,27 @@ class Gif(KaitaiStruct):
     class Extension(KaitaiStruct):
         SEQ_FIELDS = ["label", "body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the gif document.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['label']['start'] = self._io.pos()
             self.label = KaitaiStream.resolve_enum(Gif.ExtensionLabel, self._io.read_u1())
             self._debug['label']['end'] = self._io.pos()

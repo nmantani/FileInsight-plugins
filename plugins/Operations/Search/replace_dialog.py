@@ -33,6 +33,15 @@ import tkinter.ttk
 
 # Print selected items
 def get_input(r, e1, e2, c):
+    """
+    Get input
+
+    Args:
+        r: (str): write your description
+        e1: (todo): write your description
+        e2: (todo): write your description
+        c: (todo): write your description
+    """
     print(e1.get())
     print(e2.get())
     print(c.get())

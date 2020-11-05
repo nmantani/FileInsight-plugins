@@ -41,6 +41,18 @@ except ImportError:
 
 # Print selected items
 def encrypt(data, root, cm, ckt, ek, cit, ei):
+    """
+    Encrypt data using aes.
+
+    Args:
+        data: (todo): write your description
+        root: (todo): write your description
+        cm: (dict): write your description
+        ckt: (todo): write your description
+        ek: (dict): write your description
+        cit: (dict): write your description
+        ei: (dict): write your description
+    """
     des_mode = {"ECB":Cryptodome.Cipher.DES.MODE_ECB,
                 "CBC":Cryptodome.Cipher.DES.MODE_CBC,
                 "CFB":Cryptodome.Cipher.DES.MODE_CFB,
@@ -104,6 +116,16 @@ def encrypt(data, root, cm, ckt, ek, cit, ei):
     exit(0) # Decrypted successfully
 
 def combo_mode_selected(root, cm, cit, ei, lc):
+    """
+    Configure selected mode
+
+    Args:
+        root: (todo): write your description
+        cm: (dict): write your description
+        cit: (todo): write your description
+        ei: (todo): write your description
+        lc: (todo): write your description
+    """
     mode = cm.get()
     if mode == "ECB":
         cit.configure(state = "disabled")

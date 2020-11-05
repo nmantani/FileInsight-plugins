@@ -53,12 +53,27 @@ class Rar(KaitaiStruct):
         best = 53
     SEQ_FIELDS = ["magic", "blocks"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Read the next rar block.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['magic']['start'] = self._io.pos()
         self.magic = Rar.MagicSignature(self._io, self, self._root)
         self.magic._read()
@@ -95,12 +110,27 @@ class Rar(KaitaiStruct):
     class BlockV5(KaitaiStruct):
         SEQ_FIELDS = []
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the readme.
+
+            Args:
+                self: (todo): write your description
+            """
             pass
 
 
@@ -111,12 +141,27 @@ class Rar(KaitaiStruct):
         """
         SEQ_FIELDS = ["crc16", "block_type", "flags", "block_size", "add_size", "body", "add_body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a single block of bytes.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['crc16']['start'] = self._io.pos()
             self.crc16 = self._io.read_u2le()
             self._debug['crc16']['end'] = self._io.pos()
@@ -161,6 +206,12 @@ class Rar(KaitaiStruct):
 
         @property
         def header_size(self):
+            """
+            The size of the file.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_header_size'):
                 return self._m_header_size if hasattr(self, '_m_header_size') else None
 
@@ -169,6 +220,12 @@ class Rar(KaitaiStruct):
 
         @property
         def body_size(self):
+            """
+            Return the size of the request body.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_body_size'):
                 return self._m_body_size if hasattr(self, '_m_body_size') else None
 
@@ -179,12 +236,27 @@ class Rar(KaitaiStruct):
     class BlockFileHeader(KaitaiStruct):
         SEQ_FIELDS = ["low_unp_size", "host_os", "file_crc32", "file_time", "rar_version", "method", "name_size", "attr", "high_pack_size", "file_name", "salt"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read an rar data packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['low_unp_size']['start'] = self._io.pos()
             self.low_unp_size = self._io.read_u4le()
             self._debug['low_unp_size']['end'] = self._io.pos()
@@ -236,12 +308,27 @@ class Rar(KaitaiStruct):
         """
         SEQ_FIELDS = ["magic1", "version", "magic3"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the next byte.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['magic1']['start'] = self._io.pos()
             self.magic1 = self._io.read_bytes(6)
             self._debug['magic1']['end'] = self._io.pos()
@@ -262,12 +349,27 @@ class Rar(KaitaiStruct):
     class DosTime(KaitaiStruct):
         SEQ_FIELDS = ["time", "date"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the last read from the stream.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['time']['start'] = self._io.pos()
             self.time = self._io.read_u2le()
             self._debug['time']['end'] = self._io.pos()
@@ -277,6 +379,12 @@ class Rar(KaitaiStruct):
 
         @property
         def month(self):
+            """
+            The month object representing the month.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_month'):
                 return self._m_month if hasattr(self, '_m_month') else None
 
@@ -285,6 +393,12 @@ class Rar(KaitaiStruct):
 
         @property
         def seconds(self):
+            """
+            Returns the number of seconds in seconds.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_seconds'):
                 return self._m_seconds if hasattr(self, '_m_seconds') else None
 
@@ -293,6 +407,12 @@ class Rar(KaitaiStruct):
 
         @property
         def year(self):
+            """
+            Return the year of the year.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_year'):
                 return self._m_year if hasattr(self, '_m_year') else None
 
@@ -301,6 +421,12 @@ class Rar(KaitaiStruct):
 
         @property
         def minutes(self):
+            """
+            Return the minimum value.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_minutes'):
                 return self._m_minutes if hasattr(self, '_m_minutes') else None
 
@@ -309,6 +435,12 @@ class Rar(KaitaiStruct):
 
         @property
         def day(self):
+            """
+            A day of the day.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_day'):
                 return self._m_day if hasattr(self, '_m_day') else None
 
@@ -317,6 +449,12 @@ class Rar(KaitaiStruct):
 
         @property
         def hours(self):
+            """
+            Returns the number of hours in this timezone.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_hours'):
                 return self._m_hours if hasattr(self, '_m_hours') else None
 

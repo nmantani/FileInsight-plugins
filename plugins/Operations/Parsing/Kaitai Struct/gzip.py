@@ -45,12 +45,27 @@ class Gzip(KaitaiStruct):
         unknown = 255
     SEQ_FIELDS = ["magic", "compression_method", "flags", "mod_time", "extra_flags", "os", "extras", "name", "comment", "header_crc16", "body", "body_crc32", "len_uncompressed"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Read the gzip file.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['magic']['start'] = self._io.pos()
         self.magic = self._io.read_bytes(2)
         self._debug['magic']['end'] = self._io.pos()
@@ -109,12 +124,27 @@ class Gzip(KaitaiStruct):
     class Flags(KaitaiStruct):
         SEQ_FIELDS = ["reserved1", "has_comment", "has_name", "has_extra", "has_header_crc", "is_text"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['reserved1']['start'] = self._io.pos()
             self.reserved1 = self._io.read_bits_int_be(3)
             self._debug['reserved1']['end'] = self._io.pos()
@@ -142,12 +172,27 @@ class Gzip(KaitaiStruct):
             fast = 4
         SEQ_FIELDS = ["compression_strength"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the gzip string.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['compression_strength']['start'] = self._io.pos()
             self.compression_strength = KaitaiStream.resolve_enum(Gzip.ExtraFlagsDeflate.CompressionStrengths, self._io.read_u1())
             self._debug['compression_strength']['end'] = self._io.pos()
@@ -158,12 +203,27 @@ class Gzip(KaitaiStruct):
         """
         SEQ_FIELDS = ["entries"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['entries']['start'] = self._io.pos()
             self.entries = []
             i = 0
@@ -192,12 +252,27 @@ class Gzip(KaitaiStruct):
         """
         SEQ_FIELDS = ["id", "len_data", "data"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the next packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['id']['start'] = self._io.pos()
             self.id = self._io.read_u2le()
             self._debug['id']['end'] = self._io.pos()
@@ -212,12 +287,27 @@ class Gzip(KaitaiStruct):
     class Extras(KaitaiStruct):
         SEQ_FIELDS = ["len_subfields", "subfields"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read all subfields from the packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['len_subfields']['start'] = self._io.pos()
             self.len_subfields = self._io.read_u2le()
             self._debug['len_subfields']['end'] = self._io.pos()

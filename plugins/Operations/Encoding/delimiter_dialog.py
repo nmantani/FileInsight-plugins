@@ -35,6 +35,13 @@ import tkinter.ttk
 
 # Print delimiter setting to stdout
 def print_setting(r, c):
+    """
+    Print the setting of a setting.
+
+    Args:
+        r: (todo): write your description
+        c: (dict): write your description
+    """
     print(c.get())
     r.quit()
 

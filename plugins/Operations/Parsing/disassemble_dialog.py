@@ -38,6 +38,13 @@ except ImportError:
 
 # Print selected items
 def get_selection(r, w):
+    """
+    Return the selection.
+
+    Args:
+        r: (str): write your description
+        w: (str): write your description
+    """
     if w["combo_arch"].get() == "x64":
         arch = capstone.CS_ARCH_X86
         mode = capstone.CS_MODE_64
@@ -111,6 +118,13 @@ def get_selection(r, w):
     r.quit()
 
 def show_disassembly_setting(arch, mode):
+    """
+    Show the disassembly.
+
+    Args:
+        arch: (todo): write your description
+        mode: (str): write your description
+    """
     print("Disassembly settings:", file=sys.stderr)
     if arch == capstone.CS_ARCH_X86:
         if mode & capstone.CS_MODE_32:
@@ -180,6 +194,13 @@ def show_disassembly_setting(arch, mode):
             print("  Architecture: SPARC", file=sys.stderr)
 
 def combo_arch_selected(r, w):
+    """
+    Remove selected selected architecture.
+
+    Args:
+        r: (todo): write your description
+        w: (todo): write your description
+    """
     # Hide / show labels and comboboxes
     if w["combo_arch"].get() in ["x64", "x86", "SPARC"]:
         w["label_arm_mode"].grid_remove()
@@ -252,6 +273,13 @@ def combo_arch_selected(r, w):
         w["combo_v8"].grid_remove()
 
 def combo_arm_mode_selected(r, w):
+    """
+    Combo mode
+
+    Args:
+        r: (todo): write your description
+        w: (todo): write your description
+    """
     # Hide / show labels and comboboxes
     if w["combo_arm_mode"].get() == "Thumb":
         w["label_mclass"].grid_remove()
