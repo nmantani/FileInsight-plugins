@@ -29,6 +29,13 @@ import tkinter.simpledialog
 
 # Print input to stdout
 def print_input(r, e):
+    """
+    Prints the input.
+
+    Args:
+        r: (str): write your description
+        e: (dict): write your description
+    """
     print(e.get())
     sys.exit()
 

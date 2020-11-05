@@ -27,12 +27,27 @@ class WindowsShellItems(KaitaiStruct):
     """
     SEQ_FIELDS = ["items"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Read data from the queue.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['items']['start'] = self._io.pos()
         self.items = []
         i = 0
@@ -53,12 +68,27 @@ class WindowsShellItems(KaitaiStruct):
     class ShellItemData(KaitaiStruct):
         SEQ_FIELDS = ["code", "body1", "body2"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the next message.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['code']['start'] = self._io.pos()
             self.code = self._io.read_u1()
             self._debug['code']['end'] = self._io.pos()
@@ -86,12 +116,27 @@ class WindowsShellItems(KaitaiStruct):
         """
         SEQ_FIELDS = ["len_data", "data"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the next byte from the stream.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['len_data']['start'] = self._io.pos()
             self.len_data = self._io.read_u2le()
             self._debug['len_data']['end'] = self._io.pos()
@@ -112,12 +157,27 @@ class WindowsShellItems(KaitaiStruct):
         """
         SEQ_FIELDS = ["sort_index", "shell_folder_id"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single character
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['sort_index']['start'] = self._io.pos()
             self.sort_index = self._io.read_u1()
             self._debug['sort_index']['end'] = self._io.pos()
@@ -133,12 +193,27 @@ class WindowsShellItems(KaitaiStruct):
         """
         SEQ_FIELDS = ["flags"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single character.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['flags']['start'] = self._io.pos()
             self.flags = self._io.read_u1()
             self._debug['flags']['end'] = self._io.pos()
@@ -151,12 +226,27 @@ class WindowsShellItems(KaitaiStruct):
         """
         SEQ_FIELDS = ["_unnamed0", "file_size", "last_mod_time", "file_attrs"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the internal read from the file.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['_unnamed0']['start'] = self._io.pos()
             self._unnamed0 = self._io.read_u1()
             self._debug['_unnamed0']['end'] = self._io.pos()
@@ -172,6 +262,12 @@ class WindowsShellItems(KaitaiStruct):
 
         @property
         def is_dir(self):
+            """
+            Return true if this path?
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_is_dir'):
                 return self._m_is_dir if hasattr(self, '_m_is_dir') else None
 
@@ -180,6 +276,12 @@ class WindowsShellItems(KaitaiStruct):
 
         @property
         def is_file(self):
+            """
+            Return true if the file is a file.
+
+            Args:
+                self: (str): write your description
+            """
             if hasattr(self, '_m_is_file'):
                 return self._m_is_file if hasattr(self, '_m_is_file') else None
 

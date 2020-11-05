@@ -32,6 +32,16 @@ import tkinter.ttk
 
 # Print parameters
 def print_param(root, cm, sp, cp, bd):
+    """
+    Print the parameters. print
+
+    Args:
+        root: (str): write your description
+        cm: (dict): write your description
+        sp: (dict): write your description
+        cp: (dict): write your description
+        bd: (dict): write your description
+    """
     mode = cm.get()
     min_len = int(sp.get())
     postprocess = cp.get()

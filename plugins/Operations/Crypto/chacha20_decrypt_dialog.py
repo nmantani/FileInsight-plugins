@@ -40,6 +40,17 @@ except ImportError:
 
 # Print selected items
 def decrypt(data, root, ckt, ek, cnt, en):
+    """
+    Decrypts a jwt.
+
+    Args:
+        data: (todo): write your description
+        root: (todo): write your description
+        ckt: (dict): write your description
+        ek: (dict): write your description
+        cnt: (dict): write your description
+        en: (dict): write your description
+    """
     key_type = ckt.get()
     key = ek.get()
     nonce_type = cnt.get()

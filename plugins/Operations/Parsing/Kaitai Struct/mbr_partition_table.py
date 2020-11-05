@@ -22,12 +22,27 @@ class MbrPartitionTable(KaitaiStruct):
     """
     SEQ_FIELDS = ["bootstrap_code", "partitions", "boot_signature"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Read the bootstrap internal state.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['bootstrap_code']['start'] = self._io.pos()
         self.bootstrap_code = self._io.read_bytes(446)
         self._debug['bootstrap_code']['end'] = self._io.pos()
@@ -52,12 +67,27 @@ class MbrPartitionTable(KaitaiStruct):
     class PartitionEntry(KaitaiStruct):
         SEQ_FIELDS = ["status", "chs_start", "partition_type", "chs_end", "lba_start", "num_sectors"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a single character from the lba.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['status']['start'] = self._io.pos()
             self.status = self._io.read_u1()
             self._debug['status']['end'] = self._io.pos()
@@ -83,12 +113,27 @@ class MbrPartitionTable(KaitaiStruct):
     class Chs(KaitaiStruct):
         SEQ_FIELDS = ["head", "b2", "b3"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the next character.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['head']['start'] = self._io.pos()
             self.head = self._io.read_u1()
             self._debug['head']['end'] = self._io.pos()
@@ -101,6 +146,12 @@ class MbrPartitionTable(KaitaiStruct):
 
         @property
         def sector(self):
+            """
+            Return sector|
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_sector'):
                 return self._m_sector if hasattr(self, '_m_sector') else None
 
@@ -109,6 +160,12 @@ class MbrPartitionTable(KaitaiStruct):
 
         @property
         def cylinder(self):
+            """
+            Name : the cylinder of the surface.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_cylinder'):
                 return self._m_cylinder if hasattr(self, '_m_cylinder') else None
 

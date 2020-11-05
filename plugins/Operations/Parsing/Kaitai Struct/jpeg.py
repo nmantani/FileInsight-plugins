@@ -21,12 +21,27 @@ class Jpeg(KaitaiStruct):
         q = 5
     SEQ_FIELDS = ["segments"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Read segments from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['segments']['start'] = self._io.pos()
         self.segments = []
         i = 0
@@ -80,12 +95,27 @@ class Jpeg(KaitaiStruct):
             com = 254
         SEQ_FIELDS = ["magic", "marker", "length", "data", "image_data"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads a single item.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['magic']['start'] = self._io.pos()
             self.magic = self._io.read_bytes(1)
             self._debug['magic']['end'] = self._io.pos()
@@ -136,12 +166,27 @@ class Jpeg(KaitaiStruct):
     class SegmentSos(KaitaiStruct):
         SEQ_FIELDS = ["num_components", "components", "start_spectral_selection", "end_spectral", "appr_bit_pos"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read the spectrum.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['num_components']['start'] = self._io.pos()
             self.num_components = self._io.read_u1()
             self._debug['num_components']['end'] = self._io.pos()
@@ -170,12 +215,27 @@ class Jpeg(KaitaiStruct):
         class Component(KaitaiStruct):
             SEQ_FIELDS = ["id", "huffman_table"]
             def __init__(self, _io, _parent=None, _root=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Reads a bigquery packet.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['id']['start'] = self._io.pos()
                 self.id = KaitaiStream.resolve_enum(Jpeg.ComponentId, self._io.read_u1())
                 self._debug['id']['end'] = self._io.pos()
@@ -188,12 +248,27 @@ class Jpeg(KaitaiStruct):
     class SegmentApp1(KaitaiStruct):
         SEQ_FIELDS = ["magic", "body"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a message from the transport.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['magic']['start'] = self._io.pos()
             self.magic = (self._io.read_bytes_term(0, False, True, True)).decode(u"ASCII")
             self._debug['magic']['end'] = self._io.pos()
@@ -208,12 +283,27 @@ class Jpeg(KaitaiStruct):
     class SegmentSof0(KaitaiStruct):
         SEQ_FIELDS = ["bits_per_sample", "image_height", "image_width", "num_components", "components"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads internal data from the u2.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['bits_per_sample']['start'] = self._io.pos()
             self.bits_per_sample = self._io.read_u1()
             self._debug['bits_per_sample']['end'] = self._io.pos()
@@ -242,12 +332,27 @@ class Jpeg(KaitaiStruct):
         class Component(KaitaiStruct):
             SEQ_FIELDS = ["id", "sampling_factors", "quantization_table_id"]
             def __init__(self, _io, _parent=None, _root=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Stub
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['id']['start'] = self._io.pos()
                 self.id = KaitaiStream.resolve_enum(Jpeg.ComponentId, self._io.read_u1())
                 self._debug['id']['end'] = self._io.pos()
@@ -260,6 +365,12 @@ class Jpeg(KaitaiStruct):
 
             @property
             def sampling_x(self):
+                """
+                Return the sampling sampling.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_sampling_x'):
                     return self._m_sampling_x if hasattr(self, '_m_sampling_x') else None
 
@@ -268,6 +379,12 @@ class Jpeg(KaitaiStruct):
 
             @property
             def sampling_y(self):
+                """
+                Return the sampling sampling.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_sampling_y'):
                     return self._m_sampling_y if hasattr(self, '_m_sampling_y') else None
 
@@ -279,12 +396,27 @@ class Jpeg(KaitaiStruct):
     class ExifInJpeg(KaitaiStruct):
         SEQ_FIELDS = ["extra_zero", "data"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a single bytes from the transport.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['extra_zero']['start'] = self._io.pos()
             self.extra_zero = self._io.read_bytes(1)
             self._debug['extra_zero']['end'] = self._io.pos()
@@ -306,12 +438,27 @@ class Jpeg(KaitaiStruct):
             pixels_per_cm = 2
         SEQ_FIELDS = ["magic", "version_major", "version_minor", "density_units", "density_x", "density_y", "thumbnail_x", "thumbnail_y", "thumbnail"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Reads the density from the device.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['magic']['start'] = self._io.pos()
             self.magic = (self._io.read_bytes(5)).decode(u"ASCII")
             self._debug['magic']['end'] = self._io.pos()

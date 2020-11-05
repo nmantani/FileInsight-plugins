@@ -40,6 +40,12 @@ import subprocess
 import winreg
 
 def replace_env_in_path(s):
+    """
+    Replace environment variables in string.
+
+    Args:
+        s: (todo): write your description
+    """
     env_list = ("SYSTEMROOT", "PROGRAMFILES", "LOCALAPPDATA", "USERPROFILE", "HOMEDRIVE", "HOMEPATH")
     for e in env_list:
         p = os.environ[e]
@@ -99,6 +105,17 @@ menu1.add_cascade(label="Send to", menu=menu2)
 
 for key,val in programs.items():
     def launch(name=key, program=val, filename=filename):
+        """
+        Launch a program.
+
+        Args:
+            name: (str): write your description
+            key: (str): write your description
+            program: (str): write your description
+            val: (int): write your description
+            filename: (str): write your description
+            filename: (str): write your description
+        """
         if name == "CyberChef":
             global config_file_name, programs
 

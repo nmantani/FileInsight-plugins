@@ -59,6 +59,15 @@ for c in categories:
 
     for i in range(0, len(parser_dict[c])):
         def menuclick_callback(label=parser_dict[c][i]):
+            """
+            Callback for menu
+
+            Args:
+                label: (str): write your description
+                parser_dict: (todo): write your description
+                c: (todo): write your description
+                i: (todo): write your description
+            """
             print(label, end="")
             root.quit()
 

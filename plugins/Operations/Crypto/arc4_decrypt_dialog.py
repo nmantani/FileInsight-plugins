@@ -40,6 +40,15 @@ except ImportError:
 
 # Decrypt received data
 def decrypt(data, root, combo, entry):
+    """
+    Decrypt a message.
+
+    Args:
+        data: (todo): write your description
+        root: (todo): write your description
+        combo: (dict): write your description
+        entry: (dict): write your description
+    """
     key = entry.get()
 
     if combo.get() == "Hex":

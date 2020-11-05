@@ -17,19 +17,51 @@ __version__ = '0.9'
 
 class KaitaiStruct(object):
     def __init__(self, stream):
+        """
+        Initialize the stream.
+
+        Args:
+            self: (todo): write your description
+            stream: (todo): write your description
+        """
         self._io = stream
 
     def __enter__(self):
+        """
+        Decor function.
+
+        Args:
+            self: (todo): write your description
+        """
         return self
 
     def __exit__(self, *args, **kwargs):
+        """
+        Called when the exit.
+
+        Args:
+            self: (todo): write your description
+        """
         self.close()
 
     def close(self):
+        """
+        Closes the connection.
+
+        Args:
+            self: (todo): write your description
+        """
         self._io.close()
 
     @classmethod
     def from_file(cls, filename):
+        """
+        Create a new instance from a file.
+
+        Args:
+            cls: (todo): write your description
+            filename: (str): write your description
+        """
         f = open(filename, 'rb')
         try:
             return cls(KaitaiStream(f))
@@ -40,25 +72,64 @@ class KaitaiStruct(object):
 
     @classmethod
     def from_bytes(cls, buf):
+        """
+        Create a new : class : meth : class :.
+
+        Args:
+            cls: (todo): write your description
+            buf: (todo): write your description
+        """
         return cls(KaitaiStream(BytesIO(buf)))
 
     @classmethod
     def from_io(cls, io):
+        """
+        Create a new : class :. io stream object.
+
+        Args:
+            cls: (todo): write your description
+            io: (todo): write your description
+        """
         return cls(KaitaiStream(io))
 
 
 class KaitaiStream(object):
     def __init__(self, io):
+        """
+        Initialize the writer.
+
+        Args:
+            self: (todo): write your description
+            io: (todo): write your description
+        """
         self._io = io
         self.align_to_byte()
 
     def __enter__(self):
+        """
+        Decor function.
+
+        Args:
+            self: (todo): write your description
+        """
         return self
 
     def __exit__(self, *args, **kwargs):
+        """
+        Called when the exit.
+
+        Args:
+            self: (todo): write your description
+        """
         self.close()
 
     def close(self):
+        """
+        Closes the connection.
+
+        Args:
+            self: (todo): write your description
+        """
         self._io.close()
 
     # ========================================================================
@@ -66,6 +137,12 @@ class KaitaiStream(object):
     # ========================================================================
 
     def is_eof(self):
+        """
+        Returns true if eof is eof.
+
+        Args:
+            self: (todo): write your description
+        """
         if self.bits_left > 0:
             return False
 
@@ -78,12 +155,31 @@ class KaitaiStream(object):
             return False
 
     def seek(self, n):
+        """
+        Seek to n.
+
+        Args:
+            self: (todo): write your description
+            n: (todo): write your description
+        """
         self._io.seek(n)
 
     def pos(self):
+        """
+        Return the current position.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._io.tell()
 
     def size(self):
+        """
+        Returns the size of the file.
+
+        Args:
+            self: (todo): write your description
+        """
         # Python has no internal File object API function to get
         # current file / StringIO size, thus we use the following
         # trick.
@@ -123,6 +219,12 @@ class KaitaiStream(object):
     # ------------------------------------------------------------------------
 
     def read_s1(self):
+        """
+        Read a single byte from the packet
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s1.unpack(self.read_bytes(1))[0]
 
     # ........................................................................
@@ -130,12 +232,30 @@ class KaitaiStream(object):
     # ........................................................................
 
     def read_s2be(self):
+        """
+        Reads a packet.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s2be.unpack(self.read_bytes(2))[0]
 
     def read_s4be(self):
+        """
+        Read one byte string from the packet.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s4be.unpack(self.read_bytes(4))[0]
 
     def read_s8be(self):
+        """
+        Read an unsigned 16 - bit integer from the packet.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s8be.unpack(self.read_bytes(8))[0]
 
     # ........................................................................
@@ -143,12 +263,30 @@ class KaitaiStream(object):
     # ........................................................................
 
     def read_s2le(self):
+        """
+        Reads a byte string.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s2le.unpack(self.read_bytes(2))[0]
 
     def read_s4le(self):
+        """
+        Reads the next byte string.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s4le.unpack(self.read_bytes(4))[0]
 
     def read_s8le(self):
+        """
+        Read the next 8 - gol integer from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_s8le.unpack(self.read_bytes(8))[0]
 
     # ------------------------------------------------------------------------
@@ -156,6 +294,12 @@ class KaitaiStream(object):
     # ------------------------------------------------------------------------
 
     def read_u1(self):
+        """
+        Reads an unsigned 64 - golomb integer from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u1.unpack(self.read_bytes(1))[0]
 
     # ........................................................................
@@ -163,12 +307,30 @@ class KaitaiStream(object):
     # ........................................................................
 
     def read_u2be(self):
+        """
+        Read an unsigned 64 - bit integer
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u2be.unpack(self.read_bytes(2))[0]
 
     def read_u4be(self):
+        """
+        Read an 8 - bit int.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u4be.unpack(self.read_bytes(4))[0]
 
     def read_u8be(self):
+        """
+        Reads an unsigned 64 - bit integer from the packet.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u8be.unpack(self.read_bytes(8))[0]
 
     # ........................................................................
@@ -176,12 +338,30 @@ class KaitaiStream(object):
     # ........................................................................
 
     def read_u2le(self):
+        """
+        Read an unsigned 64 - bit integer from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u2le.unpack(self.read_bytes(2))[0]
 
     def read_u4le(self):
+        """
+        Reads an unsigned 64 - golomb integer from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u4le.unpack(self.read_bytes(4))[0]
 
     def read_u8le(self):
+        """
+        Reads a 8 - bit integer value from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_u8le.unpack(self.read_bytes(8))[0]
 
     # ========================================================================
@@ -198,9 +378,21 @@ class KaitaiStream(object):
     # ........................................................................
 
     def read_f4be(self):
+        """
+        Read a 4 bytes from the value
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_f4be.unpack(self.read_bytes(4))[0]
 
     def read_f8be(self):
+        """
+        Read a 4 byte string as a 64 - byte string.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_f8be.unpack(self.read_bytes(8))[0]
 
     # ........................................................................
@@ -208,9 +400,21 @@ class KaitaiStream(object):
     # ........................................................................
 
     def read_f4le(self):
+        """
+        Read a 64 - 64 bit integer from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_f4le.unpack(self.read_bytes(4))[0]
 
     def read_f8le(self):
+        """
+        Reads a 64 - bit integer value from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return KaitaiStream.packer_f8le.unpack(self.read_bytes(8))[0]
 
     # ========================================================================
@@ -218,10 +422,23 @@ class KaitaiStream(object):
     # ========================================================================
 
     def align_to_byte(self):
+        """
+        Align the left to right.
+
+        Args:
+            self: (todo): write your description
+        """
         self.bits = 0
         self.bits_left = 0
 
     def read_bits_int_be(self, n):
+        """
+        Reads n bits as a signed bits.
+
+        Args:
+            self: (todo): write your description
+            n: (todo): write your description
+        """
         bits_needed = n - self.bits_left
         if bits_needed > 0:
             # 1 bit  => 1 byte
@@ -250,9 +467,23 @@ class KaitaiStream(object):
     # Unused since Kaitai Struct Compiler v0.9+ - compatibility with
     # older versions.
     def read_bits_int(self, n):
+        """
+        Reads an integer value as an integer.
+
+        Args:
+            self: (todo): write your description
+            n: (str): write your description
+        """
         return self.read_bits_int_be(n)
 
     def read_bits_int_le(self, n):
+        """
+        Reads n bits from the stream.
+
+        Args:
+            self: (todo): write your description
+            n: (int): write your description
+        """
         bits_needed = n - self.bits_left
         if bits_needed > 0:
             # 1 bit  => 1 byte
@@ -280,6 +511,13 @@ class KaitaiStream(object):
     # ========================================================================
 
     def read_bytes(self, n):
+        """
+        Read up to n bytes.
+
+        Args:
+            self: (todo): write your description
+            n: (todo): write your description
+        """
         if n < 0:
             raise ValueError(
                 "requested invalid %d amount of bytes" %
@@ -294,9 +532,25 @@ class KaitaiStream(object):
         return r
 
     def read_bytes_full(self):
+        """
+        Reads the full byte string from the stream.
+
+        Args:
+            self: (todo): write your description
+        """
         return self._io.read()
 
     def read_bytes_term(self, term, include_term, consume_term, eos_error):
+        """
+        Reads a single unicode.
+
+        Args:
+            self: (todo): write your description
+            term: (todo): write your description
+            include_term: (bool): write your description
+            consume_term: (todo): write your description
+            eos_error: (bool): write your description
+        """
         r = b''
         while True:
             c = self._io.read(1)
@@ -318,6 +572,13 @@ class KaitaiStream(object):
                 r += c
 
     def ensure_fixed_contents(self, expected):
+        """
+        Ensures that the provided list is a list.
+
+        Args:
+            self: (todo): write your description
+            expected: (todo): write your description
+        """
         actual = self._io.read(len(expected))
         if actual != expected:
             raise Exception(
@@ -328,6 +589,13 @@ class KaitaiStream(object):
 
     @staticmethod
     def bytes_strip_right(data, pad_byte):
+        """
+        Strip padding from the right bytes in the byte string.
+
+        Args:
+            data: (array): write your description
+            pad_byte: (todo): write your description
+        """
         new_len = len(data)
         if PY2:
             # data[...] must yield an integer, to compare with integer pad_byte
@@ -340,6 +608,14 @@ class KaitaiStream(object):
 
     @staticmethod
     def bytes_terminate(data, term, include_term):
+        """
+        Terminate a maximum number of bytes.
+
+        Args:
+            data: (array): write your description
+            term: (todo): write your description
+            include_term: (bool): write your description
+        """
         new_len = 0
         max_len = len(data)
         if PY2:
@@ -360,6 +636,13 @@ class KaitaiStream(object):
 
     @staticmethod
     def process_xor_one(data, key):
+        """
+        Process one byte string or bytes.
+
+        Args:
+            data: (array): write your description
+            key: (str): write your description
+        """
         if PY2:
             return bytes(bytearray(v ^ key for v in bytearray(data)))
         else:
@@ -367,6 +650,13 @@ class KaitaiStream(object):
 
     @staticmethod
     def process_xor_many(data, key):
+        """
+        Process xor.
+
+        Args:
+            data: (array): write your description
+            key: (str): write your description
+        """
         if PY2:
             return bytes(bytearray(a ^ b for a, b in zip(bytearray(data), itertools.cycle(bytearray(key)))))
         else:
@@ -374,6 +664,14 @@ class KaitaiStream(object):
 
     @staticmethod
     def process_rotate_left(data, amount, group_size):
+        """
+        Rotate the right bytestring
+
+        Args:
+            data: (todo): write your description
+            amount: (int): write your description
+            group_size: (int): write your description
+        """
         if group_size != 1:
             raise Exception(
                 "unable to rotate group of %d bytes yet" %
@@ -394,20 +692,45 @@ class KaitaiStream(object):
 
     @staticmethod
     def int_from_byte(v):
+        """
+        Convert a byte string to an integer.
+
+        Args:
+            v: (todo): write your description
+        """
         if PY2:
             return ord(v)
         return v
 
     @staticmethod
     def byte_array_index(data, i):
+        """
+        Return the index of a byte array.
+
+        Args:
+            data: (array): write your description
+            i: (array): write your description
+        """
         return KaitaiStream.int_from_byte(data[i])
 
     @staticmethod
     def byte_array_min(b):
+        """
+        Return the minimum number of bytes in b.
+
+        Args:
+            b: (array): write your description
+        """
         return KaitaiStream.int_from_byte(min(b))
 
     @staticmethod
     def byte_array_max(b):
+        """
+        : return : the maximum number of bytes.
+
+        Args:
+            b: (array): write your description
+        """
         return KaitaiStream.int_from_byte(max(b))
 
     @staticmethod
@@ -428,6 +751,14 @@ class KaitaiStructError(BaseException):
     an error.
     """
     def __init__(self, msg, src_path):
+        """
+        Initialize src_path
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+            src_path: (todo): write your description
+        """
         super(KaitaiStructError, self).__init__("%s: %s" % (src_path, msg))
         self.src_path = src_path
 
@@ -438,6 +769,13 @@ class UndecidedEndiannessError(KaitaiStructError):
     implies that there should be some positive result).
     """
     def __init__(self, src_path):
+        """
+        Initialize source file
+
+        Args:
+            self: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(KaitaiStructError, self).__init__("unable to decide on endianness for a type", src_path)
 
 
@@ -446,6 +784,15 @@ class ValidationFailedError(KaitaiStructError):
     KaitaiStream IO object which was involved in an error.
     """
     def __init__(self, msg, io, src_path):
+        """
+        Initialize the message.
+
+        Args:
+            self: (todo): write your description
+            msg: (str): write your description
+            io: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(ValidationFailedError, self).__init__("at pos %d: validation failed: %s" % (io.pos(), msg), src_path)
         self.io = io
 
@@ -455,6 +802,16 @@ class ValidationNotEqualError(ValidationFailedError):
     "expected", but it turned out that it's not.
     """
     def __init__(self, expected, actual, io, src_path):
+        """
+        Initialize the expected files.
+
+        Args:
+            self: (todo): write your description
+            expected: (str): write your description
+            actual: (todo): write your description
+            io: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(ValidationNotEqualError, self).__init__("not equal, expected %s, but got %s" % (repr(expected), repr(actual)), io, src_path)
         self.expected = expected
         self.actual = actual
@@ -465,6 +822,16 @@ class ValidationLessThanError(ValidationFailedError):
     greater than or equal to "min", but it turned out that it's not.
     """
     def __init__(self, min, actual, io, src_path):
+        """
+        Initialize the working directory.
+
+        Args:
+            self: (todo): write your description
+            min: (int): write your description
+            actual: (todo): write your description
+            io: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(ValidationLessThanError, self).__init__("not in range, min %s, but got %s" % (repr(min), repr(actual)), io, src_path)
         self.min = min
         self.actual = actual
@@ -475,6 +842,16 @@ class ValidationGreaterThanError(ValidationFailedError):
     less than or equal to "max", but it turned out that it's not.
     """
     def __init__(self, max, actual, io, src_path):
+        """
+        Initialize the underlying files.
+
+        Args:
+            self: (todo): write your description
+            max: (int): write your description
+            actual: (todo): write your description
+            io: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(ValidationGreaterThanError, self).__init__("not in range, max %s, but got %s" % (repr(max), repr(actual)), io, src_path)
         self.max = max
         self.actual = actual
@@ -485,6 +862,15 @@ class ValidationNotAnyOfError(ValidationFailedError):
     from the list, but it turned out that it's not.
     """
     def __init__(self, actual, io, src_path):
+        """
+        Initialize src_path.
+
+        Args:
+            self: (todo): write your description
+            actual: (todo): write your description
+            io: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(ValidationNotAnyOfError, self).__init__("not any of the list, got %s" % (repr(actual)), io, src_path)
         self.actual = actual
 
@@ -494,5 +880,14 @@ class ValidationExprError(ValidationFailedError):
     the expression, but it turned out that it doesn't.
     """
     def __init__(self, actual, io, src_path):
+        """
+        Initialize the underlying src_path.
+
+        Args:
+            self: (todo): write your description
+            actual: (todo): write your description
+            io: (todo): write your description
+            src_path: (todo): write your description
+        """
         super(ValidationExprError, self).__init__("not matching the expression, got %s" % (repr(actual)), io, src_path)
         self.actual = actual

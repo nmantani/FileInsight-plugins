@@ -33,6 +33,14 @@ except ImportError:
     sys.exit(-1) # Qiling Framework is not installed
 
 def rootfs_path(arch, os_type, big_endian):
+    """
+    Return the root directory.
+
+    Args:
+        arch: (todo): write your description
+        os_type: (str): write your description
+        big_endian: (todo): write your description
+    """
     if arch == "arm":
         if big_endian == True:
             rootfs = "Misc\\qiling-master\\examples\\rootfs\\armeb_%s" % os_type

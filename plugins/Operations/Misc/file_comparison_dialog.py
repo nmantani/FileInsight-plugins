@@ -33,6 +33,14 @@ import tkinter.messagebox
 
 # Print selected items
 def get_selection(r, c1, c2):
+    """
+    Get selected selection
+
+    Args:
+        r: (str): write your description
+        c1: (todo): write your description
+        c2: (todo): write your description
+    """
     print("%d %d" % (c1.current(), c2.current()))
     r.quit()
 

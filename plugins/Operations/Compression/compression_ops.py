@@ -36,6 +36,12 @@ import subprocess
 import zlib
 
 def aplib_compress(fi):
+    """
+    Compress cwd
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -72,6 +78,12 @@ def aplib_compress(fi):
             print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
 
 def aplib_decompress(fi):
+    """
+    Decompress aplib - encoded bytes.
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -130,6 +142,12 @@ def aplib_decompress(fi):
             print("Error: invalid compressed data")
 
 def bzip2_compress(fi):
+    """
+    Compress bzip2 document
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -162,6 +180,12 @@ def bzip2_compress(fi):
         print("Added a bookmark to compressed region.")
 
 def bzip2_decompress(fi):
+    """
+    Decompress bzipped bytes
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -194,6 +218,12 @@ def bzip2_decompress(fi):
         print("Added a bookmark to decompressed region.")
 
 def gzip_compress(fi):
+    """
+    Compress a gzip document
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -230,6 +260,12 @@ def gzip_compress(fi):
         print("Added a bookmark to compressed region.")
 
 def gzip_decompress(fi):
+    """
+    Decompress a gzip file.
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -264,6 +300,12 @@ def gzip_decompress(fi):
         print("Added a bookmark to decompressed region.")
 
 def lznt1_compress(fi):
+    """
+    Compress cznt1 cz
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -303,6 +345,12 @@ def lznt1_compress(fi):
         print("Added a bookmark to compressed region.")
 
 def lznt1_decompress(fi):
+    """
+    Lznt1 lznt1 cz1 cz
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -340,6 +388,12 @@ def lznt1_decompress(fi):
         print("Added a bookmark to decompressed region.")
 
 def raw_deflate(fi):
+    """
+    Convert raw document
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
@@ -373,6 +427,12 @@ def raw_deflate(fi):
         print("Added a bookmark to compressed region.")
 
 def raw_inflate(fi):
+    """
+    Decompress raw raw bytes
+
+    Args:
+        fi: (todo): write your description
+    """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 

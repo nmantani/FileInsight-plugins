@@ -13,12 +13,27 @@ if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
 class Exif(KaitaiStruct):
     SEQ_FIELDS = ["endianness", "body"]
     def __init__(self, _io, _parent=None, _root=None):
+        """
+        Initialize the object.
+
+        Args:
+            self: (todo): write your description
+            _io: (todo): write your description
+            _parent: (todo): write your description
+            _root: (todo): write your description
+        """
         self._io = _io
         self._parent = _parent
         self._root = _root if _root else self
         self._debug = collections.defaultdict(dict)
 
     def _read(self):
+        """
+        Read the next character.
+
+        Args:
+            self: (todo): write your description
+        """
         self._debug['endianness']['start'] = self._io.pos()
         self.endianness = self._io.read_u2le()
         self._debug['endianness']['end'] = self._io.pos()
@@ -30,12 +45,27 @@ class Exif(KaitaiStruct):
     class ExifBody(KaitaiStruct):
         SEQ_FIELDS = ["version", "ifd0_ofs"]
         def __init__(self, _io, _parent=None, _root=None):
+            """
+            Initialize the object.
+
+            Args:
+                self: (todo): write your description
+                _io: (todo): write your description
+                _parent: (todo): write your description
+                _root: (todo): write your description
+            """
             self._io = _io
             self._parent = _parent
             self._root = _root if _root else self
             self._debug = collections.defaultdict(dict)
 
         def _read(self):
+            """
+            Read a signed byte.
+
+            Args:
+                self: (todo): write your description
+            """
             _on = self._root.endianness
             if _on == 18761:
                 self._is_le = True
@@ -49,6 +79,12 @@ class Exif(KaitaiStruct):
                 self._read_be()
 
         def _read_le(self):
+            """
+            Reads a le le le le le le le le le le le le le le left.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['version']['start'] = self._io.pos()
             self.version = self._io.read_u2le()
             self._debug['version']['end'] = self._io.pos()
@@ -57,6 +93,12 @@ class Exif(KaitaiStruct):
             self._debug['ifd0_ofs']['end'] = self._io.pos()
 
         def _read_be(self):
+            """
+            Reads the state of the packet.
+
+            Args:
+                self: (todo): write your description
+            """
             self._debug['version']['start'] = self._io.pos()
             self.version = self._io.read_u2be()
             self._debug['version']['end'] = self._io.pos()
@@ -67,6 +109,16 @@ class Exif(KaitaiStruct):
         class Ifd(KaitaiStruct):
             SEQ_FIELDS = ["num_fields", "fields", "next_ifd_ofs"]
             def __init__(self, _io, _parent=None, _root=None, _is_le=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                    _is_le: (bool): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
@@ -74,6 +126,12 @@ class Exif(KaitaiStruct):
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Reads a signed double precision.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if not hasattr(self, '_is_le'):
                     raise kaitaistruct.UndecidedEndiannessError("/types/exif_body/types/ifd")
                 elif self._is_le == True:
@@ -82,6 +140,12 @@ class Exif(KaitaiStruct):
                     self._read_be()
 
             def _read_le(self):
+                """
+                Read the next le le le le le le le le le le le le le le le le le le le le le le le le le le le
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['num_fields']['start'] = self._io.pos()
                 self.num_fields = self._io.read_u2le()
                 self._debug['num_fields']['end'] = self._io.pos()
@@ -102,6 +166,12 @@ class Exif(KaitaiStruct):
                 self._debug['next_ifd_ofs']['end'] = self._io.pos()
 
             def _read_be(self):
+                """
+                Reads the internal method.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['num_fields']['start'] = self._io.pos()
                 self.num_fields = self._io.read_u2be()
                 self._debug['num_fields']['end'] = self._io.pos()
@@ -123,6 +193,12 @@ class Exif(KaitaiStruct):
 
             @property
             def next_ifd(self):
+                """
+                Returns the next input if it.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_next_ifd'):
                     return self._m_next_ifd if hasattr(self, '_m_next_ifd') else None
 
@@ -615,6 +691,16 @@ class Exif(KaitaiStruct):
                 moire_filter = 65112
             SEQ_FIELDS = ["tag", "field_type", "length", "ofs_or_data"]
             def __init__(self, _io, _parent=None, _root=None, _is_le=None):
+                """
+                Initialize the object.
+
+                Args:
+                    self: (todo): write your description
+                    _io: (todo): write your description
+                    _parent: (todo): write your description
+                    _root: (todo): write your description
+                    _is_le: (bool): write your description
+                """
                 self._io = _io
                 self._parent = _parent
                 self._root = _root if _root else self
@@ -622,6 +708,12 @@ class Exif(KaitaiStruct):
                 self._debug = collections.defaultdict(dict)
 
             def _read(self):
+                """
+                Reads a signed double precision.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if not hasattr(self, '_is_le'):
                     raise kaitaistruct.UndecidedEndiannessError("/types/exif_body/types/ifd_field")
                 elif self._is_le == True:
@@ -630,6 +722,12 @@ class Exif(KaitaiStruct):
                     self._read_be()
 
             def _read_le(self):
+                """
+                Reads a single le le lemma.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['tag']['start'] = self._io.pos()
                 self.tag = KaitaiStream.resolve_enum(Exif.ExifBody.IfdField.TagEnum, self._io.read_u2le())
                 self._debug['tag']['end'] = self._io.pos()
@@ -644,6 +742,12 @@ class Exif(KaitaiStruct):
                 self._debug['ofs_or_data']['end'] = self._io.pos()
 
             def _read_be(self):
+                """
+                Reads an unsigned integer.
+
+                Args:
+                    self: (todo): write your description
+                """
                 self._debug['tag']['start'] = self._io.pos()
                 self.tag = KaitaiStream.resolve_enum(Exif.ExifBody.IfdField.TagEnum, self._io.read_u2be())
                 self._debug['tag']['end'] = self._io.pos()
@@ -659,6 +763,12 @@ class Exif(KaitaiStruct):
 
             @property
             def type_byte_length(self):
+                """
+                The byte length of the field.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_type_byte_length'):
                     return self._m_type_byte_length if hasattr(self, '_m_type_byte_length') else None
 
@@ -667,6 +777,12 @@ class Exif(KaitaiStruct):
 
             @property
             def byte_length(self):
+                """
+                The byte length of the byte.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_byte_length'):
                     return self._m_byte_length if hasattr(self, '_m_byte_length') else None
 
@@ -675,6 +791,12 @@ class Exif(KaitaiStruct):
 
             @property
             def is_immediate_data(self):
+                """
+                Returns whether the data type?
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_is_immediate_data'):
                     return self._m_is_immediate_data if hasattr(self, '_m_is_immediate_data') else None
 
@@ -683,6 +805,12 @@ class Exif(KaitaiStruct):
 
             @property
             def data(self):
+                """
+                Returns the byte string of the data.
+
+                Args:
+                    self: (todo): write your description
+                """
                 if hasattr(self, '_m_data'):
                     return self._m_data if hasattr(self, '_m_data') else None
 
@@ -703,6 +831,12 @@ class Exif(KaitaiStruct):
 
         @property
         def ifd0(self):
+            """
+            Read the file ifd0 if it exists.
+
+            Args:
+                self: (todo): write your description
+            """
             if hasattr(self, '_m_ifd0'):
                 return self._m_ifd0 if hasattr(self, '_m_ifd0') else None
 

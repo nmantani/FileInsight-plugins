@@ -29,6 +29,13 @@ import tkinter
 
 # Print entered base64 table to stdout
 def print_table(r, e):
+    """
+    Print a table
+
+    Args:
+        r: (str): write your description
+        e: (dict): write your description
+    """
     print(e.get())
     r.quit()
 

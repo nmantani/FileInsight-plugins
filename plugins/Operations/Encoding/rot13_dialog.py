@@ -30,11 +30,23 @@ import tkinter
 
 # Print amount of rotation to stdout
 def print_amount(r, s):
+    """
+    Print the amount of characters
+
+    Args:
+        r: (str): write your description
+        s: (dict): write your description
+    """
     if s.get() != "":
         print(s.get())
     r.quit()
 
 def amount_changed(*args):
+    """
+    Changes the amount of changed amount.
+
+    Args:
+    """
     if not re.match("^-?([0-9])+$", amount.get()):
         amount.set("13")
 

@@ -41,6 +41,19 @@ except ImportError:
 
 # Print selected items
 def encrypt(data, root, cm, ckt, ek, cit, ei, eekl):
+    """
+    Encrypt data using the secret.
+
+    Args:
+        data: (todo): write your description
+        root: (todo): write your description
+        cm: (dict): write your description
+        ckt: (todo): write your description
+        ek: (dict): write your description
+        cit: (dict): write your description
+        ei: (dict): write your description
+        eekl: (dict): write your description
+    """
     arc2_mode = {"ECB":Cryptodome.Cipher.ARC2.MODE_ECB,
                 "CBC":Cryptodome.Cipher.ARC2.MODE_CBC,
                 "CFB":Cryptodome.Cipher.ARC2.MODE_CFB,
@@ -112,6 +125,15 @@ def encrypt(data, root, cm, ckt, ek, cit, ei, eekl):
     exit(0) # Decrypted successfully
 
 def combo_mode_selected(root, cm, cit, ei):
+    """
+    Configure or disbo mode.
+
+    Args:
+        root: (todo): write your description
+        cm: (dict): write your description
+        cit: (todo): write your description
+        ei: (todo): write your description
+    """
     mode = cm.get()
     if mode == "ECB":
         cit.configure(state = "disabled")
