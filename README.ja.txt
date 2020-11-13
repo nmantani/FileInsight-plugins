@@ -59,9 +59,12 @@ https://github.com/VirusTotal/yara-python からダウンロード、インス�
 "py.exe -3 -m pip install yara-python" を実行してインストールして
 ください。
 
-Emulate code プラグインについては、Qiling Framework が必要です。
-https://github.com/qilingframework/qiling/ からダウンロード、インストールするか、
-"py.exe -3 -m pip install qiling" を実行してインストールしてください。
+Emulate code プラグインについては、Qiling Framework と watchdog Python モジュールが必要です。
+https://github.com/qilingframework/qiling/ と https://github.com/gorakhargosh/watchdog から
+ダウンロード、インストールするか、以下のコマンドを実行してインストールしてください。
+
+py.exe -3 -m pip install qiling
+py.exe -3 -m pip install watchdog
 
 また、Qiling Framework の rootfs ファイルをセットアップする
 必要があります。https://github.com/qilingframework/qiling/archive/master.zip

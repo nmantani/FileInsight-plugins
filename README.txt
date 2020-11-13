@@ -56,9 +56,13 @@ For the "YARA scan" plugin, it requires yara-python Python module.
 Please get it from https://github.com/VirusTotal/yara-python
 or execute "py.exe -3 -m pip install yara-python" .
 
-For the "Emulate code" plugin, it requires Qiling Framework.
-Please get it from https://github.com/qilingframework/qiling/
-or execute "py.exe -3 -m pip install qiling" .
+For the "Emulate code" plugin, it requires Qiling Framework and watchdog Python module.
+Please get it from https://github.com/qilingframework/qiling/ and
+https://github.com/gorakhargosh/watchdog .
+or execute the following commands:
+
+py.exe -3 -m pip install qiling
+py.exe -3 -m pip install watchdog
 
 You also need to set up rootfs files of Qiling Framework.
 Please download them from https://github.com/qilingframework/qiling/archive/master.zip

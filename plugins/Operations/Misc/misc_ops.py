@@ -312,13 +312,18 @@ def emulate_code(fi):
     if ret == 1:
         print(stderr_data.replace("\x0d\x0a", "\x0a")),
         return
-    elif ret == -1 or ret == -2:
+    elif ret == -1 or ret == -2 or ret == -3:
         if ret == -1: # Qiling Framework is not installed
             print("Qiling Framework is not installed.")
             print("Please install it with 'py.exe -3 -m pip install qiling'.")
             print("")
 
-        if ret == -2: # rootfs files are not installed
+        if ret == -2: # watchdog is not installed
+            print("watchdog is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install watchdog'.")
+            print("")
+
+        if ret == -3: # rootfs files are not installed
             print("Rootfs files of Qiling Framework are not installed.")
             print("Please download them from https://github.com/qilingframework/qiling/archive/master.zip")
             print("and copy extracted 'qiling-master' folder into '%s' folder." % (os.getcwd() + "\\Misc"))
@@ -326,9 +331,9 @@ def emulate_code(fi):
             print("Then please setup DLL files and registry files of rootfs with the following command on PowerShell:")
             print("Start-Process powershell -Verb RunAs -Wait -ArgumentList \"-Command `\"cd '%s\qiling-master'; examples\scripts\dllscollector.bat`\"\"" % (os.getcwd() + "\\Misc"))
             print("")
+            print("You can also do the setup with install.ps1:")
+            print("powershell -exec bypass -command \"IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))\"")
 
-        print("You can also do the setup with install.ps1:")
-        print("powershell -exec bypass -command \"IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))\"")
         return
 
     if fi.getSelectionLength() > 0:

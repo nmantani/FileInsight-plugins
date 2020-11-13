@@ -70,6 +70,9 @@ https://github.com/VirusTotal/yara-python/blob/master/LICENSE
 Qiling Framework is distributed under the GNU General Public License version 2.
 https://github.com/qilingframework/qiling/
 
+watchdog is distributed under the Apache License 2.0.
+https://github.com/gorakhargosh/watchdog/blob/master/LICENSE
+
 aPLib is distributed under the license as follows:
 
 aPLib is freeware. If you use aPLib in a product, an acknowledgement would be

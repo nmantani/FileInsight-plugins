@@ -355,6 +355,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "pefile" $update
     install_with_pip "capstone" $update
     install_with_pip "qiling" $update
+    install_with_pip "watchdog" $update
     install_with_pip "yara-python" $update
 
     Write-Host "[+] Installing binwalk Python module..."
