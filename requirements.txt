@@ -4,3 +4,4 @@ pefile
 yara-python
 qiling
 capstone
+watchdog

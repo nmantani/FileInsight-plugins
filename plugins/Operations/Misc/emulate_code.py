@@ -24,6 +24,7 @@
 
 import binascii
 import os
+import pathlib
 import shlex
 import sys
 
@@ -32,19 +33,49 @@ try:
 except ImportError:
     sys.exit(-1) # Qiling Framework is not installed
 
-def rootfs_path(arch, os_type, big_endian):
+try:
+    from watchdog.observers import Observer
+    from watchdog.events import FileSystemEventHandler
+except ImportError:
+    sys.exit(-2) # watchdog is not installed
+
+rootfs_base = "Misc\\qiling-master\\examples\\rootfs"
+
+class FileChangeHandler(FileSystemEventHandler):
+    def __init__(self):
+        super(FileChangeHandler, self).__init__()
+        self.log = ""
+
+    def on_created(self, event):
+        self.log += "  [Created] %s\n" % pathlib.Path(event.src_path).resolve()
+
+    def on_deleted(self, event):
+        self.log += "  [Deleted] %s\n" % pathlib.Path(event.src_path).resolve()
+
+    def on_modified(self, event):
+        self.log += "  [Modified] %s\n" % pathlib.Path(event.src_path).resolve()
+
+    def on_moved(self, event):
+        self.log += "  [Moved] %s -> %s\n" % (pathlib.Path(event.src_path).resolve(), pathlib.Path(event.dest_path).resolve())
+
+    def show_log(self):
+        if self.log != "":
+            print("\nFile system events in rootfs (creation, deletion, modification and move):", file=sys.stderr)
+            print(self.log, end="", file=sys.stderr)
+
+def rootfs_path(base, arch, os_type, big_endian):
     if arch == "arm":
         if big_endian == True:
-            rootfs = "Misc\\qiling-master\\examples\\rootfs\\armeb_%s" % os_type
+            rootfs = base + "\\armeb_%s" % os_type
         else:
-            rootfs = "Misc\\qiling-master\\examples\\rootfs\\arm_%s" % os_type
+            rootfs = base + "\\arm_%s" % os_type
     elif arch == "mips":
         if big_endian == True:
-            rootfs = "Misc\\qiling-master\\examples\\rootfs\\mips32_%s" % os_type
+            rootfs = base + "\\mips32_%s" % os_type
         else:
-            rootfs = "Misc\\qiling-master\\examples\\rootfs\\mips32el_%s" % os_type
+            rootfs = base + "\\mips32el_%s" % os_type
     else:
-        rootfs = "Misc\\qiling-master\\examples\\rootfs\\%s_%s" % (arch, os_type)
+        rootfs = base + "\\%s_%s" % (arch, os_type)
 
     if os.path.exists(rootfs):
         return rootfs
@@ -66,10 +97,10 @@ if len(sys.argv) == 7:
         big_endian = False
     cmd_args = shlex.split(sys.argv[6])
 
-    if not os.path.exists("Misc\\qiling-master\\examples\\rootfs\\x8664_windows\\Windows\\System32\\kernel32.dll"):
-        sys.exit(-2) # Windows DLL files are not properly set up
+    if not os.path.exists(rootfs_base + "\\x8664_windows\\Windows\\System32\\kernel32.dll"):
+        sys.exit(-3) # Windows DLL files are not properly set up
 
-    rootfs = rootfs_path(arch, os_type, big_endian)
+    rootfs = rootfs_path(rootfs_base, arch, os_type, big_endian)
 
     if rootfs == None:
         print("Abort emulation.", file=sys.stderr)
@@ -78,6 +109,12 @@ if len(sys.argv) == 7:
     if file_type == "executable":
         try:
             ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+
+            # Start to watch file system events
+            handler = FileChangeHandler()
+            observer = Observer()
+            observer.schedule(handler, rootfs_base, recursive=True)
+            observer.start()
         except Exception as e:
             print("Emulation aborted.", file=sys.stderr)
             print("Error: %s" % e, file=sys.stderr)
@@ -89,6 +126,12 @@ if len(sys.argv) == 7:
 
         try:
             ql = qiling.Qiling(shellcoder=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
+
+            # Start to watch file system events
+            handler = FileChangeHandler()
+            observer = Observer()
+            observer.schedule(handler, rootfs_base, recursive=True)
+            observer.start()
         except Exception as e:
             print("Emulation aborted.", file=sys.stderr)
             print("Error: %s" % e, file=sys.stderr)
@@ -100,6 +143,8 @@ else:
 # Ignore emulation error
 try:
     ql.run()
+    observer.stop()
+    observer.join()
 except Exception as e:
     print("Error: %s" % e, file=sys.stderr)
 
@@ -136,6 +181,8 @@ for i in range(1, len(all_mem) + 1):
 if len(heap) > 0:
     print("Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (heap_start, heap_end, heap_end - heap_start, num_dump), file=sys.stderr)
     print(heap, end="")
+
+handler.show_log()
 
 print("", file=sys.stderr)
 sys.exit(0)
