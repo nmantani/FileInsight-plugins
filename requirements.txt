@@ -5,3 +5,4 @@ yara-python
 qiling
 capstone
 watchdog
+pyimpfuzzy-windows

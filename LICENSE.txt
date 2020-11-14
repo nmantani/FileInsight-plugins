@@ -4,6 +4,7 @@ FileInsight-plugins is distributed under the BSD 2-Clause license.
 under GNU General Public License version 2 (GPLv2) because it uses
 Qiling Framework Python module that is distributed under GPLv2)
 
+-------------------------------------------------------------------------------
 Copyright (c) 2012-2020 Nobutaka Mantani
 All rights reserved.
 
@@ -27,6 +28,7 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
 OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-------------------------------------------------------------------------------
 
 * License of bundled third party software
 Kaitai Struct runtime library for Python (plugins/Operations/Parsing/kaitaistruct.py)
@@ -73,8 +75,42 @@ https://github.com/qilingframework/qiling/
 watchdog is distributed under the Apache License 2.0.
 https://github.com/gorakhargosh/watchdog/blob/master/LICENSE
 
-aPLib is distributed under the license as follows:
+pyimpfuzzy-windows is distributed under the license as follows
+(https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
+-------------------------------------------------------------------------------
+LICENSE
+Copyright (C) 2015 JPCERT Coordination Center. All Rights Reserved.
 
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following acknowledgments and disclaimers.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following acknowledgments and disclaimers in the documentation and/or other materials provided with the distribution.
+3. Products derived from this software may not include "JPCERT Coordination Center" in the name of such derived product, nor shall "JPCERT Coordination Center"  be used to endorse or promote products derived from this software without prior written permission. For written permission, please contact pr@jpcert.or.jp.
+
+ACKNOWLEDGMENTS AND DISCLAIMERS
+Copyright (C) 2015 JPCERT Coordination Center
+
+This software is based upon work funded and supported by the Ministry of
+Economy, Trade and Industry.
+
+Any opinions, findings and conclusions or recommendations expressed in this
+software are those of the author(s) and do not necessarily reflect the views of
+the Ministry of Economy, Trade and Industry.
+
+NO WARRANTY. THIS JPCERT COORDINATION CENTER SOFTWARE IS FURNISHED ON
+AN "AS-IS" BASIS. JPCERT COORDINATION CENTER MAKES NO WARRANTIES OF
+ANY KIND, EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT
+NOT LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY,
+EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE SOFTWARE. JPCERT
+COORDINATION CENTER DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH
+RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
+
+This software has been approved for public release and unlimited distribution.
+-------------------------------------------------------------------------------
+
+aPLib is distributed under the license as follows:
+-------------------------------------------------------------------------------
 aPLib is freeware. If you use aPLib in a product, an acknowledgement would be
 appreciated, e.g. by adding something like the following to the documentation:
 
@@ -112,4 +148,4 @@ the media).
     If anything goes even remotely wrong - blame _yourself_, NOT me!
 
     #endif
-
+-------------------------------------------------------------------------------

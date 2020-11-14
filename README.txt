@@ -77,6 +77,10 @@ For the "Disassemble" plugin, it requires Capstone.
 Please get it from https://github.com/aquynh/capstone/
 or execute "py.exe -3 -m pip install capstone" .
 
+For the "Hash values" plugin, it requires pyimpfuzzy-windows.
+Please get it from https://github.com/JPCERTCC/impfuzzy/
+or execute "py.exe -3 -m pip install pyimpfuzzy-windows" .
+
 You can install some of required Python modules with the following command.
 py.exe -3 -m pip install -r requirements.txt
 
@@ -237,8 +241,8 @@ List of plugins (78 plugins):
   * File comparison
     Compare contents of two files
   * Hash values
-    Calculate MD5, SHA1, SHA256 hash values of selected region (the whole
-    file if not selected)
+    Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of
+    selected region (the whole file if not selected)
   * Send to
     Send selected region (the whole file if not selected) to other programs
 
