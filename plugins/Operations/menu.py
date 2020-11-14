@@ -148,7 +148,7 @@ ops_dict["Misc"] = ("Byte frequency",
 tooltip_dict["Misc"] = ("Show byte frequency of selected region\n(the whole file if not selected)",
                         "Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
                         "Compare contents of two files",
-                        "Calculate MD5, SHA1, SHA256 hash values of selected region\n(the whole file if not selected)",
+                        "Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of\nselected region (the whole file if not selected)",
                         "Send selected region (the whole file if not selected) to other programs")
 
 ops_dict["Parsing"] = ("Binwalk scan",

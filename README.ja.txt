@@ -81,6 +81,10 @@ Disassemble プラグインについては、Capstone が必要です。
 https://github.com/aquynh/capstone/ からダウンロード、インストールするか、
 "py.exe -3 -m pip install capstone" を実行してインストールしてください。
 
+Hash values プラグインについては、pyimpfuzzy-windows が必要です。
+https://github.com/JPCERTCC/impfuzzy/ からダウンロード、インストールするか、
+"py.exe -3 -m pip install pyimpfuzzy-windows" を実行してインストールしてください。
+
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
 py.exe -3 -m pip install -r requirements.txt
 
@@ -240,8 +244,8 @@ powershell -exec bypass .\install.ps1 -update
   * File comparison
     2つのファイルの内容を比較します。
   * Hash values
-    選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256 ハッシュ値を
-    計算します。
+    選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy
+    ハッシュ値を計算します。
   * Send to
     選択範囲を(選択していない場合は全体を)別のプログラムで開きます。
 

@@ -86,21 +86,49 @@ def byte_frequency(fi):
 
 def hash_values(fi):
     """
-    Calculate MD5, SHA1, SHA256 hash values of selected region (the whole file if not selected)
+    Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of selected region (the whole file if not selected)
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
     if length > 0:
         data = fi.getSelection()
-        print("Hash values from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
+        print("Hash values from offset %s to %s:" % (hex(offset), hex(offset + length - 1)))
     else:
         data = fi.getDocument()
-        print("Hash values of the whole file")
+        print("Hash values of the whole file:")
 
-    print("CRC32: %x" % (zlib.crc32(data) & 0xffffffff))
-    print("MD5: %s" % hashlib.md5(data).hexdigest())
-    print("SHA1: %s" % hashlib.sha1(data).hexdigest())
-    print("SHA256: %s" % hashlib.sha256(data).hexdigest())
+    data = binascii.b2a_hex(data)
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute hash_values.py to get hash values
+    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive hash values
+    stdout_data, stderr_data = p.communicate(input=data)
+    ret = p.wait()
+
+    # There is a missing module
+    if ret == -1:
+        print("python-magic is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
+        print("")
+        return
+    elif ret == -2:
+        print("pefile is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        print("")
+        return
+    elif ret == -3:
+        print("pyimpfuzzy-windows is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
+        print("")
+        return
+    else:
+        print(stdout_data),
+        print(stderr_data),
 
 def send_to(fi):
     """
@@ -166,6 +194,112 @@ def send_to(fi):
         else:
             print("Sending the whole file (%s bytes) to an external program." % length)
 
+def get_ssdeep(data):
+    """
+    Get ssdeep hash value, used by file_comparison()
+    """
+    data_hex = binascii.b2a_hex(data)
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute hash_values.py to get ssdeep hash value
+    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "ssdeep"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive hash value
+    stdout_data, stderr_data = p.communicate(input=data_hex)
+    ret = p.wait()
+
+    # There is a missing module
+    if ret == -1:
+        print("python-magic is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
+        print("")
+        return
+    elif ret == -2:
+        print("pefile is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        print("")
+        return
+    elif ret == -3:
+        print("pyimpfuzzy-windows is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
+        print("")
+        return
+
+    return stdout_data
+
+def get_impfuzzy(data):
+    """
+    Get impfuzzy hash value, used by file_comparison()
+    """
+    data_hex = binascii.b2a_hex(data)
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute hash_values.py to get impfuzzy hash value
+    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "impfuzzy"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive hash value
+    stdout_data, stderr_data = p.communicate(input=data_hex)
+    ret = p.wait()
+
+    # There is a missing module
+    if ret == -1:
+        print("python-magic is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
+        print("")
+        return
+    elif ret == -2:
+        print("pefile is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        print("")
+        return
+    elif ret == -3:
+        print("pyimpfuzzy-windows is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
+        print("")
+        return
+
+    return stdout_data
+
+def compare_hash(hash1, hash2):
+    """
+    Compare hash value,s used by file_comparison()
+    """
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute hash_values.py to get impfuzzy hash value
+    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "compare", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive hash value
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    # There is a missing module
+    if ret == -1:
+        print("python-magic is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
+        print("")
+        return
+    elif ret == -2:
+        print("pefile is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        print("")
+        return
+    elif ret == -3:
+        print("pyimpfuzzy-windows is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
+        print("")
+        return
+
+    return stdout_data
+
 def file_comparison(fi):
     """
     Compare contents of two files
@@ -194,12 +328,18 @@ def file_comparison(fi):
         return
     (first_index, second_index) = stdout_data.split()
 
+    first_index = int(first_index)
+    second_index = int(second_index)
+
     time_start = time.time()
 
-    fi.activateDocumentAt(int(first_index))
+    fi.activateDocumentAt(first_index)
+    first_name = fi.getDocumentName().decode(cp).encode("utf-8")
     first_data = list(fi.getDocument())
     first_len = fi.getLength()
-    fi.activateDocumentAt(int(second_index))
+
+    fi.activateDocumentAt(second_index)
+    second_name = fi.getDocumentName().decode(cp).encode("utf-8")
     second_data = list(fi.getDocument())
     second_len = fi.getLength()
 
@@ -237,27 +377,55 @@ def file_comparison(fi):
     else:
         print("Delta:")
         output = ""
-        fi.activateDocumentAt(int(first_index))
+        fi.activateDocumentAt(first_index)
         for (i, j) in bookmark_list:
             if do_bookmark: fi.setBookmark(i, j, hex(i), "#ffaad4")
             output += "Offset: %s - %s\n" % (hex(i), hex(i + j - 1))
 
-        fi.activateDocumentAt(int(second_index))
+        fi.activateDocumentAt(second_index)
         for (i, j) in bookmark_list:
             if do_bookmark: fi.setBookmark(i, j, hex(i), "#ffaad4")
-            output += "Offset: %s - %s\n" % (hex(i), hex(i + j - 1))
 
         if lower_len != upper_len:
             if first_len > second_len:
-                fi.activateDocumentAt(int(first_index))
+                fi.activateDocumentAt(first_index)
             else:
-                fi.activateDocumentAt(int(second_index))
+                fi.activateDocumentAt(second_index)
             if do_bookmark: fi.setBookmark(lower_len, upper_len - lower_len, hex(lower_len), "#ffaad4")
             output += "Offset: %s - %s\n" % (hex(lower_len), hex(upper_len - 1))
 
-        fi.activateDocumentAt(int(first_index))
+        fi.activateDocumentAt(first_index)
         print(output)
         print("Added bookmarks to the deltas.")
+        print("")
+
+        first_data = "".join(first_data)
+        second_data = "".join(second_data)
+
+        ssdeep_first = get_ssdeep(first_data)
+        ssdeep_second = get_ssdeep(second_data)
+
+        if ssdeep_first != "" and ssdeep_second != "":
+            print("ssdeep hash of %s:\t%s" % (first_name, ssdeep_first))
+            print("ssdeep hash of %s:\t%s" % (second_name, ssdeep_second))
+            print("ssdeep hash comparison: %s" % compare_hash(ssdeep_first, ssdeep_second))
+            print("")
+
+        if first_data[:2] == "MZ":
+            impfuzzy_first = get_impfuzzy(first_data)
+        else:
+            impfuzzy_first = ""
+
+        if second_data[:2] == "MZ":
+            impfuzzy_second = get_impfuzzy(second_data)
+        else:
+            impfuzzy_second = ""
+
+        if impfuzzy_first != "" and impfuzzy_second != "":
+            print("impfuzzy hash of %s:\t%s" % (first_name, impfuzzy_first))
+            print("impfuzzy hash of %s:\t%s" % (second_name, impfuzzy_second))
+            print("impfuzzy hash comparison: %s" % compare_hash(impfuzzy_first, impfuzzy_second))
+            print("")
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))
 
