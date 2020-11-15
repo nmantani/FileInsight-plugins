@@ -408,7 +408,7 @@ def file_comparison(fi):
         if ssdeep_first != "" and ssdeep_second != "":
             print("ssdeep hash of %s:\t%s" % (first_name, ssdeep_first))
             print("ssdeep hash of %s:\t%s" % (second_name, ssdeep_second))
-            print("ssdeep hash comparison (0-100): %s" % compare_hash(ssdeep_first, ssdeep_second))
+            print("ssdeep hash comparison score (0-100): %s" % compare_hash(ssdeep_first, ssdeep_second))
             print("")
 
         if first_data[:2] == "MZ":
@@ -424,7 +424,7 @@ def file_comparison(fi):
         if impfuzzy_first != "" and impfuzzy_second != "":
             print("impfuzzy hash of %s:\t%s" % (first_name, impfuzzy_first))
             print("impfuzzy hash of %s:\t%s" % (second_name, impfuzzy_second))
-            print("impfuzzy hash comparison (0-100): %s" % compare_hash(impfuzzy_first, impfuzzy_second))
+            print("impfuzzy hash comparison score (0-100): %s" % compare_hash(impfuzzy_first, impfuzzy_second))
             print("")
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))
