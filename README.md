@@ -1,7 +1,7 @@
 # FileInsight-plugins: a decoding toolbox of McAfee FileInsight hex editor for malware analysis
 
 FileInsight-plugins is a collection of plugins for McAfee FileInsight hex editor.
-It adds many capabilities such as decryption, decompression, searching XOR-ed text strings, scanning with a YARA rule, and more!
+It adds many capabilities such as decryption, decompression, searching XOR-ed text strings, scanning with a YARA rule, code emulation, disassembly, and more!
 It is useful for various kind of decoding tasks in malware analysis (e.g. extracing malware executables and decoy documents from malicious document files).
 
 ## Screenshots
@@ -11,10 +11,13 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 
 ![screenshot3.png](docs/screenshot3.png)
 
+![screenshot4.png](docs/screenshot4.png)
+
+![screenshot5.png](docs/screenshot5.png)
+
 ## How to install
 ### Automatic installation
-Please execute the following command. FileInsight-plugins and all pre-requisites will
-be installed.
+Please execute the following command. FileInsight-plugins and all pre-requisites including FileInsight and Python 3 will be installed.
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
@@ -28,96 +31,8 @@ powershell -exec bypass .\install.ps1
 ```
 
 ### Manual installation
-Please copy "plugins" folder into %USERPROFILE%\Documents\McAfee FileInsight .
-**You need Python 3 installed in addition to FileInsight.**
-
-![folders.png](docs/folders.png)
-
-### **Note regarding Python**
-FileInsight-plugins requires Python 3 since version 2.0 (older versions require Python 2 (x86)), though the built-in Python interpreter of FileInsight is Python 2. You no longer need to install Python 2 (x86) with the latest version (3.5) of FileInsight.
-
-### **Note regarding FileInsight installer**
-FileInsight installer is available at the McAfee Free Tools website.
-Please get it from https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html .
-
-## Pre-requisites
-For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
-Please download aPLib from http://ibsensoftware.com/download.html and copy
-aplib.dll (32 bits version) into "plugins\Operations\Compression" folder.
-
-For the "Binwalk scan" plugin, it requires binwalk Python module.
-Please get it from https://github.com/ReFirmLabs/binwalk
-(pip cannot be used to install binwalk)."
-
-For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Python module.
-Please get it from https://github.com/Legrandin/pycryptodome
-or execute the following command.
-```
-py.exe -3 -m pip install pycryptodomex
-```
-
-For the "File type" plugin, it requires python-magic Python module.
-Please get it from https://github.com/ahupp/python-magic
-or execute the following command.
-```
-py.exe -3 -m pip install python-magic-bin
-```
-
-For the "Find PE" file plugin, it requires pefile Python module.
-Please get it from https://github.com/erocarrera/pefile
-or execute the following command.
-```
-py.exe -3 -m pip install pefile
-```
-
-For the "YARA scan" plugin, it requires yara-python Python module.
-Please get it from https://github.com/VirusTotal/yara-python
-or execute the following command.
-```
-py.exe -3 -m pip install yara-python
-```
-
-For the "Emulate code" plugin, it requires Qiling Framework and watchdog Python module.
-Please get it from https://github.com/qilingframework/qiling/ and
-https://github.com/gorakhargosh/watchdog .
-or execute the following commands.
-```
-py.exe -3 -m pip install qiling
-py.exe -3 -m pip install watchdog
-```
-
-You also need to set up rootfs files of Qiling Framework.
-Please download them from https://github.com/qilingframework/qiling/archive/master.zip and copy extracted "qiling-master" folder into "plugins\Operations\Misc" folder.
-
-Then please setup DLL files and registry files of rootfs with the following commands on PowerShell:
-```powershell
-$dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
-
-Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
-```
-
-For the "Disassemble" plugin, it requires Capstone.
-Please get it from https://github.com/aquynh/capstone/
-or execute the following command.
-```
-py.exe -3 -m pip install capstone
-```
-
-For the "Hash values" plugin, it requires pyimpfuzzy-windows.
-Please get it from https://github.com/JPCERTCC/impfuzzy/
-or execute the following command.
-```
-py.exe -3 -m pip install pyimpfuzzy-windows
-```
-
-You can install some of required Python modules with the following command.
-```
-py.exe -3 -m pip install -r requirements.txt
-```
-
-For the "Show metadata" plugin, it requires ExifTool.
-Please download ExifTool from https://exiftool.org/
-and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.
+Please read [INSTALL.md](INSTALL.md) for details.
+**I strongly recommend automatic installation** because manual installation requires many steps.
 
 ## Customization
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
