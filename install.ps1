@@ -413,8 +413,16 @@ function install_python_modules($work_dir, $update) {
 function install_qiling_rootfs($work_dir, $update) {
     Write-Host "[+] Installing rootfs files of Qiling Framework..."
 
-    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\kernel32.dll"
-    if ((Test-Path $file_path) -and !$update) {
+    $file_path_kernel32_x64 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\kernel32.dll"
+    $file_path_ntoskrnl_x64 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\ntoskrnl.exe"
+    $file_path_kernel32_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\SysWOW64\kernel32.dll"
+    $file_path_ntoskrnl_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\SysWOW64\ntoskrnl.exe"
+    $file_path_libc_x64 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_linux\lib\libc.so.6"
+    $file_path_libc_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_linux\lib\libc.so.6"
+
+    if ((Test-Path $file_path_kernel32_x64) -and (Test-Path $file_path_ntoskrnl_x64) `
+        -and (Test-Path $file_path_kernel32_x86) -and (Test-Path $file_path_ntoskrnl_x86) `
+        -and (Test-Path $file_path_libc_x64) -and (Test-Path $file_path_libc_x86) -and !$update) {
         Write-Host "[*] rootfs files of Qiling Framework are already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading Qiling Framework..."

@@ -77,11 +77,32 @@ def rootfs_path(base, arch, os_type, big_endian):
     else:
         rootfs = base + "\\%s_%s" % (arch, os_type)
 
-    if os.path.exists(rootfs):
+    if pathlib.Path(rootfs).exists():
         return rootfs
     else:
-        print("Error: rootfs %s not found." % rootfs, file=sys.stderr)
+        print("Error: rootfs %s is not found." % rootfs, file=sys.stderr)
+        print("This combination of OS and architecture is is not supported.", file=sys.stderr)
         return None
+
+def check_rootfs_files(rootfs_base):
+    rootfs_ok = True
+
+    for f in ["kernel32.dll", "ntoskrnl.exe"]: # ntoskrnl.exe is required since Qiling Framework 1.2
+        if not pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32\\" + f).exists():
+            print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32").resolve()), file=sys.stderr)
+            rootfs_ok = False
+        if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64\\" + f).exists():
+            print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve()), file=sys.stderr)
+            rootfs_ok = False
+
+    if not pathlib.Path(rootfs_base + "\\x8664_linux\\lib\\libc.so.6").exists():
+        print("libc.so.6 is not found in %s ." % pathlib.Path(rootfs_base + "\\x8664_linux\\lib").resolve(), file=sys.stderr)
+        rootfs_ok = False
+    if not pathlib.Path(rootfs_base + "\\x86_linux\\lib\\libc.so.6").exists():
+        print("libc.so.6 is not found in %s ." % pathlib.Path(rootfs_base + "\\x86_linux\\lib").resolve(), file=sys.stderr)
+        rootfs_ok = False
+
+    return rootfs_ok
 
 if len(sys.argv) == 7:
     file_path = sys.argv[1]
@@ -97,8 +118,8 @@ if len(sys.argv) == 7:
         big_endian = False
     cmd_args = shlex.split(sys.argv[6])
 
-    if not os.path.exists(rootfs_base + "\\x8664_windows\\Windows\\System32\\kernel32.dll"):
-        sys.exit(-3) # Windows DLL files are not properly set up
+    if not check_rootfs_files(rootfs_base):
+        sys.exit(-3) # rootfs files are not properly set up
 
     rootfs = rootfs_path(rootfs_base, arch, os_type, big_endian)
 
