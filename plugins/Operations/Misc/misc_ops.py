@@ -492,11 +492,12 @@ def emulate_code(fi):
             print("")
 
         if ret == -3: # rootfs files are not installed
-            print("Rootfs files of Qiling Framework are not installed.")
+            print(stderr_data)
+            print("Rootfs files of Qiling Framework are not properly installed.")
             print("Please download them from https://github.com/qilingframework/qiling/archive/master.zip")
             print("and copy extracted 'qiling-master' folder into '%s' folder." % (os.getcwd() + "\\Misc"))
             print("")
-            print("Then please setup DLL files and registry files of rootfs with the following command on PowerShell:")
+            print("Then please setup ntoskrnl.exe, DLL files and registry files of rootfs with the following command on PowerShell:")
             print("Start-Process powershell -Verb RunAs -Wait -ArgumentList \"-Command `\"cd '%s\qiling-master'; examples\scripts\dllscollector.bat`\"\"" % (os.getcwd() + "\\Misc"))
             print("")
             print("You can also do the setup with install.ps1:")
