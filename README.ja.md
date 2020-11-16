@@ -34,10 +34,6 @@ powershell -exec bypass .\install.ps1
 詳しくは [INSTALL.ja.md](INSTALL.ja.md) をお読みください。
 手動でのインストールは多数の手順が必要となりますので、**自動でのインストールを強くおすすめします。**
 
-## カスタマイズ
-Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
-"plugins\Operations\Misc\send_to.json" を編集してください。
-
 ## 使い方
 Plugins タブにあるカテゴリをクリックしてプラグインを選択してください。
 
@@ -69,6 +65,10 @@ powershell -exec bypass .\install.ps1 -update
 ### 手動でのアップデート
 最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 に上書きコピーしてください。
+
+## カスタマイズ
+Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
+"plugins\Operations\Misc\send_to.json" を編集してください。
 
 ## プラグインの一覧 (78個)
 * Basic operations

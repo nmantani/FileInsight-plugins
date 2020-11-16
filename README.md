@@ -34,10 +34,6 @@ powershell -exec bypass .\install.ps1
 Please read [INSTALL.md](INSTALL.md) for details.
 **I strongly recommend automatic installation** because manual installation requires many steps.
 
-## Customization
-For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
-favorite programs.
-
 ## How to use
 Please click a category from the "Plugins" tab then select a plugin.
 
@@ -70,6 +66,10 @@ powershell -exec bypass .\install.ps1 -update
 ### Manual update
 Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
+
+## Customization
+For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
+favorite programs.
 
 ## List of plugins (78 plugins)
 * Basic operations
