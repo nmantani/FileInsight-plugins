@@ -23,7 +23,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 ```
 
-HTTP プロキシをお使いの場合は install.ps1 をダウンロードして、ファイル中の $PROXY_HOST と
+HTTP プロキシをお使いの場合は [install.ps1](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1) をダウンロードして、ファイル中の $PROXY_HOST と
 $PROXY_PORT の変数を編集してから以下のコマンドを実行してください。
 
 ```
