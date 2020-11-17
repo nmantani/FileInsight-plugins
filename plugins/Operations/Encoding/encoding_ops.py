@@ -30,6 +30,7 @@ import quopri
 import re
 import string
 import subprocess
+import urllib
 
 def binary_data_to_hex_text(fi):
     """
@@ -539,3 +540,59 @@ def octal_text_to_binary_data(fi):
         fi.setDocument("".join(newdata))
 
         print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
+
+def url_decode(fi):
+    """
+    Decode selected region as percent-encoded text that is used by URL
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        decoded = list(urllib.unquote(data))
+        final_size = len(decoded)
+
+        newdata = orig[:offset]
+        newdata.extend(decoded)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decoded one byte URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decoded %s bytes URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+
+def url_encode(fi):
+    """
+    Encode selected region into percent-encoded text that is used by URL
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        encoded = list(urllib.quote(data))
+        final_size = len(encoded)
+
+        newdata = orig[:offset]
+        newdata.extend(encoded)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Encoded one byte into URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Encoded %s bytes into URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))

@@ -125,7 +125,9 @@ ops_dict["Encoding"] = ("Binary data to hex text",
                         "Custom base64 encode",
                         "ROT13",
                         "From quoted printable",
-                        "To quoted printable")
+                        "To quoted printable",
+                        "URL decode",
+                        "URL encode")
 tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
                             "Convert hex text of selected region into binary",
                             "Convert binary of selected region into decimal text",
@@ -138,7 +140,9 @@ tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
                             "Encode selected region with custom base64 table",
                             "Rotate alphabet characters in selected region by the\nspecified amount (default: 13)",
                             "Decode selected region as quoted printable text",
-                            "Encode selected region into quoted printable text")
+                            "Encode selected region into quoted printable text",
+                            "Decode selected region as percent-encoded text\nthat is used by URL",
+                            "Encode selected region into percent-encoded text\nthat is used by URL")
 
 ops_dict["Misc"] = ("Byte frequency",
                     "Emulate code",
