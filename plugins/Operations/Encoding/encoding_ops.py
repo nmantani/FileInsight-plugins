@@ -63,6 +63,10 @@ def hex_text_to_binary_data(fi):
     if (length >= 2):
         data = []
         for i in range(0, len(string)):
+            # skip "0x"
+            if i < len(string) - 2 and string[i] == "0" and string[i+1] in "x":
+                continue
+
             if string[i] in hexchars:
                 data.append(string[i])
 
