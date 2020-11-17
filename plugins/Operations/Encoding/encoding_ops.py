@@ -39,7 +39,7 @@ def binary_data_to_hex_text(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = list(fi.getSelection())
         newdata = []
 
@@ -58,14 +58,14 @@ def hex_text_to_binary_data(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         string = list(fi.getSelection())
     else:
         return
 
     hexchars = list("0123456789abcdefABCDEF")
 
-    if (length >= 2):
+    if length >= 2:
         data = []
         for i in range(0, len(string)):
             # skip "0x"
@@ -80,7 +80,7 @@ def hex_text_to_binary_data(fi):
 
         newdata = []
         i = 0
-        while (i < len(data) - 1):
+        while i < len(data) - 1:
             newdata.append(chr(int(data[i] + data[i+1], 16)))
             i += 2
         fi.newDocument("New file", 1)
@@ -97,7 +97,7 @@ def custom_base64_decode(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -111,8 +111,8 @@ def custom_base64_decode(fi):
         custom_table = stdout_data.rstrip()
         custom_table_length = len(custom_table)
 
-        if (custom_table_length > 0):
-            if (custom_table_length != 65):
+        if custom_table_length > 0:
+            if custom_table_length != 65:
                 print("Error: base64 table must be 65 characters (including padding).")
             else:
                 data = fi.getSelection()
@@ -131,7 +131,7 @@ def custom_base64_decode(fi):
                 fi.setDocument("".join(newdata))
                 fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-                if (length == 1):
+                if length == 1:
                     print("Decoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
                     print("Decoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
@@ -145,7 +145,7 @@ def custom_base64_encode(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -159,8 +159,8 @@ def custom_base64_encode(fi):
         custom_table = stdout_data.rstrip()
         custom_table_length = len(custom_table)
 
-        if (custom_table_length > 0):
-            if (custom_table_length != 65):
+        if custom_table_length > 0:
+            if custom_table_length != 65:
                 print("Error: base64 table must be 65 characters (including padding).")
             else:
                 data = fi.getSelection()
@@ -179,7 +179,7 @@ def custom_base64_encode(fi):
                 fi.setDocument("".join(newdata))
                 fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-                if (length == 1):
+                if length == 1:
                     print("Encoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
                     print("Encoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
@@ -191,7 +191,7 @@ def rot13(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         buf = list(fi.getDocument())
         data = fi.getSelection()
 
@@ -231,7 +231,7 @@ def rot13(fi):
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
-        if (length == 1):
+        if length == 1:
             print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
@@ -244,7 +244,7 @@ def from_quoted_printable(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -260,7 +260,7 @@ def from_quoted_printable(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
+        if length == 1:
             print("Decoded one byte quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Decoded %s bytes quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
@@ -272,7 +272,7 @@ def to_quoted_printable(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = fi.getSelection()
         orig = list(fi.getDocument())
         orig_len = len(orig)
@@ -288,7 +288,7 @@ def to_quoted_printable(fi):
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if (length == 1):
+        if length == 1:
             print("Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
@@ -300,7 +300,7 @@ def binary_data_to_binary_text(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 0):
+    if length > 0:
         data = list(fi.getSelection())
         newdata = []
 
@@ -322,7 +322,7 @@ def binary_text_to_binary_data(fi):
 
     binchars = list("01")
 
-    if (length >= 8):
+    if length >= 8:
         data = []
         for i in range(0, len(string)):
             if string[i] in binchars:
@@ -333,7 +333,7 @@ def binary_text_to_binary_data(fi):
 
         newdata = []
         i = 0
-        while (i < len(data) - 7):
+        while i < len(data) - 7:
             newdata.append(chr(int("".join(data[i:i+8]), 2)))
             i += 8
         fi.newDocument("New file", 1)
@@ -596,3 +596,4 @@ def url_encode(fi):
             print("Encoded one byte into URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Encoded %s bytes into URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+
