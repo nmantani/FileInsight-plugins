@@ -56,7 +56,11 @@ def hex_text_to_binary_data(fi):
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
-    string = list(fi.getSelection())
+
+    if (length > 0):
+        string = list(fi.getSelection())
+    else:
+        return
 
     hexchars = list("0123456789abcdefABCDEF")
 
