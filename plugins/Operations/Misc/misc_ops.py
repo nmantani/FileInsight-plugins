@@ -528,8 +528,9 @@ def emulate_code(fi):
     # Split stdout_data into stdout_written that is written by emulated code and memory dumps
     stdout_splitted = stdout_data.split("****MEMDUMP****")
     stdout_written = stdout_splitted[0]
-    print("Output of the emulated code:")
-    print(stdout_written)
+    if stdout_written != "":
+        print("Output of the emulated code:")
+        print(stdout_written)
 
     if len(stdout_splitted) > 1:
         bookmarked = False
