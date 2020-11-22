@@ -126,6 +126,8 @@ ops_dict["Encoding"] = ("Binary data to hex text",
                         "ROT13",
                         "From quoted printable",
                         "To quoted printable",
+                        "Unicode escape",
+                        "Unicode unescape",
                         "URL decode",
                         "URL encode")
 tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
@@ -141,6 +143,8 @@ tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
                             "Rotate alphabet characters in selected region by the\nspecified amount (default: 13)",
                             "Decode selected region as quoted printable text",
                             "Encode selected region into quoted printable text",
+                            "Escape Unicode characters of selected region",
+                            "Unescape Unicode escape sequence of selected region",
                             "Decode selected region as percent-encoded text\nthat is used by URL",
                             "Encode selected region into percent-encoded text\nthat is used by URL")
 

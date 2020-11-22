@@ -597,3 +597,163 @@ def url_encode(fi):
         else:
             print("Encoded %s bytes into URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
 
+def unicode_escape(fi):
+    """
+    Escape Unicode characters of selected region
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute unicode_format_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/unicode_format_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get format setting
+        stdout_data, stderr_data = p.communicate()
+        if stdout_data == "":
+            return
+
+        escape_format, encoding = stdout_data.split()
+
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        try:
+            escaped_orig = data.decode(encoding)
+
+            if escape_format == "\\U":
+                escaped = escaped_orig.encode("raw-unicode-escape")
+            elif escape_format in ["\\u{", "`u", "U+"]:
+                escaped = escaped_orig.encode("raw-unicode-escape")
+
+                if escape_format == "\\u{":
+                    escaped = re.sub("\\\\U([0-9a-f]{8})", "\\u{\\1}", escaped)
+                    escaped = re.sub("\\\\u([0-9a-f]{4})", "\\u{\\1}", escaped)
+                    escaped = re.sub("\\\\u\{0{1,}", "\\u{", escaped) # remove continuous zeros
+                elif escape_format == "`u":
+                    escaped = re.sub("\\\\U([0-9a-f]{8})", "`u{\\1}", escaped)
+                    escaped = re.sub("\\\\u([0-9a-f]{4})", "`u{\\1}", escaped)
+                    escaped = re.sub("`u\{0{1,}", "`u{", escaped) # remove continuous zeros
+                elif escape_format == "U+":
+                    escaped = re.sub("\\\\U([0-9a-f]{8})", "U+\\1", escaped)
+                    escaped = re.sub("\\\\u([0-9a-f]{4})", "U+\\1", escaped)
+                    escaped = re.sub("U\+0{1,}", "U+", escaped) # remove continuous zeros
+            elif escape_format in ["\\u", "%u"]:
+                escaped = ""
+
+                # convert \Uxxxxxxxx to \uxxxx + \uxxxx surrogate pair (such as emojis)
+                for c in list(escaped_orig):
+                    if escape_format == "%u":
+                        escaped += c.encode("raw-unicode-escape").replace("\\u", "%u")
+                    else:
+                        escaped += c.encode("raw-unicode-escape")
+
+            final_size = len(escaped)
+        except Exception as e:
+            print("Escape failed.")
+            print("Error: %s" % e)
+            return
+
+        newdata = orig[:offset]
+        newdata.extend(escaped)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Escaped one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Escaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+
+def convert_to_python_escape(pattern, data):
+    """
+    Convert from other Unicode escape format to Python Unicode escape format
+    Used by unicode_unescape()
+    """
+    match = re.findall(pattern, data)
+    if match:
+        for m in match:
+            value = re.findall("[0-9A-Fa-f]{1,6}", m)[0]
+            if len(value) < 5:
+                replacement = "\\u" + "0" * (4 - len(value)) + value
+                data = data.replace(m, replacement)
+            else:
+                # Truncate value string if it is out of range of Unicode code point
+                # For cases converting strings such as "U+1f602123" (it should be "U+1f602" + "123")
+                truncated = ""
+                while int("0x" + value, 16) > 0x10FFFF:
+                    truncated += value[-1]
+                    value = value[:-1]
+                replacement = "\\U" + "0" * (8 - len(value)) + value + truncated
+                data = data.replace(m, replacement)
+
+    return data
+
+def unicode_unescape(fi):
+    """
+    Unescape Unicode escape sequence of selected region.
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute unicode_format_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/unicode_format_dialog.py", "-u"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get format setting
+        stdout_data, stderr_data = p.communicate()
+        if stdout_data == "":
+            return
+
+        escape_format, encoding = stdout_data.split()
+
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        try:
+            if escape_format in ["\\U", "\\u"]:
+                unescaped = data.decode("raw-unicode-escape")
+            elif escape_format in ["\\u{", "`u", "U+"]:
+                if escape_format == "\\u{":
+                    data = convert_to_python_escape("\\\\u\{[0-9A-Fa-f]{1,6}\}", data)
+                elif escape_format == "`u":
+                    data = convert_to_python_escape("`u\{[0-9A-Fa-f]{1,6}\}", data)
+                elif escape_format == "U+":
+                    data = convert_to_python_escape("U\+[0-9A-Fa-f]{1,6}", data)
+
+                unescaped = data.decode("raw-unicode-escape")
+            elif escape_format == "%u":
+                data = re.sub("%u([0-9a-f]{4})", "\\u\\1", data)
+                unescaped = data.decode("raw-unicode-escape")
+
+            unescaped = unescaped.encode(encoding)
+            final_size = len(unescaped)
+        except Exception as e:
+            print("Unescape failed.")
+            print("Error: %s" % e)
+            return
+
+        newdata = orig[:offset]
+        newdata.extend(unescaped)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("New file", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Unescaped one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Unescaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
