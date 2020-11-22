@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (80 plugins)
+## List of plugins (82 plugins)
 * Basic operations
   * Copy to new file  
     Copy selected region (the whole file if not selected) to new file
@@ -187,6 +187,10 @@ favorite programs.
     Decode selected region as quoted printable text
   * To quoted printable  
     Encode selected region into quoted printable text
+  * Unicode escape  
+    Escape Unicode characters of selected region
+  * Unicode unescape  
+    Unescape Unicode escape sequence of selected region
   * URL decode  
     Decode selected region as percent-encoded text that is used by URL
   * URL encode  

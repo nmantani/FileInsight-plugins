@@ -70,7 +70,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (80個)
+## プラグインの一覧 (82個)
 * Basic operations
   * Copy to new file  
     選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -187,6 +187,10 @@ Send to プラグインについては、あなたのお好みのプログラム
     選択範囲を quoted printable としてデコードします。
   * To quoted printable  
     選択範囲を quoted printable としてエンコードします。
+  * Unicode escape  
+    選択範囲の Unicode 文字列をエスケープします。
+  * Unicode unescape  
+    選択範囲の Unicode エスケープシーケンスを文字列に戻します。
   * URL decode  
     選択範囲を URL に使われているパーセントでエンコードされたテキストとしてデコードします。
   * URL encode  

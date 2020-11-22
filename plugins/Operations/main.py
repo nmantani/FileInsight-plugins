@@ -184,6 +184,8 @@ if __name__ == "__main__":
                    encoding_ops.rot13,
                    encoding_ops.from_quoted_printable,
                    encoding_ops.to_quoted_printable,
+                   encoding_ops.unicode_escape,
+                   encoding_ops.unicode_unescape,
                    encoding_ops.url_decode,
                    encoding_ops.url_encode)
 
