@@ -71,188 +71,186 @@ Send to プラグインについては、あなたのお好みのプログラム
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
 ## プラグインの一覧 (82個)
-* Basic operations
-  * Copy to new file  
-    選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
-  * Cut binary to clipboard  
-    選択範囲のバイナリデータをクリップボードに切り取ります(16進テキストとして)。
-  * Copy binary to clipboard  
-    選択範囲のバイナリデータをクリップボードにコピーします(16進テキストとして)。
-  * Paste binary from clipboard  
-    クリップボードからバイナリデータをペーストします(16進テキストから変換)。
-    Paste binary data (converted from hex-encoded text) from clipboard
-  * Delete before  
-    現在のカーソル位置より前を全て削除します。
-  * Delete after  
-    現在のカーソル位置より後を全て削除します。
-  * Fill  
-    選択範囲を指定した16進数のパターンで埋めます。
-  * Invert  
-    選択範囲のビットを反転します。
-  * Reverse order  
-    選択範囲のバイト列の順序を逆に並べ替えます。
-  * Swap nibbles  
-    選択範囲内のニブルの組を入れ替えます。
-  * Swap two bytes  
-    選択範囲内のバイトの組を入れ替えます。
-  * To upper case  
-    選択範囲内の小文字を大文字にします。
-  * To lower case  
-    選択範囲内の大文字を小文字にします。
-  * Swap case  
-    選択範囲内の大文字と小文字を入れ替えます。
+### Basic operations
+* Copy to new file  
+  選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
+* Cut binary to clipboard  
+  選択範囲のバイナリデータをクリップボードに切り取ります(16進テキストとして)。
+* Copy binary to clipboard  
+  選択範囲のバイナリデータをクリップボードにコピーします(16進テキストとして)。
+* Paste binary from clipboard  
+  クリップボードからバイナリデータをペーストします(16進テキストから変換)。
+  Paste binary data (converted from hex-encoded text) from clipboard
+* Delete before  
+  現在のカーソル位置より前を全て削除します。
+* Delete after  
+  現在のカーソル位置より後を全て削除します。
+* Fill  
+  選択範囲を指定した16進数のパターンで埋めます。
+* Invert  
+  選択範囲のビットを反転します。
+* Reverse order  
+  選択範囲のバイト列の順序を逆に並べ替えます。
+* Swap nibbles  
+  選択範囲内のニブルの組を入れ替えます。
+* Swap two bytes  
+  選択範囲内のバイトの組を入れ替えます。
+* To upper case  
+  選択範囲内の小文字を大文字にします。
+* To lower case  
+  選択範囲内の大文字を小文字にします。
+* Swap case  
+  選択範囲内の大文字と小文字を入れ替えます。
 
-* Compression operations
-  * aPLib compress  
-    選択範囲を aPLib 圧縮ライブラリで圧縮します。
-  * aPLib decompress  
-    選択範囲を aPLib 圧縮ライブラリで展開します。
-  * Bzip2 compress  
-    選択範囲を bzip2 アルゴリズムで圧縮します。
-  * Bzip2 decompress  
-    選択範囲を bzip2 アルゴリズムで展開します。
-  * Gzip compress  
-    選択範囲を gzip 形式で圧縮します。
-  * Gzip decompress  
-    gzip 形式で圧縮された選択範囲を展開します。
-  * LZMA compress  
-    選択範囲を LZMA アルゴリズムで圧縮します。
-  * LZMA decompress  
-    選択範囲を LZMA アルゴリズムで展開します。
-  * LZNT1 compress  
-    選択範囲を LZNT1 アルゴリズムで圧縮します。
-  * LZNT1 decompress  
-    選択範囲を LZNT1 アルゴリズムで展開します。
-  * Raw deflate  
-    選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。(PHP言語の gzdeflate() と同等)
-  * Raw inflate  
-    ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。(PHP言語の gzinflate() と同等)
-  * XZ compress  
-    選択範囲を XZ 形式で圧縮します。
-  * XZ decompress  
-    選択範囲を XZ 形式として展開します。
+### Compression operations
+* aPLib compress  
+  選択範囲を aPLib 圧縮ライブラリで圧縮します。
+* aPLib decompress  
+  選択範囲を aPLib 圧縮ライブラリで展開します。
+* Bzip2 compress  
+  選択範囲を bzip2 アルゴリズムで圧縮します。
+* Bzip2 decompress  
+  選択範囲を bzip2 アルゴリズムで展開します。
+* Gzip compress  
+  選択範囲を gzip 形式で圧縮します。
+* Gzip decompress  
+  gzip 形式で圧縮された選択範囲を展開します。
+* LZMA compress  
+  選択範囲を LZMA アルゴリズムで圧縮します。
+* LZMA decompress  
+  選択範囲を LZMA アルゴリズムで展開します。
+* LZNT1 compress  
+  選択範囲を LZNT1 アルゴリズムで圧縮します。
+* LZNT1 decompress  
+  選択範囲を LZNT1 アルゴリズムで展開します。
+* Raw deflate  
+  選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。(PHP言語の gzdeflate() と同等)
+* Raw inflate  
+  ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。(PHP言語の gzinflate() と同等)
+* XZ compress  
+  選択範囲を XZ 形式で圧縮します。
+* XZ decompress  
+  選択範囲を XZ 形式として展開します。
 
-* Crypto operations
-  * AES decrypt  
-    選択範囲を AES で復号します。
-  * AES encrypt  
-    選択範囲を AES で暗号化します。
-  * ARC2 decrypt  
-    選択範囲を ARC2 (Alleged RC2) で復号します。
-  * ARC2 encrypt  
-    選択範囲を ARC2 (Alleged RC2) で暗号化します。
-  * ARC4 decrypt / encrypt  
-    選択範囲を ARC4 (Alleged RC4) で復号 / 暗号化します。
-  * Blowfish decrypt  
-    選択範囲を Blowfish で復号します。
-  * Blowfish encrypt  
-    選択範囲を Blowfish で暗号化します。
-  * ChaCha20 decrypt / encrypt  
-    選択範囲を ChaCha20 で復号 / 暗号化します。
-  * DES decrypt  
-    選択範囲を DES で復号します。
-  * DES encrypt  
-    選択範囲を DES で暗号化します。
-  * Salsa20 decrypt / encrypt  
-    選択範囲を Salsa20 で復号 / 暗号化します。
-  * Triple DES decrypt  
-    選択範囲を Triple DES で復号します。
-  * Triple DES encrypt  
-    選択範囲を Triple DES で暗号化します。
+### Crypto operations
+* AES decrypt  
+  選択範囲を AES で復号します。
+* AES encrypt  
+  選択範囲を AES で暗号化します。
+* ARC2 decrypt  
+  選択範囲を ARC2 (Alleged RC2) で復号します。
+* ARC2 encrypt  
+  選択範囲を ARC2 (Alleged RC2) で暗号化します。
+* ARC4 decrypt / encrypt  
+  選択範囲を ARC4 (Alleged RC4) で復号 / 暗号化します。
+* Blowfish decrypt  
+  選択範囲を Blowfish で復号します。
+* Blowfish encrypt  
+  選択範囲を Blowfish で暗号化します。
+* ChaCha20 decrypt / encrypt  
+  選択範囲を ChaCha20 で復号 / 暗号化します。
+* DES decrypt  
+  選択範囲を DES で復号します。
+* DES encrypt  
+  選択範囲を DES で暗号化します。
+* Salsa20 decrypt / encrypt  
+  選択範囲を Salsa20 で復号 / 暗号化します。
+* Triple DES decrypt  
+  選択範囲を Triple DES で復号します。
+* Triple DES encrypt  
+  選択範囲を Triple DES で暗号化します。
 
-* Encoding operations
-  * Binary data to hex text  
-    選択範囲のバイナリデータを16進数のテキストに変換します。
-  * Hex text to binary data  
-    選択範囲の16進数のテキストをバイナリデータに変換します。
-  * Binary data to decimal text  
-    選択範囲のバイナリデータを10進数のテキストに変換します。
-  * Decimal text to binary data  
-    選択範囲の10進数のテキストをバイナリデータに変換します。
-  * Binary data to octal text  
-    選択範囲のバイナリデータを8進数のテキストに変換します。
-  * Octal text to binary data  
-    選択範囲の8進数のテキストをバイナリデータに変換します。
-  * Binary data to binary text  
-    選択範囲のバイナリデータを2進数のテキストに変換します。
-  * Binary text to binary data  
-    選択範囲の2進数のテキストをバイナリデータに変換します。
-  * Custom base64 decode  
-    選択範囲をカスタムbase64テーブルを使ってデコードします。
-  * Custom base64 encode  
-    選択範囲をカスタムbase64テーブルを使ってエンコードします。
-  * ROT13  
-    選択範囲のアルファベットの文字列を指定した数だけローテートします。(デフォルト: 13)
-  * From quoted printable  
-    選択範囲を quoted printable としてデコードします。
-  * To quoted printable  
-    選択範囲を quoted printable としてエンコードします。
-  * Unicode escape  
-    選択範囲の Unicode 文字列をエスケープします。
-  * Unicode unescape  
-    選択範囲の Unicode エスケープシーケンスを文字列に戻します。
-  * URL decode  
-    選択範囲を URL に使われているパーセントでエンコードされたテキストとしてデコードします。
-  * URL encode  
-    選択範囲を URL に使われているパーセントでエンコードされたテキストとしてエンコードします。
+### Encoding operations
+* Binary data to hex text  
+  選択範囲のバイナリデータを16進数のテキストに変換します。
+* Hex text to binary data  
+  選択範囲の16進数のテキストをバイナリデータに変換します。
+* Binary data to decimal text  
+  選択範囲のバイナリデータを10進数のテキストに変換します。
+* Decimal text to binary data  
+  選択範囲の10進数のテキストをバイナリデータに変換します。
+* Binary data to octal text  
+  選択範囲のバイナリデータを8進数のテキストに変換します。
+* Octal text to binary data  
+  選択範囲の8進数のテキストをバイナリデータに変換します。
+* Binary data to binary text  
+  選択範囲のバイナリデータを2進数のテキストに変換します。
+* Binary text to binary data  
+  選択範囲の2進数のテキストをバイナリデータに変換します。
+* Custom base64 decode  
+  選択範囲をカスタムbase64テーブルを使ってデコードします。
+* Custom base64 encode  
+  選択範囲をカスタムbase64テーブルを使ってエンコードします。
+* ROT13  
+  選択範囲のアルファベットの文字列を指定した数だけローテートします。(デフォルト: 13)
+* From quoted printable  
+  選択範囲を quoted printable としてデコードします。
+* To quoted printable  
+  選択範囲を quoted printable としてエンコードします。
+* Unicode escape  
+  選択範囲の Unicode 文字列をエスケープします。
+* Unicode unescape  
+  選択範囲の Unicode エスケープシーケンスを文字列に戻します。
+* URL decode  
+  選択範囲を URL に使われているパーセントでエンコードされたテキストとしてデコードします。
+* URL encode  
+  選択範囲を URL に使われているパーセントでエンコードされたテキストとしてエンコードします。
 
-* Misc operations
-  * Byte frequency  
-    選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
-  * Emulate code  
-    選択範囲を(選択していない場合は全体を) Qiling Framework でエミュレートします。
-  * File comparison  
-    2つのファイルの内容を比較します。
-  * Hash values  
-    選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy ハッシュ値を計算します。
-  * Send to  
-    選択範囲を(選択していない場合は全体を)別のプログラムで開きます。
+### Misc operations
+* Byte frequency  
+  選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
+* Emulate code  
+  選択範囲を(選択していない場合は全体を) Qiling Framework でエミュレートします。
+* File comparison  
+  2つのファイルの内容を比較します。
+* Hash values  
+  選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy ハッシュ値を計算します。
+* Send to  
+  選択範囲を(選択していない場合は全体を)別のプログラムで開きます。
 
-* Parsing operations
-  * Binwalk scan  
-    選択範囲を(選択していない場合は全体を)スキャンして埋め込まれたファイルを探します。
-  * Disassemble  
-    選択範囲を(選択していない場合は全体を)逆アセンブルします。
-  * File type  
-    選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
-  * Find PE file  
-    選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
-  * Parse file structure  
-    選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。
-  * Show metadata  
-    選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
-  * Strings  
-    選択範囲から(選択していない場合は全体から)文字列を抽出します。
+### Parsing operations
+* Binwalk scan  
+  選択範囲を(選択していない場合は全体を)スキャンして埋め込まれたファイルを探します。
+* Disassemble  
+  選択範囲を(選択していない場合は全体を)逆アセンブルします。
+* File type  
+  選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
+* Find PE file  
+  選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+* Parse file structure  
+  選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。
+* Show metadata  
+  選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
+* Strings  
+  選択範囲から(選択していない場合は全体から)文字列を抽出します。
 
-* Search operations
-  * Regex search  
-    選択範囲から(選択していない場合は全体から) 正規表現で検索します。
-  * Replace  
-    選択範囲から(選択していない場合は全体から) 検索してマッチした領域を指定したデータで置換します。
-  * XOR hex search  
-    選択範囲から(選択していない場合は全体から) XOR またはビットローテートされて
-    いるバイト列を検索します。
-  * XOR text search  
-    選択範囲から(選択していない場合は全体から) XOR またはビットローテートされて
-    いる文字列を検索します。
-  * YARA scan  
-    選択範囲を(選択していない場合は全体を) YARA でスキャンします。
+### Search operations
+* Regex search  
+  選択範囲から(選択していない場合は全体から) 正規表現で検索します。
+* Replace  
+  選択範囲から(選択していない場合は全体から) 検索してマッチした領域を指定したデータで置換します。
+* XOR hex search  
+  選択範囲から(選択していない場合は全体から) XOR またはビットローテートされているバイト列を検索します。
+* XOR text search  
+  選択範囲から(選択していない場合は全体から) XOR またはビットローテートされている文字列を検索します。
+* YARA scan  
+  選択範囲を(選択していない場合は全体を) YARA でスキャンします。
 
-* XOR operations
-  * Decremental XOR  
-    選択範囲を XOR キーの値を減らしながら XOR します。
-  * Incremental XOR  
-    選択範囲を XOR キーの値を増やしながら XOR します。
-  * Null-preserving XOR  
-    選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
-  * XOR with next byte  
-    選択範囲を次のバイトを XOR のキーにしながら XOR します。
-  * Guess 256 byte XOR keys  
-    値の出現頻度に基づいて選択範囲から(選択していない場合は全体から)256バイトの長さの XOR キーを推測します。
-  * Visual encrypt  
-    選択範囲をマルウェアの Zeus で使われている visual encrypt アルゴリズムでエンコードします。
-  * Visual decrypt  
-    選択範囲をマルウェアの Zeus で使われている visual decrypt アルゴリズムでデコードします。
+### XOR operations
+* Decremental XOR  
+  選択範囲を XOR キーの値を減らしながら XOR します。
+* Incremental XOR  
+  選択範囲を XOR キーの値を増やしながら XOR します。
+* Null-preserving XOR  
+  選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
+* XOR with next byte  
+  選択範囲を次のバイトを XOR のキーにしながら XOR します。
+* Guess 256 byte XOR keys  
+  値の出現頻度に基づいて選択範囲から(選択していない場合は全体から)256バイトの長さの XOR キーを推測します。
+* Visual encrypt  
+  選択範囲をマルウェアの Zeus で使われている visual encrypt アルゴリズムでエンコードします。
+* Visual decrypt  
+  選択範囲をマルウェアの Zeus で使われている visual decrypt アルゴリズムでデコードします。
 
 ## 作者
 萬谷 暢崇 (Twitter: @nmantani)
