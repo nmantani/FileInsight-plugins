@@ -1,3 +1,46 @@
+2020-11-23 version 2.5
+* New plugins
+  - Encoding operations
+    - Unicode escape plugin
+    - Unicode unescape plugin
+      These plugins convert Unicode characters of selected region to Unicode escape sequences
+      and vice versa. The following Unicode escape sequence formats are supported:
+       - \uXXXX (Java, JavaScript)
+       - \UXXXXXXXX (C, Python)
+       - \u{XXXX} (JavaScript ES6+, PHP 7+)
+       - `u{XXXX} (PowerShell 6+)
+       - %uXXXX (Legacy JavaScript)
+       - U+XXXX (Unicode code point)
+    - URL decode plugin
+    - URL encode plugin
+      These plugins encode / decode selected region into percent-encoded text that is used by URL.
+* Enhancements
+  - Encoding operations
+    - Hex text to binary data plugin
+      Support of 0x?? hex text format is added.
+  - Misc operations
+    - Emulate code plugin
+      Capability to show file system events in rootfs (creation, deletion,
+      modification and move) is added.
+    - Hash values plugin
+      Capability to compute ssdeep, imphash and impfuzzy hashes is added.
+    - File comparison plugin
+      Capability to show comparison score of ssdeep and impfuzzy hashes is added.
+* Bug fix
+  - Encoding operations
+    - Hex text to binary data plugin
+      An error that occurs when data is not selected is fixed.
+  - Misc operations
+    - File comparison plugins
+      A bug that it shows deltas twice is fixed.
+* Other changes
+  - Misc operations
+    - Emulate code plugin
+      - Support of Qiling Framework 1.2 is added.
+      - watchdog Python module is required since this version.
+  - README.md
+    Instructions of manual installation is moved to INSTALL.md.
+
 2020-11-02 version 2.4
 * New plugin
   - Parsing operations
