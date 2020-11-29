@@ -197,8 +197,8 @@ tooltip_dict["XOR"] = ("XOR selected region while decrementing XOR key",
                        "XOR selected region while skipping null bytes and XOR key itself",
                        "XOR selected region while using next byte as XOR key",
                        "Guess 256 byte XOR keys from selected region\n(the whole file if not selected) based on the byte frequency",
-                       "Encode selected region with visual encrypt algorithm that is used by Zeus trojan",
-                       "Decode selected region with visual decrypt algorithm that is used by Zeus trojan")
+                       "Decode selected region with visual encrypt algorithm that is used by Zeus trojan",
+                       "Encode selected region with visual decrypt algorithm that is used by Zeus trojan")
 
 # Global variables for menu callbacks
 exit_value = -1
