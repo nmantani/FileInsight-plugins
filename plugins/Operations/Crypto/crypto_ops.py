@@ -147,7 +147,7 @@ def do_decrypt(fi, name, script):
         newdata.extend(decrypted_data)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of %s decrypt" % name, 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, decrypted_len, hex(offset), "#c8ffff")
 
@@ -196,7 +196,7 @@ def do_encrypt(fi, name, script):
         newdata.extend(encrypted_data)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of %s encrypt" % name, 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, encrypted_len, hex(offset), "#c8ffff")
 

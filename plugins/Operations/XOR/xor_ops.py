@@ -67,7 +67,7 @@ def decremental_xor(fi):
             key -= step
             key = key & 0xff
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Decremental XOR", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -114,7 +114,7 @@ def incremental_xor(fi):
             key += step
             key = key & 0xff
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Incremental XOR", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -144,7 +144,7 @@ def null_preserving_xor(fi):
             j = offset + i
             if ord(buf[j]) != 0x00 and ord(buf[j]) != key:
                 buf[j] = chr(ord(buf[j]) ^ key)
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Null-preserving XOR", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -168,7 +168,7 @@ def xor_with_next_byte(fi):
             j = offset + i
             if ord(buf[j]) != 0x00 and j < length_all - 1:
                 buf[j] = chr(ord(buf[j]) ^ ord(buf[j + 1]))
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of XOR with next byte", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length_sel, hex(offset), "#c8ffff")
 
@@ -342,7 +342,7 @@ def visual_decrypt(fi):
         buf = list(fi.getDocument())
         for i in range(offset + length - 1, offset, -1):
             buf[i] = chr(ord(buf[i]) ^ ord(buf[i - 1]))
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Visual Decrypt", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -363,7 +363,7 @@ def visual_encrypt(fi):
         buf = list(fi.getDocument())
         for i in range(offset + 1, offset + length):
             buf[i] = chr(ord(buf[i]) ^ ord(buf[i - 1]))
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Visual Encrypt", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 

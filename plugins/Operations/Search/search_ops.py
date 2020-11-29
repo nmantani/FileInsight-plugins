@@ -496,7 +496,7 @@ def replace(fi):
             if offset + m.end() < data_all_len - 1:
                 new_data.extend(data_list_all[offset + m.end():])
 
-            fi.newDocument("New file", 1)
+            fi.newDocument("Output of Replace", 1)
             fi.setDocument("".join(new_data))
 
         if num_hits > 100 and not bookmark_yesno_dialog(num_hits):

@@ -57,7 +57,7 @@ def aplib_compress(fi):
             newdata.extend(compressed)
             newdata.extend(orig[offset + length:])
 
-            fi.newDocument("New file", 1)
+            fi.newDocument("Output of aPLib compress", 1)
             fi.setDocument("".join(newdata))
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -111,7 +111,7 @@ def aplib_decompress(fi):
             newdata.extend(uncompressed)
             newdata.extend(orig[offset + length:])
 
-            fi.newDocument("New file", 1)
+            fi.newDocument("Output of aPLib decompress", 1)
             fi.setDocument("".join(newdata))
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -151,7 +151,7 @@ def bzip2_compress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Bzip2 compress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -183,7 +183,7 @@ def bzip2_decompress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Bzip2 decompress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -219,7 +219,7 @@ def gzip_compress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Gzip compress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -253,7 +253,7 @@ def gzip_decompress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Gzip decompress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -292,7 +292,7 @@ def lznt1_compress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size.value + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of LZNT1 compress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
@@ -329,7 +329,7 @@ def lznt1_decompress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size.value + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of LZNT1 decompress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
@@ -362,7 +362,7 @@ def raw_deflate(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Raw deflate", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -394,7 +394,7 @@ def raw_inflate(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Raw inflate", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -440,7 +440,7 @@ def lzma_compress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of LZMA compress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -486,7 +486,7 @@ def lzma_decompress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of LZMA decompress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -532,7 +532,7 @@ def xz_compress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of XZ compress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -578,7 +578,7 @@ def xz_decompress(fi):
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of XZ decompress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 

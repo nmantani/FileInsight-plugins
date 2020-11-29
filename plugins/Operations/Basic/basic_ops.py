@@ -147,7 +147,7 @@ def delete_before(fi):
     data = list(fi.getDocument())
     data = data[offset:]
 
-    fi.newDocument("New file", 1)
+    fi.newDocument("Output of Delete before", 1)
     fi.setDocument("".join(data))
 
     if offset > 0:
@@ -165,7 +165,7 @@ def delete_after(fi):
     data = list(fi.getDocument())
     data = data[:offset]
 
-    fi.newDocument("New file", 1)
+    fi.newDocument("Output of Delete after", 1)
     fi.setDocument("".join(data))
 
     print("Deleted from offset %s to the end of the file." % hex(offset))
@@ -196,7 +196,7 @@ def fill(fi):
         for i in range(0, length):
             j = offset + i
             data[j] = chr(int(l[i % patlen], 16))
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Fill", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -220,7 +220,7 @@ def invert(fi):
             j = offset + i
             data[j] = chr(~ord(data[j]) & 0xff)
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Invert", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -248,7 +248,7 @@ def reverse_order(fi):
             data[j] = data[k]
             data[k] = tmp
             i += 1
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Reverse order", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -269,7 +269,7 @@ def swap_nibbles(fi):
         data[j] = chr(((ord(data[j]) >> 4) & 0x0f ) | ((ord(data[j]) << 4) & 0xf0))
         i += 1
 
-    fi.newDocument("New file", 1)
+    fi.newDocument("Output of Swap nibbles", 1)
     fi.setDocument("".join(data))
     fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -293,7 +293,7 @@ def swap_two_bytes(fi):
                 data[j] = data[j + 1]
                 data[j + 1] = tmp
             i += 2
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Swap two bytes", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -314,7 +314,7 @@ def to_upper_case(fi):
             if ord(data[j]) >= 0x61 and ord(data[j]) <= 0x7A:
                 data[j] = chr(ord(data[j]) ^ 0x20)
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of To upper case", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -338,7 +338,7 @@ def to_lower_case(fi):
             if ord(data[j]) >= 0x41 and ord(data[j]) <= 0x5A:
                 data[j] = chr(ord(data[j]) ^ 0x20)
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of To lower case", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -362,7 +362,7 @@ def swap_case(fi):
             if (ord(data[j]) >= 0x41 and ord(data[j]) <= 0x5A) or (ord(data[j]) >= 0x61 and ord(data[j]) <= 0x7A):
                 data[j] = chr(ord(data[j]) ^ 0x20)
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Swap case", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
