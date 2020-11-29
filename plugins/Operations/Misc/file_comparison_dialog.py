@@ -39,6 +39,11 @@ def get_selection(r, c1, c2):
 # Read list of files from stdin
 files = sys.stdin.readlines()
 
+max_len = 0
+for f in files:
+    if len(f) > max_len:
+        max_len = len(f)
+
 # Create input dialog
 root = tkinter.Tk()
 root.title("File comparison")
@@ -47,7 +52,7 @@ root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 label1 = tkinter.Label(root, text="First file:")
 label1.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo1 = tkinter.ttk.Combobox(root, state="readonly")
+combo1 = tkinter.ttk.Combobox(root, state="readonly", width=max_len)
 combo1["values"] = files
 combo1.current(0)
 combo1.grid(row=0, column=2, padx=5, pady=5)
@@ -55,7 +60,7 @@ combo1.grid(row=0, column=2, padx=5, pady=5)
 label2 = tkinter.Label(root, text="Second file:")
 label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo2 = tkinter.ttk.Combobox(root, state="readonly")
+combo2 = tkinter.ttk.Combobox(root, state="readonly", width=max_len)
 combo2["values"] = files
 combo2.current(1)
 combo2.grid(row=1, column=2, padx=5, pady=5)
