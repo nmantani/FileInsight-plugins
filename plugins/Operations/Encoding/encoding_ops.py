@@ -41,15 +41,22 @@ def binary_data_to_hex_text(fi):
 
     if length > 0:
         data = list(fi.getSelection())
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
 
+        converted = []
         for i in range(0, length):
-            newdata.append("%02x" % ord(data[i]))
+            converted.append("%02x" % ord(data[i]))
 
-        fi.newDocument("New file", 1)
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Binary data to hex text", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
 
         print("Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def hex_text_to_binary_data(fi):
     """
@@ -78,15 +85,24 @@ def hex_text_to_binary_data(fi):
         if len(data) < 2:
             return
 
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
+
+        converted = []
         i = 0
         while i < len(data) - 1:
-            newdata.append(chr(int(data[i] + data[i+1], 16)))
+            converted.append(chr(int(data[i] + data[i+1], 16)))
             i += 2
-        fi.newDocument("New file", 1)
+
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Hex text to binary data", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def custom_base64_decode(fi):
     """
@@ -121,20 +137,20 @@ def custom_base64_decode(fi):
 
                 trans = string.maketrans(custom_table, standard_table)
                 encoded = list(base64.b64decode(data.translate(trans)))
-                final_size = len(encoded)
 
                 newdata = orig[:offset]
                 newdata.extend(encoded)
                 newdata.extend(orig[offset + length:])
 
-                fi.newDocument("New file", 1)
+                fi.newDocument("Output of Custom base64 decode", 1)
                 fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Decoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
                     print("Decoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to decoded region.")
 
 def custom_base64_encode(fi):
     """
@@ -169,20 +185,20 @@ def custom_base64_encode(fi):
 
                 trans = string.maketrans(standard_table, custom_table)
                 encoded = list(base64.b64encode(data).translate(trans))
-                final_size = len(encoded)
 
                 newdata = orig[:offset]
                 newdata.extend(encoded)
                 newdata.extend(orig[offset + length:])
 
-                fi.newDocument("New file", 1)
+                fi.newDocument("Output of Custom base64 encode", 1)
                 fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Encoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
                     print("Encoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to encoded region.")
 
 def rot13(fi):
     """
@@ -227,7 +243,7 @@ def rot13(fi):
         for i in range(0, length):
             buf[offset + i] = d.get(data[i], data[i])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of ROT13", 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -250,20 +266,20 @@ def from_quoted_printable(fi):
         orig_len = len(orig)
 
         decoded = list(quopri.decodestring(data))
-        final_size = len(decoded)
 
         newdata = orig[:offset]
         newdata.extend(decoded)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of From quoted printable", 1)
         fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+        fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Decoded one byte quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Decoded %s bytes quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decoded region.")
 
 def to_quoted_printable(fi):
     """
@@ -278,20 +294,20 @@ def to_quoted_printable(fi):
         orig_len = len(orig)
 
         encoded = list(quopri.encodestring(data))
-        final_size = len(encoded)
 
         newdata = orig[:offset]
         newdata.extend(encoded)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of To quoted printable", 1)
         fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+        fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to encoded region.")
 
 def binary_data_to_binary_text(fi):
     """
@@ -302,15 +318,22 @@ def binary_data_to_binary_text(fi):
 
     if length > 0:
         data = list(fi.getSelection())
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
 
+        converted = []
         for i in range(0, length):
-            newdata.append("{0:b}".format(ord(data[i])).zfill(8))
+            converted.append("{0:b}".format(ord(data[i])).zfill(8))
 
-        fi.newDocument("New file", 1)
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Binary data to binary text", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
 
         print("Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def binary_text_to_binary_data(fi):
     """
@@ -331,15 +354,24 @@ def binary_text_to_binary_data(fi):
         if len(data) < 8:
             return
 
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
+
+        converted = []
         i = 0
         while i < len(data) - 7:
-            newdata.append(chr(int("".join(data[i:i+8]), 2)))
+            converted.append(chr(int("".join(data[i:i+8]), 2)))
             i += 8
-        fi.newDocument("New file", 1)
+
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Binary text to binary data", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def binary_data_to_decimal_text(fi):
     """
@@ -350,7 +382,8 @@ def binary_data_to_decimal_text(fi):
 
     if length > 0:
         data = list(fi.getSelection())
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
 
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
@@ -375,15 +408,21 @@ def binary_data_to_decimal_text(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
+        converted = []
         for i in range(0, length):
             if i > 0:
-                newdata.append(delimiters[setting])
-            newdata.append(str(ord(data[i])))
+                converted.append(delimiters[setting])
+            converted.append(str(ord(data[i])))
 
-        fi.newDocument("New file", 1)
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Binary data to decimal text", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
 
         print("Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def decimal_text_to_binary_data(fi):
     """
@@ -432,14 +471,22 @@ def decimal_text_to_binary_data(fi):
                 print("The selected region contains values out of range (0-255).")
                 return
 
-        newdata = []
-        for i in range(0, len(values)):
-            newdata.append(chr(int(values[i])))
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
 
-        fi.newDocument("New file", 1)
+        converted = []
+        for i in range(0, len(values)):
+            converted.append(chr(int(values[i])))
+
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Decimal text to binary data", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
 
         print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def binary_data_to_octal_text(fi):
     """
@@ -450,7 +497,8 @@ def binary_data_to_octal_text(fi):
 
     if length > 0:
         data = list(fi.getSelection())
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
 
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
@@ -475,15 +523,24 @@ def binary_data_to_octal_text(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
+
+        converted = []
         for i in range(0, length):
             if i > 0:
-                newdata.append(delimiters[setting])
-            newdata.append(oct(ord(data[i])))
+                converted.append(delimiters[setting])
+            converted.append(oct(ord(data[i])))
 
-        fi.newDocument("New file", 1)
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Binary data to octal text", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
 
-        print("Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length))
+        print("Converted binary from offset %s to %s (%s bytes) into octal text." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def octal_text_to_binary_data(fi):
     """
@@ -532,14 +589,22 @@ def octal_text_to_binary_data(fi):
                 print("The selected region contains values out of range (0-255).")
                 return
 
-        newdata = []
+        orig = list(fi.getDocument())
+        newdata = orig[:offset]
+
+        converted = []
         for i in range(0, len(values)):
-            newdata.append(chr(int(values[i], 8)))
+            converted.append(chr(int(values[i], 8)))
 
-        fi.newDocument("New file", 1)
+        newdata.extend(converted)
+        newdata.extend(orig[offset + length:])
+
+        fi.newDocument("Output of Octal text to binary data", 1)
         fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
 
-        print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
+        print("Converted octal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to converted region.")
 
 def url_decode(fi):
     """
@@ -554,20 +619,20 @@ def url_decode(fi):
         orig_len = len(orig)
 
         decoded = list(urllib.unquote(data))
-        final_size = len(decoded)
 
         newdata = orig[:offset]
         newdata.extend(decoded)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of URL decode", 1)
         fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+        fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Decoded one byte URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Decoded %s bytes URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decoded region.")
 
 def url_encode(fi):
     """
@@ -582,20 +647,20 @@ def url_encode(fi):
         orig_len = len(orig)
 
         encoded = list(urllib.quote(data))
-        final_size = len(encoded)
 
         newdata = orig[:offset]
         newdata.extend(encoded)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of URL encode", 1)
         fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+        fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Encoded one byte into URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Encoded %s bytes into URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to encoded region.")
 
 def unicode_escape(fi):
     """
@@ -653,7 +718,6 @@ def unicode_escape(fi):
                     else:
                         escaped += c.encode("raw-unicode-escape")
 
-            final_size = len(escaped)
         except Exception as e:
             print("Escape failed.")
             print("Error: %s" % e)
@@ -663,14 +727,15 @@ def unicode_escape(fi):
         newdata.extend(escaped)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Unicode escape", 1)
         fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+        fi.setBookmark(offset, len("".join(escaped)), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Escaped one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Escaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to escaped region.")
 
 def convert_to_python_escape(pattern, data):
     """
@@ -749,11 +814,12 @@ def unicode_unescape(fi):
         newdata.extend(unescaped)
         newdata.extend(orig[offset + length:])
 
-        fi.newDocument("New file", 1)
+        fi.newDocument("Output of Unicode unescape", 1)
         fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+        fi.setBookmark(offset, len("".join(unescaped)), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Unescaped one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Unescaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to unescaped region.")
