@@ -49,6 +49,25 @@ def replace_env_in_path(s):
 
     return s
 
+def wait_process_by_name(name):
+    """
+    Wait until all processes of specified name finish.
+    This function is necessary for programs such as VSCode that a created process
+    exits immediately and the temporary file is opened by an other process.
+    """
+    running = True
+    while running:
+        stdout_data = subprocess.check_output(["tasklist", "/NH"])
+        stdout_data = stdout_data.decode()
+
+        running = False
+        for line in stdout_data.splitlines():
+            if line != "":
+                procinfo = line.split()
+                if name == procinfo[0]:
+                    running = True
+        time.sleep(5)
+
 root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
 root.withdraw() # Hide root window
@@ -142,6 +161,8 @@ for key,val in programs.items():
             reg_key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
             browser_cmd, regtype = winreg.QueryValueEx(reg_key, "")
             winreg.CloseKey(reg_key)
+            m = re.search('\"(.+?)\"', browser_cmd)
+            program = m.group(1)
             browser_cmd = browser_cmd.replace("%1", cyberchef_url)
             p = subprocess.Popen(browser_cmd)
             p.wait()
@@ -187,13 +208,12 @@ for key,val in programs.items():
 
                     p = subprocess.Popen([program, filename])
                     p.wait()
+        wait_process_by_name(os.path.basename(program))
         root.quit()
 
     menu2.add_command(label=key, command=launch)
 
 menu1.post(x, y) # Show popup menu
-
 root.mainloop()
 
-time.sleep(5) # Wait five seconds to open the file
 os.remove(filename) # Cleanup
