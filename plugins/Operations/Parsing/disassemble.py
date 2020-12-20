@@ -46,12 +46,38 @@ try:
 
     md = capstone.Cs(arch, mode)
     end = 0
+    address = []
+    mnemonic = []
+    op_str = []
+    code_hex = []
     for i in md.disasm(data, offset):
         s = binascii.b2a_hex(i.bytes).decode().upper()
-        code_hex = [s[j: j+2] for j in range(0, len(s), 2)]
-        code_hex = " ".join(code_hex)
-        print("0x%x:\t%s %s\t(%s)" %(i.address, i.mnemonic, i.op_str, code_hex))
+        code_hex.append(" ".join([s[j: j+2] for j in range(0, len(s), 2)]))
+        address.append(i.address)
+        mnemonic.append(i.mnemonic)
+        op_str.append(i.op_str)
         end = i.address + i.size
+
+    max_len_address = 0
+    max_len_mnemonic = 0
+    max_len_op_str = 0
+    max_len_code_hex = 0
+    for i in range(0, len(address)):
+        if len("0x%X:" % address[i]) > max_len_address:
+            max_len_address = len("0x%X" % address[i])
+        if len(mnemonic[i]) > max_len_mnemonic:
+            max_len_mnemonic = len(mnemonic[i])
+        if len(op_str[i]) > max_len_op_str:
+            max_len_op_str = len(op_str[i])
+        if len(code_hex[i]) > max_len_code_hex:
+            max_len_code_hex = len(code_hex[i])
+
+    for i in range(0, len(address)):
+        address[i] = ("0x%X:" % address[i]) + " " * (max_len_address - len("0x%X:" % address[i]))
+        mnemonic[i] += " " * (max_len_mnemonic - len(mnemonic[i]))
+        op_str[i] += " " * (max_len_op_str - len(op_str[i]))
+        code_hex[i] = ("[%s]" % code_hex[i]) + " " * (max_len_code_hex - len(code_hex[i]))
+        print("%s\t%s\t%s\t%s" % (address[i], mnemonic[i], op_str[i], code_hex[i]))
 except Exception as e:
     print("Error: %s" % e, file=sys.stderr)
     sys.exit(1)
