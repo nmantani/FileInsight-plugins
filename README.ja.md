@@ -245,8 +245,8 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
 * XOR with next byte  
   選択範囲を次のバイトを XOR のキーにしながら XOR します。
-* Guess 256 byte XOR keys  
-  値の出現頻度に基づいて選択範囲から(選択していない場合は全体から)256バイトの長さの XOR キーを推測します。
+* Guess multibyte XOR keys  
+  0x00 と XOR することによって現れているキーの値に基づいて選択範囲から(選択していない場合は全体から)複数バイトの XOR キーを推測します。
 * Visual encrypt  
   選択範囲をマルウェアの Zeus で使われている visual encrypt アルゴリズムでエンコードします。
 * Visual decrypt  

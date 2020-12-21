@@ -213,7 +213,7 @@ if __name__ == "__main__":
                    xor_ops.incremental_xor,
                    xor_ops.null_preserving_xor,
                    xor_ops.xor_with_next_byte,
-                   xor_ops.guess_256_byte_xor_keys,
+                   xor_ops.guess_multibyte_xor_keys,
                    xor_ops.visual_decrypt,
                    xor_ops.visual_encrypt)
 

@@ -245,8 +245,8 @@ favorite programs.
   XOR selected region while skipping null bytes and XOR key itself
 * XOR with next byte  
   XOR selected region while using next byte as XOR key
-* Guess 256 byte XOR keys  
-  Guess 256 byte XOR keys from selected region (the whole file if not selected) based on the byte frequency
+* Guess multibyte XOR keys  
+  Guess multibyte XOR keys from selected region (the whole file if not selected) based on revealed keys that are XORed with 0x00
 * Visual encrypt  
   Encode selected region with visual encrypt algorithm that is used by Zeus trojan
 * Visual decrypt  

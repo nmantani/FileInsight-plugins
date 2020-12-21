@@ -178,9 +178,9 @@ def xor_with_next_byte(fi):
             print("XORed %s bytes from offset %s to %s while using next byte as XOR key." % (length_sel, hex(offset), hex(offset + length_sel - 1)))
             print("Added a bookmark to XORed region.")
 
-def xor256(buf, key):
+def xor_with_multibyte_key(buf, key):
     """
-    Used by guess_256_byte_xor_keys()
+    Used by guess_multibyte_xor_keys()
     """
     b = list(buf)
     k = list(key)
@@ -191,7 +191,7 @@ def xor256(buf, key):
 
 def find_ole_header(fi, buf, offset):
     """
-    Used by guess_256_byte_xor_keys()
+    Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
@@ -202,7 +202,7 @@ def find_ole_header(fi, buf, offset):
         if pos == -1:
             break
         else:
-            print("OLE2 Compound Document header found at offset %s" % hex(offset + pos))
+            print("OLE2 Compound Document header found at offset %s." % hex(offset + pos))
             fi.setBookmark(offset + pos, 8, hex(offset + pos), "#c8ffff")
             i = pos + 8
             found += 1
@@ -210,7 +210,7 @@ def find_ole_header(fi, buf, offset):
 
 def find_pdf_header(fi, buf, offset):
     """
-    Used by guess_256_byte_xor_keys()
+    Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
@@ -221,7 +221,7 @@ def find_pdf_header(fi, buf, offset):
         if pos == -1:
             break
         else:
-            print("PDF header found at offset %s" % hex(offset + pos))
+            print("PDF header found at offset %s." % hex(offset + pos))
             fi.setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
             i = pos + 4
             found += 1
@@ -229,7 +229,7 @@ def find_pdf_header(fi, buf, offset):
 
 def find_pe_header(fi, buf, offset):
     """
-    Used by guess_256_byte_xor_keys()
+    Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
@@ -248,25 +248,69 @@ def find_pe_header(fi, buf, offset):
                     if buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x4c', '\x01']):
                         # Check characteristics
                         if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print("Win32 DLL found at offset %s" % hex(offset + pos))
+                            print("Win32 DLL found at offset %s." % hex(offset + pos))
                         else:
-                            print("Win32 executable found at offset %s" % hex(offset + pos))
+                            print("Win32 executable found at offset %s." % hex(offset + pos))
                         fi.setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
                         found += 1
                     elif buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x64', '\x86']):
                         # Check characteristics
                         if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print("Win64 DLL found at offset %s" % hex(offset + pos))
+                            print("Win64 DLL found at offset %s." % hex(offset + pos))
                         else:
-                            print("Win64 executable found at offset %s" % hex(offset + pos))
+                            print("Win64 executable found at offset %s." % hex(offset + pos))
                         fi.setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
                         found += 1
             i = pos + 2
     return found
 
+def find_elf_header(fi, buf, offset):
+    """
+    Used by guess_multibyte_xor_keys()
+    """
+    i = 0
+    pos = 0
+    found = 0
+    length = len(buf)
+    machine_dict = {0x02: "sparc", 0x03: "x86", 0x08: "mips", 0x14: "powerpc", 0x28: "arm", 0x2A: "superh", 0x32: "ia_64",
+                    0x3E: "x86_64", 0xB7: "aarch64", 0xF3: "riscv", 0xF7: "bpf"}
+
+    while i < length:
+        pos = buf.find("\x7fELF", i)
+        if pos == -1:
+            break
+        else:
+            bits = 0
+            if buf[pos + 4] == "\x01":
+                bits = 32
+            elif buf[pos + 4] == "\x02":
+                bits = 64
+
+            endian = ""
+            if buf[pos + 5] == "\x01":
+                endian = "little"
+            elif buf[pos + 5] == "\x02":
+                endian = "big"
+
+            machine = ""
+            if endian == "little":
+                if ord(buf[pos + 0x12]) in machine_dict.keys():
+                    machine = machine_dict[ord(buf[pos + 0x12])]
+            elif endian == "big":
+                if ord(buf[pos + 0x13]) in machine_dict.keys():
+                    machine = machine_dict[ord(buf[pos + 0x13])]
+
+            if bits != 0 and endian != "" and machine != "":
+                print("ELF%d (%s %s endian) file found at offset %s." % (bits, machine, endian, hex(offset + pos)))
+                fi.setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
+                found += 1
+
+            i = pos + 4
+    return found
+
 def find_rtf_header(fi, buf, offset):
     """
-    Used by guess_256_byte_xor_keys()
+    Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
@@ -277,31 +321,56 @@ def find_rtf_header(fi, buf, offset):
         if pos == -1:
             break
         else:
-            print("RTF header found at offset %s" % hex(offset + pos))
+            print("RTF header found at offset %s." % hex(offset + pos))
             fi.setBookmark(offset + pos, 5, hex(offset + pos), "#c8ffff")
             i = pos + 5
             found += 1
     return found
 
-def guess_256_byte_xor_keys(fi):
+def shorten_xor_key(key):
     """
-    Guess 256 byte XOR keys from selected region (the whole file if not selected) based on the byte frequency
+    Return shortened XOR key if the key has a cyclic pattern
+    Used by guess_multibyte_xor_keys()
+    """
+    key_len = [1, 2, 4, 8, 16, 32, 64, 128]
+
+    for i in range(0, len(key_len)):
+        cyclic = True
+        for j in range(key_len[i], 256, key_len[i]):
+            if key[0:key_len[i]] != key[j:j+key_len[i]]:
+                cyclic = False
+                break
+
+        if cyclic:
+            return key[0:key_len[i]]
+
+    return key
+
+def guess_multibyte_xor_keys(fi):
+    """
+    Guess multibyte XOR keys from selected region (the whole file if not selected) based on revealed keys that are XORed with 0x00
     """
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
     if length > 0:
         buf = fi.getSelection()
-        print("Top five 256 byte XOR keys guessed from offset %s to %s\n" % (hex(offset), hex(offset + length - 1)))
+        print("Top ten XOR keys guessed from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
+        print("Please select the whole file and use these XOR key in the Decode tab to decode the file.\n")
     else:
         offset = 0
         buf = fi.getDocument()
         length = fi.getLength()
-        print("Top five 256 byte XOR keys guessed from the whole file\n")
+        print("Top ten XOR keys guessed from the whole file")
+        print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
 
     block = {}
     freq = {}
     for i in range(0, length, 256):
+        # Do not use the first 256 byte as XOR key because it may contain a file header
+        if i == 0 and offset == 0:
+            continue
+
         b = buf[i:i + 256]
         if len(b) == 256:
             h = hashlib.md5(b).hexdigest()
@@ -313,22 +382,24 @@ def guess_256_byte_xor_keys(fi):
 
     i = 0
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
-        if i < 5:
+        if i < 10:
+            key = shorten_xor_key(block[k])
             sys.stdout.write("XOR key: 0x")
-            for j in range(255, -1, -1):
+            for j in range(len(key) - 1, -1, -1):
                 sys.stdout.write("%02x" % ord(block[k][j]))
             print
-            print("Occurrence count: %i" % v)
-            tmp = xor256(buf, block[k])
+            print("256 bytes pattern occurrence count: %i" % v)
+            tmp = xor_with_multibyte_key(buf, block[k])
             num_pe = find_pe_header(fi, tmp, offset)
+            num_elf = find_elf_header(fi, tmp, offset)
             num_ole = find_ole_header(fi, tmp, offset)
             num_pdf = find_pdf_header(fi, tmp, offset)
             num_rtf = find_rtf_header(fi, tmp, offset)
-            if num_pe + num_ole + num_pdf + num_rtf == 1:
+            if num_pe + num_elf + num_ole + num_pdf + num_rtf == 1:
                 print("Added a bookmark to the search hit.")
-            elif num_pe + num_ole + num_pdf + num_rtf > 1:
+            elif num_pe + num_elf + num_ole + num_pdf + num_rtf > 1:
                 print("Added bookmarks to the search hits.")
-            print
+            print("")
             i += 1
 
 def visual_decrypt(fi):
