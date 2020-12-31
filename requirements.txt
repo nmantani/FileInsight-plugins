@@ -6,3 +6,4 @@ qiling
 capstone
 watchdog
 pyimpfuzzy-windows
+lz4

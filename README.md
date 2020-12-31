@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (82 plugins)
+## List of plugins (84 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -115,6 +115,10 @@ favorite programs.
   Compress selected region with gzip format
 * Gzip decompress  
   Decompress selected gzip compressed region
+* LZ4 compress  
+  Compress selected region with LZ4 algorithm
+* LZ4 decompress  
+  Decompress selected region with LZ4 algorithm
 * LZMA compress  
   Compress selected region with LZMA algorithm
 * LZMA decompress  

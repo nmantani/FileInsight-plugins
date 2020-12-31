@@ -148,6 +148,8 @@ if __name__ == "__main__":
                    compression_ops.bzip2_decompress,
                    compression_ops.gzip_compress,
                    compression_ops.gzip_decompress,
+                   compression_ops.lz4_compress,
+                   compression_ops.lz4_decompress,
                    compression_ops.lzma_compress,
                    compression_ops.lzma_decompress,
                    compression_ops.lznt1_compress,
