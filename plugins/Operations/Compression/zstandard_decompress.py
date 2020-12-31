@@ -31,7 +31,7 @@ import sys
 try:
     import zstandard
 except ImportError:
-    exit(-1) # zstandard is not installed
+    exit(-1) # python-zstandard is not installed
 
 data = binascii.a2b_hex(sys.stdin.read())
 cctx = zstandard.ZstdDecompressor()

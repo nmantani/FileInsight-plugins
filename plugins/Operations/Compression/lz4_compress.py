@@ -31,7 +31,7 @@ import sys
 try:
     import lz4.frame
 except ImportError:
-    exit(-1) # lz4 is not installed
+    exit(-1) # python-lz4 is not installed
 
 data = binascii.a2b_hex(sys.stdin.read())
 data = lz4.frame.compress(data)

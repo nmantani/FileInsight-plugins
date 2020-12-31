@@ -427,8 +427,8 @@ def lz4_compress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        if ret == -1: # lz4 is not installed
-            print("lz4 is not installed.")
+        if ret == -1: # python-lz4 is not installed
+            print("python-lz4 is not installed.")
             print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
             return
 
@@ -478,8 +478,8 @@ def lz4_decompress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        if ret == -1: # lz4 is not installed
-            print("lz4 is not installed.")
+        if ret == -1: # python-lz4 is not installed
+            print("python-lz4 is not installed.")
             print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
             return
 
@@ -713,8 +713,8 @@ def zstandard_compress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        if ret == -1: # zstandard is not installed
-            print("zstandard is not installed.")
+        if ret == -1: # python-zstandard is not installed
+            print("python-zstandard is not installed.")
             print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
             return
 
@@ -764,8 +764,8 @@ def zstandard_decompress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        if ret == -1: # zstandard is not installed
-            print("zstandard is not installed.")
+        if ret == -1: # python-zstandard is not installed
+            print("python-zstandard is not installed.")
             print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
             return
 
