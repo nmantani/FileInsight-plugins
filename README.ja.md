@@ -70,7 +70,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (84個)
+## プラグインの一覧 (86個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -135,6 +135,10 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲を XZ 形式で圧縮します。
 * XZ decompress  
   選択範囲を XZ 形式として展開します。
+* Zstandard compress  
+  選択範囲を Zstandard アルゴリズムで圧縮します。
+* Zstandard decompress  
+  選択範囲を Zstandard アルゴリズムで展開します。
 
 ### Crypto operations
 * AES decrypt  

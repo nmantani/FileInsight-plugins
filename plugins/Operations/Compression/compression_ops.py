@@ -420,7 +420,7 @@ def lz4_compress(fi):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute lzma_compress.py for compression
+        # Execute lz4_compress.py for compression
         p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive compressed data
@@ -471,7 +471,7 @@ def lz4_decompress(fi):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute lzma_decompress.py for decompression
+        # Execute lz4_decompress.py for decompression
         p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decompressed data
@@ -681,6 +681,108 @@ def xz_decompress(fi):
             newdata[offset + final_size + i] = orig[offset + length + i]
 
         fi.newDocument("Output of XZ decompress", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
+
+def zstandard_compress(fi):
+    """
+    Compress selected region with Zstandard algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute zstandard_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # zstandard is not installed
+            print("zstandard is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
+            return
+
+        compressed = list(binascii.a2b_hex(stdout_data))
+        final_size = len(compressed)
+        newdata = [0] * (orig_len - (length - final_size))
+
+        for i in range(0, offset):
+            newdata[i] = orig[i]
+
+        for i in range(0, final_size):
+            newdata[offset + i] = compressed[i]
+
+        for i in range(0, orig_len - offset - length):
+            newdata[offset + final_size + i] = orig[offset + length + i]
+
+        fi.newDocument("Output of Zstandard compress", 1)
+        fi.setDocument("".join(newdata))
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
+
+def zstandard_decompress(fi):
+    """
+    Decompress selected region with Zstandard algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = list(fi.getDocument())
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute zstandard_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # zstandard is not installed
+            print("zstandard is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
+            return
+
+        decompressed = list(binascii.a2b_hex(stdout_data))
+        final_size = len(decompressed)
+        newdata = [0] * (orig_len - (length - final_size))
+
+        for i in range(0, offset):
+            newdata[i] = orig[i]
+
+        for i in range(0, final_size):
+            newdata[offset + i] = decompressed[i]
+
+        for i in range(0, orig_len - offset - length):
+            newdata[offset + final_size + i] = orig[offset + length + i]
+
+        fi.newDocument("Output of Zstandard decompress", 1)
         fi.setDocument("".join(newdata))
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 

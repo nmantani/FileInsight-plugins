@@ -350,15 +350,16 @@ function install_with_pip($name, $update) {
 function install_python_modules($work_dir, $update) {
     Write-Host "[+] Installing Python modules..."
 
-    install_with_pip "pycryptodomex" $update
-    install_with_pip "python-magic-bin" $update
-    install_with_pip "pefile" $update
     install_with_pip "capstone" $update
+    install_with_pip "lz4" $update
+    install_with_pip "pefile" $update
+    install_with_pip "pycryptodomex" $update
     install_with_pip "pyimpfuzzy-windows" $update
+    install_with_pip "python-magic-bin" $update
     install_with_pip "qiling" $update
     install_with_pip "watchdog" $update
     install_with_pip "yara-python" $update
-    install_with_pip "lz4" $update
+    install_with_pip "zstandard" $update
 
     Write-Host "[+] Installing binwalk Python module..."
 

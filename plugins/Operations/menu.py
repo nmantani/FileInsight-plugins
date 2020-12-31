@@ -72,7 +72,9 @@ ops_dict["Compression"] = ("aPLib compress",
                            "Raw deflate",
                            "Raw inflate",
                            "XZ compress",
-                           "XZ decompress")
+                           "XZ decompress",
+                           "Zstandard compress",
+                           "Zstandard decompress")
 tooltip_dict["Compression"] = ("Compress selected region with aPLib compression library",
                                "Decompress selected region with aPLib compression library",
                                "Compress selected region with bzip2 algorithm",
@@ -88,7 +90,9 @@ tooltip_dict["Compression"] = ("Compress selected region with aPLib compression 
                                "Compress selected region with Deflate algorithm without\nheader and checksum (Equivalent to gzdeflate() in PHP language)",
                                "Decompress selected Deflate compressed region that does\nnot have header and checksum (Equivalent to gzinflate() in PHP language)",
                                "Compress selected region with XZ format",
-                               "Decompress selected XZ compressed region")
+                               "Decompress selected XZ compressed region",
+                               "Compress selected region with Zstandard algorithm",
+                               "Decompress selected region with Zstandard algorithm")
 
 ops_dict["Crypto"] = ("AES decrypt",
                       "AES encrypt",

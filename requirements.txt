@@ -1,9 +1,10 @@
-pycryptodomex
-python-magic-bin
-pefile
-yara-python
-qiling
 capstone
-watchdog
-pyimpfuzzy-windows
 lz4
+pefile
+pycryptodomex
+pyimpfuzzy-windows
+python-magic-bin
+qiling
+watchdog
+yara-python
+zstandard

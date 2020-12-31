@@ -157,7 +157,9 @@ if __name__ == "__main__":
                    compression_ops.raw_deflate,
                    compression_ops.raw_inflate,
                    compression_ops.xz_compress,
-                   compression_ops.xz_decompress)
+                   compression_ops.xz_decompress,
+                   compression_ops.zstandard_compress,
+                   compression_ops.zstandard_decompress)
 
     operations += (crypto_ops.aes_decrypt,
                    crypto_ops.aes_encrypt,

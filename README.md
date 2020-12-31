@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (84 plugins)
+## List of plugins (86 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -135,6 +135,10 @@ favorite programs.
   Compress selected region with XZ format
 * XZ decompress  
   Decompress selected XZ compressed region
+* Zstandard compress  
+  Compress selected region with Zstandard algorithm
+* Zstandard decompress  
+  Decompress selected region with Zstandard algorithm
 
 ### Crypto operations
 * AES decrypt  
