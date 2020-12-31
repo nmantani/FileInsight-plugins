@@ -1,3 +1,4 @@
+blackboxprotobuf
 capstone
 lz4
 pefile

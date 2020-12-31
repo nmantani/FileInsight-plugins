@@ -75,6 +75,15 @@ https://github.com/qilingframework/qiling/
 watchdog is distributed under the Apache License 2.0.
 https://github.com/gorakhargosh/watchdog/blob/master/LICENSE
 
+python-lz4 is distributed under the BSD 3-Clause license.
+https://github.com/python-lz4/python-lz4/blob/master/LICENSE
+
+python-zstandard is distributed under the BSD 3-Clause license.
+https://github.com/indygreg/python-zstandard/blob/main/LICENSE
+
+blackboxprotobuf (forked version) is distributed under the MIT License.
+https://github.com/ydkhatri/blackboxprotobuf/blob/master/LICENSE
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------

@@ -70,7 +70,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (86個)
+## プラグインの一覧 (87個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -189,6 +189,8 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲をカスタムbase64テーブルを使ってデコードします。
 * Custom base64 encode  
   選択範囲をカスタムbase64テーブルを使ってエンコードします。
+* Protobuf decode  
+  選択範囲を Protocol Buffers でシリアライズされたデータとして .proto ファイル無しでデコードします。
 * ROT13  
   選択範囲のアルファベットの文字列を指定した数だけローテートします。(デフォルト: 13)
 * From quoted printable  

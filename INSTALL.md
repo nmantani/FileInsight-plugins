@@ -98,6 +98,27 @@ or execute the following command.
 py.exe -3 -m pip install pyimpfuzzy-windows
 ```
 
+For the "LZ4 compress" and "LZ4 decompress" plugins, it requires python-lz4.
+Please get it from https://github.com/python-lz4/python-lz4/
+or execute the following command.
+```
+py.exe -3 -m pip install lz4
+```
+
+For the "Zstandard compress" and "Zstandard decompress" plugins, it requires python-zstandard.
+Please get it from https://github.com/indygreg/python-zstandard/
+or execute the following command.
+```
+py.exe -3 -m pip install zstandard
+```
+
+For the "Protobuf decode" plugin, it requires blackboxprotobuf (forked version).
+Please get it from https://github.com/ydkhatri/blackboxprotobuf/
+or execute the following command.
+```
+py.exe -3 -m pip install blackboxprotobuf
+```
+
 You can install some of required Python modules with the following command.
 ```
 py.exe -3 -m pip install -r requirements.txt

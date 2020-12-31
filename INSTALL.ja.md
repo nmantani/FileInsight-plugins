@@ -103,6 +103,27 @@ py.exe -3 -m pip install pyimpfuzzy-windows
 ```
 を実行してインストールしてください。
 
+LZ4 compress と LZ4 decompress のプラグインについては、python-lz4 が必要です。
+https://github.com/python-lz4/python-lz4/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install lz4
+```
+を実行してインストールしてください。
+
+Zstandard compress と Zstandard decompress のプラグインについては、python-zstandard が必要です。
+https://github.com/indygreg/python-zstandard/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install zstandard
+```
+を実行してインストールしてください。
+
+Protobuf decode プラグインについては、blackboxprotobuf (フォークしたバージョン) が必要です。
+https://github.com/ydkhatri/blackboxprotobuf/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install blackboxprotobuf
+```
+を実行してインストールしてください。
+
 以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
 ```
 py.exe -3 -m pip install -r requirements.txt

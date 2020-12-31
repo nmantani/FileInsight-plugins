@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (86 plugins)
+## List of plugins (87 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -189,6 +189,8 @@ favorite programs.
   Decode selected region with custom base64 table
 * Custom base64 encode  
   Encode selected region with custom base64 table
+* Protobuf decode  
+  Decode selected region as Protocol Buffers serialized data without .proto files
 * ROT13  
   Rotate alphabet characters in selected region by the specified amount (default: 13)
 * From quoted printable  

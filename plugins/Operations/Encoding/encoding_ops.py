@@ -26,6 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import base64
+import binascii
 import quopri
 import re
 import string
@@ -823,3 +824,37 @@ def unicode_unescape(fi):
         else:
             print("Unescaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to unescaped region.")
+
+def protobuf_decode(fi):
+    """
+    Decode selected region as Protocol Buffers serialized data without .proto files
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute protobuf_decode.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/protobuf_decode.py", "-u"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decoded data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # blackboxprotobuf (forked version) is not installed
+            print("blackboxprotobuf (forked version) is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install blackboxprotobuf' and try again.")
+            return
+
+        fi.newDocument("Output of Protobuf decode")
+        fi.setDocument(stdout_data)
+
+        if length == 1:
+            print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
