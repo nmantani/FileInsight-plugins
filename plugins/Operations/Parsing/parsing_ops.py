@@ -533,7 +533,7 @@ def parse_file_structure(fi):
         print("Skipped bookmarking.")
 
     fi.newDocument("Parsed data", 0)
-    fi.setDocument("".join(parsed_data))
+    fi.setDocument("".join(parsed_data).encode("utf-8"))
     print('Parsed data is shown in the new "Parsed data" tab.')
     print('Please use "Windows" tab -> "New Vertical Tab Group" to see parsed data and file contents side by side.')
     print(stderr_data)
