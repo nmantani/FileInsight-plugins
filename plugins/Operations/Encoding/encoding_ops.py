@@ -839,7 +839,7 @@ def protobuf_decode(fi):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute protobuf_decode.py to show GUI
+        # Execute protobuf_decode.py to decode data
         p = subprocess.Popen(["py.exe", "-3", "Encoding/protobuf_decode.py", "-u"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decoded data
