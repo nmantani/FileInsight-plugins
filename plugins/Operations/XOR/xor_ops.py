@@ -28,6 +28,7 @@
 import binascii
 import hashlib
 import struct
+import subprocess
 import sys
 
 def decremental_xor(fi):
@@ -231,37 +232,35 @@ def find_pe_header(fi, buf, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
-    i = 0
-    pos = 0
-    found = 0
-    length = len(buf)
-    while i < length:
-        pos = buf.find("MZ", i)
-        if pos == -1:
-            break
-        else:
-            if pos + 64 < length:
-                # Get the offset of the "PE" characters
-                pe_offset = struct.unpack("<I", buf[pos+60:pos+64])[0]
-                if pos + pe_offset + 23 < length:
-                    # Check machine
-                    if buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x4c', '\x01']):
-                        # Check characteristics
-                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print("Win32 DLL found at offset %s." % hex(offset + pos))
-                        else:
-                            print("Win32 executable found at offset %s." % hex(offset + pos))
-                        fi.setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
-                        found += 1
-                    elif buf[pos+pe_offset:pos+pe_offset+6] == "".join(['P', 'E', '\x00', '\x00', '\x64', '\x86']):
-                        # Check characteristics
-                        if struct.unpack("B", buf[pos+pe_offset+23])[0] & 0x20:
-                            print("Win64 DLL found at offset %s." % hex(offset + pos))
-                        else:
-                            print("Win64 executable found at offset %s." % hex(offset + pos))
-                        fi.setBookmark(offset + pos, 2, hex(offset + pos), "#c8ffff")
-                        found += 1
-            i = pos + 2
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute find_pe_file.py for finding PE files
+    p = subprocess.Popen(["py.exe", "-3", "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(buf))
+    ret = p.wait()
+
+    if ret == -1:
+        print("pefile is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        return
+
+    found = ret
+    if found > 0:
+        print(stdout_data),
+
+        for l in stdout_data.splitlines():
+            if l[0:5] == "Win32" or l[0:5] == "Win64":
+                off = int(l.split()[5], 0)
+                size = int(l.split()[7], 0)
+                if off + size > len(buf):
+                    fi.setBookmark(off, len(buf) - off, hex(off), "#c8ffff")
+                else:
+                    fi.setBookmark(off, size, hex(off), "#c8ffff")
+
     return found
 
 def find_elf_header(fi, buf, offset):
@@ -327,6 +326,47 @@ def find_rtf_header(fi, buf, offset):
             found += 1
     return found
 
+def find_zip_header(fi, buf, offset):
+    """
+    Used by guess_multibyte_xor_keys()
+    """
+    i = 0
+    pos = 0
+    found = 0
+    length = len(buf)
+    while i < length:
+        pos_start = buf.find("PK\x03\x04", i)
+        pos_end = buf.find("PK\x05\x06", pos_start + 1)
+        file_type = "ZIP" # default file type
+
+        if pos_start == -1 or pos_end == -1:
+            break
+        elif buf[pos_start + 30:pos_start + 49] == "[Content_Types].xml": # Possible Microsoft Office file
+            pos_rels = buf.find("PK\x03\x04", pos_start + 49)
+
+            if pos_rels != -1 and buf[pos_rels + 30:pos_rels + 41] == "_rels/.rels":
+                pos_type = buf.find("PK\x03\x04", pos_rels + 41)
+
+                if pos_type != -1:
+                    if buf[pos_type + 30:pos_type + 34] == "word":
+                        file_type = "Microsoft Word document"
+                    elif buf[pos_type + 30:pos_type + 33] == "ppt":
+                        file_type = "Microsoft PowerPoint slide"
+                    elif buf[pos_type + 30:pos_type + 32] == "xl":
+                        file_type = "Microsoft Excel spreadsheet"
+        elif buf[pos_start + 30:pos_start + 39] == "META-INF/": # Possible Java Archive (JAR) file
+            pos_manifest = buf.find("PK\x03\x04", pos_start + 39)
+
+            if pos_manifest != -1 and buf[pos_manifest + 30:pos_manifest + 50] == "META-INF/MANIFEST.MF":
+                file_type = "Java Archive (JAR)"
+
+        print("%s found at offset %s size %d bytes." % (file_type, hex(offset + pos_start), (pos_end - pos_start + 22)))
+        fi.setBookmark(offset + pos_start, pos_end - pos_start + 22, hex(offset + pos_start), "#c8ffff")
+        i = pos_end + 22
+        found += 1
+
+    return found
+
 def shorten_xor_key(key):
     """
     Return shortened XOR key if the key has a cyclic pattern
@@ -355,13 +395,13 @@ def guess_multibyte_xor_keys(fi):
 
     if length > 0:
         buf = fi.getSelection()
-        print("Top ten XOR keys guessed from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
+        print("Top ten XOR keys guessed from offset %s to %s are as follows." % (hex(offset), hex(offset + length - 1)))
         print("Please select the whole file and use these XOR key in the Decode tab to decode the file.\n")
     else:
         offset = 0
         buf = fi.getDocument()
         length = fi.getLength()
-        print("Top ten XOR keys guessed from the whole file")
+        print("Top ten XOR keys guessed from the whole file are as follows.")
         print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
 
     block = {}
@@ -395,9 +435,10 @@ def guess_multibyte_xor_keys(fi):
             num_ole = find_ole_header(fi, tmp, offset)
             num_pdf = find_pdf_header(fi, tmp, offset)
             num_rtf = find_rtf_header(fi, tmp, offset)
-            if num_pe + num_elf + num_ole + num_pdf + num_rtf == 1:
+            num_zip = find_zip_header(fi, tmp, offset)
+            if num_pe + num_elf + num_ole + num_pdf + num_rtf + num_zip == 1:
                 print("Added a bookmark to the search hit.")
-            elif num_pe + num_elf + num_ole + num_pdf + num_rtf > 1:
+            elif num_pe + num_elf + num_ole + num_pdf + num_rtf + num_zip > 1:
                 print("Added bookmarks to the search hits.")
             print("")
             i += 1
