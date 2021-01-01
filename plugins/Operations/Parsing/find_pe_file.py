@@ -73,13 +73,11 @@ while i < length:
                     pe_size = pe.OPTIONAL_HEADER.SizeOfHeaders
                     for section in pe.sections:
                         pe_size += section.SizeOfRawData
-                    print("size %d bytes" % pe_size)
+                    print("size %d bytes." % pe_size)
                     if pos + pe_size > length:
                         print("The end of PE file (offset %s) is beyond the end of search region (offset %s). Bookmarked region will be truncated." % (hex(offset+pos+pe_size), hex(offset+length)))
-                        #fi.setBookmark(offset + pos, length - pos, hex(offset + pos), "#c8ffff")
                     else:
                         pass
-                        #fi.setBookmark(offset + pos, pe_size, hex(offset + pos), "#c8ffff")
                     found += 1
     valid_pe = False
     i = pos + 2
