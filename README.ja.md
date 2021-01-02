@@ -70,7 +70,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (87個)
+## プラグインの一覧 (89個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -127,6 +127,10 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲を LZNT1 アルゴリズムで圧縮します。
 * LZNT1 decompress  
   選択範囲を LZNT1 アルゴリズムで展開します。
+* LZO compress  
+  選択範囲を LZO アルゴリズムで圧縮します。
+* LZO decompress  
+  選択範囲を LZO アルゴリズムで展開します。
 * Raw deflate  
   選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。(PHP言語の gzdeflate() と同等)
 * Raw inflate  

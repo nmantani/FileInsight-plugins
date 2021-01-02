@@ -1,8 +1,14 @@
 * License of FileInsight-plugins
-FileInsight-plugins is distributed under the BSD 2-Clause license.
-(except plugins/Operations/Misc/emulate_code.py that is distributed
+FileInsight-plugins is distributed under the BSD 2-Clause license
+except the files described below.
+
+plugins/Operations/Misc/emulate_code.py is distributed
 under GNU General Public License version 2 (GPLv2) because it uses
-Qiling Framework Python module that is distributed under GPLv2)
+Qiling Framework Python module that is distributed under GPLv2.
+
+lzo_compress.py and lzo_decompress.py in plugins/Operations/Compression
+are distributed under GNU General Public License version 2 (GPLv2)
+because it uses python-lzo Python module that is distributed under GPLv2.
 
 -------------------------------------------------------------------------------
 Copyright (c) 2012-2020 Nobutaka Mantani
@@ -70,7 +76,7 @@ yara-python is distributed under the Apache License 2.0.
 https://github.com/VirusTotal/yara-python/blob/master/LICENSE
 
 Qiling Framework is distributed under the GNU General Public License version 2.
-https://github.com/qilingframework/qiling/
+https://github.com/qilingframework/qiling/blob/master/COPYING
 
 watchdog is distributed under the Apache License 2.0.
 https://github.com/gorakhargosh/watchdog/blob/master/LICENSE
@@ -83,6 +89,9 @@ https://github.com/indygreg/python-zstandard/blob/main/LICENSE
 
 blackboxprotobuf (forked version) is distributed under the MIT License.
 https://github.com/ydkhatri/blackboxprotobuf/blob/master/LICENSE
+
+python-lzo is distributed under the GNU General Public License version 2.
+https://github.com/jd-boyd/python-lzo/blob/master/COPYING
 
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):

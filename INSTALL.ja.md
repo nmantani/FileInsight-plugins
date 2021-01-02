@@ -39,6 +39,11 @@ Binwalk scan プラグインについては、 binwalk Python モジュールが
 https://github.com/ReFirmLabs/binwalk からダウンロード、インストールしてください
 (binwalk のインストールに pip は使用できません)。
 
+以下に書かれている Python モジュールのうちいくつかは以下のコマンドでまとめてインストールできます。
+```
+py.exe -3 -m pip install -r requirements.txt
+```
+
 AES decrypt 等の暗号関係のプラグインについては、PyCryptodome Python モジュールが必要です。
 https://github.com/Legrandin/pycryptodome からダウンロード、インストールするか、
 ```
@@ -124,10 +129,14 @@ py.exe -3 -m pip install blackboxprotobuf
 ```
 を実行してインストールしてください。
 
-以下のコマンドで必要な Python モジュールのうちいくつかをまとめてインストールできます。
+LZO compress と LZO decompress のプラグインについては、python-lzo が必要です。
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo からお使いの Python の
+バージョン用の wheel ファイル (.whl) をダウンロードして、以下のコマンドを実行して
+インストールしてください。
 ```
-py.exe -3 -m pip install -r requirements.txt
+py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl
 ```
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

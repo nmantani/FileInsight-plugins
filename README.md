@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (87 plugins)
+## List of plugins (89 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -127,6 +127,10 @@ favorite programs.
   Compress selected region with LZNT1 algorithm
 * LZNT1 decompress  
   Decompress selected region with LZNT1 algorithm
+* LZO compress  
+  Compress selected region with LZO algorithm
+* LZO decompress  
+  Decompress selected region with LZO algorithm
 * Raw deflate  
   Compress selected region with Deflate algorithm without header and checksum (Equivalent to gzdeflate() in PHP language)
 * Raw inflate  
