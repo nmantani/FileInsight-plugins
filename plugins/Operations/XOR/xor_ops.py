@@ -339,7 +339,12 @@ def find_zip_header(fi, buf, offset):
         pos_end = buf.find("PK\x05\x06", pos_start + 1)
         file_type = "ZIP" # default file type
 
-        if pos_start == -1 or pos_end == -1:
+        if pos_start == -1:
+            break
+        elif pos_end == -1:
+            print("ZIP local file header found at offset %s, but end of central directory record is missing." % hex(offset + pos_start))
+            fi.setBookmark(offset + pos_start, 4, hex(offset + pos_start), "#c8ffff")
+            found += 1
             break
         elif buf[pos_start + 30:pos_start + 49] == "[Content_Types].xml": # Possible Microsoft Office file
             pos_rels = buf.find("PK\x03\x04", pos_start + 49)
