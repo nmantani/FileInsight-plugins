@@ -478,7 +478,10 @@ def emulate_code(fi):
 
     # emulate_code.py exited with error
     if ret == 1:
-        print(stderr_data.replace("\x0d\x0a", "\x0a")),
+        stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
+        # Remove colorlized part of log data introduced since Qiling Framework 1.2.1
+        stderr_data = re.sub("\[\x1b\[\d{2}m.\x1b\[0m\] \[.+\.py:\d+\]\t", "", stderr_data)
+        print(stderr_data),
         return
     elif ret == -1 or ret == -2 or ret == -3:
         if ret == -1: # Qiling Framework is not installed
@@ -511,14 +514,17 @@ def emulate_code(fi):
         print("Emulated the whole file as %s.\n" % file_type.lower())
 
     print("Emulation settings:")
-    print("  File type: %s" % file_type.lower())
-    print("  OS: %s" % os_type)
-    print("  Architecture: %s" % arch)
-    print("  Big endian: %s" % str(big_endian).lower())
-    print("  Command line arguments: %s" % cmd_args)
+    print("File type: %s" % file_type.lower())
+    print("OS: %s" % os_type)
+    print("Architecture: %s" % arch)
+    print("Big endian: %s" % str(big_endian).lower())
+    print("Command line arguments: %s" % cmd_args)
 
     print("Emulation trace:")
-    print(stderr_data.replace("\x0d\x0a", "\x0a")),
+    stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
+    # Remove colorlized part of log data introduced since Qiling Framework 1.2.1
+    stderr_data = re.sub("\[\x1b\[\d{2}m.\x1b\[0m\] \[.+\.py:\d+\]\t", "", stderr_data)
+    print(stderr_data),
 
     # For the case that emulate_code.py exited during ql.run()
     if stdout_data == "":
@@ -556,6 +562,7 @@ def emulate_code(fi):
                     fi.setBookmark(start, last_nonzero - start + 1, hex(start), "#c8ffff")
                     start = None
                     num_zero = 0
+                    bookmarked = True
 
             if start != None:
                 fi.setBookmark(start, last_nonzero - start + 1, hex(start), "#c8ffff")

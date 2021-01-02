@@ -23,6 +23,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import binascii
+import distutils.version
 import os
 import pathlib
 import shlex
@@ -47,16 +48,16 @@ class FileChangeHandler(FileSystemEventHandler):
         self.log = ""
 
     def on_created(self, event):
-        self.log += "  [Created] %s\n" % pathlib.Path(event.src_path).resolve()
+        self.log += "[Created] %s\n" % pathlib.Path(event.src_path).resolve()
 
     def on_deleted(self, event):
-        self.log += "  [Deleted] %s\n" % pathlib.Path(event.src_path).resolve()
+        self.log += "[Deleted] %s\n" % pathlib.Path(event.src_path).resolve()
 
     def on_modified(self, event):
-        self.log += "  [Modified] %s\n" % pathlib.Path(event.src_path).resolve()
+        self.log += "[Modified] %s\n" % pathlib.Path(event.src_path).resolve()
 
     def on_moved(self, event):
-        self.log += "  [Moved] %s -> %s\n" % (pathlib.Path(event.src_path).resolve(), pathlib.Path(event.dest_path).resolve())
+        self.log += "[Moved] %s -> %s\n" % (pathlib.Path(event.src_path).resolve(), pathlib.Path(event.dest_path).resolve())
 
     def show_log(self):
         if self.log != "":
@@ -129,7 +130,11 @@ if len(sys.argv) == 7:
 
     if file_type == "executable":
         try:
-            ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+            # filename parameter has been renamed to argv since Qiling Framework 1.2.1
+            if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2"):
+                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+            else:
+                ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
 
             # Start to watch file system events
             handler = FileChangeHandler()
