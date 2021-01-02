@@ -160,6 +160,8 @@ if __name__ == "__main__":
                    compression_ops.raw_inflate,
                    compression_ops.xz_compress,
                    compression_ops.xz_decompress,
+                   compression_ops.zlib_compress,
+                   compression_ops.zlib_decompress,
                    compression_ops.zstandard_compress,
                    compression_ops.zstandard_decompress)
 

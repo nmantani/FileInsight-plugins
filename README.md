@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (89 plugins)
+## List of plugins (91 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -132,13 +132,17 @@ favorite programs.
 * LZO decompress  
   Decompress selected region with LZO algorithm
 * Raw deflate  
-  Compress selected region with Deflate algorithm without header and checksum (Equivalent to gzdeflate() in PHP language)
+  Compress selected region with Deflate algorithm without header and checksum (equivalent to gzdeflate() in PHP language)
 * Raw inflate  
-  Decompress selected Deflate compressed region that does not have header and checksum (Equivalent to gzinflate() in PHP language)
+  Decompress selected Deflate compressed region that does not have header and checksum (equivalent to gzinflate() in PHP language)
 * XZ compress  
   Compress selected region with XZ format
 * XZ decompress  
   Decompress selected XZ compressed region
+* zlib compress (deflate)  
+  Compress selected region with zlib (Deflate algorithm)
+* zlib decompress (inflate)  
+  Decompress selected region with zlib (Deflate algorithm)
 * Zstandard compress  
   Compress selected region with Zstandard algorithm
 * Zstandard decompress  
