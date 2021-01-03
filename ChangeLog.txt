@@ -1,3 +1,50 @@
+2021-01-03 version 2.6
+* New plugins
+  - Compression operations
+    - "LZ4 compress" plugin and "LZ4 decompress" plugin
+      These plugins compresses/decompresses selected region with LZ4 algorithm.
+    - "LZO compress" plugin and "LZO decompress" plugin
+      These plugins compresses/decompresses selected region with LZ4 algorithm.
+    - "zlib compress (deflate)" plugin and "zlib decompress (inflate)" plugin
+      These plugins compresses/decompresses selected region with zlib (Deflate algorithm).
+    - "Zstandard compress" plugin and "Zstandard decompress" plugin
+      These plugins compresses/decompresses selected region with Zstandard algorithm.
+  - Encoding operations
+    - "Protobuf decode" plugin
+      This plugins decodes selected region as Protocol Buffers serialized data without .proto files.
+* Enhancements
+  - Plugins that creates new tabs
+    - New tab name will be set to "Output of [plugin name]" instead of "New file".
+  - Parsing operations
+    - "Disassemble" plugin
+      Width of each columns in disassembly output will be adjusted.
+  - XOR operations
+    - "Guess 256 byte XOR keys" plugin
+      - Plugin name is renamed to "Guess multibyte XOR keys".
+      - Shortened XOR key will be shown if it has a cyclic pattern.
+      - Top ten guessed XOR keys will be shown.
+      - Capability to find ELF header is added.
+      - Capability to bookmark from start to end of PE file is added.
+      - Capability to find ZIP file, Microsoft Office file (OOXML) and Java Archive (JAR) file is added.
+* Bug fixes
+  - Encoding operations
+    - Binary data to octal text" plugin and "Octal text to binary data" plugin
+      Message is corrected.
+  - Misc operations
+    - "File comparison" plugin
+      Width of file selection dialog will be adjusted to show whole file name.
+    - "Send to" plugin
+      Temporary file will be removed after exit of selected program.
+  - XOR operations
+    - "Visual Decrypt" plugin and "Visual Encrypt" plugin
+      Tooltips are corrected.
+* Other changes
+  - Encoding operations
+    Plugin output style is unified so that output retains non-selected region (same behaviour as ROT13 plugin and so on)
+  - Misc operations
+    - "Emulate code" plugin
+      Qiling Framework 1.2.1 is supported.
+
 2020-11-23 version 2.5
 * New plugins
   - Encoding operations
