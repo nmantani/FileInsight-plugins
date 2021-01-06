@@ -615,8 +615,8 @@ def disassemble(fi):
 
     if not stderr_data == "":
         end_pos = int(stderr_data)
-        fi.setBookmark(end_pos, 1, hex(end_pos) + " end of disassembly", "#ff0000")
-        print("Disassembly finished prematurely at offset %s." % hex(end_pos))
+        fi.setBookmark(offset + end_pos, 1, hex(offset + end_pos) + " end of disassembly", "#ff0000")
+        print("Disassembly finished prematurely at offset %s." % hex(offset + end_pos))
         print("Added bookmark to the end of disassembly.")
 
     fi.newDocument("Disassembly")
