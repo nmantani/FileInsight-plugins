@@ -2,18 +2,18 @@
 * New plugins
   - Compression operations
     - "LZ4 compress" plugin and "LZ4 decompress" plugin
-      These plugins compresses/decompresses selected region with LZ4 algorithm.
+      These plugins compress/decompress selected region with LZ4 algorithm.
     - "LZO compress" plugin and "LZO decompress" plugin
-      These plugins compresses/decompresses selected region with LZ4 algorithm.
+      These plugins compress/decompress selected region with LZ4 algorithm.
     - "zlib compress (deflate)" plugin and "zlib decompress (inflate)" plugin
-      These plugins compresses/decompresses selected region with zlib (Deflate algorithm).
+      These plugins compress/decompress selected region with zlib (Deflate algorithm).
     - "Zstandard compress" plugin and "Zstandard decompress" plugin
-      These plugins compresses/decompresses selected region with Zstandard algorithm.
+      These plugins compress/decompress selected region with Zstandard algorithm.
   - Encoding operations
     - "Protobuf decode" plugin
-      This plugins decodes selected region as Protocol Buffers serialized data without .proto files.
+      This plugin decodes selected region as Protocol Buffers serialized data without .proto files.
 * Enhancements
-  - Plugins that creates new tabs
+  - Plugins that create new tabs
     - New tab name will be set to "Output of [plugin name]" instead of "New file".
   - Parsing operations
     - "Disassemble" plugin
