@@ -26,19 +26,45 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
+import re
 import subprocess
 
 def copy_to_new_file(fi):
     """
     Copy selected region (the whole file if not selected) to new file
     """
-    length = fi.getSelectionLength()
-    if length > 0:
+    selection_length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+    if selection_length > 0:
         data = fi.getSelection()
+        whole_length = 0
     else:
         data = fi.getDocument()
-    fi.newDocument("New file", 1)
+        whole_length = fi.getLength()
+    num_file = fi.getDocumentCount()
+
+    lastindex = 0
+    for i in range(num_file):
+        fi.activateDocumentAt(i)
+        name = fi.getDocumentName()
+        m = re.match("New file (\d+)", name)
+        if m != None and int(m.group(1)) >= lastindex:
+            lastindex = int(m.group(1)) + 1
+
+    tab_name = "New file %d" % lastindex
+    fi.newDocument(tab_name, 1)
     fi.setDocument(data)
+
+    if selection_length > 0:
+        if selection_length == 1:
+            print("Copied one byte from offset %s to %s to new tab '%s'." % (hex(offset), hex(offset), tab_name))
+        else:
+            print("Copied %s bytes from offset %s to %s to new tab '%s'." % (selection_length, hex(offset), hex(offset + selection_length - 1), tab_name))
+    else:
+        if whole_length == 1:
+            print("Copied the whole file (one byte) to new tab '%s'." % tab_name)
+        else:
+            print("Copied the whole file (%s bytes) to new tab '%s'." % (whole_length, tab_name))
 
 def cut_binary_to_clipboard(fi):
     """
