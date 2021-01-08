@@ -119,9 +119,8 @@ def custom_base64_decode(fi):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute dialog.py to show GUI
-        # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_base64_decode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "64", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -167,9 +166,8 @@ def custom_base64_encode(fi):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute dialog.py to show GUI
-        # GUI portion is moved to dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_base64_encode_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "64", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -858,3 +856,215 @@ def protobuf_decode(fi):
             print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+
+def custom_base32_decode(fi):
+    """
+    Decode selected region with custom base32 table
+    """
+    standard_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567="
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "32", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base32 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 33:
+                print("Error: base32 table must be 33 characters (including padding).")
+            else:
+                data = fi.getSelection()
+                orig = list(fi.getDocument())
+                orig_len = len(orig)
+
+                trans = string.maketrans(custom_table, standard_table)
+                decoded = list(base64.b32decode(data.translate(trans)))
+
+                newdata = orig[:offset]
+                newdata.extend(decoded)
+                newdata.extend(orig[offset + length:])
+
+                fi.newDocument("Output of Custom base32 decode", 1)
+                fi.setDocument("".join(newdata))
+                fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Decoded one byte with custom base32 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Decoded %s bytes with custom base32 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to decoded region.")
+
+def custom_base32_encode(fi):
+    """
+    Encode selected region with custom base32 table
+    """
+    standard_table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567="
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "32", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base32 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 33:
+                print("Error: base32 table must be 33 characters (including padding).")
+            else:
+                data = fi.getSelection()
+                orig = list(fi.getDocument())
+                orig_len = len(orig)
+
+                trans = string.maketrans(standard_table, custom_table)
+                encoded = list(base64.b32encode(data).translate(trans))
+
+                newdata = orig[:offset]
+                newdata.extend(encoded)
+                newdata.extend(orig[offset + length:])
+
+                fi.newDocument("Output of Custom base32 encode", 1)
+                fi.setDocument("".join(newdata))
+                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Encoded one byte with custom base32 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Encoded %s bytes with custom base32 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to encoded region.")
+
+def custom_base58_decode(fi):
+    """
+    Decode selected region with custom base58 table
+    """
+    standard_table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "58", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base58 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 58:
+                print("Error: base58 table must be 58 characters.")
+            else:
+                data = fi.getSelection()
+                orig = list(fi.getDocument())
+                orig_len = len(orig)
+
+                # Execute base58_decode.py to encode data
+                p = subprocess.Popen(["py.exe", "-3", "Encoding/base58_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                # Receive decoded data
+                trans = string.maketrans(custom_table, standard_table)
+                stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data.translate(trans)))
+                ret = p.wait()
+
+                if ret == -1: # base58 is not installed
+                    print("base58 is not installed.")
+                    print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
+                    return
+
+                decoded = list(binascii.a2b_hex(stdout_data))
+
+                newdata = orig[:offset]
+                newdata.extend(decoded)
+                newdata.extend(orig[offset + length:])
+
+                fi.newDocument("Output of Custom base58 decode", 1)
+                fi.setDocument("".join(newdata))
+                fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Decoded one byte with custom base58 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Decoded %s bytes with custom base58 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to decoded region.")
+
+def custom_base58_encode(fi):
+    """
+    Encode selected region with custom base58 table
+    """
+    standard_table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "58", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base58 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 58:
+                print("Error: base58 table must be 58 characters.")
+            else:
+                data = fi.getSelection()
+                orig = list(fi.getDocument())
+                orig_len = len(orig)
+
+                # Execute base58_encode.py to encode data
+                p = subprocess.Popen(["py.exe", "-3", "Encoding/base58_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                # Receive encoded data
+                stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+                ret = p.wait()
+
+                if ret == -1: # base58 is not installed
+                    print("base58 is not installed.")
+                    print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
+                    return
+
+                trans = string.maketrans(standard_table, custom_table)
+                encoded = list(binascii.a2b_hex(stdout_data).translate(trans))
+
+                newdata = orig[:offset]
+                newdata.extend(encoded)
+                newdata.extend(orig[offset + length:])
+
+                fi.newDocument("Output of Custom base58 encode", 1)
+                fi.setDocument("".join(newdata))
+                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Encoded one byte with custom base58 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Encoded %s bytes with custom base58 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to encoded region.")

@@ -1,7 +1,7 @@
 #
-# Custom base64 decode - Decode selected region with custom base64 table
+# Custom base58 encode - Encode selected region with custom base58 table
 #
-# Copyright (c) 2016, Nobutaka Mantani
+# Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,14 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import tkinter
+import binascii
+import sys
 
-# Print entered base64 table to stdout
-def print_table(r, e):
-    print(e.get())
-    r.quit()
+try:
+    import base58
+except ImportError:
+    exit(-1) # base58 is not installed
 
-# Create input dialog
-root = tkinter.Tk()
-root.title('Custom base64 decode')
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = tkinter.Label(root, text='Enter base64 table:')
-label.grid(row=0, column=0, padx=5, pady=5)
-entry = tkinter.Entry(root, width=80)
-entry.insert(tkinter.END, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=')
-entry.grid(row=0, column=1, padx=5, pady=5)
-button = tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_table(r, e)))
-button.grid(row=0, column=2, padx=5, pady=5)
-
-# Adjust window position
-w = root.winfo_screenwidth()
-h = root.winfo_screenheight()
-root.geometry('+%d+%d' % ((w/4), (h/2)))
-
-root.mainloop()
-
+data = binascii.a2b_hex(sys.stdin.read())
+data = base58.b58encode(data)
+sys.stdout.write(str(binascii.b2a_hex(data).decode()))

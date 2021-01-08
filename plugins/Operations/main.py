@@ -29,6 +29,8 @@ import re
 import subprocess
 import sys
 
+__version__ = "2.7"
+
 sys.path.append("./Basic")
 import basic_ops
 
@@ -187,6 +189,10 @@ if __name__ == "__main__":
                    encoding_ops.octal_text_to_binary_data,
                    encoding_ops.binary_data_to_binary_text,
                    encoding_ops.binary_text_to_binary_data,
+                   encoding_ops.custom_base32_decode,
+                   encoding_ops.custom_base32_encode,
+                   encoding_ops.custom_base58_decode,
+                   encoding_ops.custom_base58_encode,
                    encoding_ops.custom_base64_decode,
                    encoding_ops.custom_base64_encode,
                    encoding_ops.protobuf_decode,

@@ -70,7 +70,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (91個)
+## プラグインの一覧 (95個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -193,6 +193,14 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲のバイナリデータを2進数のテキストに変換します。
 * Binary text to binary data  
   選択範囲の2進数のテキストをバイナリデータに変換します。
+* Custom base32 decode  
+  選択範囲をカスタムbase32テーブルを使ってデコードします。
+* Custom base32 encode  
+  選択範囲をカスタムbase32テーブルを使ってエンコードします。
+* Custom base58 decode  
+  選択範囲をカスタムbase58テーブルを使ってデコードします。
+* Custom base58 encode  
+  選択範囲をカスタムbase58テーブルを使ってエンコードします。
 * Custom base64 decode  
   選択範囲をカスタムbase64テーブルを使ってデコードします。
 * Custom base64 encode  

@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (91 plugins)
+## List of plugins (95 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -193,6 +193,14 @@ favorite programs.
   Convert binary of selected region into binary text
 * Binary text to binary data  
   Convert binary text of selected region into binary data
+* Custom base32 decode  
+  Decode selected region with custom base32 table
+* Custom base32 encode  
+  Encode selected region with custom base32 table
+* Custom base58 decode  
+  Decode selected region with custom base58 table
+* Custom base58 encode  
+  Encode selected region with custom base58 table
 * Custom base64 decode  
   Decode selected region with custom base64 table
 * Custom base64 encode  

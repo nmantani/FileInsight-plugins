@@ -93,6 +93,9 @@ https://github.com/ydkhatri/blackboxprotobuf/blob/master/LICENSE
 python-lzo is distributed under the GNU General Public License version 2.
 https://github.com/jd-boyd/python-lzo/blob/master/COPYING
 
+base58 is distributed under the MIT License.
+https://github.com/keis/base58/blob/master/COPYING
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------
