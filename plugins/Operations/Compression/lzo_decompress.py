@@ -1,7 +1,7 @@
 #
 # LZO decompress - Decompress selected region with LZO algorithm
 #
-# Copyright (c) 2020, Nobutaka Mantani
+# Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
 #
 # This file is distributed under GPLv2 because it uses python-lzo

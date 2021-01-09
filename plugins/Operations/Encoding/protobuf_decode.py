@@ -2,7 +2,7 @@
 # Protobuf decode - Decode selected region as Protocol Buffers serialized data
 # without .proto files
 #
-# Copyright (c) 2020, Nobutaka Mantani
+# Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without

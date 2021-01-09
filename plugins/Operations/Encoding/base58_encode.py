@@ -1,7 +1,7 @@
 #
 # Custom base58 encode - Encode selected region with custom base58 table
 #
-# Copyright (c) 2020, Nobutaka Mantani
+# Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
