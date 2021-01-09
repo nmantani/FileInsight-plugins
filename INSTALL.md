@@ -21,7 +21,7 @@ FileInsight installer is available at the McAfee Free Tools website.
 Please get it from https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html .
 
 ### **Installation of Python 3**
-FileInsight-plugins requires Python 3 since version 2.0 (older versions require Python 2 (x86)), though the built-in Python interpreter of FileInsight is Python 2. You no longer need to install Python 2 (x86) with the latest version (3.5) of FileInsight. Please get Python 3 installer from https://www.python.org/downloads/windows/ .
+FileInsight-plugins requires Python 3 (x64) since version 2.0 (older versions require Python 2 (x86)), though the built-in Python interpreter of FileInsight is Python 2. You no longer need to install Python 2 (x86) with the latest version (3.5) of FileInsight. Please get Python 3 (x64) installer from https://www.python.org/downloads/windows/ .
 
 ### **Installation of FileInsight-plugins**
 Please copy "plugins" folder into %USERPROFILE%\Documents\McAfee FileInsight .
@@ -32,6 +32,11 @@ Please copy "plugins" folder into %USERPROFILE%\Documents\McAfee FileInsight .
 For the "aPLib compress" and "aPLib decompress" plugins, they require aplib.dll.
 Please download aPLib from http://ibsensoftware.com/download.html and copy
 aplib.dll (32 bits version) into "plugins\Operations\Compression" folder.
+
+For the "QuickLZ compress" and "QuickLZ decompress" plugins, they require QuickLZ DLL files.
+Please download QuickLZ DLL files from http://www.quicklz.com/150dll.zip and copy
+quicklz150_64_1_safe.dll, quicklz150_64_2_safe.dll and quicklz150_64_3_safe.dll (64 bits version)
+into "plugins\Operations\Compression" folder.
 
 For the "Binwalk scan" plugin, it requires binwalk Python module.
 Please get it from https://github.com/ReFirmLabs/binwalk

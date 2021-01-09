@@ -80,10 +80,14 @@ class FileInsight:
     # Workaround for the truncation bug of getDocument()
     def getDocument(self):
         length = getLength()
-        data = getDocument()
-        if length - len(data) > 0:
-            for i in range(len(data), length):
-                data += getByteAt(i)
+
+        if length == getSelectionLength():
+            data = getSelection()
+        else:
+            data = getDocument()
+            if length - len(data) > 0:
+                for i in range(len(data), length):
+                    data += getByteAt(i)
 
         return data
 
@@ -158,6 +162,8 @@ if __name__ == "__main__":
                    compression_ops.lznt1_decompress,
                    compression_ops.lzo_compress,
                    compression_ops.lzo_decompress,
+                   compression_ops.quicklz_compress,
+                   compression_ops.quicklz_decompress,
                    compression_ops.raw_deflate,
                    compression_ops.raw_inflate,
                    compression_ops.xz_compress,

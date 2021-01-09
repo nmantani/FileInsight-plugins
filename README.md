@@ -17,7 +17,7 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 
 ## How to install
 ### Automatic installation
-Please execute the following command. FileInsight-plugins and all pre-requisites including FileInsight and Python 3 will be installed.
+Please execute the following command. FileInsight-plugins and all pre-requisites including FileInsight and Python 3 (x64) will be installed.
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (95 plugins)
+## List of plugins (97 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -131,6 +131,10 @@ favorite programs.
   Compress selected region with LZO algorithm
 * LZO decompress  
   Decompress selected region with LZO algorithm
+* QuickLZ compress  
+  Compress selected region with QuickLZ compression library
+* QuickLZ decompress  
+  Decompress selected region with QuickLZ compression library
 * Raw deflate  
   Compress selected region with Deflate algorithm without header and checksum (equivalent to gzdeflate() in PHP language)
 * Raw inflate  

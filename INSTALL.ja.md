@@ -21,12 +21,12 @@ FileInsight のインストーラは McAfee Free Tools のウェブサイトか�
 https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html
 
 ### **Python 3のインストール**
-FileInsight のビルトインの Python インタプリタは Python 2 ですが、FileInsight-plugins は 2.0 以降 Python 3 が必要です（過去のバージョンでは Python 2 (x86) が必要でした）。 最新バージョン (3.5) の FileInsight ではもう Python 2 (x86) をインストールする必要はありません。Python 3 のインストーラはこちらからダウンロードしてください。
+FileInsight のビルトインの Python インタプリタは Python 2 ですが、FileInsight-plugins は 2.0 以降 Python 3 (x64) が必要です（過去のバージョンでは Python 2 (x86) が必要でした）。 最新バージョン (3.5) の FileInsight ではもう Python 2 (x86) をインストールする必要はありません。Python 3 (x64) のインストーラはこちらからダウンロードしてください。
 https://www.python.org/downloads/windows/
 
 ### **FileInsight-pluginsのインストール**
 plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
-にコピーしてください。FileInsight に加えて Python 3 をインストールしておく必要があります。
+にコピーしてください。FileInsight に加えて Python 3 (x64) をインストールしておく必要があります。
 
 ![folders.png](docs/folders.png)
 
@@ -34,6 +34,11 @@ plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
 aPLib compress と aPLib decompress のプラグインについては、aplib.dll が必要です。
 aPLib を http://ibsensoftware.com/download.html からダウンロードして、
 aplib.dll (32ビット版) を "plugins\Operations\Compression" のフォルダに置いてください。
+
+QuickLZ compress と QuickLZ decompress のプラグインについては、QuickLZ の DLL ファイルが必要です。
+QuickLZ の DLL ファイル を http://www.quicklz.com/150dll.zip からダウンロードして、
+quicklz150_64_1_safe.dll、quicklz150_64_2_safe.dll、quicklz150_64_3_safe.dll (64 ビット版) を
+"plugins\Operations\Compression" のフォルダに置いてください。
 
 Binwalk scan プラグインについては、 binwalk Python モジュールが必要です。
 https://github.com/ReFirmLabs/binwalk からダウンロード、インストールしてください

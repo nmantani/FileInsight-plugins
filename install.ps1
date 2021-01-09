@@ -44,13 +44,14 @@ if ($PROXY_HOST -and $PROXY_PORT) {
 
 $RELEASE_VERSION = "2.6"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.8.6"
+$PYTHON_VERSION = "3.8.7"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "B4D1C7F98C96436D603CA4ADA669A7F6F0423EF36F949501E216B86C6BA55F7D"
-$PYTHON_HASH = "328A257F189CB500606BB26AB0FBDD298ED0E05D8C36540A322A1744F489A0A0"
+$PYTHON_HASH = "B8D539D67A9C97A1ACC30DC871821D140C383F160D8A1CD3B5A1A5A0D351AF68"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
+$QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function create_working_directory {
     .{ # Only $temp_dir is used as return value
@@ -103,7 +104,8 @@ function download_file($url, $save_path) {
 
     # curl.exe has been available since Windows 10 version 1803
     if (Get-Command curl.exe -ea SilentlyContinue) {
-        curl.exe -Lo "$save_path" "$url"
+        # XXX: setting user-agent header is required to download QuickLZ library
+        curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0" -Lo "$save_path" "$url"
     } else {
         Write-Host "[+] Progress of download is not shown. Please be patient."
 
@@ -113,6 +115,8 @@ function download_file($url, $save_path) {
             $web_client.Proxy = New-Object System.Net.WebProxy($PROXY_URL, $true)
         }
 
+        # XXX: setting user-agent header is required to download QuickLZ library
+        $web_client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0")
         $web_client.DownloadFile($url, $save_path)
     }
 }
@@ -494,9 +498,9 @@ function install_aplib($work_dir) {
         Write-Host "[*] aPLib is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading aPLib-$version..."
-        $plugins_url = "http://ibsensoftware.com/files/aPLib-$version.zip"
+        $archive_url = "http://ibsensoftware.com/files/aPLib-$version.zip"
         $zip_archive_path = "$work_dir\aPLib-$version.zip"
-        download_file $plugins_url $zip_archive_path
+        download_file $archive_url $zip_archive_path
 
         if (!(Test-Path $zip_archive_path)) {
             Write-Host "[!] Download has been failed."
@@ -541,6 +545,71 @@ function install_aplib($work_dir) {
         }
         Write-Host "[+] Done."
         Write-Host "[+] aPLib has been installed."
+    }
+    Write-Host ""
+}
+
+function install_quicklz($work_dir) {
+    $version = "1.5.0"
+    Write-Host "[+] Installing QuickLZ library..."
+
+    $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Compression"
+    if ((Test-Path "$dest_dir\quicklz150_64_1_safe.dll") -and (Test-Path "$dest_dir\quicklz150_64_2_safe.dll") -and (Test-Path "$dest_dir\quicklz150_64_3_safe.dll")) {
+        Write-Host "[*] QuickLZ is already installed. Skipping installation."
+    } else {
+        Write-Host "[+] Downloading QuickLZ-$version..."
+        $archive_url = "http://www.quicklz.com/150dll.zip"
+        $zip_archive_path = "$work_dir\150dll.zip"
+        download_file $archive_url $zip_archive_path
+
+        if (!(Test-Path $zip_archive_path)) {
+            Write-Host "[!] Download has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $QUICKLZ_HASH)..."
+        $val = compute_hash $zip_archive_path
+        if ($val -eq $QUICKLZ_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
+        Write-Host "[+] Extracting 150dll.zip..."
+        $extract_dir = "$work_dir\150dll"
+        extract_zip $zip_archive_path $extract_dir
+        $file_path = "$extract_dir\64\quicklz150_64_1_safe.dll"
+
+        if (!(Test-Path "$extract_dir\64\quicklz150_64_1_safe.dll") -or !(Test-Path "$extract_dir\64\quicklz150_64_2_safe.dll") -or !(Test-Path "$extract_dir\64\quicklz150_64_3_safe.dll")) {
+            Write-Host "[!] Extraction has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Compression"
+        Write-Host "[+] Copying QuickLZ DLL files to $dest_dir ..."
+        $file_path = "$extract_dir\64\quicklz150_64_1_safe.dll"
+        Copy-Item $file_path -Destination $dest_dir -Recurse -Force
+        $file_path = "$extract_dir\64\quicklz150_64_2_safe.dll"
+        Copy-Item $file_path -Destination $dest_dir -Recurse -Force
+        $file_path = "$extract_dir\64\quicklz150_64_3_safe.dll"
+        Copy-Item $file_path -Destination $dest_dir -Recurse -Force
+        if (!(Test-Path "$dest_dir\quicklz150_64_1_safe.dll") -or !(Test-Path "$dest_dir\quicklz150_64_2_safe.dll") -or !(Test-Path "$dest_dir\quicklz150_64_3_safe.dll")) {
+            Write-Host "[!] Installation has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+        Write-Host "[+] QuickLZ library has been installed."
     }
     Write-Host ""
 }
@@ -592,6 +661,7 @@ if ($Args[0] -eq "-update") {
     install_python_modules $work_dir $true
     install_qiling_rootfs $work_dir $true
     install_aplib $work_dir
+    install_quicklz $work_dir
 } else {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir $false
@@ -599,9 +669,10 @@ if ($Args[0] -eq "-update") {
     install_python_modules $work_dir
     install_qiling_rootfs $work_dir
     install_aplib $work_dir
+    install_quicklz $work_dir
 }
 migrate_plugin_config
 
 remove_working_directory $work_dir
-Write-Host "[+] All installation has been finished successfully!"
+Write-Host "[+] All installation has been finished!"
 

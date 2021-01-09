@@ -41,7 +41,7 @@ def aplib_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         try:
@@ -50,15 +50,14 @@ def aplib_compress(fi):
             compressed = ctypes.create_string_buffer(aplib.aP_max_packed_size(length))
             workspace = ctypes.create_string_buffer(aplib.aP_workmem_size(length))
             final_size = aplib.aPsafe_pack(ctypes.c_char_p(data), compressed, length, workspace, None, None)
-            compressed = list(compressed)
             compressed = compressed[:final_size]
 
             newdata = orig[:offset]
-            newdata.extend(compressed)
-            newdata.extend(orig[offset + length:])
+            newdata += compressed
+            newdata += orig[offset + length:]
 
             fi.newDocument("Output of aPLib compress", 1)
-            fi.setDocument("".join(newdata))
+            fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
             if length == 1:
@@ -77,7 +76,7 @@ def aplib_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         try:
@@ -92,27 +91,26 @@ def aplib_decompress(fi):
 
                 while (ret == -1 and count < 16):
                     final_size *= 2
-                    uncompressed = ctypes.create_string_buffer(final_size)
-                    ret = aplib.aP_depack_asm_safe(ctypes.c_char_p(data), length, uncompressed, final_size)
+                    decompressed = ctypes.create_string_buffer(final_size)
+                    ret = aplib.aP_depack_asm_safe(ctypes.c_char_p(data), length, decompressed, final_size)
                     count +=1
 
                 final_size = ret
             else:
-                uncompressed = ctypes.create_string_buffer(final_size)
-                final_size = aplib.aPsafe_depack(ctypes.c_char_p(data), length, uncompressed, final_size)
+                decompressed = ctypes.create_string_buffer(final_size)
+                final_size = aplib.aPsafe_depack(ctypes.c_char_p(data), length, decompressed, final_size)
 
             if final_size == -1:
                 raise Exception
 
-            uncompressed = list(uncompressed)
-            uncompressed = uncompressed[:final_size]
+            decompressed = decompressed[:final_size]
 
             newdata = orig[:offset]
-            newdata.extend(uncompressed)
-            newdata.extend(orig[offset + length:])
+            newdata += decompressed
+            newdata += orig[offset + length:]
 
             fi.newDocument("Output of aPLib decompress", 1)
-            fi.setDocument("".join(newdata))
+            fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
             if length == 1:
@@ -135,24 +133,18 @@ def bzip2_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        compressed = list(bz2.compress(data))
+        compressed = bz2.compress(data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Bzip2 compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -167,24 +159,18 @@ def bzip2_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        uncompressed = list(bz2.decompress(data))
-        final_size = len(uncompressed)
-        newdata = [0] * (orig_len - (length - final_size))
+        decompressed = bz2.decompress(data)
+        final_size = len(decompressed)
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = uncompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Bzip2 decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -199,7 +185,7 @@ def gzip_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         strio = StringIO.StringIO()
@@ -208,19 +194,13 @@ def gzip_compress(fi):
         gz.close()
         compressed = strio.getvalue()
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Gzip compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -235,26 +215,20 @@ def gzip_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         strio = StringIO.StringIO(data)
         gz = gzip.GzipFile(fileobj=strio)
         decompressed = gz.read()
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Gzip decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -311,20 +285,20 @@ def lznt1_decompress(fi):
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        uncompressed = ctypes.create_string_buffer(length * 40)
+        decompressed = ctypes.create_string_buffer(length * 40)
         workspace = ctypes.create_string_buffer(length * 40)
         final_size = ctypes.c_ulong(0)
 
-        ctypes.windll.ntdll.RtlDecompressBuffer(2, uncompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
+        ctypes.windll.ntdll.RtlDecompressBuffer(2, decompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
 
-        uncompressed = list(uncompressed)
+        decompressed = list(decompressed)
         newdata = [0] * (orig_len - (length - final_size.value))
 
         for i in range(0, offset):
             newdata[i] = orig[i]
 
         for i in range(0, final_size.value):
-            newdata[offset + i] = uncompressed[i]
+            newdata[offset + i] = decompressed[i]
 
         for i in range(0, orig_len - offset - length):
             newdata[offset + final_size.value + i] = orig[offset + length + i]
@@ -345,25 +319,19 @@ def raw_deflate(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        compressed = list(zlib.compress(data))
+        compressed = zlib.compress(data)
         compressed = compressed[2:-4]
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Raw deflate", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -378,24 +346,18 @@ def raw_inflate(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        decompressed = list(zlib.decompress(data, -15))
+        decompressed = zlib.decompress(data, -15)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Raw inflate", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -413,7 +375,7 @@ def lz4_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -432,21 +394,15 @@ def lz4_compress(fi):
             print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
             return
 
-        compressed = list(binascii.a2b_hex(stdout_data))
+        compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of LZ4 compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -464,7 +420,7 @@ def lz4_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -483,21 +439,15 @@ def lz4_decompress(fi):
             print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
             return
 
-        decompressed = list(binascii.a2b_hex(stdout_data))
+        decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of LZ4 decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -515,7 +465,7 @@ def lzma_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -529,21 +479,15 @@ def lzma_compress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        compressed = list(binascii.a2b_hex(stdout_data))
+        compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of LZMA compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -561,7 +505,7 @@ def lzma_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -575,21 +519,15 @@ def lzma_decompress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        decompressed = list(binascii.a2b_hex(stdout_data))
+        decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of LZMA decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -607,7 +545,7 @@ def xz_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -621,21 +559,15 @@ def xz_compress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        compressed = list(binascii.a2b_hex(stdout_data))
+        compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of XZ compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -653,7 +585,7 @@ def xz_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -667,21 +599,15 @@ def xz_decompress(fi):
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
 
-        decompressed = list(binascii.a2b_hex(stdout_data))
+        decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of XZ decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -699,7 +625,7 @@ def zstandard_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -718,21 +644,15 @@ def zstandard_compress(fi):
             print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
             return
 
-        compressed = list(binascii.a2b_hex(stdout_data))
+        compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Zstandard compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -750,7 +670,7 @@ def zstandard_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -769,21 +689,15 @@ def zstandard_decompress(fi):
             print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
             return
 
-        decompressed = list(binascii.a2b_hex(stdout_data))
+        decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of Zstandard decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -801,7 +715,7 @@ def lzo_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -822,21 +736,15 @@ def lzo_compress(fi):
             print("'py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl', then try again.")
             return
 
-        compressed = list(binascii.a2b_hex(stdout_data))
+        compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of LZO compress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -854,7 +762,7 @@ def lzo_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -875,21 +783,15 @@ def lzo_decompress(fi):
             print("'py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl', then try again.")
             return
 
-        decompressed = list(binascii.a2b_hex(stdout_data))
+        decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of LZO decompress", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -907,24 +809,18 @@ def zlib_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        compressed = list(zlib.compress(data))
+        compressed = zlib.compress(data)
         final_size = len(compressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = compressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of zlib compress (deflate)", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -942,24 +838,122 @@ def zlib_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        decompressed = list(zlib.decompress(data))
+        decompressed = zlib.decompress(data)
         final_size = len(decompressed)
-        newdata = [0] * (orig_len - (length - final_size))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
-
-        for i in range(0, final_size):
-            newdata[offset + i] = decompressed[i]
-
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size + i] = orig[offset + length + i]
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
 
         fi.newDocument("Output of zlib decompress (inflate)", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
+
+def quicklz_compress(fi):
+    """
+    Compress selected region with QuickLZ compression library
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute quicklz_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/quicklz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # QuickLZ DLLs are not installed
+            print("Error: cannot load QuickLZ DLL file.")
+            print("Please download QuickLZ DLL files from http://www.quicklz.com/150dll.zip")
+            print("and copy quicklz150_64_1_safe.dll, quicklz150_64_2_safe.dll and quicklz150_64_3_safe.dll (64 bits version)")
+            print("into '%s' folder." % (os.getcwd() + "\\Compression"))
+            return
+        elif ret == 1:
+            print(stderr_data)
+            return
+        elif stdout_data == "": # dialog is closed
+            return
+
+        compressed = binascii.a2b_hex(stdout_data)
+        final_size = len(compressed)
+
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
+
+        fi.newDocument("Output of QuickLZ compress", 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
+
+def quicklz_decompress(fi):
+    """
+    Decompress selected region with QuickLZ compression library
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute quicklz_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/quicklz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # QuickLZ DLLs are not installed
+            print("Error: cannot load QuickLZ DLL file.")
+            print("Please download QuickLZ DLL files from http://www.quicklz.com/150dll.zip")
+            print("and copy quicklz150_64_1_safe.dll, quicklz150_64_2_safe.dll and quicklz150_64_3_safe.dll (64 bits version)")
+            print("into '%s' folder." % (os.getcwd() + "\\Compression"))
+            return
+        elif ret == 1:
+            print(stderr_data)
+            return
+        elif stdout_data == "": # dialog is closed
+            return
+
+        decompressed = binascii.a2b_hex(stdout_data)
+        final_size = len(decompressed)
+
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
+
+        fi.newDocument("Output of QuickLZ decompress", 1)
+        fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
         if length == 1:

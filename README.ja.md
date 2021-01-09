@@ -17,7 +17,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 
 ## インストール方法
 ### 自動でのインストール
-以下のコマンドを実行してください。FileInsight-plugins と FileInsight、Python 3 を含む全ての必要なものがインストールされます。
+以下のコマンドを実行してください。FileInsight-plugins と FileInsight、Python 3 (x64) を含む全ての必要なものがインストールされます。
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
@@ -70,7 +70,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (95個)
+## プラグインの一覧 (97個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -131,6 +131,10 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲を LZO アルゴリズムで圧縮します。
 * LZO decompress  
   選択範囲を LZO アルゴリズムで展開します。
+* QuickLZ compress  
+  選択範囲を QuickLZ 圧縮ライブラリで圧縮します。
+* QuickLZ decompress  
+  選択範囲を QuickLZ 圧縮ライブラリで展開します。
 * Raw deflate  
   選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。(PHP言語の gzdeflate() と同等)
 * Raw inflate  
