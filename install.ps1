@@ -45,12 +45,16 @@ if ($PROXY_HOST -and $PROXY_PORT) {
 $RELEASE_VERSION = "2.6"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.8.7"
+$APLIB_VERSION = "1.1.1"
+$EXIFTOOL_VERSION = "12.14"
+$QUICKLZ_VERSION = "1.5.0"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "B4D1C7F98C96436D603CA4ADA669A7F6F0423EF36F949501E216B86C6BA55F7D"
 $PYTHON_HASH = "B8D539D67A9C97A1ACC30DC871821D140C383F160D8A1CD3B5A1A5A0D351AF68"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
+$EXIFTOOL_HASH = "9852F55BB11B948CAE35F3C181589AB019AACF65EE22A9C84FDD0CDC36807528"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function create_working_directory {
@@ -490,16 +494,15 @@ function install_qiling_rootfs($work_dir, $update) {
 }
 
 function install_aplib($work_dir) {
-    $version = "1.1.1"
     Write-Host "[+] Installing aPLib..."
 
     $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Compression\aplib.dll"
     if (Test-Path $file_path) {
         Write-Host "[*] aPLib is already installed. Skipping installation."
     } else {
-        Write-Host "[+] Downloading aPLib-$version..."
-        $archive_url = "http://ibsensoftware.com/files/aPLib-$version.zip"
-        $zip_archive_path = "$work_dir\aPLib-$version.zip"
+        Write-Host "[+] Downloading aPLib-$APLIB_VERSION..."
+        $archive_url = "http://ibsensoftware.com/files/aPLib-$APLIB_VERSION.zip"
+        $zip_archive_path = "$work_dir\aPLib-$APLIB_VERSION.zip"
         download_file $archive_url $zip_archive_path
 
         if (!(Test-Path $zip_archive_path)) {
@@ -521,8 +524,8 @@ function install_aplib($work_dir) {
             exit
         }
 
-        Write-Host "[+] Extracting aPLib-$version.zip..."
-        $extract_dir = "$work_dir\aPLib-$version"
+        Write-Host "[+] Extracting aPLib-$APLIB_VERSION.zip..."
+        $extract_dir = "$work_dir\aPLib-$APLIB_VERSION"
         extract_zip $zip_archive_path $extract_dir
         $file_path = "$extract_dir\lib\dll\aplib.dll"
 
@@ -549,15 +552,84 @@ function install_aplib($work_dir) {
     Write-Host ""
 }
 
+function install_exiftool($work_dir, $update) {
+    Write-Host "[+] Installing ExifTool..."
+
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\exiftool.exe"
+    if ((Test-Path $file_path) -and !$update) {
+        Write-Host "[*] ExifTool is already installed. Skipping installation."
+    } else {
+        if ((Test-Path $file_path) -and $update) {
+            $current_version = &$file_path -ver
+            $need_install = [System.Version] $current_version -lt $EXIFTOOL_VERSION
+        } else {
+            $need_install = $true
+        }
+
+        if ($need_install) {
+            Write-Host "[+] Downloading ExifTool-$EXIFTOOL_VERSION..."
+            $archive_url = "https://exiftool.org/exiftool-$EXIFTOOL_VERSION.zip"
+            $zip_archive_path = "$work_dir\exiftool-$EXIFTOOL_VERSION.zip"
+            download_file $archive_url $zip_archive_path
+
+            if (!(Test-Path $zip_archive_path)) {
+                Write-Host "[!] Download has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+
+            Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $EXIFTOOL_HASH)..."
+            $val = compute_hash $zip_archive_path
+            if ($val -eq $EXIFTOOL_HASH) {
+                Write-Host "[+] OK."
+            } else {
+                Write-Host "[!] The hash value does not match ($val)."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+
+            Write-Host "[+] Extracting exiftool-$EXIFTOOL_VERSION.zip..."
+            $extract_dir = "$work_dir\exiftool-$EXIFTOOL_VERSION"
+            extract_zip $zip_archive_path $extract_dir
+            $file_path = "$extract_dir\exiftool(-k).exe"
+
+            if (!(Test-Path $file_path)) {
+                Write-Host "[!] Extraction has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+
+            $dest_file = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\exiftool.exe"
+            Write-Host "[+] Copying exiftool(-k).exe to $dest_file ..."
+            Copy-Item $file_path -Destination $dest_file -Recurse -Force
+            if (!(Test-Path "$dest_file")) {
+                Write-Host "[!] Installation has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+            Write-Host "[+] ExifTool has been installed."
+        } else {
+            Write-Host "[*] ExifTool $EXIFTOOL_VERSION is already installed. Skipping installation."
+        }
+        Write-Host ""
+    }
+}
+
 function install_quicklz($work_dir) {
-    $version = "1.5.0"
     Write-Host "[+] Installing QuickLZ library..."
 
     $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Compression"
     if ((Test-Path "$dest_dir\quicklz150_64_1_safe.dll") -and (Test-Path "$dest_dir\quicklz150_64_2_safe.dll") -and (Test-Path "$dest_dir\quicklz150_64_3_safe.dll")) {
         Write-Host "[*] QuickLZ is already installed. Skipping installation."
     } else {
-        Write-Host "[+] Downloading QuickLZ-$version..."
+        Write-Host "[+] Downloading QuickLZ-$QUICKLZ_VERSION..."
         $archive_url = "http://www.quicklz.com/150dll.zip"
         $zip_archive_path = "$work_dir\150dll.zip"
         download_file $archive_url $zip_archive_path
@@ -661,14 +733,16 @@ if ($Args[0] -eq "-update") {
     install_python_modules $work_dir $true
     install_qiling_rootfs $work_dir $true
     install_aplib $work_dir
+    install_exiftool $work_dir $true
     install_quicklz $work_dir
 } else {
     install_fileinsight $work_dir
-    install_fileinsight_plugins $work_dir $false
+    install_fileinsight_plugins $work_dir
     install_python3 $work_dir
     install_python_modules $work_dir
     install_qiling_rootfs $work_dir
     install_aplib $work_dir
+    install_exiftool $work_dir
     install_quicklz $work_dir
 }
 migrate_plugin_config
