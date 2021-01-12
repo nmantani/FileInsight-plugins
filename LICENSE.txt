@@ -15,7 +15,7 @@ are distributed under GNU General Public License version 2 (GPLv2)
 because it uses QuickLZ DLL files that are distributed under GPLv2.
 
 -------------------------------------------------------------------------------
-Copyright (c) 2012-2021 Nobutaka Mantani
+Copyright (c) 2012 Nobutaka Mantani
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
