@@ -45,10 +45,6 @@ def compress(root, combo_level, data):
         compressed = compressed[:final_size]
         sys.stdout.write(str(binascii.b2a_hex(compressed).decode()))
 
-    except WindowsError as e:
-        print(e, file=sys.stderr)
-        exit(1)
-
     except Exception as e:
         print(e, file=sys.stderr)
         exit(1)

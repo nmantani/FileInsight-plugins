@@ -46,10 +46,6 @@ def decompress(root, combo_level, data):
         decompressed = decompressed[:final_size]
         sys.stdout.write(str(binascii.b2a_hex(decompressed).decode()))
 
-    except WindowsError as e:
-        print(e, file=sys.stderr)
-        exit(1)
-
     except Exception as e:
         print("Error: compressed data is invalid or compression level does not match.", file=sys.stderr)
         exit(1)

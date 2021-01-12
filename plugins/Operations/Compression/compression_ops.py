@@ -40,6 +40,12 @@ def aplib_compress(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
+        if not os.path.exists("Compression/aplib.dll"):
+            print("Error: cannot load aplib.dll.")
+            print("Please download aPLib from http://ibsensoftware.com/download.html")
+            print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
+            return
+
         data = fi.getSelection()
         orig = fi.getDocument()
         orig_len = len(orig)
@@ -65,16 +71,21 @@ def aplib_compress(fi):
             else:
                 print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
             print("Added a bookmark to compressed region.")
-        except WindowsError:
-            print("Error: cannot load aplib.dll.")
-            print("Please download aPLib from http://ibsensoftware.com/download.html")
-            print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
 
 def aplib_decompress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
     if length > 0:
+        if not os.path.exists("Compression/aplib.dll"):
+            print("Error: cannot load aplib.dll.")
+            print("Please download aPLib from http://ibsensoftware.com/download.html")
+            print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
+            return
+
         data = fi.getSelection()
         orig = fi.getDocument()
         orig_len = len(orig)
@@ -100,9 +111,6 @@ def aplib_decompress(fi):
                 decompressed = ctypes.create_string_buffer(final_size)
                 final_size = aplib.aPsafe_depack(ctypes.c_char_p(data), length, decompressed, final_size)
 
-            if final_size == -1:
-                raise Exception
-
             decompressed = decompressed[:final_size]
 
             newdata = orig[:offset]
@@ -119,13 +127,10 @@ def aplib_decompress(fi):
                 print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
             print("Added a bookmark to decompressed region.")
 
-        except WindowsError:
-            print("Error: cannot load aplib.dll")
-            print("Please download aPLib from http://ibsensoftware.com/download.html")
-            print("and copy aplib.dll (32 bits version) into '%s' folder." % (os.getcwd() + "\\Compression"))
-
-        except Exception:
-            print("Error: invalid compressed data")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print("invalid compressed data")
+            print(e)
 
 def bzip2_compress(fi):
     offset = fi.getSelectionOffset()
@@ -136,22 +141,26 @@ def bzip2_compress(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        compressed = bz2.compress(data)
-        final_size = len(compressed)
+        try:
+            compressed = bz2.compress(data)
+            final_size = len(compressed)
 
-        newdata = orig[:offset]
-        newdata += compressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += compressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Bzip2 compress", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of Bzip2 compress", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
 
 def bzip2_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -162,22 +171,26 @@ def bzip2_decompress(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        decompressed = bz2.decompress(data)
-        final_size = len(decompressed)
+        try:
+            decompressed = bz2.decompress(data)
+            final_size = len(decompressed)
 
-        newdata = orig[:offset]
-        newdata += decompressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += decompressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Bzip2 decompress", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of Bzip2 decompress", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print(e)
 
 def gzip_compress(fi):
     offset = fi.getSelectionOffset()
@@ -188,26 +201,30 @@ def gzip_compress(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        strio = StringIO.StringIO()
-        gz = gzip.GzipFile(fileobj=strio, mode="wb")
-        gz.write(data)
-        gz.close()
-        compressed = strio.getvalue()
-        final_size = len(compressed)
+        try:
+            strio = StringIO.StringIO()
+            gz = gzip.GzipFile(fileobj=strio, mode="wb")
+            gz.write(data)
+            gz.close()
+            compressed = strio.getvalue()
+            final_size = len(compressed)
 
-        newdata = orig[:offset]
-        newdata += compressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += compressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Gzip compress", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of Gzip compress", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
 
 def gzip_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -218,24 +235,28 @@ def gzip_decompress(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        strio = StringIO.StringIO(data)
-        gz = gzip.GzipFile(fileobj=strio)
-        decompressed = gz.read()
-        final_size = len(decompressed)
+        try:
+            strio = StringIO.StringIO(data)
+            gz = gzip.GzipFile(fileobj=strio)
+            decompressed = gz.read()
+            final_size = len(decompressed)
 
-        newdata = orig[:offset]
-        newdata += decompressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += decompressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Gzip decompress", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of Gzip decompress", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print(e)
 
 def lznt1_compress(fi):
     offset = fi.getSelectionOffset()
@@ -246,35 +267,39 @@ def lznt1_compress(fi):
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        compressed = ctypes.create_string_buffer(length * 13)
-        work_size = ctypes.c_ulong(0)
-        work_frag_size = ctypes.c_ulong(0)
-        ctypes.windll.ntdll.RtlGetCompressionWorkSpaceSize(2, ctypes.byref(work_size), ctypes.byref(work_frag_size))
-        workspace = ctypes.create_string_buffer(work_size.value)
-        final_size = ctypes.c_ulong(0)
+        try:
+            compressed = ctypes.create_string_buffer(length * 13)
+            work_size = ctypes.c_ulong(0)
+            work_frag_size = ctypes.c_ulong(0)
+            ctypes.windll.ntdll.RtlGetCompressionWorkSpaceSize(2, ctypes.byref(work_size), ctypes.byref(work_frag_size))
+            workspace = ctypes.create_string_buffer(work_size.value)
+            final_size = ctypes.c_ulong(0)
 
-        ctypes.windll.ntdll.RtlCompressBuffer(2, ctypes.c_char_p(data), length, compressed, length * 3, 4096, ctypes.byref(final_size), workspace)
-        compressed = list(compressed)
-        newdata = [0] * (orig_len - (length - final_size.value))
+            ctypes.windll.ntdll.RtlCompressBuffer(2, ctypes.c_char_p(data), length, compressed, length * 3, 4096, ctypes.byref(final_size), workspace)
+            compressed = list(compressed)
+            newdata = [0] * (orig_len - (length - final_size.value))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
+            for i in range(0, offset):
+                newdata[i] = orig[i]
 
-        for i in range(0, final_size.value):
-            newdata[offset + i] = compressed[i]
+            for i in range(0, final_size.value):
+                newdata[offset + i] = compressed[i]
 
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size.value + i] = orig[offset + length + i]
+            for i in range(0, orig_len - offset - length):
+                newdata[offset + final_size.value + i] = orig[offset + length + i]
 
-        fi.newDocument("Output of LZNT1 compress", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
+            fi.newDocument("Output of LZNT1 compress", 1)
+            fi.setDocument("".join(newdata))
+            fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
 
 def lznt1_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -285,33 +310,38 @@ def lznt1_decompress(fi):
         orig = list(fi.getDocument())
         orig_len = len(orig)
 
-        decompressed = ctypes.create_string_buffer(length * 40)
-        workspace = ctypes.create_string_buffer(length * 40)
-        final_size = ctypes.c_ulong(0)
+        try:
+            decompressed = ctypes.create_string_buffer(length * 40)
+            workspace = ctypes.create_string_buffer(length * 40)
+            final_size = ctypes.c_ulong(0)
 
-        ctypes.windll.ntdll.RtlDecompressBuffer(2, decompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
+            ctypes.windll.ntdll.RtlDecompressBuffer(2, decompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
 
-        decompressed = list(decompressed)
-        newdata = [0] * (orig_len - (length - final_size.value))
+            decompressed = list(decompressed)
+            newdata = [0] * (orig_len - (length - final_size.value))
 
-        for i in range(0, offset):
-            newdata[i] = orig[i]
+            for i in range(0, offset):
+                newdata[i] = orig[i]
 
-        for i in range(0, final_size.value):
-            newdata[offset + i] = decompressed[i]
+            for i in range(0, final_size.value):
+                newdata[offset + i] = decompressed[i]
 
-        for i in range(0, orig_len - offset - length):
-            newdata[offset + final_size.value + i] = orig[offset + length + i]
+            for i in range(0, orig_len - offset - length):
+                newdata[offset + final_size.value + i] = orig[offset + length + i]
 
-        fi.newDocument("Output of LZNT1 decompress", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
+            fi.newDocument("Output of LZNT1 decompress", 1)
+            fi.setDocument("".join(newdata))
+            fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print("invalid compressed data")
+            print(e)
 
 def raw_deflate(fi):
     offset = fi.getSelectionOffset()
@@ -322,23 +352,27 @@ def raw_deflate(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        compressed = zlib.compress(data)
-        compressed = compressed[2:-4]
-        final_size = len(compressed)
+        try:
+            compressed = zlib.compress(data)
+            compressed = compressed[2:-4]
+            final_size = len(compressed)
 
-        newdata = orig[:offset]
-        newdata += compressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += compressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Raw deflate", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of Raw deflate", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
 
 def raw_inflate(fi):
     offset = fi.getSelectionOffset()
@@ -349,22 +383,26 @@ def raw_inflate(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        decompressed = zlib.decompress(data, -15)
-        final_size = len(decompressed)
+        try:
+            decompressed = zlib.decompress(data, -15)
+            final_size = len(decompressed)
 
-        newdata = orig[:offset]
-        newdata += decompressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += decompressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Raw inflate", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of Raw inflate", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print(e)
 
 def lz4_compress(fi):
     """
@@ -383,7 +421,7 @@ def lz4_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lz4_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -392,6 +430,10 @@ def lz4_compress(fi):
         if ret == -1: # python-lz4 is not installed
             print("python-lz4 is not installed.")
             print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
             return
 
         compressed = binascii.a2b_hex(stdout_data)
@@ -428,7 +470,7 @@ def lz4_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lz4_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -437,6 +479,10 @@ def lz4_decompress(fi):
         if ret == -1: # python-lz4 is not installed
             print("python-lz4 is not installed.")
             print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
             return
 
         decompressed = binascii.a2b_hex(stdout_data)
@@ -473,11 +519,16 @@ def lzma_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzma_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
+
+        if ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
+            return
 
         compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
@@ -513,11 +564,16 @@ def lzma_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzma_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
+
+        if ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
+            return
 
         decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
@@ -553,11 +609,16 @@ def xz_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute xz_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
+
+        if ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
+            return
 
         compressed = binascii.a2b_hex(stdout_data)
         final_size = len(compressed)
@@ -593,11 +654,16 @@ def xz_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute xz_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
         ret = p.wait()
+
+        if ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
+            return
 
         decompressed = binascii.a2b_hex(stdout_data)
         final_size = len(decompressed)
@@ -633,7 +699,7 @@ def zstandard_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute zstandard_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -642,6 +708,10 @@ def zstandard_compress(fi):
         if ret == -1: # python-zstandard is not installed
             print("python-zstandard is not installed.")
             print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
             return
 
         compressed = binascii.a2b_hex(stdout_data)
@@ -678,7 +748,7 @@ def zstandard_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute zstandard_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -687,6 +757,10 @@ def zstandard_decompress(fi):
         if ret == -1: # python-zstandard is not installed
             print("python-zstandard is not installed.")
             print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
             return
 
         decompressed = binascii.a2b_hex(stdout_data)
@@ -723,7 +797,7 @@ def lzo_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzo_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -734,6 +808,10 @@ def lzo_compress(fi):
             print("Please manually download python-lzo wheel file (.whl) for your Python version")
             print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it with")
             print("'py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl', then try again.")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
             return
 
         compressed = binascii.a2b_hex(stdout_data)
@@ -770,7 +848,7 @@ def lzo_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzo_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
@@ -781,6 +859,10 @@ def lzo_decompress(fi):
             print("Please manually download python-lzo wheel file (.whl) for your Python version")
             print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it with")
             print("'py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl', then try again.")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
             return
 
         decompressed = binascii.a2b_hex(stdout_data)
@@ -812,22 +894,26 @@ def zlib_compress(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        compressed = zlib.compress(data)
-        final_size = len(compressed)
+        try:
+            compressed = zlib.compress(data)
+            final_size = len(compressed)
 
-        newdata = orig[:offset]
-        newdata += compressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += compressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of zlib compress (deflate)", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of zlib compress (deflate)", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
 
 def zlib_decompress(fi):
     """
@@ -841,22 +927,26 @@ def zlib_decompress(fi):
         orig = fi.getDocument()
         orig_len = len(orig)
 
-        decompressed = zlib.decompress(data)
-        final_size = len(decompressed)
+        try:
+            decompressed = zlib.decompress(data)
+            final_size = len(decompressed)
 
-        newdata = orig[:offset]
-        newdata += decompressed
-        newdata += orig[offset + length:]
+            newdata = orig[:offset]
+            newdata += decompressed
+            newdata += orig[offset + length:]
 
-        fi.newDocument("Output of zlib decompress (inflate)", 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+            fi.newDocument("Output of zlib decompress (inflate)", 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print(e)
 
 def quicklz_compress(fi):
     """
@@ -888,6 +978,7 @@ def quicklz_compress(fi):
             print("into '%s' folder." % (os.getcwd() + "\\Compression"))
             return
         elif ret == 1:
+            print("Error: compression failed.")
             print(stderr_data)
             return
         elif stdout_data == "": # dialog is closed

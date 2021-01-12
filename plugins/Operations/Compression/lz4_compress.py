@@ -33,6 +33,10 @@ try:
 except ImportError:
     exit(-1) # python-lz4 is not installed
 
-data = binascii.a2b_hex(sys.stdin.read())
-data = lz4.frame.compress(data)
-sys.stdout.write(str(binascii.b2a_hex(data).decode()))
+try:
+    data = binascii.a2b_hex(sys.stdin.read())
+    data = lz4.frame.compress(data)
+    sys.stdout.write(str(binascii.b2a_hex(data).decode()))
+except Exception as e:
+    print(e, file=sys.stderr)
+    exit(1)
