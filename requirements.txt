@@ -3,6 +3,7 @@ blackboxprotobuf
 capstone
 lz4
 pefile
+ppmd-cffi
 pycryptodomex
 pyimpfuzzy-windows
 python-magic-bin

@@ -142,6 +142,13 @@ https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo からお使いの Python
 py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl
 ```
 
+PPMd compress と PPMd decompress のプラグインについては、ppmd-cffi が必要です。
+https://github.com/miurahr/ppmd からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install ppmd-cffi
+```
+を実行してインストールしてください。
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

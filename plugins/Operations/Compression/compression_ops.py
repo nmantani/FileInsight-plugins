@@ -1052,3 +1052,106 @@ def quicklz_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+
+def ppmd_compress(fi):
+    """
+    Compress selected region with PPMd algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute ppmd_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/ppmd_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # ppmd-cffi is not installed
+            print("ppmd-cffi is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install ppmd-cffi' and try again.")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
+            return
+        elif stdout_data == "": # dialog is closed
+            return
+
+        compressed = binascii.a2b_hex(stdout_data)
+        final_size = len(compressed)
+
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
+
+        fi.newDocument("Output of PPMd compress", 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
+
+def ppmd_decompress(fi):
+    """
+    Decompress selected region with PPMd algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute ppmd_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/ppmd_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        ret = p.wait()
+
+        if ret == -1: # ppmd-cffi is not installed
+            print("ppmd-cffi is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install ppmd-cffi' and try again.")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
+            return
+        elif stdout_data == "": # dialog is closed
+            return
+
+        decompressed = binascii.a2b_hex(stdout_data)
+        final_size = len(decompressed)
+
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
+
+        fi.newDocument("Output of PPMd decompress", 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
+        print(stderr_data)

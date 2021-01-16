@@ -162,6 +162,8 @@ if __name__ == "__main__":
                    compression_ops.lznt1_decompress,
                    compression_ops.lzo_compress,
                    compression_ops.lzo_decompress,
+                   compression_ops.ppmd_compress,
+                   compression_ops.ppmd_decompress,
                    compression_ops.quicklz_compress,
                    compression_ops.quicklz_decompress,
                    compression_ops.raw_deflate,

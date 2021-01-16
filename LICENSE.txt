@@ -103,6 +103,9 @@ https://github.com/keis/base58/blob/master/COPYING
 QuickLZ is distributed under the GNU General Public License version 2.
 http://www.quicklz.com/
 
+ppmd-cffi is distributed under the GNU Lesser General Public License v2.1.
+https://github.com/miurahr/ppmd/blob/main/LICENSE
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------

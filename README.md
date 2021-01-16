@@ -71,7 +71,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (97 plugins)
+## List of plugins (99 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -131,6 +131,10 @@ favorite programs.
   Compress selected region with LZO algorithm
 * LZO decompress  
   Decompress selected region with LZO algorithm
+* PPMd compress  
+  Compress selected region with PPMd algorithm
+* PPMd decompress  
+  Decompress selected region with PPMd algorithm
 * QuickLZ compress  
   Compress selected region with QuickLZ compression library
 * QuickLZ decompress  

@@ -47,7 +47,7 @@ You can install some of required Python modules described below with the followi
 py.exe -3 -m pip install -r requirements.txt
 ```
 
-For crypto-related plugins such as "AES decrypt", it requires PyCryptodome Python module.
+For crypto-related plugins such as "AES decrypt", they require PyCryptodome Python module.
 Please get it from https://github.com/Legrandin/pycryptodome
 or execute the following command.
 ```
@@ -108,14 +108,14 @@ or execute the following command.
 py.exe -3 -m pip install pyimpfuzzy-windows
 ```
 
-For the "LZ4 compress" and "LZ4 decompress" plugins, it requires python-lz4.
+For the "LZ4 compress" and "LZ4 decompress" plugins, they require python-lz4.
 Please get it from https://github.com/python-lz4/python-lz4/
 or execute the following command.
 ```
 py.exe -3 -m pip install lz4
 ```
 
-For the "Zstandard compress" and "Zstandard decompress" plugins, it requires python-zstandard.
+For the "Zstandard compress" and "Zstandard decompress" plugins, they require python-zstandard.
 Please get it from https://github.com/indygreg/python-zstandard/
 or execute the following command.
 ```
@@ -129,12 +129,19 @@ or execute the following command.
 py.exe -3 -m pip install blackboxprotobuf
 ```
 
-For the "LZO compress" and "LZO decompress" plugins, it requires python-lzo.
+For the "LZO compress" and "LZO decompress" plugins, they require python-lzo.
 Please manually download python-lzo wheel file (.whl) for your Python version
 from https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo and install it
 with the following command.
 ```
 py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl
+```
+
+For the "PPMd compress" and "PPMd decompress" plugins, they require ppmd-cffi.
+Please get it from https://github.com/miurahr/ppmd
+or execute the following command.
+```
+py.exe -3 -m pip install ppmd-cffi
 ```
 
 For the "Show metadata" plugin, it requires ExifTool.
