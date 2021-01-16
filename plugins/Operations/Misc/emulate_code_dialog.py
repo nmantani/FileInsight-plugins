@@ -26,6 +26,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import re
 import sys
 import time
 import tkinter
@@ -33,8 +34,8 @@ import tkinter.ttk
 import tkinter.messagebox
 
 # Print selected items
-def get_selection(r, ct, co, ca, ce, ea):
-    print("%s\t%s\t%s\t%s\t%s" % (ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get()))
+def get_selection(r, ct, co, ca, ce, ea, t):
+    print("%s\t%s\t%s\t%s\t%s\t%s" % (ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), t.get()), end="")
     r.quit()
 
 def combo_arch_selected(r, ca, le, ce):
@@ -55,6 +56,12 @@ def combo_type_selected(r, ct, la, ea):
     else:
         la.grid_remove()
         ea.grid_remove()
+
+def timeout_changed(*args):
+    if not re.match("^-?([0-9])+$", timeout.get()):
+        timeout.set("60")
+    elif int(timeout.get()) < 0:
+        timeout.set("0")
 
 # Create selection dialog
 root = tkinter.Tk()
@@ -101,8 +108,16 @@ label_args.grid(row=4, column=0, padx=5, pady=5, sticky="w")
 entry_args = tkinter.Entry(width=24)
 entry_args.grid(row=4, column=2, padx=5, pady=5, sticky="w")
 
-button = tkinter.Button(root, text="OK", command=(lambda r=root, ct=combo_type, co=combo_os, ca=combo_arch, ce=combo_endian, ea=entry_args: get_selection(r, ct, co, ca, ce, ea)))
-button.grid(row=5, column=0, padx=5, pady=5, columnspan=3)
+label_timeout = tkinter.Label(root, text="Emulation timeout\n(seconds, 0 = no timeout):", justify="left")
+label_timeout.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+timeout = tkinter.StringVar()
+timeout.set("60")
+timeout.trace("w", timeout_changed)
+spin_timeout = tkinter.Spinbox(root, textvariable=timeout, width=4, from_=0)
+spin_timeout.grid(row=5, column=2, padx=5, pady=5, sticky="w")
+
+button = tkinter.Button(root, text="OK", command=(lambda r=root, ct=combo_type, co=combo_os, ca=combo_arch, ce=combo_endian, ea=entry_args, t=timeout: get_selection(r, ct, co, ca, ce, ea, t)))
+button.grid(row=6, column=0, padx=5, pady=5, columnspan=3)
 
 # Set callback functions
 combo_arch.bind('<<ComboboxSelected>>', (lambda r=root, ca=combo_arch, le=label_endian, ce=combo_endian: combo_arch_selected(r, ca, le, ce)))
@@ -111,6 +126,6 @@ combo_type.bind('<<ComboboxSelected>>', (lambda r=root, ct=combo_type, la=label_
 # Adjust window position
 w = root.winfo_screenwidth()
 h = root.winfo_screenheight()
-root.geometry("+%d+%d" % ((w/2.5), (h/2.5)))
+root.geometry("+%d+%d" % ((w/2.5), (h/3)))
 
 root.mainloop()

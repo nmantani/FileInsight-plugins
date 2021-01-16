@@ -105,7 +105,7 @@ def check_rootfs_files(rootfs_base):
 
     return rootfs_ok
 
-if len(sys.argv) == 7:
+if len(sys.argv) == 8:
     file_path = sys.argv[1]
     file_type = sys.argv[2].lower()
     os_type = sys.argv[3].lower()
@@ -118,6 +118,7 @@ if len(sys.argv) == 7:
     else:
         big_endian = False
     cmd_args = shlex.split(sys.argv[6])
+    timeout = int(sys.argv[7])
 
     if not check_rootfs_files(rootfs_base):
         sys.exit(-3) # rootfs files are not properly set up
@@ -163,12 +164,16 @@ if len(sys.argv) == 7:
             print("Error: %s" % e, file=sys.stderr)
             sys.exit(1)
 else:
-    print("Usage: emulate_code.py file_path file_type os arch big_endian cmd_args", file=sys.stderr)
+    print(sys.argv, file=sys.stderr)
+    print("Usage: emulate_code.py file_path file_type os arch big_endian cmd_args timeout", file=sys.stderr)
     sys.exit(1)
 
 # Ignore emulation error
 try:
-    ql.run()
+    if timeout > 0:
+        ql.run(timeout=1000000 * timeout) # timeout must be set as microseconds
+    else:
+        ql.run()
     observer.stop()
     observer.join()
 except Exception as e:

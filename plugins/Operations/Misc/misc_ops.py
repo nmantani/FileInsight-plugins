@@ -459,7 +459,7 @@ def emulate_code(fi):
         return
 
     # Get parameters from emulate_code_dialog.py
-    (file_type, os_type, arch, big_endian, cmd_args) = stdout_data.split("\t")
+    (file_type, os_type, arch, big_endian, cmd_args, timeout) = stdout_data.split("\t")
 
     # Create a temporary file to write data
     fd, file_path = tempfile.mkstemp()
@@ -468,7 +468,7 @@ def emulate_code(fi):
     handle.close()
 
     # Execute emulate_code.py to emulate code
-    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args, timeout], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -519,6 +519,8 @@ def emulate_code(fi):
     print("Architecture: %s" % arch)
     print("Big endian: %s" % str(big_endian).lower())
     print("Command line arguments: %s" % cmd_args)
+    print("Timeout: %s" % timeout)
+    print("")
 
     print("Emulation trace:")
     stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
