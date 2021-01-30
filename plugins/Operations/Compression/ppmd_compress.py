@@ -44,7 +44,7 @@ def compress(root, combo_version, spin_order, data):
 
     compressed = b""
     io_out = io.BytesIO(compressed)
-    mem = 8
+    mem = 32
     restore = 0
 
     if version == "8 (version I)":

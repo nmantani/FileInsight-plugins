@@ -44,7 +44,7 @@ def decompress(root, combo_version, spin_order, data):
     io_in = io.BytesIO(data)
     decompressed = b""
     io_out = io.BytesIO(decompressed)
-    mem = 16
+    mem = 32
     restore = 0
     blocksize = 16384
 
