@@ -1,3 +1,4 @@
+Pillow
 base58
 blackboxprotobuf
 capstone

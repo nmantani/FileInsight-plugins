@@ -358,6 +358,7 @@ function install_with_pip($name, $update) {
 function install_python_modules($work_dir, $update) {
     Write-Host "[+] Installing Python modules..."
 
+    install_with_pip "Pillow" $update
     install_with_pip "base58" $update
     install_with_pip "blackboxprotobuf" $update
     install_with_pip "capstone" $update

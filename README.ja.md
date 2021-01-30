@@ -15,6 +15,8 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 
 ![screenshot5.png](docs/screenshot5.png)
 
+![screenshot6.png](docs/screenshot6.png)
+
 ## インストール方法
 ### 自動でのインストール
 以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3 (x64) を含む全ての必要なものがインストールされます。
@@ -70,7 +72,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (99個)
+## プラグインの一覧 (100個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -231,6 +233,8 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲を URL に使われているパーセントでエンコードされたテキストとしてエンコードします。
 
 ### Misc operations
+* Bitmap view  
+  ファイル全体をビットマップとして可視化します。
 * Byte frequency  
   選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
 * Emulate code  

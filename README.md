@@ -15,6 +15,8 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 
 ![screenshot5.png](docs/screenshot5.png)
 
+![screenshot6.png](docs/screenshot6.png)
+
 ## How to install
 ### Automatic installation
 Please execute the following command. The latest release version of FileInsight-plugins and all pre-requisites including FileInsight and Python 3 (x64) will be installed.
@@ -71,7 +73,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (99 plugins)
+## List of plugins (100 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -231,6 +233,8 @@ favorite programs.
   Encode selected region into percent-encoded text that is used by URL
 
 ### Misc operations
+* Bitmap view  
+  Visualize the whole file as bitmap representation
 * Byte frequency  
   Show byte frequency of selected region (the whole file if not selected)
 * Emulate code  

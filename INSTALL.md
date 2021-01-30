@@ -144,6 +144,13 @@ or execute the following command.
 py.exe -3 -m pip install ppmd-cffi
 ```
 
+For the "Bitmap view" plugin, it requires Pillow.
+Please get it from https://github.com/python-pillow/Pillow
+or execute the following command.
+```
+py.exe -3 -m pip install Pillow
+```
+
 For the "Show metadata" plugin, it requires ExifTool.
 Please download ExifTool from https://exiftool.org/
 and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.

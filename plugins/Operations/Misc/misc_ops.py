@@ -574,3 +574,37 @@ def emulate_code(fi):
             print("Added bookmarks to the region that contains non-zero value.")
 
     print('Memory dumps after execution are shown in the new "Memory dump" tabs.')
+
+def bitmap_view(fi):
+    """
+    Visualize the whole file as bitmap representation
+    """
+    data = fi.getDocument()
+
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "w")
+    handle.write(data)
+    handle.close()
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Check existence of Pillow
+    p = subprocess.Popen(["py.exe", "-3", "Misc/bitmap_view.py", "-c"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = p.wait()
+
+    if ret == -1: # Pillow is not installed
+        print("Pillow is not installed.")
+        print("Please install it with 'py.exe -3 -m pip install Pillow'.")
+        print("")
+        return
+
+    print("Sending the whole file to the viewer GUI.")
+    print("You can move window by dragging bitmap image.")
+    print("You can also copy current offset by right-clicking bitmap image.")
+
+    # Execute bitmap_view.py to show GUI in background
+    p = subprocess.Popen(["py.exe", "-3", "Misc/bitmap_view.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+

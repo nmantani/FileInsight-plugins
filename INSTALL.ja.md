@@ -149,6 +149,13 @@ py.exe -3 -m pip install ppmd-cffi
 ```
 を実行してインストールしてください。
 
+Bitmap view プラグインについては、Pillow が必要です。
+https://github.com/python-pillow/Pillow からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install Pillow
+```
+を実行してインストールしてください。
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

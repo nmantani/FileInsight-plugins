@@ -212,7 +212,8 @@ if __name__ == "__main__":
                    encoding_ops.url_decode,
                    encoding_ops.url_encode)
 
-    operations += (misc_ops.byte_frequency,
+    operations += (misc_ops.bitmap_view,
+                   misc_ops.byte_frequency,
                    misc_ops.emulate_code,
                    misc_ops.file_comparison,
                    misc_ops.hash_values,

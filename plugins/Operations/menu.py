@@ -182,12 +182,14 @@ tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
                             "Decode selected region as percent-encoded text\nthat is used by URL",
                             "Encode selected region into percent-encoded text\nthat is used by URL")
 
-ops_dict["Misc"] = ("Byte frequency",
+ops_dict["Misc"] = ("Bitmap view",
+                    "Byte frequency",
                     "Emulate code",
                     "File comparison",
                     "Hash values",
                     "Send to")
-tooltip_dict["Misc"] = ("Show byte frequency of selected region\n(the whole file if not selected)",
+tooltip_dict["Misc"] = ("Visualize the whole file as bitmap representation",
+                        "Show byte frequency of selected region\n(the whole file if not selected)",
                         "Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
                         "Compare contents of two files",
                         "Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of\nselected region (the whole file if not selected)",
