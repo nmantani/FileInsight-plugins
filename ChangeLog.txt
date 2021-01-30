@@ -1,3 +1,35 @@
+2021-01-30 version 2.7
+* New plugins
+  - Compression operations
+    - "PPMd compress" plugin and "PPMd decompress" plugin
+      These plugins compress/decompress selected region with PPMd algorithm.
+    - "QuickLZ compress" plugin and "QuickLZ decompress" plugin
+      These plugins compress/decompress selected region with QuickLZ compression library.
+  - Encoding operations
+    - "Custom base32 decode" plugin and "Custom base32 encode" plugin
+      These plugins decode/encode selected region with custom base32 table
+    - "Custom base58 decode" plugin and "Custom base58 encode" plugin
+      These plugins decode/encode selected region with custom base58 table
+  - Misc operations
+    - "Bitmap view" plugin
+      This plugin visualizes the whole file as bitmap representation.
+* Enhancements
+  - install.ps1
+    Installation of ExifTool is supported.
+  - Basic operations
+    - Copy to new file
+      Sequence number will be assigned to a new tab name like "New file 0", "New file 1" and "New file 2".
+  - Misc operations
+    - "Emulate code" plugin
+      Capability to set emulation timeout is added.
+* Bug fixes
+  - Parsing operations
+    - "Disassemble" plugin
+      Bookmark position of disassembly error is fixed.
+  - Search operations
+    - "YARA scan" plugin
+      Combobox width will be adjusted to show whole file name.
+
 2021-01-03 version 2.6
 * New plugins
   - Compression operations
