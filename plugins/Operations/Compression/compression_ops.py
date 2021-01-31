@@ -26,7 +26,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import bz2
 import ctypes
 import gzip
@@ -424,7 +423,7 @@ def lz4_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lz4 is not installed
@@ -436,7 +435,7 @@ def lz4_compress(fi):
             print(stderr_data)
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -473,7 +472,7 @@ def lz4_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lz4 is not installed
@@ -485,7 +484,7 @@ def lz4_decompress(fi):
             print(stderr_data)
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]
@@ -522,7 +521,7 @@ def lzma_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == 1:
@@ -530,7 +529,7 @@ def lzma_compress(fi):
             print(stderr_data)
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -567,7 +566,7 @@ def lzma_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == 1:
@@ -575,7 +574,7 @@ def lzma_decompress(fi):
             print(stderr_data)
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]
@@ -612,7 +611,7 @@ def xz_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == 1:
@@ -620,7 +619,7 @@ def xz_compress(fi):
             print(stderr_data)
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -657,7 +656,7 @@ def xz_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == 1:
@@ -665,7 +664,7 @@ def xz_decompress(fi):
             print(stderr_data)
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]
@@ -702,7 +701,7 @@ def zstandard_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-zstandard is not installed
@@ -714,7 +713,7 @@ def zstandard_compress(fi):
             print(stderr_data)
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -751,7 +750,7 @@ def zstandard_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-zstandard is not installed
@@ -763,7 +762,7 @@ def zstandard_decompress(fi):
             print(stderr_data)
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]
@@ -800,7 +799,7 @@ def lzo_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzo is not installed
@@ -814,7 +813,7 @@ def lzo_compress(fi):
             print(stderr_data)
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -851,7 +850,7 @@ def lzo_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzo is not installed
@@ -865,7 +864,7 @@ def lzo_decompress(fi):
             print(stderr_data)
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]
@@ -968,7 +967,7 @@ def quicklz_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/quicklz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # QuickLZ DLLs are not installed
@@ -984,7 +983,7 @@ def quicklz_compress(fi):
         elif stdout_data == "": # dialog is closed
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -1021,7 +1020,7 @@ def quicklz_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/quicklz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # QuickLZ DLLs are not installed
@@ -1036,7 +1035,7 @@ def quicklz_decompress(fi):
         elif stdout_data == "": # dialog is closed
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]
@@ -1073,7 +1072,7 @@ def ppmd_compress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/ppmd_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # ppmd-cffi is not installed
@@ -1087,7 +1086,7 @@ def ppmd_compress(fi):
         elif stdout_data == "": # dialog is closed
             return
 
-        compressed = binascii.a2b_hex(stdout_data)
+        compressed = stdout_data
         final_size = len(compressed)
 
         newdata = orig[:offset]
@@ -1124,7 +1123,7 @@ def ppmd_decompress(fi):
         p = subprocess.Popen(["py.exe", "-3", "Compression/ppmd_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # ppmd-cffi is not installed
@@ -1138,7 +1137,7 @@ def ppmd_decompress(fi):
         elif stdout_data == "": # dialog is closed
             return
 
-        decompressed = binascii.a2b_hex(stdout_data)
+        decompressed = stdout_data
         final_size = len(decompressed)
 
         newdata = orig[:offset]

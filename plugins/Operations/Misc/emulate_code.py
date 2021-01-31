@@ -22,7 +22,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import binascii
 import distutils.version
 import os
 import pathlib
@@ -198,20 +197,20 @@ for i in range(1, len(all_mem) + 1):
 
     if file_path in info or info in ("[shellcode_base]", "[shellcode_stack]", "[stack]"):
         print("Extracted region %s (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (info, start, end, end - start, num_dump), file=sys.stderr)
-        print("****MEMDUMP****" + binascii.b2a_hex(ql.mem.read(start, end - start)).decode(), end="")
+        sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
         num_dump += 1
     elif info == "[heap]":
         # Concatenate multiple heap regions
         if heap_start == None:
-            heap = "****MEMDUMP****"
+            heap = b"****MEMDUMP****"
             heap_start = start
         if heap_end == None or end > heap_end:
             heap_end = end
-        heap += binascii.b2a_hex(ql.mem.read(start, end - start)).decode()
+        heap += ql.mem.read(start, end - start)
 
 if len(heap) > 0:
     print("Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (heap_start, heap_end, heap_end - heap_start, num_dump), file=sys.stderr)
-    print(heap, end="")
+    sys.stdout.buffer.write(heap)
 
 handler.show_log()
 

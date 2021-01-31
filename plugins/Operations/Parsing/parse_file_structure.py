@@ -311,7 +311,7 @@ def adjust_offset(file_type, path, name, offset, parent_offset, base, start):
     return (base + start, adjusted)
 
 # Receive data as hex string
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 if len(sys.argv) > 1 and sys.argv[1] in class_dict.keys():
     # Dynamically load parser module specified with sys.argv[1]

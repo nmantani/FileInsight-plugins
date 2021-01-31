@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import json
 import re
 import subprocess
@@ -131,7 +130,7 @@ def do_decrypt(fi, name, script):
         p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # PyCryptodome is not installed
@@ -141,7 +140,7 @@ def do_decrypt(fi, name, script):
         elif ret == 1: # Do nothing if not decrypted
             return
 
-        decrypted_data = list(binascii.a2b_hex(stdout_data))
+        decrypted_data = list(stdout_data)
         decrypted_len = len(decrypted_data)
         newdata = orig[:offset]
         newdata.extend(decrypted_data)
@@ -180,7 +179,7 @@ def do_encrypt(fi, name, script):
         p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # PyCryptodome is not installed
@@ -190,7 +189,7 @@ def do_encrypt(fi, name, script):
         elif ret == 1: # Do nothing if not decrypted
             return
 
-        encrypted_data = list(binascii.a2b_hex(stdout_data))
+        encrypted_data = list(stdout_data)
         encrypted_len = len(encrypted_data)
         newdata = orig[:offset]
         newdata.extend(encrypted_data)

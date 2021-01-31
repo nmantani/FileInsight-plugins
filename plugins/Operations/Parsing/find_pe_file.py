@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import struct
 import sys
 
@@ -35,7 +34,7 @@ except ImportError:
     exit(-1)
 
 # Receive data
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 offset = int(sys.argv[1])
 i = 0

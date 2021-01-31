@@ -25,14 +25,13 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import lzma
 import sys
 
 try:
-    data = binascii.a2b_hex(sys.stdin.read())
+    data = sys.stdin.buffer.read()
     data = lzma.decompress(data)
-    sys.stdout.write(str(binascii.b2a_hex(data).decode()))
+    sys.stdout.buffer.write(data)
 except Exception as e:
     print(e, file=sys.stderr)
     exit(1)

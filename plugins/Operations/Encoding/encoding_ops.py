@@ -26,7 +26,6 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import base64
-import binascii
 import quopri
 import re
 import string
@@ -841,7 +840,7 @@ def protobuf_decode(fi):
         p = subprocess.Popen(["py.exe", "-3", "Encoding/protobuf_decode.py", "-u"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decoded data
-        stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+        stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # blackboxprotobuf (forked version) is not installed
@@ -986,7 +985,7 @@ def custom_base58_decode(fi):
 
                 # Receive decoded data
                 trans = string.maketrans(custom_table, standard_table)
-                stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data.translate(trans)))
+                stdout_data, stderr_data = p.communicate(data.translate(trans))
                 ret = p.wait()
 
                 if ret == -1: # base58 is not installed
@@ -994,7 +993,7 @@ def custom_base58_decode(fi):
                     print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
                     return
 
-                decoded = list(binascii.a2b_hex(stdout_data))
+                decoded = list(stdout_data)
 
                 newdata = orig[:offset]
                 newdata.extend(decoded)
@@ -1044,7 +1043,7 @@ def custom_base58_encode(fi):
                 p = subprocess.Popen(["py.exe", "-3", "Encoding/base58_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive encoded data
-                stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+                stdout_data, stderr_data = p.communicate(data)
                 ret = p.wait()
 
                 if ret == -1: # base58 is not installed
@@ -1053,7 +1052,7 @@ def custom_base58_encode(fi):
                     return
 
                 trans = string.maketrans(standard_table, custom_table)
-                encoded = list(binascii.a2b_hex(stdout_data).translate(trans))
+                encoded = list(stdout_data.translate(trans))
 
                 newdata = orig[:offset]
                 newdata.extend(encoded)

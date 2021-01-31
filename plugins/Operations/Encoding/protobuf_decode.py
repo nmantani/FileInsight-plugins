@@ -26,7 +26,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import json
 import sys
 
@@ -35,7 +34,7 @@ try:
 except ImportError:
     exit(-1) # blackboxprotobuf (forked version) is not installed
 
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 (message, typedef) = blackboxprotobuf.protobuf_to_json(data)
 print("Message:")
 print(message)

@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import ctypes
 import hashlib
 import os
@@ -96,8 +95,6 @@ def hash_values(fi):
     else:
         data = fi.getDocument()
         print("Hash values of the whole file:")
-
-    data = binascii.b2a_hex(data)
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
@@ -198,8 +195,6 @@ def get_ssdeep(data):
     """
     Get ssdeep hash value, used by file_comparison()
     """
-    data_hex = binascii.b2a_hex(data)
-
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -208,7 +203,7 @@ def get_ssdeep(data):
     p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "ssdeep"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
-    stdout_data, stderr_data = p.communicate(input=data_hex)
+    stdout_data, stderr_data = p.communicate(input=data)
     ret = p.wait()
 
     # There is a missing module
@@ -234,8 +229,6 @@ def get_impfuzzy(data):
     """
     Get impfuzzy hash value, used by file_comparison()
     """
-    data_hex = binascii.b2a_hex(data)
-
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
@@ -244,7 +237,7 @@ def get_impfuzzy(data):
     p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "impfuzzy"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
-    stdout_data, stderr_data = p.communicate(input=data_hex)
+    stdout_data, stderr_data = p.communicate(input=data)
     ret = p.wait()
 
     # There is a missing module
@@ -543,7 +536,7 @@ def emulate_code(fi):
     if len(stdout_splitted) > 1:
         bookmarked = False
         for i in range(1, len(stdout_splitted)):
-            memory_dump = binascii.a2b_hex(stdout_splitted[i])
+            memory_dump = stdout_splitted[i]
             fi.newDocument("Memory dump %d" % (i - 1), 1)
             fi.setDocument("".join(memory_dump))
 

@@ -21,7 +21,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import binascii
 import ctypes
 import os
 import sys
@@ -44,7 +43,7 @@ def decompress(root, combo_level, data):
             raise Exception
 
         decompressed = decompressed[:final_size]
-        sys.stdout.write(str(binascii.b2a_hex(decompressed).decode()))
+        sys.stdout.buffer.write(decompressed)
 
     except Exception as e:
         print("Error: compressed data is invalid or compression level does not match.", file=sys.stderr)
@@ -52,7 +51,7 @@ def decompress(root, combo_level, data):
 
     root.quit()
 
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 dlls = ("quicklz150_64_1_safe.dll", "quicklz150_64_2_safe.dll", "quicklz150_64_3_safe.dll")
 

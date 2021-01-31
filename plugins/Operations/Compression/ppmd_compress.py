@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import io
 import re
 import sys
@@ -56,7 +55,7 @@ def compress(root, combo_version, spin_order, data):
         encoder.encode(data)
         encoder.flush()
         encoder.close()
-        sys.stdout.write(str(binascii.b2a_hex(io_out.getvalue()).decode()))
+        sys.stdout.buffer.write(io_out.getvalue())
     except Exception as e:
         print(e, file=sys.stderr)
         exit(1)
@@ -78,7 +77,7 @@ def order_changed(*args):
     elif int(order.get()) > 64:
         order.set("64")
 
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 root = tkinter.Tk()
 root.title("PPMd compress")

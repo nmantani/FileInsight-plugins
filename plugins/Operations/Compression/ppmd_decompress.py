@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import io
 import re
 import sys
@@ -69,7 +68,7 @@ def decompress(root, combo_version, spin_order, data):
             io_out.write(d)
 
         decoder.close()
-        sys.stdout.write(str(binascii.b2a_hex(io_out.getvalue()).decode()))
+        sys.stdout.buffer.write(io_out.getvalue())
         if version == "7 (version H)":
             print("NOTE: Small amount of data may be appended or truncated at the end of decompressed data", file=sys.stderr)
             print("because size of original data is unknown.", file=sys.stderr)
@@ -94,7 +93,7 @@ def order_changed(*args):
     elif int(order.get()) > 64:
         order.set("64")
 
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 root = tkinter.Tk()
 root.title("PPMd decompress")

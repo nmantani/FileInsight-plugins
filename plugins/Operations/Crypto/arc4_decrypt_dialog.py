@@ -62,12 +62,12 @@ def decrypt(data, root, combo, entry):
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.write(str(binascii.b2a_hex(d).decode()))
+    sys.stdout.buffer.write(d)
     root.quit()
     exit(0) # Decrypted successfully
 
 # Receive data
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()

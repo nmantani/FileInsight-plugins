@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import binascii
 import sys
 
 try:
@@ -33,6 +32,6 @@ try:
 except ImportError:
     exit(-1)
 
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 file_type = magic.from_buffer(data)
-sys.stdout.write(file_type)
+print(file_type)

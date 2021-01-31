@@ -240,7 +240,7 @@ def find_pe_header(fi, buf, offset):
     p = subprocess.Popen(["py.exe", "-3", "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
-    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(buf))
+    stdout_data, stderr_data = p.communicate(buf)
     ret = p.wait()
 
     if ret == -1:

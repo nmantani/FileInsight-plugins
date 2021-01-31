@@ -21,7 +21,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import binascii
 import sys
 
 try:
@@ -30,9 +29,9 @@ except ImportError:
     exit(-1) # python-lzo is not installed
 
 try:
-    data = binascii.a2b_hex(sys.stdin.read())
+    data = sys.stdin.buffer.read()
     data = lzo.decompress(data)
-    sys.stdout.write(str(binascii.b2a_hex(data).decode()))
+    sys.stdout.buffer.write(data)
 except Exception as e:
     print(e, file=sys.stderr)
     exit(1)

@@ -149,7 +149,7 @@ def file_type(fi):
     p = subprocess.Popen(["py.exe", "-3", "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive file type
-    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    stdout_data, stderr_data = p.communicate(data)
     ret = p.wait()
 
     if ret == -1:
@@ -189,7 +189,7 @@ def find_pe_file(fi):
     p = subprocess.Popen(["py.exe", "-3", "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
-    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    stdout_data, stderr_data = p.communicate(data)
     ret = p.wait()
 
     if ret == -1:
@@ -472,7 +472,7 @@ def parse_file_structure(fi):
     p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure_menu.py", str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive selection
-    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
     if stdout_data == "":
@@ -484,7 +484,7 @@ def parse_file_structure(fi):
     p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
-    stdout_data, stderr_data = p.communicate(binascii.b2a_hex(data))
+    stdout_data, stderr_data = p.communicate(data)
     ret = p.wait()
 
     if ret == 1:

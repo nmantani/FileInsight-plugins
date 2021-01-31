@@ -22,7 +22,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import binascii
 import ctypes
 import hashlib
 import os
@@ -79,7 +78,7 @@ elif len(sys.argv) == 2:
     hash_type = sys.argv[1]
 
     # Receive data
-    data = binascii.a2b_hex(sys.stdin.read())
+    data = sys.stdin.buffer.read()
 
     if hash_type == "ssdeep":
         print(ssdeep(data), end="")
@@ -97,7 +96,7 @@ elif len(sys.argv) == 2:
                 pass # Do nothing if data is not valid PE file
 else:
     # Receive data
-    data = binascii.a2b_hex(sys.stdin.read())
+    data = sys.stdin.buffer.read()
 
     print("")
     print("CRC32: %x" % (zlib.crc32(data) & 0xffffffff))

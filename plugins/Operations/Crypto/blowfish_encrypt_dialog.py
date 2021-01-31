@@ -99,7 +99,7 @@ def encrypt(data, root, cm, ckt, ek, cit, ei):
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.write(str(binascii.b2a_hex(d).decode()))
+    sys.stdout.buffer.write(d)
     root.quit()
     exit(0) # Decrypted successfully
 
@@ -118,7 +118,7 @@ def combo_mode_selected(root, cm, cit, ei, lc):
         lc.grid_remove()
 
 # Receive data
-data = binascii.a2b_hex(sys.stdin.read())
+data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()
