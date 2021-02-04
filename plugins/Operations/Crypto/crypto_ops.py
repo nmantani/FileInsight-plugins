@@ -117,7 +117,7 @@ def do_decrypt(fi, name, script):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -140,14 +140,12 @@ def do_decrypt(fi, name, script):
         elif ret == 1: # Do nothing if not decrypted
             return
 
-        decrypted_data = list(stdout_data)
+        decrypted_data = stdout_data
         decrypted_len = len(decrypted_data)
-        newdata = orig[:offset]
-        newdata.extend(decrypted_data)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + decrypted_data + orig[offset + length:]
 
         fi.newDocument("Output of %s decrypt" % name, 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, decrypted_len, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -166,7 +164,7 @@ def do_encrypt(fi, name, script):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         # Do not show command prompt window
@@ -189,14 +187,12 @@ def do_encrypt(fi, name, script):
         elif ret == 1: # Do nothing if not decrypted
             return
 
-        encrypted_data = list(stdout_data)
+        encrypted_data = stdout_data
         encrypted_len = len(encrypted_data)
-        newdata = orig[:offset]
-        newdata.extend(encrypted_data)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + encrypted_data + orig[offset + length:]
 
         fi.newDocument("Output of %s encrypt" % name, 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, encrypted_len, hex(offset), "#c8ffff")
 
         if length == 1:
