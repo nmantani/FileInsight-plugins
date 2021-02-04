@@ -263,7 +263,7 @@ def lznt1_compress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         try:
@@ -275,20 +275,10 @@ def lznt1_compress(fi):
             final_size = ctypes.c_ulong(0)
 
             ctypes.windll.ntdll.RtlCompressBuffer(2, ctypes.c_char_p(data), length, compressed, length * 3, 4096, ctypes.byref(final_size), workspace)
-            compressed = list(compressed)
-            newdata = [0] * (orig_len - (length - final_size.value))
-
-            for i in range(0, offset):
-                newdata[i] = orig[i]
-
-            for i in range(0, final_size.value):
-                newdata[offset + i] = compressed[i]
-
-            for i in range(0, orig_len - offset - length):
-                newdata[offset + final_size.value + i] = orig[offset + length + i]
+            newdata = orig[:offset] + compressed[:final_size.value] + orig[offset + length:]
 
             fi.newDocument("Output of LZNT1 compress", 1)
-            fi.setDocument("".join(newdata))
+            fi.setDocument(newdata)
             fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
             if length == 1:
@@ -306,7 +296,7 @@ def lznt1_decompress(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         try:
@@ -315,21 +305,10 @@ def lznt1_decompress(fi):
             final_size = ctypes.c_ulong(0)
 
             ctypes.windll.ntdll.RtlDecompressBuffer(2, decompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
-
-            decompressed = list(decompressed)
-            newdata = [0] * (orig_len - (length - final_size.value))
-
-            for i in range(0, offset):
-                newdata[i] = orig[i]
-
-            for i in range(0, final_size.value):
-                newdata[offset + i] = decompressed[i]
-
-            for i in range(0, orig_len - offset - length):
-                newdata[offset + final_size.value + i] = orig[offset + length + i]
+            newdata = orig[:offset] + decompressed[:final_size.value] + orig[offset + length:]
 
             fi.newDocument("Output of LZNT1 decompress", 1)
-            fi.setDocument("".join(newdata))
+            fi.setDocument(newdata)
             fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
             if length == 1:
