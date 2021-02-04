@@ -90,9 +90,9 @@ def cut_binary_to_clipboard(fi):
         stdout_data, stderr_data = p.communicate(binstr)
         ret = p.wait()
 
-        data = list(fi.getDocument())
-        before = "".join(data[:offset])
-        after = "".join(data[offset+length:])
+        data = fi.getDocument()
+        before = data[:offset]
+        after = data[offset+length:]
 
         fi.setDocument(before + after)
 
@@ -137,9 +137,9 @@ def paste_binary_from_clipboard(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    data = list(fi.getDocument())
-    before = "".join(data[:offset])
-    after = "".join(data[offset+length:])
+    data = fi.getDocument()
+    before = data[:offset]
+    after = data[offset+length:]
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
@@ -170,11 +170,11 @@ def delete_before(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    data = list(fi.getDocument())
+    data = fi.getDocument()
     data = data[offset:]
 
     fi.newDocument("Output of Delete before", 1)
-    fi.setDocument("".join(data))
+    fi.setDocument(data)
 
     if offset > 0:
         offset = offset - 1
@@ -188,11 +188,11 @@ def delete_after(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    data = list(fi.getDocument())
+    data = fi.getDocument()
     data = data[:offset]
 
     fi.newDocument("Output of Delete after", 1)
-    fi.setDocument("".join(data))
+    fi.setDocument(data)
 
     print("Deleted from offset %s to the end of the file." % hex(offset))
 
