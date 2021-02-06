@@ -181,9 +181,12 @@ combo_iv_type.configure(state = "disabled")
 entry_iv.configure(state = "disabled")
 
 # Adjust window position
-w = root.winfo_screenwidth()
-h = root.winfo_screenheight()
-root.geometry("+%d+%d" % ((w/3), (h/3)))
+sw = root.winfo_screenwidth()
+sh = root.winfo_screenheight()
+root.update_idletasks() # Necessary to get width and height of the window
+ww = root.winfo_width()
+wh = root.winfo_height()
+root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
 
 root.mainloop()
 exit(1) # Not decrypted

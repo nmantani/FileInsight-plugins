@@ -357,8 +357,11 @@ combo_arch.bind('<<ComboboxSelected>>', (lambda r=root, w=widgets: combo_arch_se
 combo_arm_mode.bind('<<ComboboxSelected>>', (lambda r=root, w=widgets: combo_arm_mode_selected(r, w)))
 
 # Adjust window position
-w = root.winfo_screenwidth()
-h = root.winfo_screenheight()
-root.geometry("+%d+%d" % ((w/2.5), (h/2.5)))
+sw = root.winfo_screenwidth()
+sh = root.winfo_screenheight()
+root.update_idletasks() # Necessary to get width and height of the window
+ww = root.winfo_width()
+wh = root.winfo_height()
+root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
 
 root.mainloop()
