@@ -60,16 +60,16 @@ def decremental_xor(fi):
                 return
 
         init_key = key
-        buf = list(fi.getDocument())
+        data = list(fi.getDocument())
 
         for i in range(0, length):
             j = offset + i
-            buf[j] = chr(ord(buf[j]) ^ key)
+            data[j] = chr(ord(data[j]) ^ key)
             key -= step
             key = key & 0xff
 
         fi.newDocument("Output of Decremental XOR", 1)
-        fi.setDocument("".join(buf))
+        fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -107,16 +107,16 @@ def incremental_xor(fi):
                 return
 
         init_key = key
-        buf = list(fi.getDocument())
+        data = list(fi.getDocument())
 
         for i in range(0, length):
             j = offset + i
-            buf[j] = chr(ord(buf[j]) ^ key)
+            data[j] = chr(ord(data[j]) ^ key)
             key += step
             key = key & 0xff
 
         fi.newDocument("Output of Incremental XOR", 1)
-        fi.setDocument("".join(buf))
+        fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -140,13 +140,13 @@ def null_preserving_xor(fi):
             print("Error: XOR key is not hexadecimal.")
             return
 
-        buf = list(fi.getDocument())
+        data = list(fi.getDocument())
         for i in range(0, length):
             j = offset + i
-            if ord(buf[j]) != 0x00 and ord(buf[j]) != key:
-                buf[j] = chr(ord(buf[j]) ^ key)
+            if ord(data[j]) != 0x00 and ord(data[j]) != key:
+                data[j] = chr(ord(data[j]) ^ key)
         fi.newDocument("Output of Null-preserving XOR", 1)
-        fi.setDocument("".join(buf))
+        fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -164,13 +164,13 @@ def xor_with_next_byte(fi):
     length_all = fi.getLength()
 
     if length_sel > 0:
-        buf = list(fi.getDocument())
+        data = list(fi.getDocument())
         for i in range(0, length_sel):
             j = offset + i
-            if ord(buf[j]) != 0x00 and j < length_all - 1:
-                buf[j] = chr(ord(buf[j]) ^ ord(buf[j + 1]))
+            if ord(data[j]) != 0x00 and j < length_all - 1:
+                data[j] = chr(ord(data[j]) ^ ord(data[j + 1]))
         fi.newDocument("Output of XOR with next byte", 1)
-        fi.setDocument("".join(buf))
+        fi.setDocument("".join(data))
         fi.setBookmark(offset, length_sel, hex(offset), "#c8ffff")
 
         if length_sel == 1:
@@ -179,27 +179,27 @@ def xor_with_next_byte(fi):
             print("XORed %s bytes from offset %s to %s while using next byte as XOR key." % (length_sel, hex(offset), hex(offset + length_sel - 1)))
             print("Added a bookmark to XORed region.")
 
-def xor_with_multibyte_key(buf, key):
+def xor_with_multibyte_key(data, key):
     """
     Used by guess_multibyte_xor_keys()
     """
-    b = list(buf)
+    d = list(data)
     k = list(key)
-    length = len(buf)
+    length = len(data)
     for i in range(0, length):
-        b[i] = chr(ord(b[i]) ^ ord(k[i % 256]))
-    return  "".join(b)
+        d[i] = chr(ord(d[i]) ^ ord(k[i % 256]))
+    return  "".join(d)
 
-def find_ole_header(fi, buf, offset):
+def find_ole_header(fi, data, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
     found = 0
-    length = len(buf)
+    length = len(data)
     while i < length:
-        pos = buf.find("".join(['\xd0', '\xcf', '\x11', '\xe0', '\xa1', '\xb1', '\x1a', '\xe1']), i)
+        pos = data.find("".join(['\xd0', '\xcf', '\x11', '\xe0', '\xa1', '\xb1', '\x1a', '\xe1']), i)
         if pos == -1:
             break
         else:
@@ -209,16 +209,16 @@ def find_ole_header(fi, buf, offset):
             found += 1
     return found
 
-def find_pdf_header(fi, buf, offset):
+def find_pdf_header(fi, data, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
     found = 0
-    length = len(buf)
+    length = len(data)
     while i < length:
-        pos = buf.find("%PDF", i)
+        pos = data.find("%PDF", i)
         if pos == -1:
             break
         else:
@@ -228,7 +228,7 @@ def find_pdf_header(fi, buf, offset):
             found += 1
     return found
 
-def find_pe_header(fi, buf, offset):
+def find_pe_header(fi, data, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -240,7 +240,7 @@ def find_pe_header(fi, buf, offset):
     p = subprocess.Popen(["py.exe", "-3", "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
-    stdout_data, stderr_data = p.communicate(buf)
+    stdout_data, stderr_data = p.communicate(data)
     ret = p.wait()
 
     if ret == -1:
@@ -256,48 +256,48 @@ def find_pe_header(fi, buf, offset):
             if l[0:5] == "Win32" or l[0:5] == "Win64":
                 off = int(l.split()[5], 0)
                 size = int(l.split()[7], 0)
-                if off + size > len(buf):
-                    fi.setBookmark(off, len(buf) - off, hex(off), "#c8ffff")
+                if off + size > len(data):
+                    fi.setBookmark(off, len(data) - off, hex(off), "#c8ffff")
                 else:
                     fi.setBookmark(off, size, hex(off), "#c8ffff")
 
     return found
 
-def find_elf_header(fi, buf, offset):
+def find_elf_header(fi, data, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
     found = 0
-    length = len(buf)
+    length = len(data)
     machine_dict = {0x02: "sparc", 0x03: "x86", 0x08: "mips", 0x14: "powerpc", 0x28: "arm", 0x2A: "superh", 0x32: "ia_64",
                     0x3E: "x86_64", 0xB7: "aarch64", 0xF3: "riscv", 0xF7: "bpf"}
 
     while i < length:
-        pos = buf.find("\x7fELF", i)
+        pos = data.find("\x7fELF", i)
         if pos == -1:
             break
         else:
             bits = 0
-            if buf[pos + 4] == "\x01":
+            if data[pos + 4] == "\x01":
                 bits = 32
-            elif buf[pos + 4] == "\x02":
+            elif data[pos + 4] == "\x02":
                 bits = 64
 
             endian = ""
-            if buf[pos + 5] == "\x01":
+            if data[pos + 5] == "\x01":
                 endian = "little"
-            elif buf[pos + 5] == "\x02":
+            elif data[pos + 5] == "\x02":
                 endian = "big"
 
             machine = ""
             if endian == "little":
-                if ord(buf[pos + 0x12]) in machine_dict.keys():
-                    machine = machine_dict[ord(buf[pos + 0x12])]
+                if ord(data[pos + 0x12]) in machine_dict.keys():
+                    machine = machine_dict[ord(data[pos + 0x12])]
             elif endian == "big":
-                if ord(buf[pos + 0x13]) in machine_dict.keys():
-                    machine = machine_dict[ord(buf[pos + 0x13])]
+                if ord(data[pos + 0x13]) in machine_dict.keys():
+                    machine = machine_dict[ord(data[pos + 0x13])]
 
             if bits != 0 and endian != "" and machine != "":
                 print("ELF%d (%s %s endian) file found at offset %s." % (bits, machine, endian, hex(offset + pos)))
@@ -307,16 +307,16 @@ def find_elf_header(fi, buf, offset):
             i = pos + 4
     return found
 
-def find_rtf_header(fi, buf, offset):
+def find_rtf_header(fi, data, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
     found = 0
-    length = len(buf)
+    length = len(data)
     while i < length:
-        pos = buf.find("{\\rtf", i)
+        pos = data.find("{\\rtf", i)
         if pos == -1:
             break
         else:
@@ -326,17 +326,17 @@ def find_rtf_header(fi, buf, offset):
             found += 1
     return found
 
-def find_zip_header(fi, buf, offset):
+def find_zip_header(fi, data, offset):
     """
     Used by guess_multibyte_xor_keys()
     """
     i = 0
     pos = 0
     found = 0
-    length = len(buf)
+    length = len(data)
     while i < length:
-        pos_start = buf.find("PK\x03\x04", i)
-        pos_end = buf.find("PK\x05\x06", pos_start + 1)
+        pos_start = data.find("PK\x03\x04", i)
+        pos_end = data.find("PK\x05\x06", pos_start + 1)
         file_type = "ZIP" # default file type
 
         if pos_start == -1:
@@ -346,23 +346,23 @@ def find_zip_header(fi, buf, offset):
             fi.setBookmark(offset + pos_start, 4, hex(offset + pos_start), "#c8ffff")
             found += 1
             break
-        elif buf[pos_start + 30:pos_start + 49] == "[Content_Types].xml": # Possible Microsoft Office file
-            pos_rels = buf.find("PK\x03\x04", pos_start + 49)
+        elif data[pos_start + 30:pos_start + 49] == "[Content_Types].xml": # Possible Microsoft Office file
+            pos_rels = data.find("PK\x03\x04", pos_start + 49)
 
-            if pos_rels != -1 and buf[pos_rels + 30:pos_rels + 41] == "_rels/.rels":
-                pos_type = buf.find("PK\x03\x04", pos_rels + 41)
+            if pos_rels != -1 and data[pos_rels + 30:pos_rels + 41] == "_rels/.rels":
+                pos_type = data.find("PK\x03\x04", pos_rels + 41)
 
                 if pos_type != -1:
-                    if buf[pos_type + 30:pos_type + 34] == "word":
+                    if data[pos_type + 30:pos_type + 34] == "word":
                         file_type = "Microsoft Word document"
-                    elif buf[pos_type + 30:pos_type + 33] == "ppt":
+                    elif data[pos_type + 30:pos_type + 33] == "ppt":
                         file_type = "Microsoft PowerPoint slide"
-                    elif buf[pos_type + 30:pos_type + 32] == "xl":
+                    elif data[pos_type + 30:pos_type + 32] == "xl":
                         file_type = "Microsoft Excel spreadsheet"
-        elif buf[pos_start + 30:pos_start + 39] == "META-INF/": # Possible Java Archive (JAR) file
-            pos_manifest = buf.find("PK\x03\x04", pos_start + 39)
+        elif data[pos_start + 30:pos_start + 39] == "META-INF/": # Possible Java Archive (JAR) file
+            pos_manifest = data.find("PK\x03\x04", pos_start + 39)
 
-            if pos_manifest != -1 and buf[pos_manifest + 30:pos_manifest + 50] == "META-INF/MANIFEST.MF":
+            if pos_manifest != -1 and data[pos_manifest + 30:pos_manifest + 50] == "META-INF/MANIFEST.MF":
                 file_type = "Java Archive (JAR)"
 
         print("%s found at offset %s size %d bytes." % (file_type, hex(offset + pos_start), (pos_end - pos_start + 22)))
@@ -399,12 +399,12 @@ def guess_multibyte_xor_keys(fi):
     offset = fi.getSelectionOffset()
 
     if length > 0:
-        buf = fi.getSelection()
+        data = fi.getSelection()
         print("Top ten XOR keys guessed from offset %s to %s are as follows." % (hex(offset), hex(offset + length - 1)))
         print("Please select the whole file and use these XOR key in the Decode tab to decode the file.\n")
     else:
         offset = 0
-        buf = fi.getDocument()
+        data = fi.getDocument()
         length = fi.getLength()
         print("Top ten XOR keys guessed from the whole file are as follows.")
         print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
@@ -416,7 +416,7 @@ def guess_multibyte_xor_keys(fi):
         if i == 0 and offset == 0:
             continue
 
-        b = buf[i:i + 256]
+        b = data[i:i + 256]
         if len(b) == 256:
             h = hashlib.md5(b).hexdigest()
             if h not in block:
@@ -434,7 +434,7 @@ def guess_multibyte_xor_keys(fi):
                 sys.stdout.write("%02x" % ord(block[k][j]))
             print
             print("256 bytes pattern occurrence count: %i" % v)
-            tmp = xor_with_multibyte_key(buf, block[k])
+            tmp = xor_with_multibyte_key(data, block[k])
             num_pe = find_pe_header(fi, tmp, offset)
             num_elf = find_elf_header(fi, tmp, offset)
             num_ole = find_ole_header(fi, tmp, offset)
@@ -456,11 +456,11 @@ def visual_decrypt(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        buf = list(fi.getDocument())
+        data = list(fi.getDocument())
         for i in range(offset + length - 1, offset, -1):
-            buf[i] = chr(ord(buf[i]) ^ ord(buf[i - 1]))
+            data[i] = chr(ord(data[i]) ^ ord(data[i - 1]))
         fi.newDocument("Output of Visual Decrypt", 1)
-        fi.setDocument("".join(buf))
+        fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
@@ -477,11 +477,11 @@ def visual_encrypt(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        buf = list(fi.getDocument())
+        data = list(fi.getDocument())
         for i in range(offset + 1, offset + length):
-            buf[i] = chr(ord(buf[i]) ^ ord(buf[i - 1]))
+            data[i] = chr(ord(data[i]) ^ ord(data[i - 1]))
         fi.newDocument("Output of Visual Encrypt", 1)
-        fi.setDocument("".join(buf))
+        fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
