@@ -61,10 +61,10 @@ def byte_frequency(fi):
     offset = fi.getSelectionOffset()
 
     if length > 0:
-        buf = fi.getSelection()
+        data = fi.getSelection()
         print("Byte frequency from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
     else:
-        buf = fi.getDocument()
+        data = fi.getDocument()
         length = fi.getLength()
         print("Byte frequency of the whole file")
 
@@ -74,7 +74,7 @@ def byte_frequency(fi):
         freq[i] = 0
 
     for i in range(0, length):
-        v = ord(buf[i])
+        v = ord(data[i])
         if v in freq:
             freq[v] += 1
 
