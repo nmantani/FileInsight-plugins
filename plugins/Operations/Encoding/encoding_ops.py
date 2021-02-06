@@ -40,20 +40,17 @@ def binary_data_to_hex_text(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        data = list(fi.getSelection())
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        data = fi.getSelection()
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         for i in range(0, length):
-            converted.append("%02x" % ord(data[i]))
+            converted += "%02x" % ord(data[i])
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
-
+        newdata = orig[:offset] + converted + orig[offset + length:]
         fi.newDocument("Output of Binary data to hex text", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
@@ -66,39 +63,37 @@ def hex_text_to_binary_data(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        string = list(fi.getSelection())
+        string = fi.getSelection()
     else:
         return
 
     hexchars = list("0123456789abcdefABCDEF")
 
     if length >= 2:
-        data = []
+        data = ""
         for i in range(0, len(string)):
             # skip "0x"
             if i < len(string) - 2 and string[i] == "0" and string[i+1] in "x":
                 continue
 
             if string[i] in hexchars:
-                data.append(string[i])
+                data += string[i]
 
         if len(data) < 2:
             return
 
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         i = 0
         while i < len(data) - 1:
-            converted.append(chr(int(data[i] + data[i+1], 16)))
+            converted += chr(int(data[i] + data[i+1], 16))
             i += 2
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Hex text to binary data", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length))
@@ -131,19 +126,17 @@ def custom_base64_decode(fi):
                 print("Error: base64 table must be 65 characters (including padding).")
             else:
                 data = fi.getSelection()
-                orig = list(fi.getDocument())
+                orig = fi.getDocument()
                 orig_len = len(orig)
 
                 trans = string.maketrans(custom_table, standard_table)
-                encoded = list(base64.b64decode(data.translate(trans)))
+                encoded = base64.b64decode(data.translate(trans))
 
-                newdata = orig[:offset]
-                newdata.extend(encoded)
-                newdata.extend(orig[offset + length:])
+                newdata = orig[:offset] + encoded + orig[offset + length:]
 
                 fi.newDocument("Output of Custom base64 decode", 1)
-                fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Decoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
@@ -178,19 +171,17 @@ def custom_base64_encode(fi):
                 print("Error: base64 table must be 65 characters (including padding).")
             else:
                 data = fi.getSelection()
-                orig = list(fi.getDocument())
+                orig = fi.getDocument()
                 orig_len = len(orig)
 
                 trans = string.maketrans(standard_table, custom_table)
-                encoded = list(base64.b64encode(data).translate(trans))
+                encoded = base64.b64encode(data).translate(trans)
 
-                newdata = orig[:offset]
-                newdata.extend(encoded)
-                newdata.extend(orig[offset + length:])
+                newdata = orig[:offset] + encoded + orig[offset + length:]
 
                 fi.newDocument("Output of Custom base64 encode", 1)
-                fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Encoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
@@ -260,18 +251,15 @@ def from_quoted_printable(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        decoded = list(quopri.decodestring(data))
-
-        newdata = orig[:offset]
-        newdata.extend(decoded)
-        newdata.extend(orig[offset + length:])
+        decoded = quopri.decodestring(data)
+        newdata = orig[:offset] + decoded + orig[offset + length:]
 
         fi.newDocument("Output of From quoted printable", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Decoded one byte quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
@@ -288,18 +276,15 @@ def to_quoted_printable(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        encoded = list(quopri.encodestring(data))
-
-        newdata = orig[:offset]
-        newdata.extend(encoded)
-        newdata.extend(orig[offset + length:])
+        encoded = quopri.encodestring(data)
+        newdata = orig[:offset] + encoded + orig[offset + length:]
 
         fi.newDocument("Output of To quoted printable", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Encoded one byte into quoted printable text from offset %s to %s." % (hex(offset), hex(offset)))
@@ -315,20 +300,18 @@ def binary_data_to_binary_text(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        data = list(fi.getSelection())
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        data = fi.getSelection()
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         for i in range(0, length):
-            converted.append("{0:b}".format(ord(data[i])).zfill(8))
+            converted += "{0:b}".format(ord(data[i])).zfill(8)
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Binary data to binary text", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
@@ -339,33 +322,31 @@ def binary_text_to_binary_data(fi):
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
-    string = list(fi.getSelection())
+    string = fi.getSelection()
 
     binchars = list("01")
 
     if length >= 8:
-        data = []
+        data = ""
         for i in range(0, len(string)):
             if string[i] in binchars:
-                data.append(string[i])
+                data += string[i]
 
         if len(data) < 8:
             return
 
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         i = 0
         while i < len(data) - 7:
-            converted.append(chr(int("".join(data[i:i+8]), 2)))
+            converted += chr(int(data[i:i+8], 2))
             i += 8
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Binary text to binary data", 1)
-        fi.setDocument("".join(newdata))
+        fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
@@ -379,9 +360,8 @@ def binary_data_to_decimal_text(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        data = list(fi.getSelection())
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        data = fi.getSelection()
+        orig = fi.getDocument()
 
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
@@ -406,18 +386,17 @@ def binary_data_to_decimal_text(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
-        converted = []
+        converted = ""
         for i in range(0, length):
             if i > 0:
-                converted.append(delimiters[setting])
-            converted.append(str(ord(data[i])))
+                converted += delimiters[setting]
+            converted += str(ord(data[i]))
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Binary data to decimal text", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
@@ -469,19 +448,17 @@ def decimal_text_to_binary_data(fi):
                 print("The selected region contains values out of range (0-255).")
                 return
 
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         for i in range(0, len(values)):
-            converted.append(chr(int(values[i])))
+            converted += chr(int(values[i]))
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Decimal text to binary data", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
@@ -494,9 +471,8 @@ def binary_data_to_octal_text(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        data = list(fi.getSelection())
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        data = fi.getSelection()
+        orig = fi.getDocument()
 
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
@@ -521,21 +497,19 @@ def binary_data_to_octal_text(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         for i in range(0, length):
             if i > 0:
-                converted.append(delimiters[setting])
-            converted.append(oct(ord(data[i])))
+                converted += delimiters[setting]
+            converted += oct(ord(data[i]))
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Binary data to octal text", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted binary from offset %s to %s (%s bytes) into octal text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
@@ -587,19 +561,17 @@ def octal_text_to_binary_data(fi):
                 print("The selected region contains values out of range (0-255).")
                 return
 
-        orig = list(fi.getDocument())
-        newdata = orig[:offset]
+        orig = fi.getDocument()
 
-        converted = []
+        converted = ""
         for i in range(0, len(values)):
-            converted.append(chr(int(values[i], 8)))
+            converted += chr(int(values[i], 8))
 
-        newdata.extend(converted)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + converted + orig[offset + length:]
 
         fi.newDocument("Output of Octal text to binary data", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(converted)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
         print("Converted octal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
@@ -613,18 +585,15 @@ def url_decode(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        decoded = list(urllib.unquote(data))
-
-        newdata = orig[:offset]
-        newdata.extend(decoded)
-        newdata.extend(orig[offset + length:])
+        decoded = urllib.unquote(data)
+        newdata = orig[:offset] + decoded + orig[offset + length:]
 
         fi.newDocument("Output of URL decode", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Decoded one byte URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
@@ -641,18 +610,16 @@ def url_encode(fi):
 
     if length > 0:
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
-        encoded = list(urllib.quote(data))
+        encoded = urllib.quote(data)
 
-        newdata = orig[:offset]
-        newdata.extend(encoded)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + encoded + orig[offset + length:]
 
         fi.newDocument("Output of URL encode", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Encoded one byte into URL encoded text from offset %s to %s." % (hex(offset), hex(offset)))
@@ -683,7 +650,7 @@ def unicode_escape(fi):
         escape_format, encoding = stdout_data.split()
 
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         try:
@@ -710,7 +677,7 @@ def unicode_escape(fi):
                 escaped = ""
 
                 # convert \Uxxxxxxxx to \uxxxx + \uxxxx surrogate pair (such as emojis)
-                for c in list(escaped_orig):
+                for c in escaped_orig:
                     if escape_format == "%u":
                         escaped += c.encode("raw-unicode-escape").replace("\\u", "%u")
                     else:
@@ -721,13 +688,11 @@ def unicode_escape(fi):
             print("Error: %s" % e)
             return
 
-        newdata = orig[:offset]
-        newdata.extend(escaped)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + escaped + orig[offset + length:]
 
         fi.newDocument("Output of Unicode escape", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(escaped)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(escaped), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Escaped one byte from offset %s to %s." % (hex(offset), hex(offset)))
@@ -782,7 +747,7 @@ def unicode_unescape(fi):
         escape_format, encoding = stdout_data.split()
 
         data = fi.getSelection()
-        orig = list(fi.getDocument())
+        orig = fi.getDocument()
         orig_len = len(orig)
 
         try:
@@ -808,13 +773,11 @@ def unicode_unescape(fi):
             print("Error: %s" % e)
             return
 
-        newdata = orig[:offset]
-        newdata.extend(unescaped)
-        newdata.extend(orig[offset + length:])
+        newdata = orig[:offset] + unescaped + orig[offset + length:]
 
         fi.newDocument("Output of Unicode unescape", 1)
-        fi.setDocument("".join(newdata))
-        fi.setBookmark(offset, len("".join(unescaped)), hex(offset), "#c8ffff")
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, len(unescaped), hex(offset), "#c8ffff")
 
         if length == 1:
             print("Unescaped one byte from offset %s to %s." % (hex(offset), hex(offset)))
@@ -883,19 +846,17 @@ def custom_base32_decode(fi):
                 print("Error: base32 table must be 33 characters (including padding).")
             else:
                 data = fi.getSelection()
-                orig = list(fi.getDocument())
+                orig = fi.getDocument()
                 orig_len = len(orig)
 
                 trans = string.maketrans(custom_table, standard_table)
-                decoded = list(base64.b32decode(data.translate(trans)))
+                decoded = base64.b32decode(data.translate(trans))
 
-                newdata = orig[:offset]
-                newdata.extend(decoded)
-                newdata.extend(orig[offset + length:])
+                newdata = orig[:offset] + decoded + orig[offset + length:]
 
                 fi.newDocument("Output of Custom base32 decode", 1)
-                fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Decoded one byte with custom base32 table from offset %s to %s." % (hex(offset), hex(offset)))
@@ -930,19 +891,17 @@ def custom_base32_encode(fi):
                 print("Error: base32 table must be 33 characters (including padding).")
             else:
                 data = fi.getSelection()
-                orig = list(fi.getDocument())
+                orig = fi.getDocument()
                 orig_len = len(orig)
 
                 trans = string.maketrans(standard_table, custom_table)
-                encoded = list(base64.b32encode(data).translate(trans))
+                encoded = base64.b32encode(data).translate(trans)
 
-                newdata = orig[:offset]
-                newdata.extend(encoded)
-                newdata.extend(orig[offset + length:])
+                newdata = orig[:offset] + encoded + orig[offset + length:]
 
                 fi.newDocument("Output of Custom base32 encode", 1)
-                fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Encoded one byte with custom base32 table from offset %s to %s." % (hex(offset), hex(offset)))
@@ -977,7 +936,7 @@ def custom_base58_decode(fi):
                 print("Error: base58 table must be 58 characters.")
             else:
                 data = fi.getSelection()
-                orig = list(fi.getDocument())
+                orig = fi.getDocument()
                 orig_len = len(orig)
 
                 # Execute base58_decode.py to encode data
@@ -993,15 +952,12 @@ def custom_base58_decode(fi):
                     print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
                     return
 
-                decoded = list(stdout_data)
-
-                newdata = orig[:offset]
-                newdata.extend(decoded)
-                newdata.extend(orig[offset + length:])
+                decoded = stdout_data
+                newdata = orig[:offset] + decoded + orig[offset + length:]
 
                 fi.newDocument("Output of Custom base58 decode", 1)
-                fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, len("".join(decoded)), hex(offset), "#c8ffff")
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Decoded one byte with custom base58 table from offset %s to %s." % (hex(offset), hex(offset)))
@@ -1036,7 +992,7 @@ def custom_base58_encode(fi):
                 print("Error: base58 table must be 58 characters.")
             else:
                 data = fi.getSelection()
-                orig = list(fi.getDocument())
+                orig = fi.getDocument()
                 orig_len = len(orig)
 
                 # Execute base58_encode.py to encode data
@@ -1052,15 +1008,13 @@ def custom_base58_encode(fi):
                     return
 
                 trans = string.maketrans(standard_table, custom_table)
-                encoded = list(stdout_data.translate(trans))
+                encoded = stdout_data.translate(trans)
 
-                newdata = orig[:offset]
-                newdata.extend(encoded)
-                newdata.extend(orig[offset + length:])
+                newdata = orig[:offset] + encoded + orig[offset + length:]
 
                 fi.newDocument("Output of Custom base58 encode", 1)
-                fi.setDocument("".join(newdata))
-                fi.setBookmark(offset, len("".join(encoded)), hex(offset), "#c8ffff")
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Encoded one byte with custom base58 table from offset %s to %s." % (hex(offset), hex(offset)))
