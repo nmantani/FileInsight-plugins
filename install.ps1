@@ -46,7 +46,7 @@ $RELEASE_VERSION = "2.7"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.8.7"
 $APLIB_VERSION = "1.1.1"
-$EXIFTOOL_VERSION = "12.16"
+$EXIFTOOL_VERSION = "12.18"
 $QUICKLZ_VERSION = "1.5.0"
 
 # SHA256 Hash values of files that will be downloaded
@@ -54,7 +54,7 @@ $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C
 $FILEINSIGHT_PLUGINS_HASH = "0A06444958894555CFD93788BE8E74B68C326FCEB897B9DE06C9E6D925970D0B"
 $PYTHON_HASH = "B8D539D67A9C97A1ACC30DC871821D140C383F160D8A1CD3B5A1A5A0D351AF68"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
-$EXIFTOOL_HASH = "A0A4E0ECF4034D7E478228C890AC4F7D9B18905F521EE31A72005E17670BEC96"
+$EXIFTOOL_HASH = "2ADCF67A62225D87829B8B2CD6BA2EC87CC95C4BCD93BC6067DA8631F558AAF9"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function create_working_directory {
@@ -429,13 +429,14 @@ function install_qiling_rootfs($work_dir, $update) {
 
     $file_path_kernel32_x64 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\kernel32.dll"
     $file_path_ntoskrnl_x64 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\ntoskrnl.exe"
-    $file_path_kernel32_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\SysWOW64\kernel32.dll"
-    $file_path_ntoskrnl_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\SysWOW64\ntoskrnl.exe"
+    $file_path_kernel32_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\System32\kernel32.dll"
+    $file_path_ntoskrnl_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\System32\ntoskrnl.exe"
+    $file_path_ntdll_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_windows\Windows\System32\ntdll.dll"
     $file_path_libc_x64 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_linux\lib\libc.so.6"
     $file_path_libc_x86 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x86_linux\lib\libc.so.6"
 
     if ((Test-Path $file_path_kernel32_x64) -and (Test-Path $file_path_ntoskrnl_x64) `
-        -and (Test-Path $file_path_kernel32_x86) -and (Test-Path $file_path_ntoskrnl_x86) `
+        -and (Test-Path $file_path_kernel32_x86) -and (Test-Path $file_path_ntoskrnl_x86) -and (Test-Path $file_path_ntdll_x86) `
         -and (Test-Path $file_path_libc_x64) -and (Test-Path $file_path_libc_x86) -and !$update) {
         Write-Host "[*] rootfs files of Qiling Framework are already installed. Skipping installation."
     } else {

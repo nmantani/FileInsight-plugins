@@ -53,7 +53,9 @@ class FileChangeHandler(FileSystemEventHandler):
         self.log += "[Deleted] %s\n" % pathlib.Path(event.src_path).resolve()
 
     def on_modified(self, event):
-        self.log += "[Modified] %s\n" % pathlib.Path(event.src_path).resolve()
+        # Ignore change of last accesss timestamp
+        if event.is_directory == False:
+            self.log += "[Modified] %s\n" % pathlib.Path(event.src_path).resolve()
 
     def on_moved(self, event):
         self.log += "[Moved] %s -> %s\n" % (pathlib.Path(event.src_path).resolve(), pathlib.Path(event.dest_path).resolve())
@@ -91,9 +93,23 @@ def check_rootfs_files(rootfs_base):
         if not pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32\\" + f).exists():
             print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32").resolve()), file=sys.stderr)
             rootfs_ok = False
-        if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64\\" + f).exists():
-            print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve()), file=sys.stderr)
-            rootfs_ok = False
+        if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1"):
+            if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\" + f).exists():
+                print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
+                rootfs_ok = False
+        else:
+            if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64\\" + f).exists():
+                print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve()), file=sys.stderr)
+                rootfs_ok = False
+
+    # ntdll.dll must be placed in System32 folder for Windows (x86) since Qiling Framework 1.2.2
+    if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1") \
+       and not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\ntdll.dll").exists():
+        print("ntdll.dll is not found in %s ." % pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve(), file=sys.stderr)
+        rootfs_ok = False
+
+    if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1") and rootfs_ok == False:
+        print("\nSince Qiling Framework 1.2.2, the location of x86 Windows DLL files has been changed from\n%s\nto\n%s ." % (pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve(), pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
 
     if not pathlib.Path(rootfs_base + "\\x8664_linux\\lib\\libc.so.6").exists():
         print("libc.so.6 is not found in %s ." % pathlib.Path(rootfs_base + "\\x8664_linux\\lib").resolve(), file=sys.stderr)
@@ -103,6 +119,17 @@ def check_rootfs_files(rootfs_base):
         rootfs_ok = False
 
     return rootfs_ok
+
+# Hook of execve system call to get memory data, this is necessary since Qiling Framework 1.2.2
+def execve_hook(ql, execve_pathname, execve_argv, execve_envp, *args, **kw):
+    import qiling.os.posix.syscall.unistd
+    global all_mem, map_info
+
+    # save all_mem and map_info before they will be lost in ql_syscall_execve()
+    all_mem = ql.mem.save()
+    map_info = ql.mem.map_info
+
+    qiling.os.posix.syscall.unistd.ql_syscall_execve(ql, execve_pathname, execve_argv, execve_envp, *args, **kw)
 
 if len(sys.argv) == 8:
     file_path = sys.argv[1]
@@ -151,7 +178,13 @@ if len(sys.argv) == 8:
             shellcode = f.read()
 
         try:
-            ql = qiling.Qiling(shellcoder=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
+            # shellcoder parameter has been renamed to code since Qiling Framework 1.2.2
+            if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1"):
+                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
+                if os_type == "linux":
+                    ql.set_syscall("execve", execve_hook)
+            else:
+                ql = qiling.Qiling(shellcoder=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
 
             # Start to watch file system events
             handler = FileChangeHandler()
@@ -167,6 +200,9 @@ else:
     print("Usage: emulate_code.py file_path file_type os arch big_endian cmd_args timeout", file=sys.stderr)
     sys.exit(1)
 
+all_mem = None
+map_info = None
+
 # Ignore emulation error
 try:
     if timeout > 0:
@@ -178,7 +214,12 @@ try:
 except Exception as e:
     print("Error: %s" % e, file=sys.stderr)
 
-all_mem = ql.mem.save()
+# execve_hook was called
+if all_mem != None:
+    ql.mem.map_info = map_info
+else:
+    all_mem = ql.mem.save()
+
 print("\nMemory map:", file=sys.stderr)
 ql.mem.show_mapinfo()
 print("", file=sys.stderr)

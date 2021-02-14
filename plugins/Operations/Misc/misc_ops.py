@@ -474,6 +474,8 @@ def emulate_code(fi):
         stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
         # Remove colorlized part of log data introduced since Qiling Framework 1.2.1
         stderr_data = re.sub("\[\x1b\[\d{2}m.\x1b\[0m\] \[.+\.py:\d+\]\t", "", stderr_data)
+        stderr_data = re.sub("\x1b\[\d{2}m", "", stderr_data)
+        stderr_data = re.sub("\x1b\[0m", "", stderr_data)
         print(stderr_data),
         return
     elif ret == -1 or ret == -2 or ret == -3:
@@ -519,6 +521,9 @@ def emulate_code(fi):
     stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
     # Remove colorlized part of log data introduced since Qiling Framework 1.2.1
     stderr_data = re.sub("\[\x1b\[\d{2}m.\x1b\[0m\] \[.+\.py:\d+\]\t", "", stderr_data)
+    stderr_data = re.sub("\x1b\[\d{2}m", "", stderr_data)
+    stderr_data = re.sub("\x1b\[0m", "", stderr_data)
+    stderr_data = re.sub("\[=\]\t\[\+\] ", "", stderr_data)
     print(stderr_data),
 
     # For the case that emulate_code.py exited during ql.run()
@@ -532,6 +537,7 @@ def emulate_code(fi):
     if stdout_written != "":
         print("Output of the emulated code:")
         print(stdout_written)
+        print("")
 
     if len(stdout_splitted) > 1:
         bookmarked = False
