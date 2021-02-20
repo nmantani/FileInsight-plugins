@@ -73,7 +73,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (102 plugins)
+## List of plugins (104 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -189,6 +189,10 @@ favorite programs.
   Decrypt selected region with Triple DES
 * Triple DES encrypt  
   Encrypt selected region with Triple DES
+* XTEA decrypt  
+  Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
+* XTEA encrypt  
+  Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
 
 ### Encoding operations
 * Binary data to hex text  

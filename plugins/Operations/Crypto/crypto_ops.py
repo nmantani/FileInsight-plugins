@@ -119,6 +119,18 @@ def triple_des_encrypt(fi):
     """
     do_encrypt(fi, "Triple DES", "triple_des_encrypt_dialog.py")
 
+def xtea_decrypt(fi):
+    """
+    Decrypt selected region with Triple DES
+    """
+    do_decrypt(fi, "XTEA", "xtea_decrypt_dialog.py")
+
+def xtea_encrypt(fi):
+    """
+    Encrypt selected region with Triple DES
+    """
+    do_encrypt(fi, "XTEA", "xtea_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region
@@ -152,6 +164,10 @@ def do_decrypt(fi, name, script):
         if ret == -2: # PyTEA is not installed
             print("PyTEA is not installed.")
             print("Please install it with 'py.exe -3 -m pip install PyTEA' and try again.")
+            return
+        if ret == -3: # xtea is not installed
+            print("xtea is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install xtea' and try again.")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
@@ -203,6 +219,10 @@ def do_encrypt(fi, name, script):
         if ret == -2: # PyTEA is not installed
             print("PyTEA is not installed.")
             print("Please install it with 'py.exe -3 -m pip install PyTEA' and try again.")
+            return
+        if ret == -3: # xtea is not installed
+            print("xtea is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install xtea' and try again.")
             return
         elif ret == 1: # Do nothing if not decrypted
             return

@@ -189,7 +189,9 @@ if __name__ == "__main__":
                    crypto_ops.tea_decrypt,
                    crypto_ops.tea_encrypt,
                    crypto_ops.triple_des_decrypt,
-                   crypto_ops.triple_des_encrypt)
+                   crypto_ops.triple_des_encrypt,
+                   crypto_ops.xtea_decrypt,
+                   crypto_ops.xtea_encrypt)
 
     operations += (encoding_ops.binary_data_to_hex_text,
                    encoding_ops.hex_text_to_binary_data,

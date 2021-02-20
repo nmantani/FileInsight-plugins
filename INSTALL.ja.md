@@ -157,9 +157,16 @@ py.exe -3 -m pip install Pillow
 を実行してインストールしてください。
 
 TEA decrypt と TEA encrypt のプラグインについては、PyTEA が必要です。
-https://github.com/codeif/PyTEA/ からダウンロード、インストールするか、
+https://github.com/codeif/PyTEA からダウンロード、インストールするか、
 ```
 py.exe -3 -m pip install PyTEA
+```
+を実行してインストールしてください。
+
+XTEA decrypt と XTEA encrypt のプラグインについては、xtea が必要です。
+https://github.com/Varbin/xtea からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install xtea
 ```
 を実行してインストールしてください。
 

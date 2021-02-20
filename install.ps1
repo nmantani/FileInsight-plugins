@@ -371,6 +371,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "python-magic-bin" $update
     install_with_pip "qiling" $update
     install_with_pip "watchdog" $update
+    install_with_pip "xtea" $update
     install_with_pip "yara-python" $update
     install_with_pip "zstandard" $update
 

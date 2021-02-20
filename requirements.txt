@@ -11,5 +11,6 @@ pyimpfuzzy-windows
 python-magic-bin
 qiling
 watchdog
+xtea
 yara-python
 zstandard

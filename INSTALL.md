@@ -152,10 +152,17 @@ py.exe -3 -m pip install Pillow
 ```
 
 For the "TEA decrypt" and "TEA encrypt" plugins, it requires PyTEA.
-Please get it from https://github.com/codeif/PyTEA/
+Please get it from https://github.com/codeif/PyTEA
 or execute the following command.
 ```
 py.exe -3 -m pip install PyTEA
+```
+
+For the "XTEA decrypt" and "XTEA encrypt" plugins, it requires xtea.
+Please get it from https://github.com/Varbin/xtea
+or execute the following command.
+```
+py.exe -3 -m pip install xtea
 ```
 
 For the "Show metadata" plugin, it requires ExifTool.

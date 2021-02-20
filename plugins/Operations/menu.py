@@ -124,7 +124,9 @@ ops_dict["Crypto"] = ("AES decrypt",
                       "TEA decrypt",
                       "TEA encrypt",
                       "Triple DES decrypt",
-                      "Triple DES encrypt")
+                      "Triple DES encrypt",
+                      "XTEA decrypt",
+                      "XTEA encrypt")
 tooltip_dict["Crypto"] = ("Decrypt selected region with AES",
                           "Encrypt selected region with AES",
                           "Decrypt selected region with ARC2 (Alleged RC2)",
@@ -139,8 +141,9 @@ tooltip_dict["Crypto"] = ("Decrypt selected region with AES",
                           "Decrypt selected region with TEA (Tiny Encryption Algorithm)",
                           "Encrypt selected region with TEA (Tiny Encryption Algorithm)",
                           "Decrypt selected region with Triple DES",
-                          "Encrypt selected region with Triple DES")
-
+                          "Encrypt selected region with Triple DES",
+                          "Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)",
+                          "Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)")
 ops_dict["Encoding"] = ("Binary data to hex text",
                         "Hex text to binary data",
                         "Binary data to decimal text",

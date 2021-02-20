@@ -109,6 +109,9 @@ https://github.com/miurahr/ppmd/blob/main/LICENSE
 PyTEA is distributed under the MIT License.
 https://github.com/codeif/PyTEA/blob/master/LICENSE
 
+xtea is distributed as public domain.
+https://github.com/Varbin/xtea/blob/master/xtea/__init__.py
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------
