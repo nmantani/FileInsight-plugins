@@ -95,6 +95,18 @@ def salsa20_decrypt(fi):
     """
     do_decrypt(fi, "Salsa20", "salsa20_decrypt_dialog.py")
 
+def tea_decrypt(fi):
+    """
+    Decrypt selected region with TEA (Tiny Encryption Algorithm)
+    """
+    do_decrypt(fi, "TEA", "tea_decrypt_dialog.py")
+
+def tea_encrypt(fi):
+    """
+    Encrypt selected region with TEA (Tiny Encryption Algorithm)
+    """
+    do_encrypt(fi, "TEA", "tea_encrypt_dialog.py")
+
 def triple_des_decrypt(fi):
     """
     Decrypt selected region with Triple DES
@@ -136,6 +148,10 @@ def do_decrypt(fi, name, script):
         if ret == -1: # PyCryptodome is not installed
             print("PyCryptodome is not installed.")
             print("Please install it with 'py.exe -3 -m pip install pycryptodomex' and try again.")
+            return
+        if ret == -2: # PyTEA is not installed
+            print("PyTEA is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install PyTEA' and try again.")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
@@ -183,6 +199,10 @@ def do_encrypt(fi, name, script):
         if ret == -1: # PyCryptodome is not installed
             print("PyCryptodome is not installed.")
             print("Please install it with 'py.exe -3 -m pip install pycryptodomex' and restart FileInsight.")
+            return
+        if ret == -2: # PyTEA is not installed
+            print("PyTEA is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install PyTEA' and try again.")
             return
         elif ret == 1: # Do nothing if not decrypted
             return

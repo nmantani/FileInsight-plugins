@@ -121,6 +121,8 @@ ops_dict["Crypto"] = ("AES decrypt",
                       "DES decrypt",
                       "DES encrypt",
                       "Salsa20 decrypt / encrypt",
+                      "TEA decrypt",
+                      "TEA encrypt",
                       "Triple DES decrypt",
                       "Triple DES encrypt")
 tooltip_dict["Crypto"] = ("Decrypt selected region with AES",
@@ -134,6 +136,8 @@ tooltip_dict["Crypto"] = ("Decrypt selected region with AES",
                           "Decrypt selected region with DES",
                           "Encrypt selected region with DES",
                           "Decrypt / encrypt selected region with Salsa20",
+                          "Decrypt selected region with TEA (Tiny Encryption Algorithm)",
+                          "Encrypt selected region with TEA (Tiny Encryption Algorithm)",
                           "Decrypt selected region with Triple DES",
                           "Encrypt selected region with Triple DES")
 

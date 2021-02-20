@@ -72,7 +72,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (100個)
+## プラグインの一覧 (102個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -181,6 +181,10 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲を DES で暗号化します。
 * Salsa20 decrypt / encrypt  
   選択範囲を Salsa20 で復号 / 暗号化します。
+* TEA decrypt  
+  選択範囲を TEA (Tiny Encryption Algorithm) で復号します。
+* TEA encrypt  
+  選択範囲を TEA (Tiny Encryption Algorithm) で暗号化します。
 * Triple DES decrypt  
   選択範囲を Triple DES で復号します。
 * Triple DES encrypt  

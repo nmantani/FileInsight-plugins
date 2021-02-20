@@ -29,7 +29,7 @@ import re
 import subprocess
 import sys
 
-__version__ = "2.7"
+__version__ = "2.8"
 
 sys.path.append("./Basic")
 import basic_ops
@@ -186,6 +186,8 @@ if __name__ == "__main__":
                    crypto_ops.des_decrypt,
                    crypto_ops.des_encrypt,
                    crypto_ops.salsa20_decrypt,
+                   crypto_ops.tea_decrypt,
+                   crypto_ops.tea_encrypt,
                    crypto_ops.triple_des_decrypt,
                    crypto_ops.triple_des_encrypt)
 

@@ -73,7 +73,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (100 plugins)
+## List of plugins (102 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -181,6 +181,10 @@ favorite programs.
   Encrypt selected region with DES
 * Salsa20 decrypt / encrypt  
   Decrypt / encrypt selected region with Salsa20
+* TEA decrypt  
+  Decrypt selected region with TEA (Tiny Encryption Algorithm)
+* TEA encrypt  
+  Encrypt selected region with TEA (Tiny Encryption Algorithm)
 * Triple DES decrypt  
   Decrypt selected region with Triple DES
 * Triple DES encrypt  

@@ -1,4 +1,5 @@
 Pillow
+PyTEA
 base58
 blackboxprotobuf
 capstone
