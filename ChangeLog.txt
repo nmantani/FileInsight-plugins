@@ -1,3 +1,29 @@
+2021-02-21 version 2.8
+* New plugins
+  - Crypto operations
+    - "TEA decrypt" plugin and "TEA encrypt" plugin.
+      These plugins decrypt/encrypt selected region with TEA (Tiny Encryption Algorithm).
+    - "XTEA decrypt" plugin and "XTEA encrypt" plugin.
+      These plugins decrypt/encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm).
+* Enhancements
+  - Plugins that show a dialog
+    Dialog position will be adjusted at center of screen based on window size.
+* Bug fixes
+  - Misc operations
+    - "Emulate code" plugin
+      Change of last access timestamp will be ignored as on_modified event.
+* Other changes
+  - Plugins of Basic operations, Compression operations, Crypto operations and Encoding operations
+    Refactoring: unnecessary data conversion to list are eliminated.
+  - Plugins of Compression operations, Crypto operations, Encoding operations, Misc operations, Parsing operations and XOR operations
+    Refactoring: unnecessary data conversion to hex text on communication with subprocesses are eliminated.
+  - Compression operations
+    - "PPMd compress" plugin and "PPMd decompress" plugin
+      Memory size is increased.
+  - Misc operations
+    - "Emulate code" plugin
+      Qiling Framework 1.2.2 is supported.
+
 2021-01-30 version 2.7
 * New plugins
   - Compression operations
