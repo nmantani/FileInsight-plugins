@@ -26,7 +26,6 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
-import ctypes
 import os
 import re
 import subprocess
@@ -519,9 +518,6 @@ def yara_scan(fi):
     """
     Scan selected region (the whole file if not selected) with YARA
     """
-    cp = ctypes.windll.kernel32.GetACP()
-    cp = "cp%d" % cp
-
     num_file = fi.getDocumentCount()
     if num_file < 2:
         if num_file == 1:
@@ -532,7 +528,7 @@ def yara_scan(fi):
     file_list = ""
     for i in range(num_file):
         fi.activateDocumentAt(i)
-        file_list += "%s\r\n" % fi.getDocumentName().decode(cp).encode("utf-8")
+        file_list += "%s\r\n" % fi.getDocumentName()
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()

@@ -297,9 +297,6 @@ def file_comparison(fi):
     """
     Compare contents of two files
     """
-    cp = ctypes.windll.kernel32.GetACP()
-    cp = "cp%d" % cp
-
     num_file = fi.getDocumentCount()
     if num_file < 2:
         return
@@ -307,7 +304,7 @@ def file_comparison(fi):
     file_list = ""
     for i in range(num_file):
         fi.activateDocumentAt(i)
-        file_list += "%s\r\n" % fi.getDocumentName().decode(cp).encode("utf-8")
+        file_list += "%s\r\n" % fi.getDocumentName()
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
