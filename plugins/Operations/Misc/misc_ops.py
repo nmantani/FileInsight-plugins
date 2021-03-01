@@ -324,12 +324,12 @@ def file_comparison(fi):
     time_start = time.time()
 
     fi.activateDocumentAt(first_index)
-    first_name = fi.getDocumentName().decode(cp).encode("utf-8")
+    first_name = fi.getDocumentName()
     first_data = list(fi.getDocument())
     first_len = fi.getLength()
 
     fi.activateDocumentAt(second_index)
-    second_name = fi.getDocumentName().decode(cp).encode("utf-8")
+    second_name = fi.getDocumentName()
     second_data = list(fi.getDocument())
     second_len = fi.getLength()
 
