@@ -585,7 +585,7 @@ def yara_scan(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute binwalk_scan.py for scanning with binwalk
+    # Execute yara_scan.py for scanning with YARA
     p = subprocess.Popen(["py.exe", "-3", "Search/yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
