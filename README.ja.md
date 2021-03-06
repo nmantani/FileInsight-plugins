@@ -72,7 +72,7 @@ powershell -exec bypass .\install.ps1 -update
 Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
 "plugins\Operations\Misc\send_to.json" を編集してください。
 
-## プラグインの一覧 (104個)
+## プラグインの一覧 (105個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -241,10 +241,6 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲を URL に使われているパーセントでエンコードされたテキストとしてエンコードします。
 
 ### Misc operations
-* Bitmap view  
-  ファイル全体をビットマップとして可視化します。
-* Byte frequency  
-  選択範囲の(選択していない場合は全体の)値の出現頻度を出力します。
 * Emulate code  
   選択範囲を(選択していない場合は全体を) Qiling Framework でエミュレートします。
 * File comparison  
@@ -281,6 +277,14 @@ Send to プラグインについては、あなたのお好みのプログラム
   選択範囲から(選択していない場合は全体から) XOR またはビットローテートされている文字列を検索します。
 * YARA scan  
   選択範囲を(選択していない場合は全体を) YARA でスキャンします。
+
+### Visualization operations
+* Bitmap view  
+  ファイル全体をビットマップとして可視化します。
+* Byte histogram  
+  選択範囲の(選択していない場合は全体の)値の出現頻度のグラフを出力します。
+* Entropy graph  
+  選択範囲の(選択していない場合は全体の)エントロピーのグラフを出力します。
 
 ### XOR operations
 * Decremental XOR  

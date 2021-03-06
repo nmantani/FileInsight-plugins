@@ -189,15 +189,11 @@ tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
                             "Decode selected region as percent-encoded text\nthat is used by URL",
                             "Encode selected region into percent-encoded text\nthat is used by URL")
 
-ops_dict["Misc"] = ("Bitmap view",
-                    "Byte frequency",
-                    "Emulate code",
+ops_dict["Misc"] = ("Emulate code",
                     "File comparison",
                     "Hash values",
                     "Send to")
-tooltip_dict["Misc"] = ("Visualize the whole file as bitmap representation",
-                        "Show byte frequency of selected region\n(the whole file if not selected)",
-                        "Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
+tooltip_dict["Misc"] = ("Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
                         "Compare contents of two files",
                         "Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of\nselected region (the whole file if not selected)",
                         "Send selected region (the whole file if not selected) to other programs")
@@ -228,6 +224,13 @@ tooltip_dict["Search"] = ("Search with regular expression in selected region\n(t
                           "Search XORed / bit-rotated string in selected region\n(the whole file if not selected)",
                           "Scan selected region (the whole file if not selected)\nwith YARA.")
 
+ops_dict["Visualization"] = ("Bitmap view",
+                             "Byte histogram",
+                             "Entropy graph")
+tooltip_dict["Visualization"] = ("Visualize the whole file as bitmap representation",
+                                 "Show byte histogram of selected region\n(the whole file if not selected)",
+                                 "Show entropy graph of selected region\n(the whole file if not selected)")
+
 ops_dict["XOR"] = ("Decremental XOR",
                    "Incremental XOR",
                    "Null-preserving XOR",
@@ -240,8 +243,8 @@ tooltip_dict["XOR"] = ("XOR selected region while decrementing XOR key",
                        "XOR selected region while skipping null bytes and XOR key itself",
                        "XOR selected region while using next byte as XOR key",
                        "Guess multibyte XOR keys from selected region (the whole file if not selected)\nbased on revealed keys that are XORed with 0x00",
-                       "Decode selected region with visual encrypt algorithm that is used by Zeus trojan",
-                       "Encode selected region with visual decrypt algorithm that is used by Zeus trojan")
+                       "Decode selected region with visual encrypt algorithm\nthat is used by Zeus trojan",
+                       "Encode selected region with visual decrypt algorithm\nthat is used by Zeus trojan")
 
 # Global variables for menu callbacks
 exit_value = -1
@@ -259,7 +262,7 @@ if y > 10:
     y = y - 10
 
 # Add menu items
-categories = ("Basic", "Compression", "Crypto", "Encoding", "Misc", "Parsing", "Search", "XOR")
+categories = ("Basic", "Compression", "Crypto", "Encoding", "Misc", "Parsing", "Search", "Visualization", "XOR")
 index_start = 0
 menu = tkinter.Menu(root, tearoff=False)
 menu_dict = {}

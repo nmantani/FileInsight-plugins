@@ -170,6 +170,20 @@ py.exe -3 -m pip install xtea
 ```
 を実行してインストールしてください。
 
+Byte histogram と Entropy graph のプラグインについては、seaborn が必要です。
+https://github.com/mwaskom/seaborn からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install seaborn
+```
+を実行してインストールしてください。
+
+Byte histogram と Entropy graph のプラグインについては、matplotlib が必要です。
+https://github.com/matplotlib/matplotlib/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install matplotlib
+```
+を実行してインストールしてください。
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

@@ -29,7 +29,7 @@ import re
 import subprocess
 import sys
 
-__version__ = "2.8"
+__version__ = "2.9"
 
 sys.path.append("./Basic")
 import basic_ops
@@ -51,6 +51,9 @@ import parsing_ops
 
 sys.path.append("./Search")
 import search_ops
+
+sys.path.append("./Visualization")
+import visualization_ops
 
 sys.path.append("./XOR")
 import xor_ops
@@ -127,7 +130,7 @@ def find_python3():
             python3_found = True
 
     if not python3_found:
-       print("Error: no Python 3 installation is found. You need to install Python 3 to use FileInsight-plugins.")
+        print("Error: no Python 3 installation is found. You need to install Python 3 to use FileInsight-plugins.")
 
     return pyexe_found and python3_found
 
@@ -216,9 +219,7 @@ if __name__ == "__main__":
                    encoding_ops.url_decode,
                    encoding_ops.url_encode)
 
-    operations += (misc_ops.bitmap_view,
-                   misc_ops.byte_frequency,
-                   misc_ops.emulate_code,
+    operations += (misc_ops.emulate_code,
                    misc_ops.file_comparison,
                    misc_ops.hash_values,
                    misc_ops.send_to)
@@ -236,6 +237,10 @@ if __name__ == "__main__":
                    search_ops.xor_hex_search,
                    search_ops.xor_text_search,
                    search_ops.yara_scan)
+
+    operations += (visualization_ops.bitmap_view,
+                   visualization_ops.byte_histogram,
+                   visualization_ops.entropy_graph)
 
     operations += (xor_ops.decremental_xor,
                    xor_ops.incremental_xor,

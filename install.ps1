@@ -46,7 +46,7 @@ $RELEASE_VERSION = "2.8"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.8.8"
 $APLIB_VERSION = "1.1.1"
-$EXIFTOOL_VERSION = "12.19"
+$EXIFTOOL_VERSION = "12.21"
 $QUICKLZ_VERSION = "1.5.0"
 
 # SHA256 Hash values of files that will be downloaded
@@ -54,7 +54,7 @@ $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C
 $FILEINSIGHT_PLUGINS_HASH = "BA34C02E2DD54BB0993BB5D196199E660EEC7DF58F4EEF83C8A4C1A24A2C6FD3"
 $PYTHON_HASH = "0E4B57099657C2304132D961E6939EED0C7DA3CC4F15078008F9D5BA0A30726E"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
-$EXIFTOOL_HASH = "20F05F43CC3A3835E7DD4B35703C5D2F337C13D88E46B6B3AFE62269AF8BAC0E"
+$EXIFTOOL_HASH = "4F15679F151B593A529960C108B9EB62C1D3821E9A4AA4E0831BDC87079801E9"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function create_working_directory {
@@ -364,12 +364,14 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "blackboxprotobuf" $update
     install_with_pip "capstone" $update
     install_with_pip "lz4" $update
+    install_with_pip "matplotlib" $update
     install_with_pip "pefile" $update
     install_with_pip "ppmd-cffi" $update
     install_with_pip "pycryptodomex" $update
     install_with_pip "pyimpfuzzy-windows" $update
     install_with_pip "python-magic-bin" $update
     install_with_pip "qiling" $update
+    install_with_pip "seaborn" $update
     install_with_pip "watchdog" $update
     install_with_pip "xtea" $update
     install_with_pip "yara-python" $update

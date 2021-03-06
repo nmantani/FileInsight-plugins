@@ -73,7 +73,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
 favorite programs.
 
-## List of plugins (104 plugins)
+## List of plugins (105 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -241,10 +241,6 @@ favorite programs.
   Encode selected region into percent-encoded text that is used by URL
 
 ### Misc operations
-* Bitmap view  
-  Visualize the whole file as bitmap representation
-* Byte frequency  
-  Show byte frequency of selected region (the whole file if not selected)
 * Emulate code  
   Emulate selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
 * File comparison  
@@ -281,6 +277,14 @@ favorite programs.
   Search XORed / bit-rotated string in selected region (the whole file if not selected)
 * YARA scan  
   Scan selected region (the whole file if not selected) with YARA.
+
+### Visualization operations
+* Bitmap view  
+  Visualize the whole file as bitmap representation
+* Byte histogram  
+  Show byte histogram of selected region (the whole file if not selected)
+* Entropy graph  
+  Show entropy graph of selected region\n(the whole file if not selected)
 
 ### XOR operations
 * Decremental XOR  

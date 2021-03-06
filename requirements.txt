@@ -4,12 +4,14 @@ base58
 blackboxprotobuf
 capstone
 lz4
+matplotlib
 pefile
 ppmd-cffi
 pycryptodomex
 pyimpfuzzy-windows
 python-magic-bin
 qiling
+seaborn
 watchdog
 xtea
 yara-python

@@ -165,6 +165,20 @@ or execute the following command.
 py.exe -3 -m pip install xtea
 ```
 
+For the "Byte histogram" and "Entropy graph" plugins, it requires seaborn.
+Please get it from https://github.com/mwaskom/seaborn
+or execute the following command.
+```
+py.exe -3 -m pip install seaborn
+```
+
+For the "Byte histogram" and "Entropy graph" plugins, it requires matplotlib.
+Please get it from https://github.com/matplotlib/matplotlib/
+or execute the following command.
+```
+py.exe -3 -m pip install matplotlib
+```
+
 For the "Show metadata" plugin, it requires ExifTool.
 Please download ExifTool from https://exiftool.org/
 and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.

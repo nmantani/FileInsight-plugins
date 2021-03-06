@@ -53,36 +53,6 @@ def bookmark_yesno_dialog(num_bookmark):
 
     return ret
 
-def byte_frequency(fi):
-    """
-    Show byte frequency of selected region (the whole file if not selected)
-    """
-    length = fi.getSelectionLength()
-    offset = fi.getSelectionOffset()
-
-    if length > 0:
-        data = fi.getSelection()
-        print("Byte frequency from offset %s to %s" % (hex(offset), hex(offset + length - 1)))
-    else:
-        data = fi.getDocument()
-        length = fi.getLength()
-        print("Byte frequency of the whole file")
-
-    freq = {}
-
-    for i in range(0, 256):
-        freq[i] = 0
-
-    for i in range(0, length):
-        v = ord(data[i])
-        if v in freq:
-            freq[v] += 1
-
-    output = ""
-    for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
-        output += "0x%02X: %d\n" % (k, v)
-    print(output)
-
 def hash_values(fi):
     """
     Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of selected region (the whole file if not selected)
@@ -570,37 +540,4 @@ def emulate_code(fi):
             print("Added bookmarks to the region that contains non-zero value.")
 
     print('Memory dumps after execution are shown in the new "Memory dump" tabs.')
-
-def bitmap_view(fi):
-    """
-    Visualize the whole file as bitmap representation
-    """
-    data = fi.getDocument()
-
-    # Create a temporary file
-    fd, filepath = tempfile.mkstemp()
-    handle = os.fdopen(fd, "w")
-    handle.write(data)
-    handle.close()
-
-    # Do not show command prompt window
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-    # Check existence of Pillow
-    p = subprocess.Popen(["py.exe", "-3", "Misc/bitmap_view.py", "-c"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    ret = p.wait()
-
-    if ret == -1: # Pillow is not installed
-        print("Pillow is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install Pillow'.")
-        print("")
-        return
-
-    print("Sending the whole file to the viewer GUI.")
-    print("You can move window by dragging bitmap image.")
-    print("You can also copy current offset by right-clicking bitmap image.")
-
-    # Execute bitmap_view.py to show GUI in background
-    p = subprocess.Popen(["py.exe", "-3", "Misc/bitmap_view.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
