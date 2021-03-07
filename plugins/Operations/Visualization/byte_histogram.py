@@ -44,17 +44,22 @@ if sys.argv[1] == "-c":
 # Receive data from a temporary file
 filename = sys.argv[1]
 with open(filename, "rb") as f:
-    data = f.read()
+    file_data = f.read()
 
-label = ["0x%02X" % x for x in range(0, 256)]
-data = [[int(x.decode())] for x in data.split(b"\t")]
+# Add empty data to make bars of 0x00 and 0xff easier to see
+label = [""] * 2
+label += ["0x%02X" % x for x in range(0, 256)]
+label += [""] * 2
+data = [[0]] * 2
+data += [[int(x.decode())] for x in file_data.split(b"\t")]
+data += [[0]] * 2
 
 matplotlib.pyplot.figure(figsize=(6, 3))
 seaborn.set_context("paper", font_scale=0.8)
 
 ax = seaborn.barplot(data=data)
 ax.set_xticklabels(label, rotation="vertical")
-ax.set_xticks(range(0, len(label), 16))
+ax.set_xticks(range(2, len(label), 16))
 ax.set_xlabel("Value")
 ax.set_ylabel("Count")
 
