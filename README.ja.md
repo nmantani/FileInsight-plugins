@@ -51,7 +51,7 @@ powershell -exec bypass .\install.ps1
 ## 使い方
 Plugins タブにある "Operations" をクリックして、プラグインを選択してください。
 
-![how_to_use1.png](docs/how_to_use1.png)
+<img src="docs/how_to_use1.png" width="278" height="206">
 
 右クリックのメニューからプラグインを使用することもできます。
 

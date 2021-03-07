@@ -51,7 +51,7 @@ Please read [INSTALL.md](INSTALL.md) for details.
 ## How to use
 Please click "Operations" in the "Plugins" tab then select a plugin.
 
-![how_to_use1.png](docs/how_to_use1.png)
+<img src="docs/how_to_use1.png" width="278" height="206">
 
 You can also use plugins from the right-click menu.
 
