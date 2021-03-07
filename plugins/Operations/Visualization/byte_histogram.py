@@ -1,5 +1,5 @@
 #
-# Byte frequency - Show byte frequency of selected region (the whole file if not selected)
+# Byte histogram - Show byte histogram of selected region (the whole file if not selected)
 #
 # Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
