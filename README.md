@@ -5,17 +5,29 @@ It adds many capabilities such as decryption, decompression, searching XOR-ed te
 It is useful for various kind of decoding tasks in malware analysis (e.g. extracing malware executables and decoy documents from malicious document files).
 
 ## Screenshots
+#### Dialog of "YARA scan" plugin
 ![screenshot1.png](docs/screenshot1.png)
 
+#### Scan result of "YARA scan" plugin
 ![screenshot2.png](docs/screenshot2.png)
 
+#### Data structure of ELF executable file parsed by "Parse file structure" plugin
 ![screenshot3.png](docs/screenshot3.png)
 
+#### Emulation result of ARM64 Linux shellcode emulated by "Emulate code" plugin
 ![screenshot4.png](docs/screenshot4.png)
 
+#### Disassembly output of x86 Linux shellcode disassembled by "Disassemble" plugin
 ![screenshot5.png](docs/screenshot5.png)
 
+#### Bitmap representation of Windows executable file visualized by "Bitmap view" plugin
 ![screenshot6.png](docs/screenshot6.png)
+
+#### Byte histogram of Excel file shown by "Byte histogram" plugin
+![screenshot7.png](docs/screenshot7.png)
+
+#### Entropy graph of Windows executable file shown by "Entropy graph" plugin
+![screenshot8.png](docs/screenshot8.png)
 
 ## How to install
 ### Automatic installation
@@ -37,7 +49,7 @@ Please read [INSTALL.md](INSTALL.md) for details.
 **I strongly recommend automatic installation** because manual installation requires many steps.
 
 ## How to use
-Please click a category from the "Plugins" tab then select a plugin.
+Please click "Operations" in the "Plugins" tab then select a plugin.
 
 ![how_to_use1.png](docs/how_to_use1.png)
 

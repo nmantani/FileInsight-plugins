@@ -5,17 +5,29 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 マルウェア解析に関する様々なデコード作業に便利です。（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書ファイルを抽出する）
 
 ## スクリーンショット
+#### YARA scan プラグインのダイアログ
 ![screenshot1.png](docs/screenshot1.png)
 
+#### YARA scan プラグインの実行結果
 ![screenshot2.png](docs/screenshot2.png)
 
+#### Parse file structure プラグインで ELF ファイルの構造をパースした結果
 ![screenshot3.png](docs/screenshot3.png)
 
+#### Emulate code プラグインで ARM64 の Linux 用のシェルコードをエミュレートした結果
 ![screenshot4.png](docs/screenshot4.png)
 
+#### Disassemble プラグインで x86 の Linux 用のシェルコードを逆アセンブルした結果
 ![screenshot5.png](docs/screenshot5.png)
 
+#### Bitmap view プラグインで Windows の実行ファイルを可視化した結果
 ![screenshot6.png](docs/screenshot6.png)
+
+#### Byte histogram プラグインで表示した Excel ファイル中の値の出現頻度のグラフ
+![screenshot7.png](docs/screenshot7.png)
+
+#### Entropy graph プラグインで表示した Windows の実行ファイルのエントロピーのグラフ
+![screenshot8.png](docs/screenshot8.png)
 
 ## インストール方法
 ### 自動でのインストール
@@ -37,7 +49,7 @@ powershell -exec bypass .\install.ps1
 手動でのインストールは多数の手順が必要となりますので、**自動でのインストールを強くおすすめします。**
 
 ## 使い方
-Plugins タブにあるカテゴリをクリックしてプラグインを選択してください。
+Plugins タブにある "Operations" をクリックして、プラグインを選択してください。
 
 ![how_to_use1.png](docs/how_to_use1.png)
 
