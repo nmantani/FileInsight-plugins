@@ -14,7 +14,7 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 #### Data structure of ELF executable file parsed by "Parse file structure" plugin
 ![screenshot3.png](docs/screenshot3.png)
 
-#### Emulation result of ARM64 Linux shellcode emulated by "Emulate code" plugin
+#### Emulation trace of ARM64 Linux shellcode emulated by "Emulate code" plugin
 ![screenshot4.png](docs/screenshot4.png)
 
 #### Disassembly output of x86 Linux shellcode disassembled by "Disassemble" plugin
