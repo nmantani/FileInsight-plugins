@@ -81,8 +81,18 @@ powershell -exec bypass .\install.ps1 -update
 に上書きコピーしてください。
 
 ## カスタマイズ
-Send to プラグインについては、あなたのお好みのプログラムを呼び出せるように
-"plugins\Operations\Misc\send_to.json" を編集してください。
+Send to プラグインはファイルをあなたのお好みのプログラムで開くことができます。
+Send to プラグインのメニューで Customize menu をクリックしてください。
+
+![customization1.png](docs/customization1.png)
+
+"plugins\Operations\Misc\send_to.json" がデフォルトのテキストエディタで開かれます。編集して保存してください。
+
+![customization2.png](docs/customization2.png)
+
+カスタマイズした内容がメニューに反映されます。
+
+![customization3.png](docs/customization3.png)
 
 ## プラグインの一覧 (105個)
 ### Basic operations

@@ -82,8 +82,19 @@ Please download the latest release version and copy "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
 ## Customization
-For the "Send to" plugin, please edit "plugins\Operations\Misc\send_to.json" to run your
-favorite programs.
+For the "Send to" plugin, you can open files with your favorite programs.
+Please click "Customize menu" of the plugin menu.
+
+![customization1.png](docs/customization1.png)
+
+"plugins\Operations\Misc\send_to.json" will be opened with your default text editor.
+Please edit and save it.
+
+![customization2.png](docs/customization2.png)
+
+Your customization will be reflected to menu items.
+
+![customization3.png](docs/customization3.png)
 
 ## List of plugins (105 plugins)
 ### Basic operations
