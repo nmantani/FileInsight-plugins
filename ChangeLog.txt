@@ -18,9 +18,8 @@
       Characters not in current Windows code page will be shown as "?".
       This behavior is due to the limitation of FileInsight.
   - Search operations
-    - Search operations
-      - "YARA scan" plugin
-        Ditto.
+    - "YARA scan" plugin
+      Ditto.
 * Other changes
   - "Bitmap view" plugin has been moved from "Misc operations" category to "Visualization operations" category.
 
