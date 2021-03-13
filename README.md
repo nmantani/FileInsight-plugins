@@ -85,7 +85,7 @@ Please download the latest release version and copy "plugins" folder into
 For the "Send to" plugin, you can open files with your favorite programs.
 Please click "Customize menu" of the plugin menu.
 
-<img src="docs/customization1.png" width="274" height="132">
+<img src="docs/customization1.png" width="364" height="176">
 
 "plugins\Operations\Misc\send_to.json" will be opened with your default text editor.
 Please edit and save it.
@@ -94,7 +94,7 @@ Please edit and save it.
 
 Your customization will be reflected to menu items.
 
-<img src="docs/customization3.png" width="295" height="207">
+<img src="docs/customization3.png" width="392" height="276">
 
 ## List of plugins (105 plugins)
 ### Basic operations
