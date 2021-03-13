@@ -1,3 +1,29 @@
+2021-03-13 version 2.9
+* New operation category
+  - "Visualization operations" category has been added.
+* New plugins
+  - Visualization operations
+    - "Byte histogram" plugin
+      This plugin shows byte histogram of selected region (the whole file if not selected).
+    - "Entropy graph" plugin
+      This plugin shows entropy graph of selected region (the whole file if not selected).
+* Removed plugin
+  - Misc operations
+    - "Byte frequency" plugin
+      This plugin's function has been integrated into "Byte histogram" plugin.
+* Bug fixes
+  - Misc operations
+    - "File comparison" plugin
+      Fix corruption of file names that contain Non-ASCII characters in current Windows code page.
+      Characters not in current Windows code page will be shown as "?".
+      This behavior is due to the limitation of FileInsight.
+  - Search operations
+    - Search operations
+      - "YARA scan" plugin
+        Ditto.
+* Other changes
+  - "Bitmap view" plugin has been moved from "Misc operations" category to "Visualization operations" category.
+
 2021-02-21 version 2.8
 * New plugins
   - Crypto operations
