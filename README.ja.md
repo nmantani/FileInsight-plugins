@@ -5,7 +5,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 マルウェア解析に関する様々なデコード作業に便利です。（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書ファイルを抽出する）
 
 ## スクリーンショット
-#### YARA scan プラグインのダイアログ
+#### AES decrypt プラグインのダイアログ
 ![screenshot1.png](docs/screenshot1.png)
 
 #### YARA scan プラグインの実行結果

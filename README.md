@@ -5,7 +5,7 @@ It adds many capabilities such as decryption, decompression, searching XOR-ed te
 It is useful for various kind of decoding tasks in malware analysis (e.g. extracing malware executables and decoy documents from malicious document files).
 
 ## Screenshots
-#### Dialog of "YARA scan" plugin
+#### Dialog of "AES decrypt" plugin
 ![screenshot1.png](docs/screenshot1.png)
 
 #### Scan result of "YARA scan" plugin
