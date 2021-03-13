@@ -42,7 +42,7 @@ if ($PROXY_HOST -and $PROXY_PORT) {
     $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
 }
 
-$RELEASE_VERSION = "2.8"
+$RELEASE_VERSION = "2.9"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.8.8"
 $APLIB_VERSION = "1.1.1"
@@ -51,7 +51,7 @@ $QUICKLZ_VERSION = "1.5.0"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "BA34C02E2DD54BB0993BB5D196199E660EEC7DF58F4EEF83C8A4C1A24A2C6FD3"
+$FILEINSIGHT_PLUGINS_HASH = "43B3850FD8355BEA255274874536793AC745DEFAAF00DE38E820BD45B4BEC87F"
 $PYTHON_HASH = "0E4B57099657C2304132D961E6939EED0C7DA3CC4F15078008F9D5BA0A30726E"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $EXIFTOOL_HASH = "4F15679F151B593A529960C108B9EB62C1D3821E9A4AA4E0831BDC87079801E9"
@@ -171,6 +171,7 @@ function install_fileinsight_plugins($work_dir, $update) {
         }
 
         Write-Host "[+] Downloading FileInsight-plugins-$RELEASE_VERSION..."
+        #$plugins_url = "https://github.com/nmantani/FileInsight-plugins/archive/v$RELEASE_VERSION.zip" # for testing before release
         $plugins_url = "https://github.com/nmantani/FileInsight-plugins/releases/download/v$RELEASE_VERSION/FileInsight-plugins-$RELEASE_VERSION.zip"
         $zip_archive_path = "$work_dir\FileInsight-plugins-$RELEASE_VERSION.zip"
         download_file $plugins_url $zip_archive_path
