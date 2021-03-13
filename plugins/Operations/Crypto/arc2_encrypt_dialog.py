@@ -125,7 +125,7 @@ data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()
-root.title("ARC2 Encrypt")
+root.title("ARC2 encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label_mode = tkinter.Label(root, text="Mode:")

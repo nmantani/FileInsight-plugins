@@ -122,7 +122,7 @@ data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()
-root.title("Blowfish Encrypt")
+root.title("Blowfish encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label_mode = tkinter.Label(root, text="Mode:")

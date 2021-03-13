@@ -121,7 +121,7 @@ data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()
-root.title("XTEA Decrypt")
+root.title("XTEA decrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label_mode = tkinter.Label(root, text="Mode:")
