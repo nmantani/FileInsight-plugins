@@ -35,9 +35,9 @@ def print_param(root, cm, sp, cp, bd):
     mode = cm.get()
     min_len = int(sp.get())
     postprocess = cp.get()
-    decode_hex = bd.get()
+    decode = bd.get()
 
-    print("%s\t%s\t%s\t%s" % (mode, min_len, postprocess, decode_hex))
+    print("%s\t%s\t%s\t%s" % (mode, min_len, postprocess, decode))
 
     root.quit()
 
@@ -69,12 +69,12 @@ combo_postprocess["values"] = ("None", "Show offset", "Remove duplicates")
 combo_postprocess.current(0)
 combo_postprocess.grid(row=2, column=1, padx=5, pady=5, sticky="w")
 
-bool_decode_hex = tkinter.BooleanVar()
-bool_decode_hex.set(False)
-check_decode_hex = tkinter.Checkbutton(root, variable=bool_decode_hex, text='Decode hex-encoded text strings', onvalue=True, offvalue=False)
-check_decode_hex.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
+bool_decode = tkinter.BooleanVar()
+bool_decode.set(False)
+check_decode = tkinter.Checkbutton(root, variable=bool_decode, text='Decode hex / BASE64 encoded text strings', onvalue=True, offvalue=False)
+check_decode.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
 
-button = tkinter.Button(root, text="OK", command=(lambda root=root, cm=combo_mode, sp=spin, cp=combo_postprocess, bd=bool_decode_hex: print_param(root, cm, sp, cp, bd)))
+button = tkinter.Button(root, text="OK", command=(lambda root=root, cm=combo_mode, sp=spin, cp=combo_postprocess, bd=bool_decode: print_param(root, cm, sp, cp, bd)))
 button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
 
 # Adjust window position

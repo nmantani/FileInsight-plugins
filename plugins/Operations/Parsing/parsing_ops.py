@@ -26,6 +26,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import base64
 import binascii
 import collections
 import ctypes
@@ -269,21 +270,26 @@ def strings_dedupe(matched, unicode, decode):
     """
     Used by strings()
     """
-    unique = []
+    plain = []
+    decoded = []
     for m in matched:
         if unicode:
             s = re.sub("\x00+", "", m.group())
-            s = strings_decode_hex(s, decode)
+            (s_plain, s_decoded) = strings_decode(s, decode)
         else:
-            s = strings_decode_hex(m.group(), decode)
-        unique.append(s)
+            (s_plain, s_decoded) = strings_decode(m.group(), decode)
+        plain.append(s_plain)
+        if s_decoded != "":
+            decoded.append("%s -> %s" % (s_plain, s_decoded))
 
-    unique = list(set(unique))
-    unique.sort()
+    plain = list(set(plain))
+    plain.sort()
+    decoded = list(set(decoded))
+    decoded.sort()
 
-    return unique
+    return plain, decoded
 
-def strings_decode_hex(s, decode):
+def strings_decode(s, decode):
     """
     Used by strings() and strings_dedupe()
     """
@@ -292,16 +298,32 @@ def strings_decode_hex(s, decode):
             s_orig = s
             s = binascii.a2b_hex(s)
             if re.match("^[ -~]+$", s):
-                return "Decoded: %s\tOriginal: %s" % (s, s_orig)
+                return s_orig, s
             elif re.match("^(?:(?:[ -~]\x00)|(?:\x00[ -~]))+$", s):
                 s = re.sub("\x00", "", s)
-                return "Decoded: %s\tOriginal: %s" % (s, s_orig)
+                return s_orig, s
             else:
-                return s_orig
+                return s_orig, ""
+        elif re.match("^[0-9A-Za-z/+]+=*$", s):
+            print("BASE64: %s" % s)
+            s_orig = s
+
+            try:
+                s = base64.b64decode(s_orig)
+            except:
+                s = ""
+
+            if re.match("^[ -~]+$", s):
+                return s_orig, s
+            elif re.match("^(?:(?:[ -~]\x00)|(?:\x00[ -~]))+$", s):
+                s = re.sub("\x00", "", s)
+                return s_orig, s
+            else:
+                return s_orig, ""
         else:
-            return s
+            return s, ""
     else:
-        return s
+        return s, ""
 
 def strings(fi):
     """
@@ -340,72 +362,117 @@ def strings(fi):
     else:
         decode_hex = False
     newdata = ""
+    decoded = ""
 
     if mode == "ASCII + UTF-16":
         expression = "[ -~]{%d,}" % min_len
         matched = re.finditer(expression, data)
         newdata += "ASCII strings:\r\n"
+        decoded += "Decoded ASCII strings:\r\n"
+
         if postprocess == "Remove duplicates":
-            for d in strings_dedupe(matched, False, decode_hex):
-                newdata += d + "\r\n"
+            (plain_list, decoded_list) = strings_dedupe(matched, False, decode_hex)
+            for s_plain in plain_list:
+                newdata += s_plain + "\r\n"
+            for s_decoded in decoded_list:
+                decoded += s_decoded + "\r\n"
         else:
             for m in matched:
+                (s_plain, s_decoded) = strings_decode(m.group(), decode_hex)
+
                 if postprocess == "Show offset":
-                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(m.group(), decode_hex))
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), s_plain)
+                    if s_decoded != "":
+                        decoded += "0x%x: %s -> %s\r\n" % (offset + m.start(), s_plain, s_decoded)
                 else:
-                    newdata += strings_decode_hex(m.group(), decode_hex) + "\r\n"
+                    newdata += s_plain + "\r\n"
+                    if s_decoded != "":
+                        decoded += "%s -> %s \r\n" % (s_plain, s_decoded)
 
         expression = "(?:(?:[ -~]\x00)|(?:\x00[ -~])){%d,}" % min_len
         matched = re.finditer(expression, data)
-        newdata += "\nUTF-16 strings:\r\n"
+        newdata += "\r\nUTF-16 strings:\r\n"
+        decoded += "\r\nDecoded UTF-16 strings:\r\n"
+
         if postprocess == "Remove duplicates":
-            for d in strings_dedupe(matched, True, decode_hex):
-                newdata += d + "\r\n"
+            (plain_list, decoded_list) = strings_dedupe(matched, True, decode_hex)
+            for s_plain in plain_list:
+                newdata += s_plain + "\r\n"
+            for s_decoded in decoded_list:
+                decoded += s_decoded + "\r\n"
         else:
             for m in matched:
                 s = re.sub("\x00+", "", m.group())
+                (s_plain, s_decoded) = strings_decode(s, decode_hex)
+
                 if postprocess == "Show offset":
-                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(s, decode_hex))
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), s_plain)
+                    if s_decoded != "":
+                        decoded += "0x%x: %s -> %s\r\n" % (offset + m.start(), s_plain, s_decoded)
                 else:
-                    newdata += strings_decode_hex(s, decode_hex) + "\r\n"
+                    newdata += s_plain + "\r\n"
+                    if s_decoded != "":
+                        decoded += "%s -> %s \r\n" % (s_plain, s_decoded)
     elif mode == "ASCII":
         expression = "[ -~]{%d,}" % min_len
         matched = re.finditer(expression, data)
         newdata += "ASCII strings:\r\n"
+        decoded += "Decoded ASCII strings:\r\n"
+
         if postprocess == "Remove duplicates":
-            for d in strings_dedupe(matched, False, decode_hex):
-                newdata += d + "\r\n"
+            (plain_list, decoded_list) = strings_dedupe(matched, False, decode_hex)
+            for s_plain in plain_list:
+                newdata += s_plain + "\r\n"
+            for s_decoded in decoded_list:
+                decoded += s_decoded + "\r\n"
         else:
             for m in matched:
+                (s_plain, s_decoded) = strings_decode(m.group(), decode_hex)
+
                 if postprocess == "Show offset":
-                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(m.group(), decode_hex))
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), s_plain)
+                    if s_decoded != "":
+                        decoded += "0x%x: %s -> %s\r\n" % (offset + m.start(), s_plain, s_decoded)
                 else:
-                    newdata += strings_decode_hex(m.group(), decode_hex) + "\r\n"
+                    newdata += s_plain + "\r\n"
+                    if s_decoded != "":
+                        decoded += "%s -> %s \r\n" % (s_plain, s_decoded)
     elif mode == "UTF-16":
         expression = "(?:(?:[ -~]\x00)|(?:\x00[ -~])){%d,}" % min_len
         matched = re.finditer(expression, data)
         newdata += "UTF-16 strings:\r\n"
+        decoded += "Decoded UTF-16 strings:\r\n"
+
         if postprocess == "Remove duplicates":
-            for d in strings_dedupe(matched, True, decode_hex):
-                newdata += d + "\r\n"
+            (plain_list, decoded_list) = strings_dedupe(matched, True, decode_hex)
+            for s_plain in plain_list:
+                newdata += s_plain + "\r\n"
+            for s_decoded in decoded_list:
+                decoded += s_decoded + "\r\n"
         else:
             for m in matched:
                 s = re.sub("\x00+", "", m.group())
+                (s_plain, s_decoded) = strings_decode(s, decode_hex)
+
                 if postprocess == "Show offset":
-                    newdata += "0x%x: %s\r\n" % (offset + m.start(), strings_decode_hex(s, decode_hex))
+                    newdata += "0x%x: %s\r\n" % (offset + m.start(), s_plain)
+                    if s_decoded != "":
+                        decoded += "0x%x: %s -> %s\r\n" % (offset + m.start(), s_plain, s_decoded)
                 else:
-                    newdata += strings_decode_hex(s, decode_hex) + "\r\n"
+                    newdata += s_plain + "\r\n"
+                    if s_decoded != "":
+                        decoded += "%s -> %s \r\n" % (s_plain, s_decoded)
 
     fi.newDocument("Strings output", 0) # Open a new tab with text mode
-    fi.setDocument(newdata)
+    if decode_hex:
+        fi.setDocument(decoded + "\r\n" + newdata)
+    else:
+        fi.setDocument(newdata)
 
     if length > 0:
         print("Extracted text strings from offset %s to %s." % (hex(offset), hex(offset + length)))
     else:
         print("Extracted text strings from the whole file.")
-
-    if decode_hex:
-        print("Please search 'Decoded: ***\tOriginal: ***' lines to find decoded hex strings.")
 
 def bookmark_yesno_dialog(num_bookmark):
     """
