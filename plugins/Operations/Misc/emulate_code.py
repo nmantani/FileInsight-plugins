@@ -157,8 +157,11 @@ if len(sys.argv) == 8:
 
     if file_type == "executable":
         try:
+            # output parameter has been removed since Qiling Framework 1.2.3
+            if distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.3"):
+                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, verbose=4, profile="%s.ql" % os_type)
             # filename parameter has been renamed to argv since Qiling Framework 1.2.1
-            if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2"):
+            elif distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.1"):
                 ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
             else:
                 ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
@@ -178,8 +181,13 @@ if len(sys.argv) == 8:
             shellcode = f.read()
 
         try:
+            # output parameter has been removed since Qiling Framework 1.2.3
+            if distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.3"):
+                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, verbose=4)
+                if os_type == "linux":
+                    ql.set_syscall("execve", execve_hook)
             # shellcoder parameter has been renamed to code since Qiling Framework 1.2.2
-            if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1"):
+            elif distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.2"):
                 ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
                 if os_type == "linux":
                     ql.set_syscall("execve", execve_hook)
