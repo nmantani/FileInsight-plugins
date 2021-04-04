@@ -305,7 +305,6 @@ def strings_decode(s, decode):
             else:
                 return s_orig, ""
         elif re.match("^[0-9A-Za-z/+]+=*$", s):
-            print("BASE64: %s" % s)
             s_orig = s
 
             try:
