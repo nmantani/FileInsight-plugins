@@ -474,7 +474,38 @@ function install_qiling_rootfs($work_dir, $update) {
         $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
         Write-Host "[+] Copying qiling-master to $dest_dir ..."
         Copy-Item $extract_dir -Destination $dest_dir -Recurse -Force
-        $file_path = "${dest_dir}\qiling-master\examples\rootfs\x8664_windows\bin\argv.exe"
+
+        Write-Host "[+] Downloading Qiling Framework rootfs..."
+        $rootfs_url = "https://github.com/qilingframework/rootfs/archive/master.zip"
+        $zip_archive_path = "$work_dir\rootfs-master.zip"
+        download_file $rootfs_url $zip_archive_path
+
+        if (!(Test-Path $zip_archive_path)) {
+            Write-Host "[!] Download has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        Write-Host "[+] Extracting rootfs-master.zip..."
+        $extract_dir = "$work_dir\rootfs-master"
+        extract_zip $zip_archive_path $work_dir
+        $file_path = "$extract_dir\README.md"
+
+        if (!(Test-Path $file_path)) {
+            Write-Host "[!] Extraction has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs"
+        Write-Host "[+] Copying rootfs-master to $dest_dir ..."
+        Copy-Item $extract_dir\* -Destination $dest_dir -Recurse -Force
+
+        $file_path = "${dest_dir}\x8664_windows\bin\argv.exe"
         if (!(Test-Path $file_path)) {
             Write-Host "[!] Installation has been failed."
             remove_working_directory $work_dir
@@ -482,6 +513,7 @@ function install_qiling_rootfs($work_dir, $update) {
             exit
         }
 
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
         $cwd = Convert-Path .
         cd "${dest_dir}\qiling-master"
         Write-Host "[+] Setting up DLL files and registry files in ${dest_dir}\qiling-master\examples\rootfs ..."
