@@ -1,3 +1,31 @@
+2021-04-10 version 2.10
+* New plugins
+  - Basic operations
+    - Bookmark plugin
+      This plugin bookmarks selected region with specified comment and color.
+  - Encoding operations
+    - "Custom base16 decode" plugin
+      This plugin decodes selected region with custom base16 table.
+    - "Custom base16 encode" plugin
+      This plugin encodes selected region with custom base16 table.
+    - "Custom base85 decode" plugin
+      This plugin decodes selected region with custom base85 table.
+    - "Custom base85 encode" plugin
+      This plugin encodes selected region with custom base85 table.
+* Enhancement
+  - Parsing operations
+    - Strings plugin
+      - Decoded strings will be shown at the top of plugin output.
+      - Capability to decode BASE64 strings has been added.
+* Bug fix
+  - Parsing operations
+    - Disassemble plugin
+      Bookmarking incorrect end of disassembly location has been fixed.
+* Other change
+  - Misc operations
+    - "Emulate code" plugin
+      Qiling Framework 1.2.3 is supported.
+
 2021-03-13 version 2.9
 * New operation category
   - "Visualization operations" category has been added.
@@ -20,7 +48,7 @@
   - Search operations
     - "YARA scan" plugin
       Ditto.
-* Other changes
+* Other change
   - "Bitmap view" plugin has been moved from "Misc operations" category to "Visualization operations" category.
 
 2021-02-21 version 2.8
