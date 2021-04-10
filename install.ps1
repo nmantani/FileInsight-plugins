@@ -512,6 +512,7 @@ function install_qiling_rootfs($work_dir, $update) {
             Write-Host "[+] Aborting installation."
             exit
         }
+        Write-Host "[+] Done."
 
         $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
         $cwd = Convert-Path .
