@@ -96,7 +96,7 @@ Your customization will be reflected to menu items.
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## List of plugins (108 plugins)
+## List of plugins (110 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -252,6 +252,10 @@ Your customization will be reflected to menu items.
   Decode selected region with custom base64 table
 * Custom base64 encode  
   Encode selected region with custom base64 table
+* Custom base85 decode  
+  Decode selected region with custom base85 table
+* Custom base85 encode  
+  Encode selected region with custom base85 table
 * Protobuf decode  
   Decode selected region as Protocol Buffers serialized data without .proto files
 * ROT13  

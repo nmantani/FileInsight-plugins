@@ -45,7 +45,9 @@ else:
     digits = sys.argv[1]
     action = sys.argv[2]
 
-    if digits == "64":
+    if digits == "85":
+        table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
+    elif digits == "64":
         table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
     elif digits == "58":
         table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -62,7 +64,7 @@ root.title('Custom base%s %s' % (digits, action))
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 label = tkinter.Label(root, text='Enter base%s table:' % digits)
 label.grid(row=0, column=0, padx=5, pady=5)
-entry = tkinter.Entry(root, width=80)
+entry = tkinter.Entry(root, width=(len(table) + 16))
 entry.insert(tkinter.END, table)
 entry.grid(row=0, column=1, padx=5, pady=5)
 button = tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_table(r, e)))

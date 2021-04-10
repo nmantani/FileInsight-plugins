@@ -217,6 +217,8 @@ if __name__ == "__main__":
                    encoding_ops.custom_base58_encode,
                    encoding_ops.custom_base64_decode,
                    encoding_ops.custom_base64_encode,
+                   encoding_ops.custom_base85_decode,
+                   encoding_ops.custom_base85_encode,
                    encoding_ops.protobuf_decode,
                    encoding_ops.rot13,
                    encoding_ops.from_quoted_printable,

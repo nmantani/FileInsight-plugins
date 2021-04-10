@@ -94,7 +94,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## プラグインの一覧 (108個)
+## プラグインの一覧 (110個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -251,6 +251,10 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase64テーブルを使ってデコードします。
 * Custom base64 encode  
   選択範囲をカスタムbase64テーブルを使ってエンコードします。
+* Custom base85 decode  
+  選択範囲をカスタムbase85テーブルを使ってデコードします。
+* Custom base85 encode  
+  選択範囲をカスタムbase85テーブルを使ってエンコードします。
 * Protobuf decode  
   選択範囲を Protocol Buffers でシリアライズされたデータとして .proto ファイル無しでデコードします。
 * ROT13  
