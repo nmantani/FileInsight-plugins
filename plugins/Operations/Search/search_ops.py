@@ -185,6 +185,11 @@ def xor_hex_search(fi):
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     keyword = fi.showSimpleDialog("Search keyword (in hex):")
+
+    # Dialog has been closed
+    if keyword == None:
+        return
+
     keyword = keyword.replace("0x", "")
 
     try:
@@ -294,7 +299,13 @@ def xor_text_search(fi):
 
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
-    keyword = list(fi.showSimpleDialog("Search keyword:"))
+    keyword = fi.showSimpleDialog("Search keyword:")
+
+    # Dialog has been closed
+    if keyword == None:
+        return
+
+    keyword = list(keyword)
 
     if len(keyword) > 0:
         if length_sel > 0:
@@ -342,7 +353,7 @@ def regex_search(fi):
 
     time_start = time.time()
 
-    if len(keyword) > 0:
+    if keyword != None and len(keyword) > 0:
         if length_sel > 0:
             print("Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword))
         else:

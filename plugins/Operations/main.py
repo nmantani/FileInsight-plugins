@@ -29,7 +29,7 @@ import re
 import subprocess
 import sys
 
-__version__ = "2.9"
+__version__ = "2.10"
 
 sys.path.append("./Basic")
 import basic_ops
@@ -100,14 +100,18 @@ class FileInsight:
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute dialog.py to show GUI
-        # GUI portion is moved to dialog.py to avoid hangup of FileInsight
+        # Execute show_simple_dialog.py to show GUI
+        # GUI portion is moved to separate process to avoid hangup of FileInsight
         p = subprocess.Popen(["py.exe", "-3", "show_simple_dialog.py", prompt], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get input
         stdout_data, stderr_data = p.communicate()
+        ret = p.wait()
 
-        return(stdout_data.rstrip())
+        if ret: # Dialog has been closed
+            return None
+        else:
+            return(stdout_data.rstrip())
 
 def find_python3():
     pyexe_found = False
@@ -137,6 +141,7 @@ def find_python3():
 if __name__ == "__main__":
     # Tuple of plugin operations
     operations = (basic_ops.copy_to_new_file,
+                  basic_ops.bookmark,
                   basic_ops.cut_binary_to_clipboard,
                   basic_ops.copy_binary_to_clipboard,
                   basic_ops.paste_binary_from_clipboard,

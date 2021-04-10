@@ -205,6 +205,10 @@ def fill(fi):
 
     if length > 0:
         pat = fi.showSimpleDialog("Pattern (in hex):")
+
+        if pat == None:
+            return
+
         pat = pat.replace("0x", "")
 
         try:
@@ -398,3 +402,32 @@ def swap_case(fi):
             print("Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to converted region.")
 
+def bookmark(fi):
+    """
+    Bookmark selected region with specified comment and color
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    if length > 0:
+        comment = fi.showSimpleDialog("Bookmark comment")
+
+        if comment == None:
+            return
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute colorchooser.py to show color chooser
+        p = subprocess.Popen(["py.exe", "-3", "colorchooser.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Get output
+        stdout_data, stderr_data = p.communicate()
+        ret = p.wait()
+
+        if ret: # color chooser has been closed
+            return
+        else:
+            color = stdout_data
+            fi.setBookmark(offset, length, comment, color)
+            print("Added a bookmark to selected region.")

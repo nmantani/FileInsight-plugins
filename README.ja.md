@@ -94,10 +94,12 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## プラグインの一覧 (105個)
+## プラグインの一覧 (106個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
+* Bookmark  
+  選択範囲を指定したコメントと色でブックマークします。
 * Cut binary to clipboard  
   選択範囲のバイナリデータをクリップボードに切り取ります(16進テキストとして)。
 * Copy binary to clipboard  

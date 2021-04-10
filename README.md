@@ -96,10 +96,12 @@ Your customization will be reflected to menu items.
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## List of plugins (105 plugins)
+## List of plugins (106 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
+* Bookmark  
+  Bookmark selected region with specified comment and color
 * Cut binary to clipboard  
   Cut binary data of selected region to clipboard as hex-encoded text
 * Copy binary to clipboard  

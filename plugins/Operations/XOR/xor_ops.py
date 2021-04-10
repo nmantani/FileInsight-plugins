@@ -40,6 +40,11 @@ def decremental_xor(fi):
 
     if length > 0:
         key = fi.showSimpleDialog("XOR key (in hex, default = 0x00):")
+
+        # Dialog has been closed
+        if key == None:
+            return
+
         if key == "":
             key = 0
         else:
@@ -50,6 +55,11 @@ def decremental_xor(fi):
                 return
 
         step = fi.showSimpleDialog("Decrement step (in hex, default = 0x01):")
+
+        # Dialog has been closed
+        if step == None:
+            return
+
         if step == "":
             step = 1
         else:
@@ -87,6 +97,11 @@ def incremental_xor(fi):
 
     if length > 0:
         key = fi.showSimpleDialog("XOR key (in hex, default = 0x00):")
+
+        # Dialog has been closed
+        if key == None:
+            return
+
         if key == "":
             key = 0
         else:
@@ -97,6 +112,11 @@ def incremental_xor(fi):
                 return
 
         step = fi.showSimpleDialog("Increment step (in hex, default = 0x01):")
+
+        # Dialog has been closed
+        if step == None:
+            return
+
         if step == "":
             step = 1
         else:
@@ -134,6 +154,11 @@ def null_preserving_xor(fi):
 
     if length > 0:
         key = fi.showSimpleDialog("XOR key (in hex):")
+
+        # Dialog has been closed
+        if key == None:
+            return
+
         try:
             key = int(key, 16)
         except:

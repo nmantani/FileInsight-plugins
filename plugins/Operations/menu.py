@@ -29,6 +29,7 @@ import tkinter
 ops_dict = {}
 tooltip_dict = {}
 ops_dict["Basic"] = ("Copy to new file",
+                     "Bookmark",
                      "Cut binary to clipboard",
                      "Copy binary to clipboard",
                      "Paste binary from clipboard",
@@ -43,6 +44,7 @@ ops_dict["Basic"] = ("Copy to new file",
                      "To lower case",
                      "Swap case")
 tooltip_dict["Basic"] = ("Copy selected region (the whole file if not selected) to new file",
+                         "Bookmark selected region with specified comment and color",
                          "Cut binary data of selected region to clipboard as hex-encoded text",
                          "Copy binary data of selected region to clipboard as hex-encoded text",
                          "Paste binary data (converted from hex-encoded text) from clipboard",

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020, Nobutaka Mantani
+# Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,38 +25,16 @@
 
 import sys
 import tkinter
-import tkinter.simpledialog
+import tkinter.colorchooser
 
-# Print input to stdout
-def print_input(r, e):
-    print(e.get())
+root = tkinter.Tk()
+root.withdraw() # Hide root window
+
+color = tkinter.colorchooser.askcolor()
+
+if color[1] == None:
+    sys.exit(1)
+else:
+    print(color[1])
     sys.exit(0)
 
-# Create input dialog
-root = tkinter.Tk()
-root.title("Dialog")
-root.protocol("WM_DELETE_WINDOW", (lambda: sys.exit(1)))
-
-if len(sys.argv) < 2:
-    label = tkinter.Label(root, text="")
-else:
-    label = tkinter.Label(root, text=sys.argv[1])
-label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-entry = tkinter.Entry(root, width=80)
-entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-entry.bind("<Return>", lambda r=root, e=entry: print_input(r, e)) # Event handler for hitting enter key
-entry.focus() # Focus to this widget
-
-button = tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_input(r, e)))
-button.grid(row=2, column=0, padx=5, pady=5, sticky="e")
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
