@@ -819,6 +819,96 @@ def protobuf_decode(fi):
         else:
             print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
 
+def custom_base16_decode(fi):
+    """
+    Decode selected region with custom base16 table
+    """
+    standard_table = "0123456789ABCDEF"
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "16", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base16 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 16:
+                print("Error: base16 table must be 16 characters.")
+            else:
+                data = fi.getSelection()
+                orig = fi.getDocument()
+                orig_len = len(orig)
+
+                trans = string.maketrans(custom_table, standard_table)
+                decoded = base64.b16decode(data.translate(trans))
+
+                newdata = orig[:offset] + decoded + orig[offset + length:]
+
+                fi.newDocument("Output of Custom base16 decode", 1)
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Decoded one byte with custom base16 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Decoded %s bytes with custom base16 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to decoded region.")
+
+def custom_base16_encode(fi):
+    """
+    Encode selected region with custom base32 table
+    """
+    standard_table = "0123456789ABCDEF"
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "16", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base16 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 16:
+                print("Error: base16 table must be 16 characters.")
+            else:
+                data = fi.getSelection()
+                orig = fi.getDocument()
+                orig_len = len(orig)
+
+                trans = string.maketrans(standard_table, custom_table)
+                encoded = base64.b16encode(data).translate(trans)
+
+                newdata = orig[:offset] + encoded + orig[offset + length:]
+
+                fi.newDocument("Output of Custom base16 encode", 1)
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Encoded one byte with custom base16 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Encoded %s bytes with custom base16 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to encoded region.")
+
 def custom_base32_decode(fi):
     """
     Decode selected region with custom base32 table
@@ -1021,3 +1111,4 @@ def custom_base58_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base58 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+

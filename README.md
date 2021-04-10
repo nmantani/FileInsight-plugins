@@ -96,7 +96,7 @@ Your customization will be reflected to menu items.
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## List of plugins (106 plugins)
+## List of plugins (108 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to new file
@@ -236,6 +236,10 @@ Your customization will be reflected to menu items.
   Convert binary of selected region into binary text
 * Binary text to binary data  
   Convert binary text of selected region into binary data
+* Custom base16 decode  
+  Decode selected region with custom base16 table
+* Custom base16 encode  
+  Encode selected region with custom base16 table
 * Custom base32 decode  
   Decode selected region with custom base32 table
 * Custom base32 encode  

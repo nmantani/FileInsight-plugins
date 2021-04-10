@@ -49,8 +49,12 @@ else:
         table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
     elif digits == "58":
         table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-    else: # 32
+    elif digits == "32":
         table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567="
+    elif digits == "16":
+        table = "0123456789ABCDEF"
+    else:
+        sys.exit(1)
 
 # Create input dialog
 root = tkinter.Tk()

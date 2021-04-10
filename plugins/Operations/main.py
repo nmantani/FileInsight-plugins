@@ -209,6 +209,8 @@ if __name__ == "__main__":
                    encoding_ops.octal_text_to_binary_data,
                    encoding_ops.binary_data_to_binary_text,
                    encoding_ops.binary_text_to_binary_data,
+                   encoding_ops.custom_base16_decode,
+                   encoding_ops.custom_base16_encode,
                    encoding_ops.custom_base32_decode,
                    encoding_ops.custom_base32_encode,
                    encoding_ops.custom_base58_decode,

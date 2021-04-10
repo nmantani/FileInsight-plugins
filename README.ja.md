@@ -94,7 +94,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## プラグインの一覧 (106個)
+## プラグインの一覧 (108個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -235,6 +235,10 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲のバイナリデータを2進数のテキストに変換します。
 * Binary text to binary data  
   選択範囲の2進数のテキストをバイナリデータに変換します。
+* Custom base16 decode  
+  選択範囲をカスタムbase16テーブルを使ってデコードします。
+* Custom base16 encode  
+  選択範囲をカスタムbase16テーブルを使ってエンコードします。
 * Custom base32 decode  
   選択範囲をカスタムbase32テーブルを使ってデコードします。
 * Custom base32 encode  
