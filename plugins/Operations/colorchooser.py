@@ -28,9 +28,11 @@ import tkinter
 import tkinter.colorchooser
 
 root = tkinter.Tk()
+
+root.attributes("-topmost", True) # Set root window to topmost to make color chooser dialog modal
 root.withdraw() # Hide root window
 
-color = tkinter.colorchooser.askcolor()
+color = tkinter.colorchooser.askcolor(color=(255, 128, 128))
 
 if color[1] == None:
     sys.exit(1)
