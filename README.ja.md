@@ -29,6 +29,10 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 #### Entropy graph プラグインで表示した Windows の実行ファイルのエントロピーのグラフ
 ![screenshot8.png](docs/screenshot8.png)
 
+## 使用例
+* [Use case 1: executable file embedded in Excel file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-1--executable-file-embedded-in-Excel-file)
+* [Use case 2: executable file embedded in RTF file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-2--executable-file-embedded-in-RTF-file)
+
 ## インストール方法
 ### 自動でのインストール
 以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3 (x64) を含む全ての必要なものがインストールされます。

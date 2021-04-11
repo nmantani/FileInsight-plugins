@@ -29,6 +29,10 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 #### Entropy graph of Windows executable file shown by "Entropy graph" plugin
 ![screenshot8.png](docs/screenshot8.png)
 
+## Use cases
+* [Use case 1: executable file embedded in Excel file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-1--executable-file-embedded-in-Excel-file)
+* [Use case 2: executable file embedded in RTF file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-2--executable-file-embedded-in-RTF-file)
+
 ## How to install
 ### Automatic installation
 Please execute the following command. The latest release version of FileInsight-plugins and all pre-requisites including FileInsight and Python 3 (x64) will be installed.
