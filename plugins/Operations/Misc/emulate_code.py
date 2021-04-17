@@ -244,7 +244,7 @@ for i in range(1, len(all_mem) + 1):
     if image:
         info += " (%s)" % image.path
 
-    if file_path in info or info in ("[shellcode_base]", "[shellcode_stack]", "[stack]"):
+    if file_path in info or info in ("[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
         print("Extracted region %s (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (info, start, end, end - start, num_dump), file=sys.stderr)
         sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
         num_dump += 1
