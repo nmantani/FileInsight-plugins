@@ -90,7 +90,10 @@ py.exe -3 -m pip install watchdog
 をダウンロードして、展開された qiling-master フォルダを
 "plugins\Operations\Misc" フォルダにコピーしてください。
 
-それから PowerShell で以下のコマンドを実行して、rootfs の
+それから https://github.com/qilingframework/rootfs/archive/master.zip を
+ダウンロードして、展開された rootfs-master フォルダ以下にある arm_linux 等のフォルダを "plugins\Operations\Misc\qiling-master\examples\rootfs" にコピーしてください。
+
+それらの後で PowerShell で以下のコマンドを実行して、rootfs の
 DLL ファイルとレジストリのセットアップを行ってください。
 
 ```powershell

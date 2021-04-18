@@ -87,7 +87,9 @@ py.exe -3 -m pip install watchdog
 You also need to set up rootfs files of Qiling Framework.
 Please download them from https://github.com/qilingframework/qiling/archive/master.zip and copy extracted "qiling-master" folder into "plugins\Operations\Misc" folder.
 
-Then please setup DLL files and registry files of rootfs with the following commands on PowerShell:
+Then please download them from https://github.com/qilingframework/rootfs/archive/master.zip and copy extracted folders such as "arm_linux" under "rootfs-master" folder into "plugins\Operations\Misc\qiling-master\examples\rootfs" folder.
+
+After them please setup ntoskrnl.exe, DLL files and registry files of rootfs with the following commands on PowerShell:
 ```powershell
 $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
 
