@@ -464,7 +464,7 @@ def emulate_code(fi):
             print("Then please download them from https://github.com/qilingframework/rootfs/archive/master.zip")
             print("and copy extracted folders such as 'arm_linux' under 'rootfs-master' folder into '%s' folder." % (os.getcwd() + "\\Misc\\qiling-master\\examples\\rootfs"))
             print("")
-            print("Then please setup ntoskrnl.exe, DLL files and registry files of rootfs with the following command on PowerShell:")
+            print("After them please setup ntoskrnl.exe, DLL files and registry files of rootfs with the following command on PowerShell:")
             print("Start-Process powershell -Verb RunAs -Wait -ArgumentList \"-Command `\"cd '%s\qiling-master'; examples\scripts\dllscollector.bat`\"\"" % (os.getcwd() + "\\Misc"))
             print("")
             print("You can also do the setup with install.ps1:")
