@@ -1,4 +1,4 @@
-# FileInsight-plugins: a decoding toolbox of McAfee FileInsight hex editor for malware analysis
+# FileInsight-plugins: decoding toolbox of McAfee FileInsight hex editor for malware analysis
 
 FileInsight-plugins is a collection of plugins for McAfee FileInsight hex editor.
 It adds many capabilities such as decryption, decompression, searching XOR-ed text strings, scanning with a YARA rule, code emulation, disassembly, and more!
@@ -34,6 +34,7 @@ It is useful for various kind of decoding tasks in malware analysis (e.g. extrac
 * [Use case 2: executable file embedded in RTF file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-2--executable-file-embedded-in-RTF-file)
 * [Use case 3: obfuscated PHP webshell](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-3--obfuscated-PHP-webshell)
 * [Use case 4: YARA rule testing](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-4--YARA-rule-testing)
+* [Use case 5: Code emulation](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-5--Code-emulation)
 
 ## How to install
 ### Automatic installation
