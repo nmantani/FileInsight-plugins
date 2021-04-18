@@ -2,7 +2,7 @@
 
 FileInsight-plugins is a collection of plugins for McAfee FileInsight hex editor.
 It adds many capabilities such as decryption, decompression, searching XOR-ed text strings, scanning with a YARA rule, code emulation, disassembly, and more!
-It is useful for various kind of decoding tasks in malware analysis (e.g. extracing malware executables and decoy documents from malicious document files).
+It is useful for various kinds of decoding tasks in malware analysis (e.g. extracting malware executables and decoy documents from malicious document files).
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
