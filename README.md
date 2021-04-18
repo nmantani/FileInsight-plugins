@@ -64,7 +64,7 @@ You can also use plugins from the right-click menu.
 
 ![how_to_use2.png](docs/how_to_use2.png)
 
-Some plugins show an additional dialog for plugin settings at use of them.
+Some plugins show an additional dialog for plugin settings at the point of use.
 
 ![how_to_use3.png](docs/how_to_use3.png)
 
