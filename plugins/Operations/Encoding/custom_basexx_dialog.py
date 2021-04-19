@@ -37,7 +37,7 @@ import tkinter
 # Print entered table to stdout
 def print_table(r, e):
     print(e.get())
-    r.quit()
+    sys.exit(0)
 
 if len(sys.argv) < 3:
     sys.exit(0)
@@ -62,11 +62,16 @@ else:
 root = tkinter.Tk()
 root.title('Custom base%s %s' % (digits, action))
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+
 label = tkinter.Label(root, text='Enter base%s table:' % digits)
 label.grid(row=0, column=0, padx=5, pady=5)
+
 entry = tkinter.Entry(root, width=(len(table) + 16))
 entry.insert(tkinter.END, table)
 entry.grid(row=0, column=1, padx=5, pady=5)
+entry.bind("<Return>", lambda r=root, e=entry: print_table(r, e)) # Event handler for hitting enter key
+entry.focus() # Focus to this widget
+
 button = tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_table(r, e)))
 button.grid(row=0, column=2, padx=5, pady=5)
 
@@ -79,4 +84,3 @@ wh = root.winfo_height()
 root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
 
 root.mainloop()
-
