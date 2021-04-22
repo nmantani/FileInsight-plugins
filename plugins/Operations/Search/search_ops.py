@@ -635,16 +635,19 @@ def yara_scan(fi):
     prev_string = ""
     bookmark_start = []
     bookmark_end = []
+    rule_identifier = []
     for l in stdout_data.splitlines():
         offset_matched = int(l.split()[1], 0)
         size_matched = int(l.split()[3], 0)
         m = re.match("^Offset: (.+) size: (.+) rule: (.+) tag: (.*) identifier: (.+) matched: (.+)$", l)
+        rule_matched = m.groups()[2]
         identifier_matched = m.groups()[4]
         if num_hits > 0 and identifier_matched == prev_string and offset_matched <= bookmark_end[-1]:
             bookmark_end[-1] = offset_matched + size_matched
         else:
             bookmark_start.append(offset_matched)
             bookmark_end.append(offset_matched + size_matched)
+            rule_identifier.append("%s %s" % (rule_matched, identifier_matched))
         prev_string = identifier_matched
         num_hits += 1
 
@@ -656,7 +659,7 @@ def yara_scan(fi):
     if do_bookmark:
         fi.activateDocumentAt(int(scanned_file_index))
         for i in range(0, len(bookmark_start)):
-            fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]), "#aaffaa")
+            fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + rule_identifier[i], "#aaffaa")
 
         if num_hits == 1:
             print("Added a bookmark to the search hit.")
