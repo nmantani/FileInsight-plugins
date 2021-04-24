@@ -36,7 +36,7 @@ import tkinter.ttk
 # Print delimiter setting to stdout
 def print_setting(r, c):
     print(c.get())
-    r.quit()
+    exit(0)
 
 # Create input dialog
 root = tkinter.Tk()
@@ -50,6 +50,11 @@ combo_delimiter.current(0)
 combo_delimiter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 button = tkinter.Button(root, text='OK', command=(lambda r=root, c=combo_delimiter: print_setting(r, c)))
 button.grid(row=0, column=2, padx=5, pady=5)
+button.focus() # Focus to this widget
+
+# Set callback functions
+combo_delimiter.bind("<Return>", lambda r=root, c=combo_delimiter: print_setting(r, c))
+button.bind("<Return>", lambda r=root, c=combo_delimiter: print_setting(r, c))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

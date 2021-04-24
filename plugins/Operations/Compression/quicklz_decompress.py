@@ -49,7 +49,7 @@ def decompress(root, combo_level, data):
         print("Error: compressed data is invalid or compression level does not match.", file=sys.stderr)
         exit(1)
 
-    root.quit()
+    exit(0)
 
 data = sys.stdin.buffer.read()
 
@@ -73,6 +73,11 @@ combo_level.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
 button = tkinter.Button(root, text="OK", command=(lambda root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data)))
 button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
+button.focus() # Focus to this widget
+
+# Set callback functions
+combo_level.bind("<Return>", lambda root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data))
+button.bind("<Return>", lambda root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

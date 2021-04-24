@@ -32,7 +32,7 @@ import tkinter
 def print_amount(r, s):
     if s.get() != "":
         print(s.get())
-    r.quit()
+    exit(0)
 
 def amount_changed(*args):
     if not re.match("^-?([0-9])+$", amount.get()):
@@ -51,6 +51,11 @@ spin = tkinter.Spinbox(root, textvariable=amount, state="readonly", width=4, fro
 spin.grid(row=0, column=1, padx=5, pady=5)
 button = tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_amount(r, s)))
 button.grid(row=0, column=2, padx=5, pady=5)
+button.focus() # Focus to this widget
+
+# Set callback functions
+spin.bind("<Return>", lambda r=root, s=spin: print_amount(r, s))
+button.bind("<Return>", lambda r=root, s=spin: print_amount(r, s))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

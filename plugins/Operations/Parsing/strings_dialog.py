@@ -39,7 +39,7 @@ def print_param(root, cm, sp, cp, bd):
 
     print("%s\t%s\t%s\t%s" % (mode, min_len, postprocess, decode))
 
-    root.quit()
+    exit(0)
 
 # Create input dialog
 root = tkinter.Tk()
@@ -76,6 +76,11 @@ check_decode.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
 
 button = tkinter.Button(root, text="OK", command=(lambda root=root, cm=combo_mode, sp=spin, cp=combo_postprocess, bd=bool_decode: print_param(root, cm, sp, cp, bd)))
 button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
+button.focus() # Focus to this widget
+
+# Set callback functions
+for x in (combo_mode, spin, combo_postprocess, check_decode, button):
+    x.bind("<Return>", lambda root=root, cm=combo_mode, sp=spin, cp=combo_postprocess, bd=bool_decode: print_param(root, cm, sp, cp, bd))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

@@ -36,7 +36,7 @@ import tkinter.messagebox
 # Print selected items
 def get_selection(r, ct, co, ca, ce, ea, t):
     print("%s\t%s\t%s\t%s\t%s\t%s" % (ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), t.get()), end="")
-    r.quit()
+    exit(0)
 
 def combo_arch_selected(r, ca, le, ce):
     # Hide / show endian combobox
@@ -113,15 +113,19 @@ label_timeout.grid(row=5, column=0, padx=5, pady=5, sticky="w")
 timeout = tkinter.StringVar()
 timeout.set("60")
 timeout.trace("w", timeout_changed)
-spin_timeout = tkinter.Spinbox(root, textvariable=timeout, width=4, from_=0)
+spin_timeout = tkinter.Spinbox(root, textvariable=timeout, width=4, from_=0, to=10000)
 spin_timeout.grid(row=5, column=2, padx=5, pady=5, sticky="w")
 
 button = tkinter.Button(root, text="OK", command=(lambda r=root, ct=combo_type, co=combo_os, ca=combo_arch, ce=combo_endian, ea=entry_args, t=timeout: get_selection(r, ct, co, ca, ce, ea, t)))
 button.grid(row=6, column=0, padx=5, pady=5, columnspan=3)
+button.focus() # Focus to this widget
 
 # Set callback functions
 combo_arch.bind('<<ComboboxSelected>>', (lambda r=root, ca=combo_arch, le=label_endian, ce=combo_endian: combo_arch_selected(r, ca, le, ce)))
 combo_type.bind('<<ComboboxSelected>>', (lambda r=root, ct=combo_type, la=label_args, ea=entry_args: combo_type_selected(r, ct, la, ea)))
+
+for x in (combo_type, combo_os, combo_arch, combo_endian, entry_args, spin_timeout, button):
+    x.bind("<Return>", lambda r=root, ct=combo_type, co=combo_os, ca=combo_arch, ce=combo_endian, ea=entry_args, t=timeout: get_selection(r, ct, co, ca, ce, ea, t))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

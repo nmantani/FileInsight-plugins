@@ -108,7 +108,7 @@ def get_selection(r, w):
 
     print("%s\t%s" % (str(arch), str(mode))) # These values will be passed to disassemble.py
     show_disassembly_setting(arch, mode) # Pass message of disassembly settings via stderr
-    r.quit()
+    exit(0)
 
 def show_disassembly_setting(arch, mode):
     print("Disassembly settings:", file=sys.stderr)
@@ -351,10 +351,14 @@ widgets["combo_v8"] = combo_v8
 
 button = tkinter.Button(root, text="OK", command=(lambda r=root, w=widgets: get_selection(r, w)))
 button.grid(row=7, column=0, padx=5, pady=5, columnspan=3)
+button.focus() # Focus to this widget
 
 # Set callback functions
 combo_arch.bind('<<ComboboxSelected>>', (lambda r=root, w=widgets: combo_arch_selected(r, w)))
 combo_arm_mode.bind('<<ComboboxSelected>>', (lambda r=root, w=widgets: combo_arm_mode_selected(r, w)))
+
+for x in (combo_arch, combo_arm_mode, combo_mips_mode, combo_endian, combo_micromips, combo_mclass, combo_v8, button):
+    x.bind("<Return>", lambda r=root, w=widgets: get_selection(r, w))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

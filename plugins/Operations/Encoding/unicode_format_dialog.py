@@ -40,11 +40,11 @@ def print_setting(r, cf, ce):
                      "%uXXXX    (Legacy JavaScript)": "%u",
                      "U+XXXX    (Unicode code point)": "U+"}
     print("%s\t%s" % (escape_format[cf.get()], ce.get()))
-    r.quit()
+    exit(0)
 
 # Create input dialog
 root = tkinter.Tk()
-root.title("Unicode escape format setting")
+root.title("Unicode escape/unescape format setting")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label_format = tkinter.Label(root, text="Unicode escape format:")
@@ -76,6 +76,11 @@ combo_encoding.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
 button = tkinter.Button(root, text='OK', command=(lambda r=root, cf=combo_format, ce=combo_encoding: print_setting(r, cf, ce)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+button.focus() # Focus to this widget
+
+# Set callback functions
+for x in (combo_format, combo_encoding, button):
+    x.bind("<Return>", lambda r=root, cf=combo_format, ce=combo_encoding: print_setting(r, cf, ce))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

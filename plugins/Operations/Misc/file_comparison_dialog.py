@@ -34,7 +34,7 @@ import tkinter.messagebox
 # Print selected items
 def get_selection(r, c1, c2):
     print("%d %d" % (c1.current(), c2.current()))
-    r.quit()
+    sys.exit(0)
 
 # Read list of files from stdin
 files = sys.stdin.readlines()
@@ -67,6 +67,11 @@ combo2.grid(row=1, column=2, padx=5, pady=5)
 combo2
 button = tkinter.Button(root, text="OK", command=(lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+button.focus() # Focus to this widget
+
+# Set callback functions
+for x in (combo1, combo2, button):
+    x.bind("<Return>", lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

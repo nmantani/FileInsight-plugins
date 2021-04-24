@@ -36,7 +36,7 @@ def get_input(r, e1, e2, c):
     print(e1.get())
     print(e2.get())
     print(c.get())
-    r.quit()
+    exit(0)
 
 # Create input dialog
 root = tkinter.Tk()
@@ -62,6 +62,11 @@ entry2.grid(row=1, column=2, padx=5, pady=5)
 
 button = tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+button.focus() # Focus to this widget
+
+# Set callback functions
+for x in (entry1, combo, entry2, button):
+    x.bind("<Return>", lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c))
 
 # Adjust window position
 sw = root.winfo_screenwidth()
