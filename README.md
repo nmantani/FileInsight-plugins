@@ -1,6 +1,6 @@
 # FileInsight-plugins: decoding toolbox of McAfee FileInsight hex editor for malware analysis
 
-FileInsight-plugins is a collection of plugins for McAfee FileInsight hex editor.
+FileInsight-plugins is a large set of plugins for McAfee FileInsight hex editor.
 It adds many capabilities such as decryption, decompression, searching XOR-ed text strings, scanning with a YARA rule, code emulation, disassembly, and more!
 It is useful for various kinds of decoding tasks in malware analysis (e.g. extracting malware executables and decoy documents from malicious document files).
 
@@ -44,7 +44,7 @@ Please execute the following command. The latest release version of FileInsight-
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 ```
 
-If you use a HTTP proxy, please download [install.ps1](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1) and edit $PROXY_HOST and $PROXY_PORT variables in it,
+If you use an HTTP proxy, please download [install.ps1](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1) and edit $PROXY_HOST and $PROXY_PORT variables in it,
 then please execute the following command.
 
 ```
@@ -85,7 +85,7 @@ powershell -exec bypass .\install.ps1 -update
 ```
 
 ### Manual update
-Please download the latest release version and copy "plugins" folder into
+Please download the latest release version and copy the "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
 ## Customization
@@ -99,14 +99,14 @@ Please edit and save it.
 
 ![customization2.png](docs/customization2.png)
 
-Your customization will be reflected to menu items.
+Your customization will be reflected in menu items.
 
 <img src="docs/customization3.png" width="392" height="276">
 
 ## List of plugins (110 plugins)
 ### Basic operations
 * Copy to new file  
-  Copy selected region (the whole file if not selected) to new file
+  Copy selected region (the whole file if not selected) to a new file
 * Bookmark  
   Bookmark selected region with specified comment and color
 * Cut binary to clipboard  
@@ -116,9 +116,9 @@ Your customization will be reflected to menu items.
 * Paste binary from clipboard  
   Paste binary data (converted from hex-encoded text) from clipboard
 * Delete before  
-  Delete all region before current cursor position
+  Delete all region before the current cursor position
 * Delete after  
-  Delete all region after current cursor position
+  Delete all region after the current cursor position
 * Fill  
   Fill selected region with specified hex pattern
 * Invert  
@@ -148,7 +148,7 @@ Your customization will be reflected to menu items.
 * Gzip compress  
   Compress selected region with gzip format
 * Gzip decompress  
-  Decompress selected gzip compressed region
+  Decompress selected gzip-compressed region
 * LZ4 compress  
   Compress selected region with LZ4 algorithm
 * LZ4 decompress  
@@ -320,7 +320,7 @@ Your customization will be reflected to menu items.
 
 ### Visualization operations
 * Bitmap view  
-  Visualize the whole file as bitmap representation
+  Visualize the whole file as a bitmap representation
 * Byte histogram  
   Show byte histogram of selected region (the whole file if not selected)
 * Entropy graph  
