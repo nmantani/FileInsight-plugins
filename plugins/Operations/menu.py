@@ -59,145 +59,155 @@ tooltip_dict["Basic"] = ("Copy selected region (the whole file if not selected) 
                          "Convert text to lower case of selected region",
                          "Swap case of selected region")
 
-ops_dict["Compression"] = ("aPLib compress",
-                           "aPLib decompress",
-                           "Bzip2 compress",
-                           "Bzip2 decompress",
-                           "Gzip compress",
-                           "Gzip decompress",
-                           "LZ4 compress",
-                           "LZ4 decompress",
-                           "LZMA compress",
-                           "LZMA decompress",
-                           "LZNT1 compress",
-                           "LZNT1 decompress",
-                           "LZO compress",
-                           "LZO decompress",
-                           "PPMd compress",
-                           "PPMd decompress",
-                           "QuickLZ compress",
-                           "QuickLZ decompress",
-                           "Raw deflate",
-                           "Raw inflate",
-                           "XZ compress",
-                           "XZ decompress",
-                           "zlib compress (deflate)",
-                           "zlib decompress (inflate)",
-                           "Zstandard compress",
-                           "Zstandard decompress")
-tooltip_dict["Compression"] = ("Compress selected region with aPLib compression library",
-                               "Decompress selected region with aPLib compression library",
-                               "Compress selected region with bzip2 algorithm",
-                               "Decompress selected region with bzip2 algorithm",
-                               "Compress selected region with gzip format",
-                               "Decompress selected gzip-compressed region",
-                               "Compress selected region with LZ4 algorithm",
-                               "Decompress selected region with LZ4 algorithm",
-                               "Compress selected region with LZMA algorithm",
-                               "Decompress selected region with LZMA algorithm",
-                               "Compress selected region with LZNT1 algorithm",
-                               "Decompress selected region with LZNT1 algorithm",
-                               "Compress selected region with LZO algorithm",
-                               "Decompress selected region with LZO algorithm",
-                               "Compress selected region with PPMd algorithm",
-                               "Decompress selected region with PPMd algorithm",
-                               "Compress selected region with QuickLZ compression library",
-                               "Decompress selected region with QuickLZ compression library",
-                               "Compress selected region with Deflate algorithm without\nheader and checksum (equivalent to gzdeflate() in PHP language)",
-                               "Decompress selected Deflate compressed region that does\nnot have header and checksum (equivalent to gzinflate() in PHP language)",
-                               "Compress selected region with XZ format",
-                               "Decompress selected XZ compressed region",
-                               "Compress selected region with zlib (Deflate algorithm)",
-                               "Decompress selected region with zlib (Deflate algorithm)",
-                               "Compress selected region with Zstandard algorithm",
-                               "Decompress selected region with Zstandard algorithm")
+ops_dict["Compress"] = ("aPLib",
+                        "Bzip2",
+                        "Gzip",
+                        "LZ4",
+                        "LZMA",
+                        "LZNT1",
+                        "LZO",
+                        "PPMd",
+                        "QuickLZ",
+                        "Raw deflate",
+                        "XZ",
+                        "zlib (deflate)",
+                        "Zstandard")
+tooltip_dict["Compress"] = ("Compress selected region with aPLib compression library",
+                            "Compress selected region with bzip2 algorithm",
+                            "Compress selected region with gzip format",
+                            "Compress selected region with LZ4 algorithm",
+                            "Compress selected region with LZMA algorithm",
+                            "Compress selected region with LZNT1 algorithm",
+                            "Compress selected region with LZO algorithm",
+                            "Compress selected region with PPMd algorithm",
+                            "Compress selected region with QuickLZ compression library",
+                            "Compress selected region with Deflate algorithm without\nheader and checksum (equivalent to gzdeflate() in PHP language)",
+                            "Compress selected region with XZ format",
+                            "Compress selected region with zlib (Deflate algorithm)",
+                            "Compress selected region with Zstandard algorithm")
 
-ops_dict["Crypto"] = ("AES decrypt",
-                      "AES encrypt",
-                      "ARC2 decrypt",
-                      "ARC2 encrypt",
-                      "ARC4 decrypt / encrypt",
-                      "Blowfish decrypt",
-                      "Blowfish encrypt",
-                      "ChaCha20 decrypt / encrypt",
-                      "DES decrypt",
-                      "DES encrypt",
-                      "Salsa20 decrypt / encrypt",
-                      "TEA decrypt",
-                      "TEA encrypt",
-                      "Triple DES decrypt",
-                      "Triple DES encrypt",
-                      "XTEA decrypt",
-                      "XTEA encrypt")
-tooltip_dict["Crypto"] = ("Decrypt selected region with AES",
-                          "Encrypt selected region with AES",
+ops_dict["Decompress"] = ("aPLib",
+                           "Bzip2",
+                           "Gzip",
+                           "LZ4",
+                           "LZMA",
+                           "LZNT1",
+                           "LZO",
+                           "PPMd",
+                           "QuickLZ",
+                           "Raw inflate",
+                           "XZ",
+                           "zlib (inflate)",
+                           "Zstandard")
+tooltip_dict["Decompress"] = ("Decompress selected region with aPLib compression library",
+                              "Decompress selected region with bzip2 algorithm",
+                              "Decompress selected gzip-compressed region",
+                              "Decompress selected region with LZ4 algorithm",
+                              "Decompress selected region with LZMA algorithm",
+                              "Decompress selected region with LZNT1 algorithm",
+                              "Decompress selected region with LZO algorithm",
+                              "Decompress selected region with PPMd algorithm",
+                              "Decompress selected region with QuickLZ compression library",
+                              "Decompress selected Deflate compressed region that does\nnot have header and checksum (equivalent to gzinflate() in PHP language)",
+                              "Decompress selected XZ compressed region",
+                              "Decompress selected region with zlib (Deflate algorithm)",
+                              "Decompress selected region with Zstandard algorithm")
+
+ops_dict["Decrypt"] = ("AES",
+                       "ARC2",
+                       "ARC4",
+                       "Blowfish",
+                       "ChaCha20",
+                       "DES",
+                       "Salsa20",
+                       "TEA",
+                       "Triple DES",
+                       "XTEA")
+tooltip_dict["Decrypt"] = ("Decrypt selected region with AES",
                           "Decrypt selected region with ARC2 (Alleged RC2)",
-                          "Encrypt selected region with ARC2 (Alleged RC2)",
-                          "Decrypt / encrypt selected region with ARC4 (Alleged RC4)",
+                          "Decrypt selected region with ARC4 (Alleged RC4)",
                           "Decrypt selected region with Blowfish",
-                          "Encrypt selected region with Blowfish",
-                          "Decrypt / encrypt selected region with ChaCha20",
+                          "Decrypt selected region with ChaCha20",
                           "Decrypt selected region with DES",
-                          "Encrypt selected region with DES",
-                          "Decrypt / encrypt selected region with Salsa20",
+                          "Decrypt selected region with Salsa20",
                           "Decrypt selected region with TEA (Tiny Encryption Algorithm)",
-                          "Encrypt selected region with TEA (Tiny Encryption Algorithm)",
                           "Decrypt selected region with Triple DES",
+                          "Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)")
+
+ops_dict["Encrypt"] = ("AES",
+                       "ARC2",
+                       "ARC4",
+                       "Blowfish",
+                       "ChaCha20",
+                       "DES",
+                       "Salsa20",
+                       "TEA",
+                       "Triple DES",
+                       "XTEA")
+tooltip_dict["Encrypt"] = ("Encrypt selected region with AES",
+                          "Encrypt selected region with ARC2 (Alleged RC2)",
+                          "Encrypt selected region with ARC4 (Alleged RC4)",
+                          "Encrypt selected region with Blowfish",
+                          "Encrypt selected region with ChaCha20",
+                          "Encrypt selected region with DES",
+                          "Encrypt selected region with Salsa20",
+                          "Encrypt selected region with TEA (Tiny Encryption Algorithm)",
                           "Encrypt selected region with Triple DES",
-                          "Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)",
                           "Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)")
-ops_dict["Encoding"] = ("Binary data to hex text",
-                        "Hex text to binary data",
-                        "Binary data to decimal text",
-                        "Decimal text to binary data",
-                        "Binary data to octal text",
-                        "Octal text to binary data",
-                        "Binary data to binary text",
-                        "Binary text to binary data",
-                        "Custom base16 decode",
-                        "Custom base16 encode",
-                        "Custom base32 decode",
-                        "Custom base32 encode",
-                        "Custom base58 decode",
-                        "Custom base58 encode",
-                        "Custom base64 decode",
-                        "Custom base64 encode",
-                        "Custom base85 decode",
-                        "Custom base85 encode",
-                        "Protobuf decode",
-                        "ROT13",
-                        "From quoted printable",
-                        "To quoted printable",
-                        "Unicode escape",
-                        "Unicode unescape",
-                        "URL decode",
-                        "URL encode")
-tooltip_dict["Encoding"] = ("Convert binary of selected region into hex text",
-                            "Convert hex text of selected region into binary",
-                            "Convert binary of selected region into decimal text",
-                            "Convert decimal text of selected region into binary data",
-                            "Convert binary of selected region into octal text",
-                            "Convert octal text of selected region into binary data",
-                            "Convert binary of selected region into binary text",
-                            "Convert binary text of selected region into binary data",
-                            "Decode selected region with custom base16 table",
-                            "Encode selected region with custom base16 table",
-                            "Decode selected region with custom base32 table",
-                            "Encode selected region with custom base32 table",
-                            "Decode selected region with custom base58 table",
-                            "Encode selected region with custom base58 table",
-                            "Decode selected region with custom base64 table",
-                            "Encode selected region with custom base64 table",
-                            "Decode selected region with custom base85 table",
-                            "Encode selected region with custom base85 table",
-                            "Decode selected region as Protocol Buffers serialized data without .proto files",
-                            "Rotate alphabet characters in selected region by the\nspecified amount (default: 13)",
-                            "Decode selected region as quoted printable text",
-                            "Encode selected region into quoted printable text",
-                            "Escape Unicode characters of selected region",
-                            "Unescape Unicode escape sequence of selected region",
-                            "Decode selected region as percent-encoded text\nthat is used by URL",
-                            "Encode selected region into percent-encoded text\nthat is used by URL")
+
+ops_dict["Decode"] = ("Hex text to binary data",
+                      "Decimal text to binary data",
+                      "Octal text to binary data",
+                      "Binary text to binary data",
+                      "Custom base16 decode",
+                      "Custom base32 decode",
+                      "Custom base58 decode",
+                      "Custom base64 decode",
+                      "Custom base85 decode",
+                      "Protobuf decode",
+                      "From quoted printable",
+                      "Unicode unescape",
+                      "URL decode")
+tooltip_dict["Decode"] = ("Convert hex text of selected region into binary",
+                          "Convert decimal text of selected region into binary data",
+                          "Convert octal text of selected region into binary data",
+                          "Convert binary text of selected region into binary data",
+                          "Decode selected region with custom base16 table",
+                          "Decode selected region with custom base32 table",
+                          "Decode selected region with custom base58 table",
+                          "Decode selected region with custom base64 table",
+                          "Decode selected region with custom base85 table",
+                          "Decode selected region as Protocol Buffers serialized data without .proto files",
+                          "Decode selected region as quoted printable text",
+                          "Unescape Unicode escape sequence of selected region",
+                          "Decode selected region as percent-encoded text\nthat is used by URL")
+
+ops_dict["Encode"] = ("Binary data to hex text",
+                      "Binary data to decimal text",
+                      "Binary data to octal text",
+                      "Binary data to binary text",
+                      "Custom base16 encode",
+                      "Custom base32 encode",
+                      "Custom base58 encode",
+                      "Custom base64 encode",
+                      "Custom base85 encode",
+                      "ROT13",
+                      "To quoted printable",
+                      "Unicode escape",
+                      "URL encode")
+tooltip_dict["Encode"] = ("Convert binary of selected region into hex text",
+                          "Convert binary of selected region into decimal text",
+                          "Convert binary of selected region into octal text",
+                          "Convert binary of selected region into binary text",
+                          "Encode selected region with custom base16 table",
+                          "Encode selected region with custom base32 table",
+                          "Encode selected region with custom base58 table",
+                          "Encode selected region with custom base64 table",
+                          "Encode selected region with custom base85 table",
+                          "Rotate alphabet characters in selected region by the\nspecified amount (default: 13)",
+                          "Encode selected region into quoted printable text",
+                          "Escape Unicode characters of selected region",
+                          "Encode selected region into percent-encoded text\nthat is used by URL")
 
 ops_dict["Misc"] = ("Emulate code",
                     "File comparison",
@@ -272,19 +282,31 @@ if y > 10:
     y = y - 10
 
 # Add menu items
-categories = ("Basic", "Compression", "Crypto", "Encoding", "Misc", "Parsing", "Search", "Visualization", "XOR")
+categories = ("Basic", "Compress", "Decompress", "Decrypt", "Encrypt", "Decode", "Encode", "Misc", "Parsing", "Search", "Visualization", "XOR")
+
+# Dictionary for parent categories
+parent_dict = {}
+parent_dict["Compress"] = "Compression"
+parent_dict["Decompress"] = "Compression"
+parent_dict["Decrypt"] = "Crypto"
+parent_dict["Encrypt"] = "Crypto"
+parent_dict["Decode"] = "Encoding"
+parent_dict["Encode"] = "Encoding"
+
 index_start = 0
 menu = tkinter.Menu(root, tearoff=False)
 menu_dict = {}
 
 for c in categories:
-    menu_dict[c] = tkinter.Menu(menu, tearoff=False)
+    # For categories that do not have sub-categories
+    if c not in ("Compress", "Decompress", "Decrypt", "Encrypt", "Decode", "Encode"):
+        menu_dict[c] = tkinter.Menu(menu, tearoff=False)
 
     # Callback to show tooltip of menu items
     def menuselect_callback(event, tooltip_dict=tooltip_dict[c]):
         global tooltip_window
         # Ignore events when the menu is opened or closed
-        if event.y != 0:
+        if event.y != 0 and event.widget.index("active") != None:
             # If tooltip is shown, hide it
             if tooltip_window:
                 tooltip_window.destroy()
@@ -308,8 +330,21 @@ for c in categories:
             label.pack()
             tooltip_window.attributes("-topmost", True) # Raise tooltip window to the top
 
-    menu_dict[c].bind("<<MenuSelect>>", menuselect_callback)
-    menu.add_cascade(label=c, menu=menu_dict[c])
+    if c in ("Compress", "Decrypt", "Decode"):
+        # sub-category menus will be added to this item
+        menu_dict[parent_dict[c]] = tkinter.Menu(menu, tearoff=False)
+        menu.add_cascade(label=parent_dict[c], menu=menu_dict[parent_dict[c]])
+
+        menu_dict[c] = tkinter.Menu(menu_dict[parent_dict[c]], tearoff=False)
+        menu_dict[c].bind("<<MenuSelect>>", menuselect_callback)
+        menu_dict[parent_dict[c]].add_cascade(label=c, menu=menu_dict[c])
+    elif c in ("Decompress", "Encrypt", "Encode"):
+        menu_dict[c] = tkinter.Menu(menu_dict[parent_dict[c]], tearoff=False)
+        menu_dict[c].bind("<<MenuSelect>>", menuselect_callback)
+        menu_dict[parent_dict[c]].add_cascade(label=c, menu=menu_dict[c])
+    else:
+        menu_dict[c].bind("<<MenuSelect>>", menuselect_callback)
+        menu.add_cascade(label=c, menu=menu_dict[c])
 
     for i in range(0, len(ops_dict[c])):
         # When a menu item is clicked, exit_value is set to the corresponding index number of operation.
