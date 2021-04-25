@@ -59,6 +59,12 @@ def arc4_decrypt(fi):
     """
     do_decrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
 
+def arc4_encrypt(fi):
+    """
+    Encrypt selected region with ARC4 (Alleged RC4)
+    """
+    do_encrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
+
 def blowfish_decrypt(fi):
     """
     Decrypt selected region with Blowfish
@@ -77,6 +83,12 @@ def chacha20_decrypt(fi):
     """
     do_decrypt(fi, "ChaCha20", "chacha20_decrypt_dialog.py")
 
+def chacha20_encrypt(fi):
+    """
+    Encrypt selected region with ChaCha20
+    """
+    do_encrypt(fi, "ChaCha20", "chacha20_decrypt_dialog.py")
+
 def des_decrypt(fi):
     """
     Decrypt selected region with DES
@@ -94,6 +106,12 @@ def salsa20_decrypt(fi):
     Decrypt selected region with Salsa20
     """
     do_decrypt(fi, "Salsa20", "salsa20_decrypt_dialog.py")
+
+def salsa20_encrypt(fi):
+    """
+    Encrypt selected region with Salsa20
+    """
+    do_encrypt(fi, "Salsa20", "salsa20_decrypt_dialog.py")
 
 def tea_decrypt(fi):
     """
@@ -148,7 +166,7 @@ def do_decrypt(fi, name, script):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute arc4_decrypt_dialog.py to show GUI
+        # Execute xxxx_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
         script = "Crypto/" + script
         p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -203,7 +221,7 @@ def do_encrypt(fi, name, script):
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute arc4_decrypt_dialog.py to show GUI
+        # Execute xxxx_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
         script = "Crypto/" + script
         p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
