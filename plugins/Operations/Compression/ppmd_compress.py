@@ -60,7 +60,7 @@ def compress(root, combo_version, spin_order, data):
         print(e, file=sys.stderr)
         exit(1)
 
-    exit(0)
+    root.quit()
 
 def combo_version_changed(root, combo_version, order):
     # Set order value to default that is used by 7-Zip
@@ -107,10 +107,10 @@ button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
 button.focus() # Focus to this widget
 
 # Set callback functions
-combo_version.bind('<<ComboboxSelected>>', (lambda root=root, combo_version=combo_version, order=order: combo_version_changed(root, combo_version, order)))
+combo_version.bind('<<ComboboxSelected>>', lambda event, root=root, combo_version=combo_version, order=order: combo_version_changed(root, combo_version, order))
 
 for x in (combo_version, spin_order, button):
-    x.bind("<Return>", lambda root=root, combo_version=combo_version, spin_order=spin_order, data=data: compress(root, combo_version, spin_order, data))
+    x.bind("<Return>", lambda event, root=root, combo_version=combo_version, spin_order=spin_order, data=data: compress(root, combo_version, spin_order, data))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

@@ -32,7 +32,7 @@ import tkinter
 def print_amount(r, s):
     if s.get() != "":
         print(s.get())
-    exit(0)
+    root.quit()
 
 def amount_changed(*args):
     if not re.match("^-?([0-9])+$", amount.get()):
@@ -54,8 +54,8 @@ button.grid(row=0, column=2, padx=5, pady=5)
 button.focus() # Focus to this widget
 
 # Set callback functions
-spin.bind("<Return>", lambda r=root, s=spin: print_amount(r, s))
-button.bind("<Return>", lambda r=root, s=spin: print_amount(r, s))
+spin.bind("<Return>", lambda event, r=root, s=spin: print_amount(r, s))
+button.bind("<Return>", lambda event, r=root, s=spin: print_amount(r, s))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

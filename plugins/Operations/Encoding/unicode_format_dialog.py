@@ -40,7 +40,7 @@ def print_setting(r, cf, ce):
                      "%uXXXX    (Legacy JavaScript)": "%u",
                      "U+XXXX    (Unicode code point)": "U+"}
     print("%s\t%s" % (escape_format[cf.get()], ce.get()))
-    exit(0)
+    root.quit()
 
 # Create input dialog
 root = tkinter.Tk()
@@ -80,7 +80,7 @@ button.focus() # Focus to this widget
 
 # Set callback functions
 for x in (combo_format, combo_encoding, button):
-    x.bind("<Return>", lambda r=root, cf=combo_format, ce=combo_encoding: print_setting(r, cf, ce))
+    x.bind("<Return>", lambda event, r=root, cf=combo_format, ce=combo_encoding: print_setting(r, cf, ce))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

@@ -30,7 +30,7 @@ import tkinter.simpledialog
 # Print input to stdout
 def print_input(r, e):
     print(e.get())
-    sys.exit(0)
+    root.quit()
 
 # Create input dialog
 root = tkinter.Tk()
@@ -45,7 +45,7 @@ label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
 entry = tkinter.Entry(root, width=80)
 entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-entry.bind("<Return>", lambda r=root, e=entry: print_input(r, e)) # Event handler for hitting enter key
+entry.bind("<Return>", lambda event, r=root, e=entry: print_input(r, e)) # Event handler for hitting enter key
 entry.focus() # Focus to this widget
 
 button = tkinter.Button(root, text='OK', command=(lambda r=root, e=entry: print_input(r, e)))

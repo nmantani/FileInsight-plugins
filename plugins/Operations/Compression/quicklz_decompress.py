@@ -49,7 +49,7 @@ def decompress(root, combo_level, data):
         print("Error: compressed data is invalid or compression level does not match.", file=sys.stderr)
         exit(1)
 
-    exit(0)
+    root.quit()
 
 data = sys.stdin.buffer.read()
 
@@ -76,8 +76,8 @@ button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
 button.focus() # Focus to this widget
 
 # Set callback functions
-combo_level.bind("<Return>", lambda root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data))
-button.bind("<Return>", lambda root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data))
+combo_level.bind("<Return>", lambda event, root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data))
+button.bind("<Return>", lambda event, root=root, combo_level=combo_level, data=data: decompress(root, combo_level, data))
 
 # Adjust window position
 sw = root.winfo_screenwidth()
