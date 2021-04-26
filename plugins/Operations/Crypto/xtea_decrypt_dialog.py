@@ -145,6 +145,7 @@ label_key.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
 entry_key = tkinter.Entry(width=32)
 entry_key.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+entry_key.focus() # Focus to this widget
 
 label_iv_type = tkinter.Label(root, text="IV type:")
 label_iv_type.grid(row=2, column=0, padx=5, pady=5, sticky="w")
@@ -163,8 +164,15 @@ entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei)))
 button.grid(row=3, column=0, padx=5, pady=5, columnspan=4)
 
-# Set callback function
-combo_mode.bind('<<ComboboxSelected>>', (lambda root=root, cm=combo_mode, cit=combo_iv_type, ei=entry_iv: combo_mode_selected(root, cm, cit, ei)))
+# Set callback functions
+combo_mode.bind('<<ComboboxSelected>>', lambda event, root=root, cm=combo_mode, cit=combo_iv_type, ei=entry_iv: combo_mode_selected(root, cm, cit, ei))
+combo_mode.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei))
+combo_key_type.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei))
+entry_key.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei))
+combo_iv_type.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei))
+entry_iv.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei))
+button.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, ckt, ek, cit, ei))
+
 # These are disabled in the initial state (ECB mode)
 combo_iv_type.configure(state = "disabled")
 entry_iv.configure(state = "disabled")

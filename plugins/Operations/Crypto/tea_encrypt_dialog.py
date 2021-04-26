@@ -84,9 +84,15 @@ combo.grid(row=0, column=1, padx=5, pady=5)
 
 entry = tkinter.Entry(width=40)
 entry.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+entry.focus() # Focus to this widget
 
 button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+
+# Set callback functions
+combo.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry))
+entry.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry))
+button.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry))
 
 # Adjust window position
 sw = root.winfo_screenwidth()

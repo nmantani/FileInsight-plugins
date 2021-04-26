@@ -103,8 +103,9 @@ combo_key_type.grid(row=0, column=1, padx=5, pady=5)
 label_key = tkinter.Label(root, text="Key:")
 label_key.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-entry_key = tkinter.Entry(width=32)
+entry_key = tkinter.Entry(width=48)
 entry_key.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+entry_key.focus() # Focus to this widget
 
 label_nonce_type = tkinter.Label(root, text="Nonce type:")
 label_nonce_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
@@ -117,11 +118,18 @@ combo_nonce_type.grid(row=1, column=1, padx=5, pady=5)
 label_nonce = tkinter.Label(root, text="Nonce:")
 label_nonce.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
-entry_nonce = tkinter.Entry(width=32)
+entry_nonce = tkinter.Entry(width=48)
 entry_nonce.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
 button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=4)
+
+# Set callback functions
+combo_key_type.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
+entry_key.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
+combo_nonce_type.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
+entry_nonce.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
+button.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
 
 # Adjust window position
 sw = root.winfo_screenwidth()
