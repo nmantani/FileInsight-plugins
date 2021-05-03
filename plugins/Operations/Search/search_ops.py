@@ -395,7 +395,7 @@ def regex_search(fi):
 
         if do_bookmark:
             for i in range(0, len(bookmark_start)):
-                fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]), "#aaffaa")
+                fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + keyword, "#aaffaa")
 
             if num_hits == 1:
                 print("Added a bookmark to the search hit.")
@@ -516,7 +516,7 @@ def replace(fi):
 
         if do_bookmark:
             for i in range(0, len(bookmark_start)):
-                fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]), "#aaffaa")
+                fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + keyword, "#aaffaa")
 
             if num_hits == 1:
                 print("Added a bookmark to the search hit.")
