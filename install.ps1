@@ -29,9 +29,12 @@
 #   Installation:
 #     powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 #     powershell -exec bypass .\install.ps1
-#   Update:
+#   Update (the latest release version):
 #     powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
 #     powershell -exec bypass .\install.ps1 -update
+#   Update (the latest snapshot):
+#     powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update -snapshot"
+#     powershell -exec bypass .\install.ps1 -update -snapshot
 #
 
 # Please edit these variables if you use a HTTP proxy server
@@ -146,8 +149,12 @@ function extract_zip($zip_path, $dest_path) {
     }
 }
 
-function install_fileinsight_plugins($work_dir, $update) {
-    Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
+function install_fileinsight_plugins($work_dir, $update, $snapshot) {
+    if ($snapshot) {
+        Write-Host "[+] Installing FileInsight-plugins (the latest snapshot)..."
+    } else {
+        Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
+    }
 
     $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\main.py"
     if ((Test-Path $file_path) -and !$update) {
@@ -170,10 +177,17 @@ function install_fileinsight_plugins($work_dir, $update) {
             Write-Host "[+] Done."
         }
 
-        Write-Host "[+] Downloading FileInsight-plugins-$RELEASE_VERSION..."
-        #$plugins_url = "https://github.com/nmantani/FileInsight-plugins/archive/v$RELEASE_VERSION.zip" # for testing before release
-        $plugins_url = "https://github.com/nmantani/FileInsight-plugins/releases/download/v$RELEASE_VERSION/FileInsight-plugins-$RELEASE_VERSION.zip"
-        $zip_archive_path = "$work_dir\FileInsight-plugins-$RELEASE_VERSION.zip"
+        if ($snapshot) {
+            Write-Host "[+] Downloading FileInsight-plugins-master..."
+            $plugins_url = "https://github.com/nmantani/FileInsight-plugins/archive/master.zip"
+            $zip_archive_path = "$work_dir\FileInsight-plugins-master.zip"
+        } else {
+            Write-Host "[+] Downloading FileInsight-plugins-$RELEASE_VERSION..."
+            #$plugins_url = "https://github.com/nmantani/FileInsight-plugins/archive/v$RELEASE_VERSION.zip" # for testing before release
+            $plugins_url = "https://github.com/nmantani/FileInsight-plugins/releases/download/v$RELEASE_VERSION/FileInsight-plugins-$RELEASE_VERSION.zip"
+            $zip_archive_path = "$work_dir\FileInsight-plugins-$RELEASE_VERSION.zip"
+        }
+
         download_file $plugins_url $zip_archive_path
 
         if (!(Test-Path $zip_archive_path)) {
@@ -184,21 +198,30 @@ function install_fileinsight_plugins($work_dir, $update) {
         }
         Write-Host "[+] Done."
 
-        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $FILEINSIGHT_PLUGINS_HASH)..."
-        $val = compute_hash $zip_archive_path
-        if ($val -eq $FILEINSIGHT_PLUGINS_HASH) {
-            Write-Host "[+] OK."
-        } else {
-            Write-Host "[!] The hash value does not match ($val)."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
+        if (!$snapshot) {
+            Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $FILEINSIGHT_PLUGINS_HASH)..."
+            $val = compute_hash $zip_archive_path
+            if ($val -eq $FILEINSIGHT_PLUGINS_HASH) {
+                Write-Host "[+] OK."
+            } else {
+                Write-Host "[!] The hash value does not match ($val)."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
         }
 
-        Write-Host "[+] Extracting FileInsight-plugins-$RELEASE_VERSION.zip..."
-        $extract_dir = "$work_dir\FileInsight-plugins-$RELEASE_VERSION"
-        extract_zip $zip_archive_path $work_dir
-        $file_path = "$extract_dir\plugins\Operations\XOR\xor_ops.py"
+        if ($snapshot) {
+            Write-Host "[+] Extracting FileInsight-plugins-master.zip..."
+            $extract_dir = "$work_dir\FileInsight-plugins-master"
+            extract_zip $zip_archive_path $work_dir
+            $file_path = "$extract_dir\plugins\Operations\XOR\xor_ops.py"
+        } else {
+            Write-Host "[+] Extracting FileInsight-plugins-$RELEASE_VERSION.zip..."
+            $extract_dir = "$work_dir\FileInsight-plugins-$RELEASE_VERSION"
+            extract_zip $zip_archive_path $work_dir
+            $file_path = "$extract_dir\plugins\Operations\XOR\xor_ops.py"
+        }
 
         if (!(Test-Path $file_path)) {
             Write-Host "[!] Extraction has been failed."
@@ -221,7 +244,12 @@ function install_fileinsight_plugins($work_dir, $update) {
             exit
         }
         Write-Host "[+] Done."
-        Write-Host "[+] FileInsight-plugins $RELEASE_VERSION has been installed."
+
+        if ($snapshot) {
+            Write-Host "[+] FileInsight-plugins (the latest snapshot) has been installed."
+        } else {
+            Write-Host "[+] FileInsight-plugins $RELEASE_VERSION has been installed."
+        }
     }
     Write-Host ""
 }
@@ -767,9 +795,15 @@ Write-Host ""
 $work_dir = create_working_directory
 
 if ($Args[0] -eq "-update") {
-    Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
-    install_fileinsight $work_dir
-    install_fileinsight_plugins $work_dir $true
+    if ($Args[1] -eq "-snapshot") {
+        Write-Host "[+] Updating FileInsight-plugins to the latest snapshot. Existing files will be overwritten."
+        install_fileinsight $work_dir
+        install_fileinsight_plugins $work_dir $true $true
+    } else {
+        Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
+        install_fileinsight $work_dir
+        install_fileinsight_plugins $work_dir $true $false
+    }
     install_python3 $work_dir
     install_python_modules $work_dir $true
     install_qiling_rootfs $work_dir $true
