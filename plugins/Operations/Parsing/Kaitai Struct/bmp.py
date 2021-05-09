@@ -243,7 +243,7 @@ class Bmp(KaitaiStruct):
         def profile_data(self):
             """
             .. seealso::
-               "If the profile is embedded, profile data is the actual profile, and if it is linked, the profile data is the null-terminated file name of the profile. This cannot be a Unicode string. It must be composed exclusively of characters from the Windows character set (code page 1252)." - https://docs.microsoft.com/en-us/previous-versions/windows/desktop/wcs/using-structures-in-wcs-1-0
+               "If the profile is embedded, profile data is the actual profile, and if it is linked, the profile data is the null-terminated file name of the profile. This cannot be a Unicode string. It must be composed exclusively of characters from the Windows character set (code page 1252)." - https://docs.microsoft.com/en-us/windows/win32/wcs/using-structures-in-wcs-1-0
             """
             if hasattr(self, '_m_profile_data'):
                 return self._m_profile_data if hasattr(self, '_m_profile_data') else None
@@ -390,7 +390,7 @@ class Bmp(KaitaiStruct):
             if hasattr(self, '_m_value'):
                 return self._m_value if hasattr(self, '_m_value') else None
 
-            self._m_value = (self.raw / (1 << 30))
+            self._m_value = ((self.raw + 0.0) / (1 << 30))
             return self._m_value if hasattr(self, '_m_value') else None
 
 
@@ -610,7 +610,7 @@ class Bmp(KaitaiStruct):
             if hasattr(self, '_m_value'):
                 return self._m_value if hasattr(self, '_m_value') else None
 
-            self._m_value = (self.raw / (1 << 16))
+            self._m_value = ((self.raw + 0.0) / (1 << 16))
             return self._m_value if hasattr(self, '_m_value') else None
 
 
@@ -701,7 +701,7 @@ class Bmp(KaitaiStruct):
             self.header = Bmp.BitmapHeader(self.len_header, _io__raw_header, self, self._root)
             self.header._read()
             self._debug['header']['end'] = self._io.pos()
-            if  ((not (self._io.is_eof())) and (self.is_color_mask_here)) :
+            if self.is_color_mask_here:
                 self._debug['color_mask']['start'] = self._io.pos()
                 self.color_mask = Bmp.ColorMask(self.header.bitmap_info_ext.compression == Bmp.Compressions.alpha_bitfields, self._io, self, self._root)
                 self.color_mask._read()
@@ -763,7 +763,7 @@ class Bmp(KaitaiStruct):
             if hasattr(self, '_m_is_color_mask_here'):
                 return self._m_is_color_mask_here if hasattr(self, '_m_is_color_mask_here') else None
 
-            self._m_is_color_mask_here =  ((self.header.len_header == Bmp.HeaderType.bitmap_info_header.value) and ( ((self.header.bitmap_info_ext.compression == Bmp.Compressions.bitfields) or (self.header.bitmap_info_ext.compression == Bmp.Compressions.alpha_bitfields)) )) 
+            self._m_is_color_mask_here =  ((not (self._io.is_eof())) and (self.header.len_header == Bmp.HeaderType.bitmap_info_header.value) and ( ((self.header.bitmap_info_ext.compression == Bmp.Compressions.bitfields) or (self.header.bitmap_info_ext.compression == Bmp.Compressions.alpha_bitfields)) )) 
             return self._m_is_color_mask_here if hasattr(self, '_m_is_color_mask_here') else None
 
         @property

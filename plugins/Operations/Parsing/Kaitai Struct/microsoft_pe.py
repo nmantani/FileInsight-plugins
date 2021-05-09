@@ -13,7 +13,7 @@ if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
 class MicrosoftPe(KaitaiStruct):
     """
     .. seealso::
-       Source - http://www.microsoft.com/whdc/system/platform/firmware/PECOFF.mspx
+       Source - https://docs.microsoft.com/en-us/windows/win32/debug/pe-format
     """
 
     class PeFormat(Enum):

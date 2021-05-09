@@ -12,6 +12,27 @@ if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
     raise Exception("Incompatible Kaitai Struct Python API: 0.9 or later is required, but you have %s" % (kaitaistruct.__version__))
 
 class Png(KaitaiStruct):
+    """Test files for APNG can be found at the following locations:
+    
+      * <https://philip.html5.org/tests/apng/tests.html>
+      * <http://littlesvr.ca/apng/>
+    """
+
+    class PhysUnit(Enum):
+        unknown = 0
+        meter = 1
+
+    class BlendOpValues(Enum):
+        source = 0
+        over = 1
+
+    class CompressionMethods(Enum):
+        zlib = 0
+
+    class DisposeOpValues(Enum):
+        none = 0
+        background = 1
+        previous = 2
 
     class ColorType(Enum):
         greyscale = 0
@@ -19,13 +40,6 @@ class Png(KaitaiStruct):
         indexed = 3
         greyscale_alpha = 4
         truecolor_alpha = 6
-
-    class PhysUnit(Enum):
-        unknown = 0
-        meter = 1
-
-    class CompressionMethods(Enum):
-        zlib = 0
     SEQ_FIELDS = ["magic", "ihdr_len", "ihdr_type", "ihdr", "ihdr_crc", "chunks"]
     def __init__(self, _io, _parent=None, _root=None):
         self._io = _io
@@ -40,10 +54,10 @@ class Png(KaitaiStruct):
         if not self.magic == b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A":
             raise kaitaistruct.ValidationNotEqualError(b"\x89\x50\x4E\x47\x0D\x0A\x1A\x0A", self.magic, self._io, u"/seq/0")
         self._debug['ihdr_len']['start'] = self._io.pos()
-        self.ihdr_len = self._io.read_bytes(4)
+        self.ihdr_len = self._io.read_u4be()
         self._debug['ihdr_len']['end'] = self._io.pos()
-        if not self.ihdr_len == b"\x00\x00\x00\x0D":
-            raise kaitaistruct.ValidationNotEqualError(b"\x00\x00\x00\x0D", self.ihdr_len, self._io, u"/seq/1")
+        if not self.ihdr_len == 13:
+            raise kaitaistruct.ValidationNotEqualError(13, self.ihdr_len, self._io, u"/seq/1")
         self._debug['ihdr_type']['start'] = self._io.pos()
         self.ihdr_type = self._io.read_bytes(4)
         self._debug['ihdr_type']['end'] = self._io.pos()
@@ -140,6 +154,11 @@ class Png(KaitaiStruct):
                 _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
                 self.body = Png.PhysChunk(_io__raw_body, self, self._root)
                 self.body._read()
+            elif _on == u"fdAT":
+                self._raw_body = self._io.read_bytes(self.len)
+                _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
+                self.body = Png.FrameDataChunk(_io__raw_body, self, self._root)
+                self.body._read()
             elif _on == u"tEXt":
                 self._raw_body = self._io.read_bytes(self.len)
                 _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
@@ -150,6 +169,11 @@ class Png(KaitaiStruct):
                 _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
                 self.body = Png.ChrmChunk(_io__raw_body, self, self._root)
                 self.body._read()
+            elif _on == u"acTL":
+                self._raw_body = self._io.read_bytes(self.len)
+                _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
+                self.body = Png.AnimationControlChunk(_io__raw_body, self, self._root)
+                self.body._read()
             elif _on == u"sRGB":
                 self._raw_body = self._io.read_bytes(self.len)
                 _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
@@ -159,6 +183,11 @@ class Png(KaitaiStruct):
                 self._raw_body = self._io.read_bytes(self.len)
                 _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
                 self.body = Png.CompressedTextChunk(_io__raw_body, self, self._root)
+                self.body._read()
+            elif _on == u"fcTL":
+                self._raw_body = self._io.read_bytes(self.len)
+                _io__raw_body = KaitaiStream(BytesIO(self._raw_body))
+                self.body = Png.FrameControlChunk(_io__raw_body, self, self._root)
                 self.body._read()
             else:
                 self.body = self._io.read_bytes(self.len)
@@ -379,6 +408,27 @@ class Png(KaitaiStruct):
             self._debug['text_datastream']['end'] = self._io.pos()
 
 
+    class FrameDataChunk(KaitaiStruct):
+        """
+        .. seealso::
+           Source - https://wiki.mozilla.org/APNG_Specification#.60fdAT.60:_The_Frame_Data_Chunk
+        """
+        SEQ_FIELDS = ["sequence_number", "frame_data"]
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self._debug = collections.defaultdict(dict)
+
+        def _read(self):
+            self._debug['sequence_number']['start'] = self._io.pos()
+            self.sequence_number = self._io.read_u4be()
+            self._debug['sequence_number']['end'] = self._io.pos()
+            self._debug['frame_data']['start'] = self._io.pos()
+            self.frame_data = self._io.read_bytes_full()
+            self._debug['frame_data']['end'] = self._io.pos()
+
+
     class BkgdTruecolor(KaitaiStruct):
         """Background chunk for truecolor images."""
         SEQ_FIELDS = ["red", "green", "blue"]
@@ -487,6 +537,69 @@ class Png(KaitaiStruct):
             self._debug['unit']['end'] = self._io.pos()
 
 
+    class FrameControlChunk(KaitaiStruct):
+        """
+        .. seealso::
+           Source - https://wiki.mozilla.org/APNG_Specification#.60fcTL.60:_The_Frame_Control_Chunk
+        """
+        SEQ_FIELDS = ["sequence_number", "width", "height", "x_offset", "y_offset", "delay_num", "delay_den", "dispose_op", "blend_op"]
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self._debug = collections.defaultdict(dict)
+
+        def _read(self):
+            self._debug['sequence_number']['start'] = self._io.pos()
+            self.sequence_number = self._io.read_u4be()
+            self._debug['sequence_number']['end'] = self._io.pos()
+            self._debug['width']['start'] = self._io.pos()
+            self.width = self._io.read_u4be()
+            self._debug['width']['end'] = self._io.pos()
+            if not self.width >= 1:
+                raise kaitaistruct.ValidationLessThanError(1, self.width, self._io, u"/types/frame_control_chunk/seq/1")
+            if not self.width <= self._root.ihdr.width:
+                raise kaitaistruct.ValidationGreaterThanError(self._root.ihdr.width, self.width, self._io, u"/types/frame_control_chunk/seq/1")
+            self._debug['height']['start'] = self._io.pos()
+            self.height = self._io.read_u4be()
+            self._debug['height']['end'] = self._io.pos()
+            if not self.height >= 1:
+                raise kaitaistruct.ValidationLessThanError(1, self.height, self._io, u"/types/frame_control_chunk/seq/2")
+            if not self.height <= self._root.ihdr.height:
+                raise kaitaistruct.ValidationGreaterThanError(self._root.ihdr.height, self.height, self._io, u"/types/frame_control_chunk/seq/2")
+            self._debug['x_offset']['start'] = self._io.pos()
+            self.x_offset = self._io.read_u4be()
+            self._debug['x_offset']['end'] = self._io.pos()
+            if not self.x_offset <= (self._root.ihdr.width - self.width):
+                raise kaitaistruct.ValidationGreaterThanError((self._root.ihdr.width - self.width), self.x_offset, self._io, u"/types/frame_control_chunk/seq/3")
+            self._debug['y_offset']['start'] = self._io.pos()
+            self.y_offset = self._io.read_u4be()
+            self._debug['y_offset']['end'] = self._io.pos()
+            if not self.y_offset <= (self._root.ihdr.height - self.height):
+                raise kaitaistruct.ValidationGreaterThanError((self._root.ihdr.height - self.height), self.y_offset, self._io, u"/types/frame_control_chunk/seq/4")
+            self._debug['delay_num']['start'] = self._io.pos()
+            self.delay_num = self._io.read_u2be()
+            self._debug['delay_num']['end'] = self._io.pos()
+            self._debug['delay_den']['start'] = self._io.pos()
+            self.delay_den = self._io.read_u2be()
+            self._debug['delay_den']['end'] = self._io.pos()
+            self._debug['dispose_op']['start'] = self._io.pos()
+            self.dispose_op = KaitaiStream.resolve_enum(Png.DisposeOpValues, self._io.read_u1())
+            self._debug['dispose_op']['end'] = self._io.pos()
+            self._debug['blend_op']['start'] = self._io.pos()
+            self.blend_op = KaitaiStream.resolve_enum(Png.BlendOpValues, self._io.read_u1())
+            self._debug['blend_op']['end'] = self._io.pos()
+
+        @property
+        def delay(self):
+            """Time to display this frame, in seconds."""
+            if hasattr(self, '_m_delay'):
+                return self._m_delay if hasattr(self, '_m_delay') else None
+
+            self._m_delay = (self.delay_num / (100.0 if self.delay_den == 0 else self.delay_den))
+            return self._m_delay if hasattr(self, '_m_delay') else None
+
+
     class InternationalTextChunk(KaitaiStruct):
         """International text chunk effectively allows to store key-value string pairs in
         PNG container. Both "key" (keyword) and "value" (text) parts are
@@ -547,6 +660,27 @@ class Png(KaitaiStruct):
             self._debug['text']['start'] = self._io.pos()
             self.text = (self._io.read_bytes_full()).decode(u"iso8859-1")
             self._debug['text']['end'] = self._io.pos()
+
+
+    class AnimationControlChunk(KaitaiStruct):
+        """
+        .. seealso::
+           Source - https://wiki.mozilla.org/APNG_Specification#.60acTL.60:_The_Animation_Control_Chunk
+        """
+        SEQ_FIELDS = ["num_frames", "num_plays"]
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self._debug = collections.defaultdict(dict)
+
+        def _read(self):
+            self._debug['num_frames']['start'] = self._io.pos()
+            self.num_frames = self._io.read_u4be()
+            self._debug['num_frames']['end'] = self._io.pos()
+            self._debug['num_plays']['start'] = self._io.pos()
+            self.num_plays = self._io.read_u4be()
+            self._debug['num_plays']['end'] = self._io.pos()
 
 
     class TimeChunk(KaitaiStruct):

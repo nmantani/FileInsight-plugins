@@ -10,6 +10,7 @@ import collections
 if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
     raise Exception("Incompatible Kaitai Struct Python API: 0.9 or later is required, but you have %s" % (kaitaistruct.__version__))
 
+import dos_datetime
 class Zip(KaitaiStruct):
     """ZIP is a popular archive file format, introduced in 1989 by Phil Katz
     and originally implemented in PKZIP utility by PKWARE.
@@ -24,6 +25,10 @@ class Zip(KaitaiStruct):
     
     .. seealso::
        Source - https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+    
+    
+    .. seealso::
+       Source - https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html
     """
 
     class Compression(Enum):
@@ -164,7 +169,7 @@ class Zip(KaitaiStruct):
         class Ntfs(KaitaiStruct):
             """
             .. seealso::
-               Source - https://github.com/LuaDist/zip/blob/master/proginfo/extrafld.txt#L191
+               Source - https://github.com/LuaDist/zip/blob/b710806/proginfo/extrafld.txt#L191
             """
             SEQ_FIELDS = ["reserved", "attributes"]
             def __init__(self, _io, _parent=None, _root=None):
@@ -243,7 +248,7 @@ class Zip(KaitaiStruct):
         class ExtendedTimestamp(KaitaiStruct):
             """
             .. seealso::
-               Source - https://github.com/LuaDist/zip/blob/master/proginfo/extrafld.txt#L817
+               Source - https://github.com/LuaDist/zip/blob/b710806/proginfo/extrafld.txt#L817
             """
             SEQ_FIELDS = ["flags", "mod_time", "access_time", "create_time"]
             def __init__(self, _io, _parent=None, _root=None):
@@ -254,27 +259,55 @@ class Zip(KaitaiStruct):
 
             def _read(self):
                 self._debug['flags']['start'] = self._io.pos()
-                self.flags = self._io.read_u1()
+                self._raw_flags = self._io.read_bytes(1)
+                _io__raw_flags = KaitaiStream(BytesIO(self._raw_flags))
+                self.flags = Zip.ExtraField.ExtendedTimestamp.InfoFlags(_io__raw_flags, self, self._root)
+                self.flags._read()
                 self._debug['flags']['end'] = self._io.pos()
-                self._debug['mod_time']['start'] = self._io.pos()
-                self.mod_time = self._io.read_u4le()
-                self._debug['mod_time']['end'] = self._io.pos()
-                if not (self._io.is_eof()):
+                if self.flags.has_mod_time:
+                    self._debug['mod_time']['start'] = self._io.pos()
+                    self.mod_time = self._io.read_u4le()
+                    self._debug['mod_time']['end'] = self._io.pos()
+
+                if self.flags.has_access_time:
                     self._debug['access_time']['start'] = self._io.pos()
                     self.access_time = self._io.read_u4le()
                     self._debug['access_time']['end'] = self._io.pos()
 
-                if not (self._io.is_eof()):
+                if self.flags.has_create_time:
                     self._debug['create_time']['start'] = self._io.pos()
                     self.create_time = self._io.read_u4le()
                     self._debug['create_time']['end'] = self._io.pos()
+
+
+            class InfoFlags(KaitaiStruct):
+                SEQ_FIELDS = ["has_mod_time", "has_access_time", "has_create_time", "reserved"]
+                def __init__(self, _io, _parent=None, _root=None):
+                    self._io = _io
+                    self._parent = _parent
+                    self._root = _root if _root else self
+                    self._debug = collections.defaultdict(dict)
+
+                def _read(self):
+                    self._debug['has_mod_time']['start'] = self._io.pos()
+                    self.has_mod_time = self._io.read_bits_int_le(1) != 0
+                    self._debug['has_mod_time']['end'] = self._io.pos()
+                    self._debug['has_access_time']['start'] = self._io.pos()
+                    self.has_access_time = self._io.read_bits_int_le(1) != 0
+                    self._debug['has_access_time']['end'] = self._io.pos()
+                    self._debug['has_create_time']['start'] = self._io.pos()
+                    self.has_create_time = self._io.read_bits_int_le(1) != 0
+                    self._debug['has_create_time']['end'] = self._io.pos()
+                    self._debug['reserved']['start'] = self._io.pos()
+                    self.reserved = self._io.read_bits_int_le(5)
+                    self._debug['reserved']['end'] = self._io.pos()
 
 
 
         class InfozipUnixVarSize(KaitaiStruct):
             """
             .. seealso::
-               Source - https://github.com/LuaDist/zip/blob/master/proginfo/extrafld.txt#L1339
+               Source - https://github.com/LuaDist/zip/blob/b710806/proginfo/extrafld.txt#L1339
             """
             SEQ_FIELDS = ["version", "len_uid", "uid", "len_gid", "gid"]
             def __init__(self, _io, _parent=None, _root=None):
@@ -307,7 +340,7 @@ class Zip(KaitaiStruct):
         .. seealso::
            - 4.3.12 - https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
         """
-        SEQ_FIELDS = ["version_made_by", "version_needed_to_extract", "flags", "compression_method", "last_mod_file_time", "last_mod_file_date", "crc32", "len_body_compressed", "len_body_uncompressed", "len_file_name", "len_extra", "len_comment", "disk_number_start", "int_file_attr", "ext_file_attr", "ofs_local_header", "file_name", "extra", "comment"]
+        SEQ_FIELDS = ["version_made_by", "version_needed_to_extract", "flags", "compression_method", "file_mod_time", "crc32", "len_body_compressed", "len_body_uncompressed", "len_file_name", "len_extra", "len_comment", "disk_number_start", "int_file_attr", "ext_file_attr", "ofs_local_header", "file_name", "extra", "comment"]
         def __init__(self, _io, _parent=None, _root=None):
             self._io = _io
             self._parent = _parent
@@ -327,12 +360,12 @@ class Zip(KaitaiStruct):
             self._debug['compression_method']['start'] = self._io.pos()
             self.compression_method = KaitaiStream.resolve_enum(Zip.Compression, self._io.read_u2le())
             self._debug['compression_method']['end'] = self._io.pos()
-            self._debug['last_mod_file_time']['start'] = self._io.pos()
-            self.last_mod_file_time = self._io.read_u2le()
-            self._debug['last_mod_file_time']['end'] = self._io.pos()
-            self._debug['last_mod_file_date']['start'] = self._io.pos()
-            self.last_mod_file_date = self._io.read_u2le()
-            self._debug['last_mod_file_date']['end'] = self._io.pos()
+            self._debug['file_mod_time']['start'] = self._io.pos()
+            self._raw_file_mod_time = self._io.read_bytes(4)
+            _io__raw_file_mod_time = KaitaiStream(BytesIO(self._raw_file_mod_time))
+            self.file_mod_time = dos_datetime.DosDatetime(_io__raw_file_mod_time)
+            self.file_mod_time._read()
+            self._debug['file_mod_time']['end'] = self._io.pos()
             self._debug['crc32']['start'] = self._io.pos()
             self.crc32 = self._io.read_u4le()
             self._debug['crc32']['end'] = self._io.pos()
@@ -451,7 +484,7 @@ class Zip(KaitaiStruct):
 
 
     class LocalFileHeader(KaitaiStruct):
-        SEQ_FIELDS = ["version", "flags", "compression_method", "file_mod_time", "file_mod_date", "crc32", "len_body_compressed", "len_body_uncompressed", "len_file_name", "len_extra", "file_name", "extra"]
+        SEQ_FIELDS = ["version", "flags", "compression_method", "file_mod_time", "crc32", "len_body_compressed", "len_body_uncompressed", "len_file_name", "len_extra", "file_name", "extra"]
         def __init__(self, _io, _parent=None, _root=None):
             self._io = _io
             self._parent = _parent
@@ -463,17 +496,20 @@ class Zip(KaitaiStruct):
             self.version = self._io.read_u2le()
             self._debug['version']['end'] = self._io.pos()
             self._debug['flags']['start'] = self._io.pos()
-            self.flags = self._io.read_u2le()
+            self._raw_flags = self._io.read_bytes(2)
+            _io__raw_flags = KaitaiStream(BytesIO(self._raw_flags))
+            self.flags = Zip.LocalFileHeader.GpFlags(_io__raw_flags, self, self._root)
+            self.flags._read()
             self._debug['flags']['end'] = self._io.pos()
             self._debug['compression_method']['start'] = self._io.pos()
             self.compression_method = KaitaiStream.resolve_enum(Zip.Compression, self._io.read_u2le())
             self._debug['compression_method']['end'] = self._io.pos()
             self._debug['file_mod_time']['start'] = self._io.pos()
-            self.file_mod_time = self._io.read_u2le()
+            self._raw_file_mod_time = self._io.read_bytes(4)
+            _io__raw_file_mod_time = KaitaiStream(BytesIO(self._raw_file_mod_time))
+            self.file_mod_time = dos_datetime.DosDatetime(_io__raw_file_mod_time)
+            self.file_mod_time._read()
             self._debug['file_mod_time']['end'] = self._io.pos()
-            self._debug['file_mod_date']['start'] = self._io.pos()
-            self.file_mod_date = self._io.read_u2le()
-            self._debug['file_mod_date']['end'] = self._io.pos()
             self._debug['crc32']['start'] = self._io.pos()
             self.crc32 = self._io.read_u4le()
             self._debug['crc32']['end'] = self._io.pos()
@@ -498,6 +534,105 @@ class Zip(KaitaiStruct):
             self.extra = Zip.Extras(_io__raw_extra, self, self._root)
             self.extra._read()
             self._debug['extra']['end'] = self._io.pos()
+
+        class GpFlags(KaitaiStruct):
+            """
+            .. seealso::
+               - 4.4.4 - https://pkware.cachefly.net/webdocs/casestudies/APPNOTE.TXT
+            
+            
+            .. seealso::
+               Local file headers - https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html
+            """
+
+            class DeflateMode(Enum):
+                normal = 0
+                maximum = 1
+                fast = 2
+                super_fast = 3
+            SEQ_FIELDS = ["file_encrypted", "comp_options_raw", "has_data_descriptor", "reserved_1", "comp_patched_data", "strong_encrypt", "reserved_2", "lang_encoding", "reserved_3", "mask_header_values", "reserved_4"]
+            def __init__(self, _io, _parent=None, _root=None):
+                self._io = _io
+                self._parent = _parent
+                self._root = _root if _root else self
+                self._debug = collections.defaultdict(dict)
+
+            def _read(self):
+                self._debug['file_encrypted']['start'] = self._io.pos()
+                self.file_encrypted = self._io.read_bits_int_le(1) != 0
+                self._debug['file_encrypted']['end'] = self._io.pos()
+                self._debug['comp_options_raw']['start'] = self._io.pos()
+                self.comp_options_raw = self._io.read_bits_int_le(2)
+                self._debug['comp_options_raw']['end'] = self._io.pos()
+                self._debug['has_data_descriptor']['start'] = self._io.pos()
+                self.has_data_descriptor = self._io.read_bits_int_le(1) != 0
+                self._debug['has_data_descriptor']['end'] = self._io.pos()
+                self._debug['reserved_1']['start'] = self._io.pos()
+                self.reserved_1 = self._io.read_bits_int_le(1) != 0
+                self._debug['reserved_1']['end'] = self._io.pos()
+                self._debug['comp_patched_data']['start'] = self._io.pos()
+                self.comp_patched_data = self._io.read_bits_int_le(1) != 0
+                self._debug['comp_patched_data']['end'] = self._io.pos()
+                self._debug['strong_encrypt']['start'] = self._io.pos()
+                self.strong_encrypt = self._io.read_bits_int_le(1) != 0
+                self._debug['strong_encrypt']['end'] = self._io.pos()
+                self._debug['reserved_2']['start'] = self._io.pos()
+                self.reserved_2 = self._io.read_bits_int_le(4)
+                self._debug['reserved_2']['end'] = self._io.pos()
+                self._debug['lang_encoding']['start'] = self._io.pos()
+                self.lang_encoding = self._io.read_bits_int_le(1) != 0
+                self._debug['lang_encoding']['end'] = self._io.pos()
+                self._debug['reserved_3']['start'] = self._io.pos()
+                self.reserved_3 = self._io.read_bits_int_le(1) != 0
+                self._debug['reserved_3']['end'] = self._io.pos()
+                self._debug['mask_header_values']['start'] = self._io.pos()
+                self.mask_header_values = self._io.read_bits_int_le(1) != 0
+                self._debug['mask_header_values']['end'] = self._io.pos()
+                self._debug['reserved_4']['start'] = self._io.pos()
+                self.reserved_4 = self._io.read_bits_int_le(2)
+                self._debug['reserved_4']['end'] = self._io.pos()
+
+            @property
+            def deflated_mode(self):
+                if hasattr(self, '_m_deflated_mode'):
+                    return self._m_deflated_mode if hasattr(self, '_m_deflated_mode') else None
+
+                if  ((self._parent.compression_method == Zip.Compression.deflated) or (self._parent.compression_method == Zip.Compression.enhanced_deflated)) :
+                    self._m_deflated_mode = KaitaiStream.resolve_enum(Zip.LocalFileHeader.GpFlags.DeflateMode, self.comp_options_raw)
+
+                return self._m_deflated_mode if hasattr(self, '_m_deflated_mode') else None
+
+            @property
+            def imploded_dict_byte_size(self):
+                """8KiB or 4KiB in bytes."""
+                if hasattr(self, '_m_imploded_dict_byte_size'):
+                    return self._m_imploded_dict_byte_size if hasattr(self, '_m_imploded_dict_byte_size') else None
+
+                if self._parent.compression_method == Zip.Compression.imploded:
+                    self._m_imploded_dict_byte_size = ((8 if (self.comp_options_raw & 1) != 0 else 4) * 1024)
+
+                return self._m_imploded_dict_byte_size if hasattr(self, '_m_imploded_dict_byte_size') else None
+
+            @property
+            def imploded_num_sf_trees(self):
+                if hasattr(self, '_m_imploded_num_sf_trees'):
+                    return self._m_imploded_num_sf_trees if hasattr(self, '_m_imploded_num_sf_trees') else None
+
+                if self._parent.compression_method == Zip.Compression.imploded:
+                    self._m_imploded_num_sf_trees = (3 if (self.comp_options_raw & 2) != 0 else 2)
+
+                return self._m_imploded_num_sf_trees if hasattr(self, '_m_imploded_num_sf_trees') else None
+
+            @property
+            def lzma_has_eos_marker(self):
+                if hasattr(self, '_m_lzma_has_eos_marker'):
+                    return self._m_lzma_has_eos_marker if hasattr(self, '_m_lzma_has_eos_marker') else None
+
+                if self._parent.compression_method == Zip.Compression.lzma:
+                    self._m_lzma_has_eos_marker = (self.comp_options_raw & 1) != 0
+
+                return self._m_lzma_has_eos_marker if hasattr(self, '_m_lzma_has_eos_marker') else None
+
 
 
     class EndOfCentralDir(KaitaiStruct):

@@ -12,6 +12,23 @@ if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
 
 import exif
 class Jpeg(KaitaiStruct):
+    """JPEG File Interchange Format, or JFIF, or, more colloquially known
+    as just "JPEG" or "JPG", is a popular 2D bitmap image file format,
+    offering lossy compression which works reasonably well with
+    photographic images.
+    
+    Format is organized as a container format, serving multiple
+    "segments", each starting with a magic and a marker. JFIF standard
+    dictates order and mandatory apperance of segments:
+    
+    * SOI
+    * APP0 (with JFIF magic)
+    * APP0 (with JFXX magic, optional)
+    * everything else
+    * SOS
+    * JPEG-compressed stream
+    * EOI
+    """
 
     class ComponentId(Enum):
         y = 1

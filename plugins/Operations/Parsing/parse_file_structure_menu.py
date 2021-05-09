@@ -31,11 +31,11 @@ import tkinter
 
 parser_dict = {}
 
-parser_dict["Archive"] = ("gzip", "rar", "zip")
-parser_dict["Executable"] = ("elf", "microsoft_pe")
-parser_dict["Filesystem"] = ("mbr_partition_table",)
-parser_dict["Image"] = ("bmp", "gif", "jpeg", "png")
-parser_dict["Windows-specific"] = ("windows_lnk_file",)
+parser_dict["Archive"] = ("Gzip", "RAR", "ZIP")
+parser_dict["Executable"] = ("ELF", "Mach-O", "PE")
+parser_dict["Filesystem"] = ("MBR partition table",)
+parser_dict["Image"] = ("BMP", "GIF", "JPEG", "PNG")
+parser_dict["Windows-specific"] = ("Windows shortcut",)
 
 root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit()) # Exit on focusout

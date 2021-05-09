@@ -17,7 +17,7 @@ class Gif(KaitaiStruct):
     
     GIF format allows encoding of palette-based images up to 256 colors
     (each of the colors can be chosen from a 24-bit RGB
-    colorspace). Image data stream uses LZW (Lempel?Ziv?Welch) lossless
+    colorspace). Image data stream uses LZW (Lempel-Ziv-Welch) lossless
     compression.
     
     Over the years, several version of the format were published and
@@ -380,6 +380,28 @@ class Gif(KaitaiStruct):
             self._debug['bytes']['end'] = self._io.pos()
 
 
+    class ApplicationId(KaitaiStruct):
+        SEQ_FIELDS = ["len_bytes", "application_identifier", "application_auth_code"]
+        def __init__(self, _io, _parent=None, _root=None):
+            self._io = _io
+            self._parent = _parent
+            self._root = _root if _root else self
+            self._debug = collections.defaultdict(dict)
+
+        def _read(self):
+            self._debug['len_bytes']['start'] = self._io.pos()
+            self.len_bytes = self._io.read_u1()
+            self._debug['len_bytes']['end'] = self._io.pos()
+            if not self.len_bytes == 11:
+                raise kaitaistruct.ValidationNotEqualError(11, self.len_bytes, self._io, u"/types/application_id/seq/0")
+            self._debug['application_identifier']['start'] = self._io.pos()
+            self.application_identifier = (self._io.read_bytes(8)).decode(u"ASCII")
+            self._debug['application_identifier']['end'] = self._io.pos()
+            self._debug['application_auth_code']['start'] = self._io.pos()
+            self.application_auth_code = self._io.read_bytes(3)
+            self._debug['application_auth_code']['end'] = self._io.pos()
+
+
     class ExtApplication(KaitaiStruct):
         SEQ_FIELDS = ["application_id", "subblocks"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -390,7 +412,7 @@ class Gif(KaitaiStruct):
 
         def _read(self):
             self._debug['application_id']['start'] = self._io.pos()
-            self.application_id = Gif.Subblock(self._io, self, self._root)
+            self.application_id = Gif.ApplicationId(self._io, self, self._root)
             self.application_id._read()
             self._debug['application_id']['end'] = self._io.pos()
             self._debug['subblocks']['start'] = self._io.pos()

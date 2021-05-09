@@ -48,9 +48,10 @@ https://github.com/kaitai-io/kaitai_struct_python_runtime/blob/master/LICENSE
 File format parser Python modules (files in plugins/Operations/Parsing/Kaitai Struct)
 are generated from file format description files (.ksy files) with kaitai-struct-compiler.
 .ksy files used by FileInsight-plugins are distributed under the CC0 1.0 Universal
-(CC0 1.0) Public Domain Dedication.
+(CC0 1.0) Public Domain Dedication or MIT License.
 https://github.com/kaitai-io/kaitai_struct_formats/blob/master/README.md
 https://creativecommons.org/publicdomain/zero/1.0/
+https://opensource.org/licenses/MIT
 
 * License of other third party software
 FileInsight-plugins uses the following software.

@@ -571,7 +571,7 @@ def parse_file_structure(fi):
     parsed_dict = json.loads(stdout_data, object_pairs_hook=collections.OrderedDict)
     parsed_dict = collections.OrderedDict(sorted(parsed_dict.items(), key=lambda x: x[1]["start"]))
     i = 0
-    parsed_data = ""
+    parsed_data_list = []
     parsed_dict_len = len(parsed_dict)
 
     if parsed_dict_len > 100 and not bookmark_yesno_dialog(parsed_dict_len):
@@ -590,8 +590,14 @@ def parse_file_structure(fi):
             else:
                 fi.setBookmark(offset + parsed_dict[k]["start"], parsed_dict[k]["end"] - parsed_dict[k]["start"] + 1, hex(offset + parsed_dict[k]["start"]) + " " + str(k), "#9f9fff")
 
-        parsed_data += "%s - %s: %s -> %s\n" % (hex(offset + parsed_dict[k]["start"]), hex(offset + parsed_dict[k]["end"]), k, parsed_dict[k]["data"])
+        parsed_data_list.append((("%s - %s: %s -> %s\n" % (hex(offset + parsed_dict[k]["start"]), hex(offset + parsed_dict[k]["end"]), k, parsed_dict[k]["data"])), parsed_dict[k]["start"], parsed_dict[k]["end"]))
         i += 1
+
+    parsed_data_list.sort(key=lambda x:(x[1], x[2], x[0]))
+
+    parsed_data = ""
+    for p in parsed_data_list:
+        parsed_data += p[0]
 
     if do_bookmark:
         print("Added bookmarks to the parsed data structure.")
@@ -599,7 +605,8 @@ def parse_file_structure(fi):
         print("Skipped bookmarking.")
 
     fi.newDocument("Parsed data", 0)
-    fi.setDocument("".join(parsed_data).encode("utf-8"))
+
+    fi.setDocument(parsed_data)
     print('Parsed data is shown in the new "Parsed data" tab.')
     print('Please use "Windows" tab -> "New Vertical Tab Group" to see parsed data and file contents side by side.')
     print(stderr_data)
