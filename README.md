@@ -84,6 +84,13 @@ and $PROXY_PORT variables in it, then please execute the following command.
 powershell -exec bypass .\install.ps1 -update
 ```
 
+If you would like to update FileInsight-plugins to the latest snapshot,
+please add "-snapshot" option.
+
+```
+powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update -snapshot"
+```
+
 ### Manual update
 Please download the latest release version and copy the "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
