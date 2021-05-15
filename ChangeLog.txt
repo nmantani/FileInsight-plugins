@@ -1,3 +1,54 @@
+2021-05-15 version 2.11
+* Important changes
+  Sub-categories are added to the following categories and plugin menu is reorganized accordingly:
+  - Compression operations
+    Compress and Decompress sub-categories are added.
+  - Crypto operations
+    Decrypt and Encrypt sub-categories are added.
+  - Encoding operations
+    Decode and Encode sub-categories are added.
+* Enhancements
+  - All plugins that will show a setting dialog
+    Plugins can be executed by hitting Enter key in addition to clicking OK button.
+  - Basic operations
+    - Bookmark plugin
+      Selected bookmark color will be saved as colorchooser.json in Operations folder and set as default in next time.
+  - Misc operations
+    - Emulate code plugin
+      [brk] memory region can be dumped for Linux code emulation.
+  - Parsing operations
+    - "Parse file structure" plugin
+      - Mach-O parser is added.
+      - Parsed data is sorted by offset.
+      - Parser modules are improved to bookmark regions that are not bookmarked in previous versions.
+  - Search operations
+    - "Regex search" plugin and Replace plugin
+      Search keywords will be added to bookmark comments.
+    - "YARA scan" plugin
+      YARA rule names and string identifiers will be added to bookmark comments.
+  - install.ps1
+    The latest snapshot of FileInsight-plugins can be installed with "-update -snapshot" option.
+* Bug fixes
+  - Basic operations
+    - Bookmark plugin
+      Root window will be set to topmost to prevent color chooser dialog from going behind FileInsight main window and becoming inoperable.
+  - Parsing operations
+    - "Parse file structure" plugin
+      - Gzip parser and PE parser
+        Bug of timezone handling is fixed.
+* Other changes
+  - Misc operations
+    - "Send to" plugin
+      Default paths of IDA Free and CyberChef are updated.
+  - Parsing operations
+    - "Parse file structure" plugin
+      - Parser modules are updated with the ones that are compiled from the latest snapshot of kaitai_struct_formats.
+      - kaitai_struct_python_runtime is updated to the latest snapshot.
+  - install.ps1
+    - Python is updated to 3.9.5.
+    - ExifTool is updated to 12.25.
+    - Repository separation of rootfs files from Qiling Framework is suported.
+
 2021-04-10 version 2.10
 * New plugins
   - Basic operations
