@@ -232,7 +232,7 @@ Your customization will be reflected in menu items.
   Encrypt selected region with ARC4 (Alleged RC4)
 * Blowfish  
   Encrypt selected region with Blowfish
-* ChaCha20 decrypt / encrypt  
+* ChaCha20  
   Encrypt selected region with ChaCha20
 * DES  
   Encrypt selected region with DES
