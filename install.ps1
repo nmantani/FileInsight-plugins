@@ -284,7 +284,7 @@ function install_fileinsight($work_dir) {
             exit
         }
 
-        Write-Host "[+] Executing FileInsight installer (silent installation)..."
+        Write-Host "[+] Executing FileInsight installer (automatic installation)..."
         msiexec /i "$installer_msi_path" /passive /norestart ADDLOCAL=ALL | Out-Null
         if (!(Test-Path $fileinsight_exe)) {
             Write-Host "[!] Installation has been failed."
