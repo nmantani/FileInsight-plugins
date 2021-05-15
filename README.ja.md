@@ -107,7 +107,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## プラグインの一覧 (110個)
+## プラグインの一覧 (113個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -142,146 +142,161 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲内の大文字と小文字を入れ替えます。
 
 ### Compression operations
-* aPLib compress  
+#### Compress
+* aPLib  
   選択範囲を aPLib 圧縮ライブラリで圧縮します。
-* aPLib decompress  
-  選択範囲を aPLib 圧縮ライブラリで展開します。
-* Bzip2 compress  
+* Bzip2  
   選択範囲を bzip2 アルゴリズムで圧縮します。
-* Bzip2 decompress  
-  選択範囲を bzip2 アルゴリズムで展開します。
-* Gzip compress  
+* Gzip  
   選択範囲を gzip 形式で圧縮します。
-* Gzip decompress  
-  gzip 形式で圧縮された選択範囲を展開します。
-* LZ4 compress  
+* LZ4  
   選択範囲を LZ4 アルゴリズムで圧縮します。
-* LZ4 decompress  
-  選択範囲を LZ4 アルゴリズムで展開します。
-* LZMA compress  
+* LZMA  
   選択範囲を LZMA アルゴリズムで圧縮します。
-* LZMA decompress  
-  選択範囲を LZMA アルゴリズムで展開します。
-* LZNT1 compress  
+* LZNT1  
   選択範囲を LZNT1 アルゴリズムで圧縮します。
-* LZNT1 decompress  
-  選択範囲を LZNT1 アルゴリズムで展開します。
-* LZO compress  
+* LZO  
   選択範囲を LZO アルゴリズムで圧縮します。
-* LZO decompress  
-  選択範囲を LZO アルゴリズムで展開します。
-* PPMd compress  
+* PPMd  
   選択範囲を PPMd アルゴリズムで圧縮します。
-* PPMd decompress  
-  選択範囲を PPMd アルゴリズムで展開します。
-* QuickLZ compress  
+* QuickLZ  
   選択範囲を QuickLZ 圧縮ライブラリで圧縮します。
-* QuickLZ decompress  
-  選択範囲を QuickLZ 圧縮ライブラリで展開します。
 * Raw deflate  
   選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。(PHP言語の gzdeflate() と同等)
+* XZ  
+  選択範囲を XZ 形式で圧縮します。
+* zlib (deflate)  
+  選択範囲を zlib (Deflate アルゴリズム) で圧縮します。
+* Zstandard  
+  選択範囲を Zstandard アルゴリズムで圧縮します。
+
+#### Decompress
+* aPLib  
+  選択範囲を aPLib 圧縮ライブラリで展開します。
+* Bzip2  
+  選択範囲を bzip2 アルゴリズムで展開します。
+* Gzip  
+  gzip 形式で圧縮された選択範囲を展開します。
+* LZ4  
+  選択範囲を LZ4 アルゴリズムで展開します。
+* LZMA  
+  選択範囲を LZMA アルゴリズムで展開します。
+* LZNT1  
+  選択範囲を LZNT1 アルゴリズムで展開します。
+* LZO  
+  選択範囲を LZO アルゴリズムで展開します。
+* PPMd  
+  選択範囲を PPMd アルゴリズムで展開します。
+* QuickLZ  
+  選択範囲を QuickLZ 圧縮ライブラリで展開します。
 * Raw inflate  
   ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。(PHP言語の gzinflate() と同等)
-* XZ compress  
-  選択範囲を XZ 形式で圧縮します。
-* XZ decompress  
+* XZ  
   選択範囲を XZ 形式として展開します。
-* zlib compress (deflate)  
-  選択範囲を zlib (Deflate アルゴリズム) で圧縮します。
-* zlib decompress (inflate)  
+* zlib (inflate)  
   選択範囲を zlib (Deflate アルゴリズム) で展開します。
-* Zstandard compress  
-  選択範囲を Zstandard アルゴリズムで圧縮します。
-* Zstandard decompress  
+* Zstandard  
   選択範囲を Zstandard アルゴリズムで展開します。
 
 ### Crypto operations
-* AES decrypt  
+#### Decrypt
+* AES  
   選択範囲を AES で復号します。
-* AES encrypt  
-  選択範囲を AES で暗号化します。
-* ARC2 decrypt  
+* ARC2  
   選択範囲を ARC2 (Alleged RC2) で復号します。
-* ARC2 encrypt  
-  選択範囲を ARC2 (Alleged RC2) で暗号化します。
-* ARC4 decrypt / encrypt  
-  選択範囲を ARC4 (Alleged RC4) で復号 / 暗号化します。
-* Blowfish decrypt  
+* ARC4  
+  選択範囲を ARC4 (Alleged RC4) で復号します。
+* Blowfish  
   選択範囲を Blowfish で復号します。
-* Blowfish encrypt  
-  選択範囲を Blowfish で暗号化します。
-* ChaCha20 decrypt / encrypt  
-  選択範囲を ChaCha20 で復号 / 暗号化します。
-* DES decrypt  
+* ChaCha20  
+  選択範囲を ChaCha20 で復号します。
+* DES  
   選択範囲を DES で復号します。
-* DES encrypt  
-  選択範囲を DES で暗号化します。
-* Salsa20 decrypt / encrypt  
-  選択範囲を Salsa20 で復号 / 暗号化します。
-* TEA decrypt  
+* Salsa20  
+  選択範囲を Salsa20 で復号します。
+* TEA  
   選択範囲を TEA (Tiny Encryption Algorithm) で復号します。
-* TEA encrypt  
-  選択範囲を TEA (Tiny Encryption Algorithm) で暗号化します。
-* Triple DES decrypt  
+* Triple DES  
   選択範囲を Triple DES で復号します。
-* Triple DES encrypt  
-  選択範囲を Triple DES で暗号化します。
-* XTEA decrypt  
+* XTEA  
   選択範囲を XTEA (eXtended Tiny Encryption Algorithm) で復号します。
-* XTEA encrypt  
+
+#### Encrypt
+* AES  
+  選択範囲を AES で暗号化します。
+* ARC2  
+  選択範囲を ARC2 (Alleged RC2) で暗号化します。
+* ARC4  
+  選択範囲を ARC4 (Alleged RC4) で暗号化します。
+* Blowfish  
+  選択範囲を Blowfish で暗号化します。
+* ChaCha20  
+  選択範囲を ChaCha20 で暗号化します。
+* DES  
+  選択範囲を DES で暗号化します。
+* Salsa20  
+  選択範囲を Salsa20 で暗号化します。
+* TEA  
+  選択範囲を TEA (Tiny Encryption Algorithm) で暗号化します。
+* Triple DES  
+  選択範囲を Triple DES で暗号化します。
+* XTEA  
   選択範囲を XTEA (eXtended Tiny Encryption Algorithm) で暗号化します。
 
 ### Encoding operations
-* Binary data to hex text  
-  選択範囲のバイナリデータを16進数のテキストに変換します。
+#### Decode
 * Hex text to binary data  
   選択範囲の16進数のテキストをバイナリデータに変換します。
-* Binary data to decimal text  
-  選択範囲のバイナリデータを10進数のテキストに変換します。
 * Decimal text to binary data  
   選択範囲の10進数のテキストをバイナリデータに変換します。
-* Binary data to octal text  
-  選択範囲のバイナリデータを8進数のテキストに変換します。
 * Octal text to binary data  
   選択範囲の8進数のテキストをバイナリデータに変換します。
-* Binary data to binary text  
-  選択範囲のバイナリデータを2進数のテキストに変換します。
 * Binary text to binary data  
   選択範囲の2進数のテキストをバイナリデータに変換します。
 * Custom base16 decode  
   選択範囲をカスタムbase16テーブルを使ってデコードします。
-* Custom base16 encode  
-  選択範囲をカスタムbase16テーブルを使ってエンコードします。
 * Custom base32 decode  
   選択範囲をカスタムbase32テーブルを使ってデコードします。
-* Custom base32 encode  
-  選択範囲をカスタムbase32テーブルを使ってエンコードします。
 * Custom base58 decode  
   選択範囲をカスタムbase58テーブルを使ってデコードします。
-* Custom base58 encode  
-  選択範囲をカスタムbase58テーブルを使ってエンコードします。
 * Custom base64 decode  
   選択範囲をカスタムbase64テーブルを使ってデコードします。
-* Custom base64 encode  
-  選択範囲をカスタムbase64テーブルを使ってエンコードします。
 * Custom base85 decode  
   選択範囲をカスタムbase85テーブルを使ってデコードします。
-* Custom base85 encode  
-  選択範囲をカスタムbase85テーブルを使ってエンコードします。
 * Protobuf decode  
   選択範囲を Protocol Buffers でシリアライズされたデータとして .proto ファイル無しでデコードします。
-* ROT13  
-  選択範囲のアルファベットの文字列を指定した数だけローテートします。(デフォルト: 13)
 * From quoted printable  
   選択範囲を quoted printable としてデコードします。
-* To quoted printable  
-  選択範囲を quoted printable としてエンコードします。
-* Unicode escape  
-  選択範囲の Unicode 文字列をエスケープします。
 * Unicode unescape  
   選択範囲の Unicode エスケープシーケンスを文字列に戻します。
 * URL decode  
   選択範囲を URL に使われているパーセントでエンコードされたテキストとしてデコードします。
+
+#### Encode
+* Binary data to hex text  
+  選択範囲のバイナリデータを16進数のテキストに変換します。
+* Binary data to decimal text  
+  選択範囲のバイナリデータを10進数のテキストに変換します。
+* Binary data to octal text  
+  選択範囲のバイナリデータを8進数のテキストに変換します。
+* Binary data to binary text  
+  選択範囲のバイナリデータを2進数のテキストに変換します。
+* Custom base16 encode  
+  選択範囲をカスタムbase16テーブルを使ってエンコードします。
+* Custom base32 encode  
+  選択範囲をカスタムbase32テーブルを使ってエンコードします。
+* Custom base58 encode  
+  選択範囲をカスタムbase58テーブルを使ってエンコードします。
+* Custom base64 encode  
+  選択範囲をカスタムbase64テーブルを使ってエンコードします。
+* Custom base85 encode  
+  選択範囲をカスタムbase85テーブルを使ってエンコードします。
+* ROT13  
+  選択範囲のアルファベットの文字列を指定した数だけローテートします。(デフォルト: 13)
+* To quoted printable  
+  選択範囲を quoted printable としてエンコードします。
+* Unicode escape  
+  選択範囲の Unicode 文字列をエスケープします。
 * URL encode  
   選択範囲を URL に使われているパーセントでエンコードされたテキストとしてエンコードします。
 
@@ -305,7 +320,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
 * Find PE file  
   選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
 * Parse file structure  
-  選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。
+  選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。  
+  対応フォーマット: Gzip, RAR, ZIP, ELF, Mach-O, PE, MBR パーティションテーブル, BMP, GIF, JPEG, PNG, Windows ショートカット
 * Show metadata  
   選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
 * Strings  

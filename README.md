@@ -110,7 +110,7 @@ Your customization will be reflected in menu items.
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## List of plugins (110 plugins)
+## List of plugins (113 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -144,146 +144,161 @@ Your customization will be reflected in menu items.
   Swap case of selected region
 
 ### Compression operations
-* aPLib compress  
+#### Compress
+* aPLib  
   Compress selected region with aPLib compression library
-* aPLib decompress  
-  Decompress selected region with aPLib compression library
-* Bzip2 compress  
+* Bzip2  
   Compress selected region with bzip2 algorithm
-* Bzip2 decompress  
-  Decompress selected region with bzip2 algorithm
-* Gzip compress  
+* Gzip  
   Compress selected region with gzip format
-* Gzip decompress  
-  Decompress selected gzip-compressed region
-* LZ4 compress  
+* LZ4  
   Compress selected region with LZ4 algorithm
-* LZ4 decompress  
-  Decompress selected region with LZ4 algorithm
-* LZMA compress  
+* LZMA  
   Compress selected region with LZMA algorithm
-* LZMA decompress  
-  Decompress selected region with LZMA algorithm
-* LZNT1 compress  
+* LZNT1  
   Compress selected region with LZNT1 algorithm
-* LZNT1 decompress  
-  Decompress selected region with LZNT1 algorithm
-* LZO compress  
+* LZO  
   Compress selected region with LZO algorithm
-* LZO decompress  
-  Decompress selected region with LZO algorithm
-* PPMd compress  
+* PPMd  
   Compress selected region with PPMd algorithm
-* PPMd decompress  
-  Decompress selected region with PPMd algorithm
-* QuickLZ compress  
+* QuickLZ  
   Compress selected region with QuickLZ compression library
-* QuickLZ decompress  
-  Decompress selected region with QuickLZ compression library
 * Raw deflate  
   Compress selected region with Deflate algorithm without header and checksum (equivalent to gzdeflate() in PHP language)
+* XZ  
+  Compress selected region with XZ format
+* zlib (deflate)  
+  Compress selected region with zlib (Deflate algorithm)
+* Zstandard  
+  Compress selected region with Zstandard algorithm
+
+#### Decompress
+* aPLib  
+  Decompress selected region with aPLib compression library
+* Bzip2  
+  Decompress selected region with bzip2 algorithm
+* Gzip  
+  Decompress selected gzip-compressed region
+* LZ4  
+  Decompress selected region with LZ4 algorithm
+* LZMA  
+  Decompress selected region with LZMA algorithm
+* LZNT1  
+  Decompress selected region with LZNT1 algorithm
+* LZO  
+  Decompress selected region with LZO algorithm
+* PPMd  
+  Decompress selected region with PPMd algorithm
+* QuickLZ  
+  Decompress selected region with QuickLZ compression library
 * Raw inflate  
   Decompress selected Deflate compressed region that does not have header and checksum (equivalent to gzinflate() in PHP language)
-* XZ compress  
-  Compress selected region with XZ format
-* XZ decompress  
+* XZ  
   Decompress selected XZ compressed region
-* zlib compress (deflate)  
-  Compress selected region with zlib (Deflate algorithm)
-* zlib decompress (inflate)  
+* zlib (inflate)  
   Decompress selected region with zlib (Deflate algorithm)
-* Zstandard compress  
-  Compress selected region with Zstandard algorithm
-* Zstandard decompress  
+* Zstandard  
   Decompress selected region with Zstandard algorithm
 
 ### Crypto operations
-* AES decrypt  
+#### Decrypt
+* AES  
   Decrypt selected region with AES
-* AES encrypt  
-  Encrypt selected region with AES
-* ARC2 decrypt  
+* ARC2  
   Decrypt selected region with ARC2 (Alleged RC2)
-* ARC2 encrypt  
-  Encrypt selected region with ARC2 (Alleged RC2)
-* ARC4 decrypt / encrypt  
-  Decrypt / encrypt selected region with ARC4 (Alleged RC4)
-* Blowfish decrypt  
+* ARC4  
+  Decrypt selected region with ARC4 (Alleged RC4)
+* Blowfish  
   Decrypt selected region with Blowfish
-* Blowfish encrypt  
+* ChaCha20  
+  Decrypt selected region with ChaCha20
+* DES  
+  Decrypt selected region with DES
+* Salsa20  
+  Decrypt selected region with Salsa20
+* TEA  
+  Decrypt selected region with TEA (Tiny Encryption Algorithm)
+* Triple DES  
+  Decrypt selected region with Triple DES
+* XTEA  
+  Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
+
+#### Encrypt
+* AES  
+  Encrypt selected region with AES
+* ARC2  
+  Encrypt selected region with ARC2 (Alleged RC2)
+* ARC4  
+  Encrypt selected region with ARC4 (Alleged RC4)
+* Blowfish  
   Encrypt selected region with Blowfish
 * ChaCha20 decrypt / encrypt  
-  Decrypt / encrypt selected region with ChaCha20
-* DES decrypt  
-  Decrypt selected region with DES
-* DES encrypt  
+  Encrypt selected region with ChaCha20
+* DES  
   Encrypt selected region with DES
-* Salsa20 decrypt / encrypt  
-  Decrypt / encrypt selected region with Salsa20
-* TEA decrypt  
-  Decrypt selected region with TEA (Tiny Encryption Algorithm)
-* TEA encrypt  
+* Salsa20  
+  Encrypt selected region with Salsa20
+* TEA  
   Encrypt selected region with TEA (Tiny Encryption Algorithm)
-* Triple DES decrypt  
-  Decrypt selected region with Triple DES
-* Triple DES encrypt  
+* Triple DES  
   Encrypt selected region with Triple DES
-* XTEA decrypt  
-  Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
-* XTEA encrypt  
+* XTEA  
   Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
 
 ### Encoding operations
-* Binary data to hex text  
-  Convert binary of selected region into hex text
+#### Decode
 * Hex text to binary data  
   Convert hex text of selected region into binary
-* Binary data to decimal text  
-  Convert binary of selected region into decimal text
 * Decimal text to binary data  
   Convert decimal text of selected region into binary data
-* Binary data to octal text  
-  Convert binary of selected region into octal text
 * Octal text to binary data  
   Convert octal text of selected region into binary data
-* Binary data to binary text  
-  Convert binary of selected region into binary text
 * Binary text to binary data  
   Convert binary text of selected region into binary data
 * Custom base16 decode  
   Decode selected region with custom base16 table
-* Custom base16 encode  
-  Encode selected region with custom base16 table
 * Custom base32 decode  
   Decode selected region with custom base32 table
-* Custom base32 encode  
-  Encode selected region with custom base32 table
 * Custom base58 decode  
   Decode selected region with custom base58 table
-* Custom base58 encode  
-  Encode selected region with custom base58 table
 * Custom base64 decode  
   Decode selected region with custom base64 table
-* Custom base64 encode  
-  Encode selected region with custom base64 table
 * Custom base85 decode  
   Decode selected region with custom base85 table
-* Custom base85 encode  
-  Encode selected region with custom base85 table
 * Protobuf decode  
   Decode selected region as Protocol Buffers serialized data without .proto files
-* ROT13  
-  Rotate alphabet characters in selected region by the specified amount (default: 13)
 * From quoted printable  
   Decode selected region as quoted printable text
-* To quoted printable  
-  Encode selected region into quoted printable text
-* Unicode escape  
-  Escape Unicode characters of selected region
 * Unicode unescape  
   Unescape Unicode escape sequence of selected region
 * URL decode  
   Decode selected region as percent-encoded text that is used by URL
+
+#### Encode
+* Binary data to hex text  
+  Convert binary of selected region into hex text
+* Binary data to decimal text  
+  Convert binary of selected region into decimal text
+* Binary data to octal text  
+  Convert binary of selected region into octal text
+* Binary data to binary text  
+  Convert binary of selected region into binary text
+* Custom base16 encode  
+  Encode selected region with custom base16 table
+* Custom base32 encode  
+  Encode selected region with custom base32 table
+* Custom base58 encode  
+  Encode selected region with custom base58 table
+* Custom base64 encode  
+  Encode selected region with custom base64 table
+* Custom base85 encode  
+  Encode selected region with custom base85 table
+* ROT13  
+  Rotate alphabet characters in selected region by the specified amount (default: 13)
+* To quoted printable  
+  Encode selected region into quoted printable text
+* Unicode escape  
+  Escape Unicode characters of selected region
 * URL encode  
   Encode selected region into percent-encoded text that is used by URL
 
@@ -307,7 +322,8 @@ Your customization will be reflected in menu items.
 * Find PE file  
   Find PE file from selected region (the whole file if not selected)
 * Parse file structure  
-  Parse file structure of selected region (the whole file if not selected) with Kaitai Struct
+  Parse file structure of selected region (the whole file if not selected) with Kaitai Struct  
+  Supported file formats: Gzip, RAR, ZIP, ELF, Mach-O, PE, MBR partition table, BMP, GIF, JPEG, PNG, Windows shortcut
 * Show metadata  
   Show metadata of selected region (the whole file if not selected) with ExifTool
 * Strings  
