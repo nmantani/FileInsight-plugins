@@ -1,7 +1,7 @@
 #
-# Send to (GUI) - Send selected region (the whole file if not selected) to other program
+# Send to (CLI) - Send selected region (the whole file if not selected) to other CLI program and get output
 #
-# Copyright (c) 2014, Nobutaka Mantani
+# Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -77,7 +77,7 @@ root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:root.quit())
 root.withdraw() # Hide root window
 
-config_file_name = "Misc/send_to.json"
+config_file_name = "Misc/send_to_cli.json"
 
 # Load config file
 if os.path.exists(config_file_name):
@@ -90,11 +90,11 @@ if os.path.exists(config_file_name):
 else:
     # Default external programs
     programs = collections.OrderedDict()
-    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 7.6\\ida64.exe"
-    programs["Cutter"] = ["%HOMEPATH%\\Desktop\\tools\\cutter\\cutter.exe", "-A", "1"]
-    programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
-    programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v9.28.0\\CyberChef_v9.28.0.html"
+    programs["capa"] = "%HOMEPATH%\\Desktop\\tools\\capa\\capa.exe"
+    programs["floss"] = "%HOMEPATH%\\Desktop\\tools\\floss\\floss.exe"
+    programs["pelook"] = ["%HOMEPATH%\\Desktop\\tools\\pelook\\pelook.exe", "-x"]
+    programs["olevba"] = ["%LOCALAPPDATA%\\Programs\\Python\\Python39\\Scripts\\olevba.exe", "--decode"]
+    programs["rtfobj"] = "%LOCALAPPDATA%\\Programs\\Python\\Python39\\Scripts\\rtfobj.exe"
 
     # Create new config file
     f = open(config_file_name, "w")
@@ -102,8 +102,6 @@ else:
     f.close()
 
 # Add special menu items
-if not "CyberChef" in programs:
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\cyberchef.htm"
 if not "Customize menu" in programs:
     programs["Customize menu"] = "Customize menu"
 
@@ -120,59 +118,11 @@ if y > 10:
 # Add menu items
 menu1 = tkinter.Menu(root, tearoff=False)
 menu2 = tkinter.Menu(menu1, tearoff=False)
-menu1.add_cascade(label="Send to (GUI)", menu=menu2)
+menu1.add_cascade(label="Send to (CLI)", menu=menu2)
 
 for key,val in programs.items():
     def launch(name=key, program=val, filename=filename):
-        if name == "CyberChef":
-            global config_file_name, programs
-
-            try:
-                if os.path.getsize(filename) > 12000:
-                    tkinter.messagebox.showwarning(None, message="Data size exceeds 12000 bytes. Sent data will be truncated (due to limit of command line argument length).")
-                cyberchef_input = open(filename, "rb").read(12000)
-                # CyberChef input box automatically replace 0x0d with 0x0a and this breaks data integrity.
-                # So data have to be converted into hex text before sending to CyberChef.
-                # For the detail of the issue, please see https://github.com/gchq/CyberChef/issues/430 .
-                # Data size limit is reduced from 24000 bytes to 12000 bytes due to this conversion.
-                cyberchef_input = binascii.hexlify(cyberchef_input)
-                cyberchef_input = base64.b64encode(cyberchef_input).decode()
-                cyberchef_input = cyberchef_input.replace("+", "%2B")
-                cyberchef_input = cyberchef_input.replace("=", "")
-            except Exception as e:
-                tkinter.messagebox.showerror("Error:", message=e)
-
-            program = replace_env_in_path(program)
-            if not os.path.exists(program):
-                tkinter.messagebox.showerror("Error:", message="%s is not found. Please select CyberChef HTML file." % program)
-                fTyp = [("HTML file","*.htm;*.html")]
-                iDir = os.path.abspath(os.getenv("HOMEPATH") + "\\Desktop")
-                program = tkinter.filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
-            if program == "":
-                return
-            else:
-                programs["CyberChef"] = program
-
-                # Update config file
-                f = open(config_file_name, "w")
-                json.dump(programs, f, indent=4)
-                f.close()
-
-            cyberchef_url = "file:///%s#recipe=From_Hex('Auto')&input=%s" % (program.replace("\\", "/"), cyberchef_input)
-
-            # Get path of default browser because "start" built-in command of command prompt drops URL parameters with "file:///" URL scheme
-            reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\Shell\\Associations\\UrlAssociations\\http\\UserChoice")
-            progid, regtype = winreg.QueryValueEx(reg_key, "ProgId")
-            winreg.CloseKey(reg_key)
-            reg_key = winreg.OpenKeyEx(winreg.HKEY_CLASSES_ROOT, "%s\\shell\\open\\command" % progid)
-            browser_cmd, regtype = winreg.QueryValueEx(reg_key, "")
-            winreg.CloseKey(reg_key)
-            m = re.search('\"(.+?)\"', browser_cmd)
-            program = m.group(1)
-            browser_cmd = browser_cmd.replace("%1", cyberchef_url)
-            p = subprocess.Popen(browser_cmd)
-            p.wait()
-        elif name == "Customize menu":
+        if name == "Customize menu":
             # Get path of default text editor
             try:
                 reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\.txt\\UserChoice")
@@ -183,14 +133,14 @@ for key,val in programs.items():
                 editor_cmd, regtype = winreg.QueryValueEx(reg_key, "")
                 winreg.CloseKey(reg_key)
                 editor_cmd = replace_env_in_path(editor_cmd)
-                editor_cmd = editor_cmd.replace("%1", "Misc\\send_to.json")
-                tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
+                editor_cmd = editor_cmd.replace("%1", "Misc\\send_to_cli.json")
+                tkinter.messagebox.showinfo(None, message="Please edit 'send_to_cli.json' to customize menu.")
                 p = subprocess.Popen(editor_cmd)
                 p.wait()
             except Exception as e:
                 # Fallback to Notepad
-                tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
-                p = subprocess.Popen(["C:\\Windows\\notepad.exe", "Misc\\send_to.json"])
+                tkinter.messagebox.showinfo(None, message="Please edit 'send_to_cli.json' to customize menu.")
+                p = subprocess.Popen(["C:\\Windows\\notepad.exe", "Misc\\send_to_cli.json"])
                 p.wait()
         else:
             program = replace_env_in_path(program)
@@ -207,10 +157,16 @@ for key,val in programs.items():
                 else:
                     args = [program, filename]
 
-                p = subprocess.Popen(args=args)
-                p.wait()
+                sys.stdout.buffer.write(b"Command line:\n")
+                sys.stdout.buffer.write((" ".join(args)).encode("UTF-8") + b"\n\n")
+
+                p = subprocess.Popen(args=args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                stdout_data, stderr_data = p.communicate()
+                ret = p.wait()
+                sys.stdout.buffer.write(stdout_data)
+                sys.stderr.buffer.write(stderr_data)
             else:
-                tkinter.messagebox.showerror("Error:", message="%s is not found. Please select the file." % program)
+                tkinter.messagebox.showerror("Error:", message="%s is not found. Please select the file." % program_path)
                 fTyp = [("Executable file","*.exe")]
                 iDir = os.path.abspath(os.getenv("PROGRAMFILES"))
                 program_path = tkinter.filedialog.askopenfilename(filetypes = fTyp,initialdir = iDir)
@@ -236,10 +192,14 @@ for key,val in programs.items():
                     else:
                         args = [program, filename]
 
-                    p = subprocess.Popen(args=args)
-                    p.wait()
+                    sys.stdout.buffer.write(b"Command line:")
+                    sys.stdout.buffer.write((" ".join(args)).encode("UTF-8") + b"\n\n")
 
-        wait_process_by_name(os.path.basename(program_path))
+                    p = subprocess.Popen(args=args, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    stdout_data, stderr_data = p.communicate()
+                    ret = p.wait()
+                    sys.stdout.buffer.write(stdout_data)
+                    sys.stderr.buffer.write(stderr_data)
         root.quit()
 
     menu2.add_command(label=key, command=launch)

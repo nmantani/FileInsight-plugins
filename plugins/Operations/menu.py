@@ -212,11 +212,13 @@ tooltip_dict["Encode"] = ("Convert binary of selected region into hex text",
 ops_dict["Misc"] = ("Emulate code",
                     "File comparison",
                     "Hash values",
-                    "Send to")
+                    "Send to (CLI)",
+                    "Send to (GUI)")
 tooltip_dict["Misc"] = ("Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
                         "Compare contents of two files",
                         "Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of\nselected region (the whole file if not selected)",
-                        "Send selected region (the whole file if not selected) to other programs")
+                        "Send selected region (the whole file if not selected) to other CLI program and show output",
+                        "Send selected region (the whole file if not selected) to other GUI program")
 
 ops_dict["Parsing"] = ("Binwalk scan",
                        "Disassemble",

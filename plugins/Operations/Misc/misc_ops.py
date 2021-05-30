@@ -97,10 +97,83 @@ def hash_values(fi):
         print(stdout_data),
         print(stderr_data),
 
-def send_to(fi):
+def send_to_cli(fi):
     """
-    Send selected region (the whole file if not selected) to other programs.
-    TO CUSTOMIZE MENU ITEMS, PLEASE EDIT "PROGRAMS" VARIABLE IN SEND_TO.PY.
+    Send selected region (the whole file if not selected) to other CLI program and get output
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    # Structure for mouse cursor position
+    class _point_t(ctypes.Structure):
+        _fields_ = [
+                    ('x',  ctypes.c_long),
+                    ('y',  ctypes.c_long),
+                    ]
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+    else:
+        data = fi.getDocument()
+
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "w")
+    handle.write(data)
+    handle.close()
+
+    # Get DPI values
+    DEFAULT_DPI = 96
+    LOGPIXELSX = 88
+    LOGPIXELSY = 90
+    dc = ctypes.windll.user32.GetDC(0)
+    dpi_x = ctypes.windll.gdi32.GetDeviceCaps(dc, LOGPIXELSX)
+    dpi_y = ctypes.windll.gdi32.GetDeviceCaps(dc, LOGPIXELSY)
+    ctypes.windll.user32.ReleaseDC(0, dc)
+
+    # Get mouse cursor position
+    point = _point_t()
+    ctypes.windll.user32.GetCursorPos(ctypes.pointer(point))
+    point.x = point.x * DEFAULT_DPI / dpi_x
+    point.y = point.y * DEFAULT_DPI / dpi_y
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute send_to.py to show GUI
+    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
+    p = subprocess.Popen(["py.exe", "-3", "Misc/send_to_cli.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    if length > 0:
+        if length == 1:
+            print("Sent one byte from offset %s to %s to external program." % (hex(offset), hex(offset)))
+        else:
+            print("Sent %s bytes from offset %s to %s to external program." % (length, hex(offset), hex(offset + length - 1)))
+    else:
+        length = fi.getLength()
+        if length == 1:
+            print("Sent the whole file (one byte) to external program.")
+        else:
+            print("Sent the whole file (%s bytes) to external program." % length)
+
+    if len(stdout_data) > 0:
+        fi.newDocument("Output of Send to (CLI)")
+        fi.setDocument(stdout_data)
+
+    print("Output of external program (stdout) is opened as new tab.")
+    if stderr_data != "":
+        print("Output of external program (stderr):")
+        print(stderr_data)
+
+def send_to_gui(fi):
+    """
+    Send selected region (the whole file if not selected) to other program.
     """
     if fi.getDocumentCount() == 0:
         return
@@ -151,15 +224,15 @@ def send_to(fi):
 
     if length > 0:
         if length == 1:
-            print("Sending one byte from offset %s to %s to an external program." % (hex(offset), hex(offset)))
+            print("Sending one byte from offset %s to %s to external program." % (hex(offset), hex(offset)))
         else:
-            print("Sending %s bytes from offset %s to %s to an external program." % (length, hex(offset), hex(offset + length - 1)))
+            print("Sending %s bytes from offset %s to %s to external program." % (length, hex(offset), hex(offset + length - 1)))
     else:
         length = fi.getLength()
         if length == 1:
-            print("Sending the whole file (one byte) to an external program.")
+            print("Sending the whole file (one byte) to external program.")
         else:
-            print("Sending the whole file (%s bytes) to an external program." % length)
+            print("Sending the whole file (%s bytes) to external program." % length)
 
 def get_ssdeep(data):
     """

@@ -29,7 +29,7 @@ import re
 import subprocess
 import sys
 
-__version__ = "2.11"
+__version__ = "2.12"
 
 sys.path.append("./Basic")
 import basic_ops
@@ -234,7 +234,8 @@ if __name__ == "__main__":
     operations += (misc_ops.emulate_code,
                    misc_ops.file_comparison,
                    misc_ops.hash_values,
-                   misc_ops.send_to)
+                   misc_ops.send_to_cli,
+                   misc_ops.send_to_gui)
 
     operations += (parsing_ops.binwalk_scan,
                    parsing_ops.disassemble,
