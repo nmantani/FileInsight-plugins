@@ -23,8 +23,81 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import distutils.version
+import subprocess
 import sys
 import tkinter
+import tkinter.messagebox
+import webbrowser
+
+def check_update(root, version):
+    try:
+        import requests
+    except ImportError:
+        sys.exit(-2) # requests is not installed
+
+    api_url = "https://api.github.com/repos/nmantani/FileInsight-plugins/releases/latest"
+    try:
+        r = requests.get(api_url)
+    except Exception as e:
+        tkinter.messagebox.showerror("Error:", message=e)
+        sys.exit(-1) # root.quit() cannot be used
+
+    if r.status_code == 200:
+        json_data = r.json()
+        latest_version = json_data["tag_name"][1:]
+
+        if distutils.version.StrictVersion(latest_version) > distutils.version.StrictVersion(version):
+            ret = tkinter.messagebox.askyesno("Confirmation", "New version %s is available.\r\nWould you like to update?" % latest_version)
+            if ret == True:
+                tkinter.messagebox.showinfo(None, message="Update PowerShell script (https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1) will be executed.")
+
+                try:
+                    p = subprocess.Popen(args=["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-exec", "bypass", "-command", "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update; Read-Host 'Please hit Enter key to close this window'"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+                except Exception as e:
+                    tkinter.messagebox.showerror("Error:", message=e)
+                    sys.exit(-1) # root.quit() cannot be used
+        elif distutils.version.StrictVersion(latest_version) == distutils.version.StrictVersion(version):
+            tkinter.messagebox.showinfo(None, message="You are using the latest version %s." % version)
+        else:
+            tkinter.messagebox.showinfo(None, message="You are using development version %s (newer than the latest release version %s)." % (version, latest_version))
+
+    root.quit()
+
+def show_version_dialog(root, version):
+    root.unbind("<FocusOut>") # Remove focusout handler
+
+    dialog = tkinter.Toplevel()
+    dialog.title("Version information")
+    dialog.protocol("WM_DELETE_WINDOW", lambda r=root: r.quit())
+
+    label_version = tkinter.Label(dialog, text="FileInsight-plugins version %s" % version)
+    label_version.grid(row=0, column=0, padx=15, pady=5, sticky="w")
+
+    label_copyright = tkinter.Label(dialog, text="Copyright (c) 2012-2021, Nobutaka Mantani\nAll rights reserved.", justify="left")
+    label_copyright.grid(row=1, column=0, padx=15, pady=5, sticky="w")
+
+    label_link = tkinter.Label(dialog, text="https://github.com/nmantani/FileInsight-plugins/", fg="#0000ff", justify="left", cursor="hand2")
+    label_link.grid(row=2, column=0, padx=15, pady=5, sticky="w")
+    label_link.bind("<Button-1>", lambda event: webbrowser.open_new_tab("https://github.com/nmantani/FileInsight-plugins/"))
+
+    button = tkinter.Button(dialog, text="OK", command=lambda r=root: r.quit())
+    button.grid(row=3, column=0, padx=15, pady=5, sticky="s")
+    button.bind("<Return>", lambda event, r=root: r.quit())
+
+    # Adjust window position
+    sw = root.winfo_screenwidth()
+    sh = root.winfo_screenheight()
+    dialog.update_idletasks() # Necessary to get width and height of the window
+    ww = dialog.winfo_width()
+    wh = dialog.winfo_height()
+    dialog.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+
+    button.focus() # Focus to this widget
+
+if len(sys.argv) < 4:
+    print("Usage: menu.py pos_x pos_y version")
+    sys.exit(0)
 
 ops_dict = {}
 tooltip_dict = {}
@@ -283,6 +356,8 @@ y = int(sys.argv[2])
 if y > 10:
     y = y - 10
 
+version = sys.argv[3]
+
 # Add menu items
 categories = ("Basic", "Compress", "Decompress", "Decrypt", "Encrypt", "Decode", "Encode", "Misc", "Parsing", "Search", "Visualization", "XOR")
 
@@ -358,6 +433,10 @@ for c in categories:
         menu_dict[c].add_command(label=ops_dict[c][i], command=menuclick_callback)
 
     index_start += len(ops_dict[c])
+
+menu.add_cascade(label="Check for update", command=lambda root=root, version=version: check_update(root, version))
+
+menu.add_cascade(label="Version info", command=lambda root=root, version=version: show_version_dialog(root, version))
 
 root.withdraw() # Hide root window
 menu.post(x, y) # Show popup menu

@@ -12,6 +12,7 @@ pyimpfuzzy-windows
 python-magic-bin
 qiling
 seaborn
+requests
 watchdog
 xtea
 yara-python

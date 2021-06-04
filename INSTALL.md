@@ -181,6 +181,13 @@ or execute the following command.
 py.exe -3 -m pip install matplotlib
 ```
 
+For checking newer version of FileInsight-plugins with the "Check for update" menu, it requires requests.
+Please get it from https://github.com/psf/requests/
+or execute the following command.
+```
+py.exe -3 -m pip install requests
+```
+
 For the "Show metadata" plugin, it requires ExifTool.
 Please download ExifTool from https://exiftool.org/
 and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.

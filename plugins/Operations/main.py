@@ -292,12 +292,16 @@ if __name__ == "__main__":
     if find_python3():
         # Execute menu.py to show GUI
         # GUI portion is moved to menu.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "menu.py", str(point.x), str(point.y)], startupinfo=startupinfo)
+        p = subprocess.Popen(["py.exe", "-3", "menu.py", str(point.x), str(point.y), __version__], startupinfo=startupinfo)
         index = p.wait() # Receive exit value as index of selected plugin
 
         if index >= 0:
             fi = FileInsight()
             operations[index](fi)
+        elif index == -2: # requests is not installed
+            print("requests is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install requests' and try again.")
+            print("")
 
     # Workaround to avoid crash of FileInsight on Windows 7
     if "threading" in sys.modules:

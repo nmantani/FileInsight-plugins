@@ -187,6 +187,13 @@ py.exe -3 -m pip install matplotlib
 ```
 を実行してインストールしてください。
 
+Check for update メニューで FileInsight-plugins の更新版のチェックを行うにはrequests が必要です。
+https://github.com/psf/requests/ からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install requests
+```
+を実行してインストールしてください。
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。
