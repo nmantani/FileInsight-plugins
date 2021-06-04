@@ -94,12 +94,12 @@ powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebCl
 に上書きコピーしてください。
 
 ## カスタマイズ
-Send to プラグインはファイルをあなたのお好みのプログラムで開くことができます。
+Send to (CLI) プラグインと Send to (GUI) プラグインはファイルをあなたのお好みのプログラムで開くことができます。
 Send to プラグインのメニューで Customize menu をクリックしてください。
 
 <img src="docs/customization1.png" width="364" height="176">
 
-"plugins\Operations\Misc\send_to.json" がデフォルトのテキストエディタで開かれます。編集して保存してください。
+"plugins\Operations\Misc\send_to_cli.json" (Send to (CLI) プラグイン) または"plugins\Operations\Misc\send_to.json" (Send to (GUI) プラグイン) がデフォルトのテキストエディタで開かれます。編集して保存してください。
 
 ![customization2.png](docs/customization2.png)
 
@@ -107,7 +107,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## プラグインの一覧 (113個)
+## プラグインの一覧 (114個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -307,8 +307,10 @@ Send to プラグインのメニューで Customize menu をクリックして�
   2つのファイルの内容を比較します。
 * Hash values  
   選択範囲の(選択していない場合は全体の) MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy ハッシュ値を計算します。
-* Send to  
-  選択範囲を(選択していない場合は全体を)別のプログラムで開きます。
+* Send to (CLI)  
+  選択範囲を(選択していない場合は全体を)別の CLI プログラムで開いて結果を取得します。
+* Send to (GUI)  
+  選択範囲を(選択していない場合は全体を)別の GUI プログラムで開きます。
 
 ### Parsing operations
 * Binwalk scan  

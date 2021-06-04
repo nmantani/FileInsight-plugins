@@ -96,12 +96,12 @@ Please download the latest release version and copy the "plugins" folder into
 %USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
 
 ## Customization
-For the "Send to" plugin, you can open files with your favorite programs.
+For the "Send to (CLI)" plugin and the "Send to (GUI)" plugin, you can open files with your favorite programs.
 Please click "Customize menu" of the plugin menu.
 
 <img src="docs/customization1.png" width="364" height="176">
 
-"plugins\Operations\Misc\send_to.json" will be opened with your default text editor.
+"plugins\Operations\Misc\send_to_cli.json" (for the "Send to (CLI)" plugin) or "plugins\Operations\Misc\send_to.json" (for the "Send to (GUI)" plugin) will be opened with your default text editor.
 Please edit and save it.
 
 ![customization2.png](docs/customization2.png)
@@ -110,7 +110,7 @@ Your customization will be reflected in menu items.
 
 <img src="docs/customization3.png" width="392" height="276">
 
-## List of plugins (113 plugins)
+## List of plugins (114 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -309,8 +309,10 @@ Your customization will be reflected in menu items.
   Compare contents of two files
 * Hash values  
   Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of selected region (the whole file if not selected)
-* Send to  
-  Send selected region (the whole file if not selected) to other programs
+* Send to (CLI)  
+  Send selected region (the whole file if not selected) to other CLI program and get output
+* Send to (GUI)  
+  Send selected region (the whole file if not selected) to other GUI program
 
 ### Parsing operations
 * Binwalk scan  
