@@ -70,7 +70,14 @@ Plugins タブにある "Operations" をクリックして、プラグインを�
 
 ## アップデート方法
 ### 半自動でのアップデート
-FileInsight-plugins を最新のリリース版にアップデートしたい場合は以下のコマンドを実行してください。既存のファイルは上書きされます。
+FileInsight-plugins を最新のリリース版にアップデートしたい場合はプラグインのメニューの
+Check for update をクリックしてください。新しいバージョンがある場合はインストール用の
+PowerShell スクリプト(https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1)
+が実行されます。既存のファイルは上書きされます。
+
+![check_for_update.png](docs/check_for_update.png)
+
+以下のコマンドを実行してアップデートすることもできます(Check for update メニューはこのコマンドを実行しています)。
 
 ```
 powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
@@ -97,7 +104,7 @@ powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebCl
 Send to (CLI) プラグインと Send to (GUI) プラグインはファイルをあなたのお好みのプログラムで開くことができます。
 Send to プラグインのメニューで Customize menu をクリックしてください。
 
-<img src="docs/customization1.png" width="364" height="176">
+![customization1.png](docs/customization1.png)
 
 "plugins\Operations\Misc\send_to_cli.json" (Send to (CLI) プラグイン) または"plugins\Operations\Misc\send_to.json" (Send to (GUI) プラグイン) がデフォルトのテキストエディタで開かれます。編集して保存してください。
 
@@ -105,7 +112,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 カスタマイズした内容がメニューに反映されます。
 
-<img src="docs/customization3.png" width="392" height="276">
+![customization3.png](docs/customization3.png)
 
 ## プラグインの一覧 (114個)
 ### Basic operations

@@ -71,7 +71,15 @@ Some plugins show an additional dialog for plugin settings at the point of use.
 ## How to update
 ### Semi-automatic update
 If you would like to update FileInsight-plugins to the latest release version,
-please execute the following command. Existing files will be overwritten.
+please click "Check for update" of the plugin menu. The installation
+PowerShell script (https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1)
+will be executed if new version is available.
+Existing files will be overwritten.
+
+![check_for_update.png](docs/check_for_update.png)
+
+You can also update with the following command ("Check for update"
+executes this command)
 
 ```
 powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
@@ -93,13 +101,13 @@ powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebCl
 
 ### Manual update
 Please download the latest release version and copy the "plugins" folder into
-%USERPROFILE%\Documents\McAfee FileInsight to overwrite with the new version.
+"%USERPROFILE%\Documents\McAfee FileInsight" to overwrite with the new version.
 
 ## Customization
 For the "Send to (CLI)" plugin and the "Send to (GUI)" plugin, you can open files with your favorite programs.
 Please click "Customize menu" of the plugin menu.
 
-<img src="docs/customization1.png" width="364" height="176">
+![customization1.png](docs/customization1.png)
 
 "plugins\Operations\Misc\send_to_cli.json" (for the "Send to (CLI)" plugin) or "plugins\Operations\Misc\send_to.json" (for the "Send to (GUI)" plugin) will be opened with your default text editor.
 Please edit and save it.
@@ -108,7 +116,7 @@ Please edit and save it.
 
 Your customization will be reflected in menu items.
 
-<img src="docs/customization3.png" width="392" height="276">
+![customization3.png](docs/customization3.png)
 
 ## List of plugins (114 plugins)
 ### Basic operations
