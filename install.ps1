@@ -27,13 +27,21 @@
 
 # Usage:
 #   Installation:
+#     [Executing remote script]
 #     powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
+#     [Executing locally saved script]
 #     powershell -exec bypass .\install.ps1
+#
 #   Update (the latest release version):
+#     [Executing remote script]
 #     powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
+#     [Executing locally saved script]
 #     powershell -exec bypass .\install.ps1 -update
+#
 #   Update (the latest snapshot):
+#     [Executing remote script]
 #     powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update -snapshot"
+#     [Executing locally saved script]
 #     powershell -exec bypass .\install.ps1 -update -snapshot
 #
 
@@ -112,8 +120,11 @@ function download_file($url, $save_path) {
     # curl.exe has been available since Windows 10 version 1803
     if (Get-Command curl.exe -ea SilentlyContinue) {
         # XXX: setting user-agent header is required to download QuickLZ library
-        curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0" -Lo "$save_path" "$url"
-    } else {
+        if ($PROXY_URL) {
+            curl.exe -x "$PROXY_URL" -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" -Lo "$save_path" "$url"
+        } else {
+            curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" -Lo "$save_path" "$url"
+        }
         Write-Host "[+] Progress of download is not shown. Please be patient."
 
         $web_client = New-Object System.Net.WebClient
@@ -123,7 +134,7 @@ function download_file($url, $save_path) {
         }
 
         # XXX: setting user-agent header is required to download QuickLZ library
-        $web_client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0")
+        $web_client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0")
         $web_client.DownloadFile($url, $save_path)
     }
 }
