@@ -125,6 +125,7 @@ function download_file($url, $save_path) {
         } else {
             curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" -Lo "$save_path" "$url"
         }
+    } else {
         Write-Host "[+] Progress of download is not shown. Please be patient."
 
         $web_client = New-Object System.Net.WebClient
@@ -353,10 +354,18 @@ function install_python3($work_dir) {
             Write-Host "[+] Installing pip for Python 3..."
             Write-Host "$PYTHON_EXE -3 -m ensurepip"
             Invoke-Expression "$PYTHON_EXE -3 -m ensurepip"
-            Write-Host "[+] Done."
-            Write-Host "[+] Updating pip for Python 3..."
-            Write-Host "$PYTHON_EXE -3 -m pip install --upgrade pip"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install --upgrade pip"
+
+            if ($PROXY_HOST -and $PROXY_PORT) {
+                Write-Host "[+] Done."
+                Write-Host "[+] Updating pip for Python 3..."
+                Write-Host "$PYTHON_EXE -3 -m pip --proxy ${PROXY_URL} install --upgrade pip"
+                Invoke-Expression "$PYTHON_EXE -3 -m pip --proxy ${PROXY_URL} install --upgrade pip"
+            } else {
+                Write-Host "[+] Done."
+                Write-Host "[+] Updating pip for Python 3..."
+                Write-Host "$PYTHON_EXE -3 -m pip install --upgrade pip"
+                Invoke-Expression "$PYTHON_EXE -3 -m pip install --upgrade pip"
+            }
         }
         Write-Host "[+] Done."
         Write-Host "[+] Python 3 has been installed."
@@ -377,8 +386,8 @@ function install_with_pip($name, $update) {
         }
 
         if ($PROXY_HOST -and $PROXY_PORT) {
-            Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $name --proxy ${PROXY_HOST}:${PROXY_PORT}"
+            Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $name"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $name"
         } else {
             Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $name"
             Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $name"
