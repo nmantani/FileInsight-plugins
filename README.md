@@ -79,7 +79,7 @@ Existing files will be overwritten.
 ![check_for_update.png](docs/check_for_update.png)
 
 You can also update with the following command ("Check for update"
-executes this command)
+executes this command).
 
 ```
 powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update"
