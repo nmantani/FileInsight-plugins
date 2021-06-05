@@ -1,3 +1,26 @@
+2021-06-05 version 2.12
+* New plugin
+  - Misc operations
+    - "Send to (CLI)" plugin
+      This plugin sends selected region (the whole file if not selected) to other CLI program and shows output in a new tab.
+      Menu items of this plugin can be customized with send_to_cli.json (this file can be opened with "Customize menu").
+      This plugin supports multiple command line arguments.
+* Important changes
+  - Misc operations
+    - "Send to" plugin
+      This plugin is renamed to "Send to (GUI)".
+* Enhancements
+  - Plugin menu
+    Features of "Check for update" and "Version info" are added.
+    "Check for update" feature can check whether new version is available and execute install.ps1.
+    "Check for update" feature requires "requests" Python module.
+  - Misc operations
+    - "Send to (GUI)" plugin
+      Support of multiple command line arguments is added.
+* Bug fixes
+  - install.ps1
+    Use HTTP proxy for curl.exe when $PROXY_HOST and $PROXY_PORT are defined.
+
 2021-05-15 version 2.11
 * Important changes
   Sub-categories are added to the following categories and plugin menu is reorganized accordingly:
