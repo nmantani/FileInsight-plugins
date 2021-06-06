@@ -29,6 +29,7 @@ import sys
 import tkinter
 import tkinter.messagebox
 import webbrowser
+import winreg
 
 def check_update(root, version):
     try:
@@ -38,7 +39,40 @@ def check_update(root, version):
 
     api_url = "https://api.github.com/repos/nmantani/FileInsight-plugins/releases/latest"
     try:
-        r = requests.get(api_url)
+        # Get proxy server settings
+        reg_key = winreg.OpenKeyEx(winreg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Internet Settings")
+        num_values = winreg.QueryInfoKey(reg_key)[1]
+
+        proxy_enable = 0
+        proxy_server = ""
+        for i in range(0, num_values):
+            value_name = winreg.EnumValue(reg_key, i)[0]
+            if value_name == "ProxyEnable":
+                proxy_enable, regtype = winreg.QueryValueEx(reg_key, "ProxyEnable")
+
+            if value_name == "ProxyServer":
+                proxy_server, regtype = winreg.QueryValueEx(reg_key, "ProxyServer")
+
+        winreg.CloseKey(reg_key)
+
+        if proxy_enable == 1 and proxy_server != "":
+            if "=" in proxy_server:
+                # Example of proxy_server: http=10.0.0.1:8080;https=10.0.0.1:8080;ftp=10.0.0.1:8080;socks=10.0.0.1:8080
+                proxy_list = proxy_server.split(";")
+                proxies = {}
+                for p in proxy_list:
+                    if "http=" in p or "https=" in p:
+                        (proto, server) = p.split("=")
+                        proxies[proto] = "http://%s" % server
+            else:
+                proxies = {
+                    "http": "http://" + proxy_server,
+                    "https": "http://" + proxy_server
+                }
+
+            r = requests.get(api_url, proxies=proxies)
+        else:
+            r = requests.get(api_url)
     except Exception as e:
         tkinter.messagebox.showerror("Error:", message=e)
         sys.exit(-1) # root.quit() cannot be used
@@ -53,7 +87,10 @@ def check_update(root, version):
                 tkinter.messagebox.showinfo(None, message="Update PowerShell script (https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1) will be executed.")
 
                 try:
-                    p = subprocess.Popen(args=["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-exec", "bypass", "-command", "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update; Read-Host 'Please hit Enter key to close this window'"], creationflags=subprocess.CREATE_NEW_CONSOLE)
+                    if proxy_enable == 1 and proxy_server != "":
+                        p = subprocess.Popen(args=["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-exec", "bypass", "-command", "$web_client = New-Object System.Net.WebClient; $web_client.Proxy = New-Object System.Net.WebProxy('%s', $true); $script = ($web_client.DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1')); &([scriptblock]::Create($script)) -update; Read-Host 'Please hit Enter key to close this window'" % proxies["http"]], creationflags=subprocess.CREATE_NEW_CONSOLE)
+                    else:
+                        p = subprocess.Popen(args=["C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", "-exec", "bypass", "-command", "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update; Read-Host 'Please hit Enter key to close this window'"], creationflags=subprocess.CREATE_NEW_CONSOLE)
                 except Exception as e:
                     tkinter.messagebox.showerror("Error:", message=e)
                     sys.exit(-1) # root.quit() cannot be used
