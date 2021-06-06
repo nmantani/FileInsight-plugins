@@ -6,9 +6,10 @@ Please execute the following command. The latest release version of FileInsight-
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 ```
 
-If you would like to execute locally saved install.ps1, please download [install.ps1](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1) and execute the following command.
+If you use a proxy server (for example, IP address: 10.0.0.1, port: 8080), please execute the following commands.
 
 ```
+curl -x http://10.0.0.1:8080 -Lo install.ps1 https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1
 powershell -exec bypass .\install.ps1
 ```
 

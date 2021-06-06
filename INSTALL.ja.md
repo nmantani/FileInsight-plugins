@@ -6,11 +6,10 @@
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 ```
 
-ローカルに保存した install.ps1 を実行したい場合は
-[install.ps1](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1)
-をダウンロードしてから以下のコマンドを実行してください。
+プロキシサーバを使用している場合は (例えば IPアドレス: 10.0.0.1 ポート番号: 8080) 以下のコマンドを実行してください。
 
 ```
+curl -x http://10.0.0.1:8080 -Lo install.ps1 https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1
 powershell -exec bypass .\install.ps1
 ```
 
