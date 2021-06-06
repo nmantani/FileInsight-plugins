@@ -45,13 +45,9 @@
 #     powershell -exec bypass .\install.ps1 -update -snapshot
 #
 
-# Please edit these variables if you use a HTTP proxy server
-$PROXY_HOST = "" # example: 10.0.0.1
-$PROXY_PORT = "" # example: 8080
-
-if ($PROXY_HOST -and $PROXY_PORT) {
-    $PROXY_URL = "http://${PROXY_HOST}:${PROXY_PORT}"
-}
+# This script automatically uses proxy server settings of Windows and you no longer need to manually specify them.
+# $PROXY_HOST = "" # example: 10.0.0.1
+# $PROXY_PORT = "" # example: 8080
 
 $RELEASE_VERSION = "2.12"
 $PYTHON_EXE = "C:\Windows\py.exe"
@@ -67,6 +63,18 @@ $PYTHON_HASH = "84D5243088BA00C11E51905C704DBE041040DFFF044F4E1CE5476844EE2E6EAC
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $EXIFTOOL_HASH = "14D5D62FA1B2147E06D8D83B3CCBC828C478D2022248DE0B0F1D7CC2C4A2C387"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
+
+function get_proxy_url {
+    $settings = Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' | Select-Object ProxyServer, ProxyEnable
+
+    if ($settings.ProxyServer -and $settings.ProxyEnable) {
+        if ($settings.ProxyServer -ilike "*=*") {
+            return ($settings.ProxyServer -replace "=","://" -split(';') | Select-Object -First 1)
+        } else {
+            return ("http://" + $settings.ProxyServer)
+        }
+    }
+}
 
 function create_working_directory {
     .{ # Only $temp_dir is used as return value
@@ -355,11 +363,11 @@ function install_python3($work_dir) {
             Write-Host "$PYTHON_EXE -3 -m ensurepip"
             Invoke-Expression "$PYTHON_EXE -3 -m ensurepip"
 
-            if ($PROXY_HOST -and $PROXY_PORT) {
+            if ($PROXY_URL) {
                 Write-Host "[+] Done."
                 Write-Host "[+] Updating pip for Python 3..."
-                Write-Host "$PYTHON_EXE -3 -m pip --proxy ${PROXY_URL} install --upgrade pip"
-                Invoke-Expression "$PYTHON_EXE -3 -m pip --proxy ${PROXY_URL} install --upgrade pip"
+                Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} --upgrade pip"
+                Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} --upgrade pip"
             } else {
                 Write-Host "[+] Done."
                 Write-Host "[+] Updating pip for Python 3..."
@@ -385,7 +393,7 @@ function install_with_pip($name, $update) {
             $upgrade_opt = ""
         }
 
-        if ($PROXY_HOST -and $PROXY_PORT) {
+        if ($PROXY_URL) {
             Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $name"
             Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $name"
         } else {
@@ -807,12 +815,14 @@ function migrate_plugin_config() {
 #
 Write-Host "[+] FileInsight-plugins installation script"
 Write-Host ""
-if ($PROXY_HOST -and $PROXY_PORT) {
+
+$PROXY_URL = get_proxy_url
+
+if ($PROXY_URL) {
     Write-Host "[+] Using HTTP proxy: $PROXY_URL"
-} else {
-    Write-Host '[*] NOTE: If you use a HTTP proxy server, please edit $PROXY_HOST and $PROXY_PORT variables in this script.'
+    Write-Host ""
 }
-Write-Host ""
+
 $work_dir = create_working_directory
 
 if ($Args[0] -eq "-update") {

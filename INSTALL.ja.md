@@ -6,8 +6,9 @@
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
 ```
 
-HTTP プロキシをお使いの場合は install.ps1 をダウンロードして、ファイル中の $PROXY_HOST と
-$PROXY_PORT の変数を編集してから以下のコマンドを実行してください。
+ローカルに保存した install.ps1 を実行したい場合は
+[install.ps1](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1)
+をダウンロードしてから以下のコマンドを実行してください。
 
 ```
 powershell -exec bypass .\install.ps1
