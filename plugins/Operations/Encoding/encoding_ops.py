@@ -71,13 +71,31 @@ def hex_text_to_binary_data(fi):
 
     if length >= 2:
         data = ""
+        zero_x_prefix = False # Current position is next to "0x" prefix
+        contiguous = False # Previous character is hex character
         for i in range(0, len(string)):
-            # skip "0x"
+            # Skip "0x"
             if i < len(string) - 2 and string[i] == "0" and string[i+1] in "x":
+                zero_x_prefix = True
                 continue
 
             if string[i] in hexchars:
+                if zero_x_prefix == True:
+                    # Append "0" for 0x0, ... 0xf
+                    if (i < len(string) - 1 and string[i+1] not in hexchars) or i == len(string) - 1:
+                        data += "0"
+                        zero_x_prefix = False
+                    # Special handling is not required when there are two hex characters
+                    elif i < len(string) - 1 and string[i+1] in hexchars:
+                        zero_x_prefix = False
+                # Skip single hex character without "0x" prefix
+                elif i < len(string) - 1 and contiguous == False and string[i+1] not in hexchars:
+                    continue
+
                 data += string[i]
+                contiguous = True
+            else:
+                contiguous = False
 
         if len(data) < 2:
             return
