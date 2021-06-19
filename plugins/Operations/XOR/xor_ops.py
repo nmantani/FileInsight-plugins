@@ -30,6 +30,7 @@ import hashlib
 import struct
 import subprocess
 import sys
+import time
 
 def decremental_xor(fi):
     """
@@ -434,6 +435,8 @@ def guess_multibyte_xor_keys(fi):
         print("Top ten XOR keys guessed from the whole file are as follows.")
         print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
 
+    time_start = time.time()
+
     block = {}
     freq = {}
     for i in range(0, length, 256):
@@ -472,6 +475,8 @@ def guess_multibyte_xor_keys(fi):
                 print("Added bookmarks to the search hits.")
             print("")
             i += 1
+
+    print("Elapsed time: %f (sec)" % (time.time() - time_start))
 
 def visual_decrypt(fi):
     """
