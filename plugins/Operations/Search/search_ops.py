@@ -383,8 +383,9 @@ def regex_search(fi):
             num_hits += 1
 
         if output != "":
-            print(output)
+            print(output),
 
+        print("Number of search hits: %d" % num_hits)
         print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
         time_start = time.time()
 
@@ -497,8 +498,9 @@ def replace(fi):
             num_hits += 1
 
         if output != "":
-            print(output)
+            print(output),
 
+        print("Number of search hits: %d" % num_hits)
         print("Elapsed time (replace): %f (sec)" % (time.time() - time_start))
         time_start = time.time()
 
@@ -718,7 +720,7 @@ def regex_extraction(fi):
             num_hits += 1
 
         if output != "":
-            print(output)
+            print(output),
 
         print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
 
