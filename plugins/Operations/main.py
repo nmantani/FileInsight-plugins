@@ -245,7 +245,8 @@ if __name__ == "__main__":
                    parsing_ops.show_metadata,
                    parsing_ops.strings)
 
-    operations += (search_ops.regex_search,
+    operations += (search_ops.regex_extraction,
+                   search_ops.regex_search,
                    search_ops.replace,
                    search_ops.xor_hex_search,
                    search_ops.xor_text_search,

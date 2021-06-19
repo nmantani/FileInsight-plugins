@@ -331,7 +331,7 @@ def is_printable(s):
 
 def regex_search(fi):
     """
-    Search with regular expression in selected region (the whole file if not selected)
+    Search with regular expression in selected region (the whole file if not selected) and bookmark matched regions
     """
     if fi.getDocumentCount() == 0:
         return
@@ -406,7 +406,7 @@ def regex_search(fi):
 
 def replace(fi):
     """
-    Replace matched data in selected region (the whole file if not selected) with specified data
+    Search with regular expression in selected region (the whole file if not selected) and replace matched regions with specified data
     """
     if fi.getDocumentCount() == 0:
         return
@@ -667,3 +667,67 @@ def yara_scan(fi):
             print("Added bookmarks to the search hits.")
 
         print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+def regex_extraction(fi):
+    """
+    Search with regular expression in selected region (the whole file if not selected) and extract matched regions as single concatenated region
+    """
+    if fi.getDocumentCount() == 0:
+        return
+
+    length_sel = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+    if length_sel > 0:
+        length = length_sel
+        data = fi.getSelection()
+    else:
+        data = fi.getDocument()
+        length = fi.getLength()
+        offset = 0
+
+    if data == "":
+        return
+
+    keyword = fi.showSimpleDialog("Regular expression (please see https://docs.python.org/2.7/library/re.html for syntax):")
+
+    time_start = time.time()
+
+    if keyword != None and len(keyword) > 0:
+        if length_sel > 0:
+            print("Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword))
+        else:
+            print("Search in the whole file with keyword '%s'" % keyword)
+
+        try:
+            re.compile(keyword)
+        except:
+            print("Error: invalid regular expression")
+            return
+
+        num_hits = 0
+        match = re.finditer(keyword, data)
+        output = ""
+        extracted = ""
+        for m in match:
+            if is_printable(m.group()):
+                output += "Offset: 0x%x Search hit: %s\n" % (offset + m.start(), re.sub("[\r\n\v\f]", "", m.group()))
+            else:
+                output += "Offset: 0x%x Search hit: %s (hex)\n" % (offset + m.start(), binascii.hexlify(m.group()))
+
+            extracted += m.group()
+            num_hits += 1
+
+        if output != "":
+            print(output)
+
+        print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
+
+        len_extracted = len(extracted)
+        if len_extracted > 0:
+            fi.newDocument("Output of Regex extraction", 1)
+            fi.setDocument(extracted)
+
+            print("Number of search hits: %d" % num_hits)
+            print("Size of extracted data: %d (bytes)" % len_extracted)
+        else:
+            print("No search hit.")

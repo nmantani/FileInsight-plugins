@@ -345,13 +345,15 @@ tooltip_dict["Parsing"] = ("Scan selected region (the whole file if not selected
                            "Show metadata of selected region\n(the whole file if not selected) with ExifTool",
                            "Extract text strings from selected region\n(the whole file if not selected)")
 
-ops_dict["Search"] = ("Regex search",
+ops_dict["Search"] = ("Regex extraction",
+                      "Regex search",
                       "Replace",
                       "XOR hex search",
                       "XOR text search",
                       "YARA scan")
-tooltip_dict["Search"] = ("Search with regular expression in selected region\n(the whole file if not selected)",
-                          "Replace matched data in selected region\n(the whole file if not selected) with specified data",
+tooltip_dict["Search"] = ("Search with regular expression in selected region (the whole file if not selected)\nand extract matched regions as single concatenated region",
+                          "Search with regular expression in selected region\n(the whole file if not selected) and bookmark matched regions",
+                          "Search with regular expression in selected region (the whole file if not selected)\nand replace matched regions with specified data",
                           "Search XORed / bit-rotated data in selected region\n(the whole file if not selected)",
                           "Search XORed / bit-rotated string in selected region\n(the whole file if not selected)",
                           "Scan selected region (the whole file if not selected)\nwith YARA.")

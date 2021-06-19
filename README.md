@@ -118,7 +118,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (114 plugins)
+## List of plugins (115 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -341,9 +341,11 @@ Your customization will be reflected in menu items.
 
 ### Search operations
 * Regex search  
-  Search with regular expression in selected region (the whole file if not selected)
+  Search with regular expression in selected region (the whole file if not selected) and extract matched regions as single concatenated region
+* Regex search  
+  Search with regular expression in selected region (the whole file if not selected) and bookmark matched regions
 * Replace  
-  Replace matched data in selected region (the whole file if not selected) with specified data
+  Search with regular expression in selected region (the whole file if not selected) and replace matched regions with specified data
 * XOR hex search  
   Search XORed / bit-rotated data in selected region (the whole file if not selected)
 * XOR text search  
