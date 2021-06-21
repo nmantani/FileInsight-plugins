@@ -340,7 +340,7 @@ Your customization will be reflected in menu items.
   Extract text strings from selected region (the whole file if not selected)
 
 ### Search operations
-* Regex search  
+* Regex extraction  
   Search with regular expression in selected region (the whole file if not selected) and extract matched regions as single concatenated region
 * Regex search  
   Search with regular expression in selected region (the whole file if not selected) and bookmark matched regions
