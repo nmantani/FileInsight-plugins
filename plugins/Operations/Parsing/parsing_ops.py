@@ -585,6 +585,12 @@ def parse_file_structure(fi):
             if parsed_dict[k]["start"] - parsed_dict[k]["end"] == 1:
                 parsed_dict[k]["start"] -= 1
 
+            if parsed_dict[k]["start"] < 0:
+                parsed_dict[k]["start"] = 0
+
+            if parsed_dict[k]["end"] < 0:
+                parsed_dict[k]["end"] = 0
+
             if i % 2 == 0:
                 fi.setBookmark(offset + parsed_dict[k]["start"], parsed_dict[k]["end"] - parsed_dict[k]["start"] + 1, hex(offset + parsed_dict[k]["start"]) + " " + str(k), "#6d6dff")
             else:
