@@ -25,8 +25,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys
-import time
+import re
 import tkinter
 import tkinter.ttk
 
@@ -40,6 +39,16 @@ def print_param(root, cm, sp, cp, bd):
     print("%s\t%s\t%s\t%s" % (mode, min_len, postprocess, decode))
 
     root.quit()
+
+def amount_changed(*args):
+    if not re.match("^-?([0-9])+$", amount.get()):
+        s = re.sub("[^-0-9]", "", amount.get())
+        if s == "":
+            amount.set("1")
+        else:
+            amount.set(s)
+    elif int(amount.get()) < 1:
+        amount.set("1")
 
 # Create input dialog
 root = tkinter.Tk()
@@ -58,7 +67,9 @@ label_length = tkinter.Label(root, text='Minimum length:')
 label_length.grid(row=1, column=0, padx=5, pady=5)
 amount = tkinter.StringVar()
 amount.set("4")
-spin = tkinter.Spinbox(root, textvariable=amount, state="readonly", width=4, from_=1, to=100)
+amount.trace("w", amount_changed)
+
+spin = tkinter.Spinbox(root, textvariable=amount, width=4, from_=1, to=100)
 spin.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
 label_postprocess = tkinter.Label(root, text="Post-process:")
