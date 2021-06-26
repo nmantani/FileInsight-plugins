@@ -245,7 +245,7 @@ for i in range(1, len(all_mem) + 1):
         info += " (%s)" % image.path
 
     if file_path in info or info in ("[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
-        print("Extracted region %s (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (info, start, end, end - start, num_dump), file=sys.stderr)
+        print('Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d"' % (info, start, end, end - start, num_dump), file=sys.stderr)
         sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
         num_dump += 1
     elif info == "[heap]":
@@ -258,7 +258,7 @@ for i in range(1, len(all_mem) + 1):
         heap += ql.mem.read(start, end - start)
 
 if len(heap) > 0:
-    print("Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as Memory dump %d" % (heap_start, heap_end, heap_end - heap_start, num_dump), file=sys.stderr)
+    print('Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as "Memory dump %d"' % (heap_start, heap_end, heap_end - heap_start, num_dump), file=sys.stderr)
     sys.stdout.buffer.write(heap)
 
 handler.show_log()

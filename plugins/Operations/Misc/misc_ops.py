@@ -559,27 +559,32 @@ def emulate_code(fi):
     print("Timeout: %s" % timeout)
     print("")
 
-    print("Emulation trace:")
+    trace = "Emulation trace:\n"
     stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
     # Remove colorlized part of log data introduced since Qiling Framework 1.2.1
     stderr_data = re.sub("\[\x1b\[\d{2}m.\x1b\[0m\] \[.+\.py:\d+\]\t", "", stderr_data)
     stderr_data = re.sub("\x1b\[\d{2}m", "", stderr_data)
     stderr_data = re.sub("\x1b\[0m", "", stderr_data)
     stderr_data = re.sub("\[=\]\t\[\+\] ", "", stderr_data)
-    print(stderr_data),
+    trace += stderr_data
 
     # For the case that emulate_code.py exited during ql.run()
     if stdout_data == "":
         print("Emulation aborted.")
         return
 
+    # Get current number of opened tabs
+    num_tabs = fi.getDocumentCount()
+
     # Split stdout_data into stdout_written that is written by emulated code and memory dumps
     stdout_splitted = stdout_data.split("****MEMDUMP****")
     stdout_written = stdout_splitted[0]
     if stdout_written != "":
-        print("Output of the emulated code:")
-        print(stdout_written)
-        print("")
+        trace += "Output of the emulated code:\n"
+        trace += stdout_written
+
+    fi.newDocument("Emulation trace", 0)
+    fi.setDocument(trace)
 
     if len(stdout_splitted) > 1:
         bookmarked = False
@@ -612,7 +617,10 @@ def emulate_code(fi):
                 bookmarked = True
 
         if bookmarked == True:
-            print("Added bookmarks to the region that contains non-zero value.")
+            print("Added bookmarks to the region of the memory dumps that contain non-zero value.")
 
+    print('Emulation trace is shown in the new "Emulation trace" tab.')
     print('Memory dumps after execution are shown in the new "Memory dump" tabs.')
 
+    # Set current tab to "Emulation trace" tab
+    fi.activateDocumentAt(num_tabs)
