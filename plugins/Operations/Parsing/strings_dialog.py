@@ -32,7 +32,11 @@ import tkinter.ttk
 # Print parameters
 def print_param(root, cm, sp, cp, bd):
     mode = cm.get()
-    min_len = int(sp.get())
+    s = sp.get()
+    if s == "":
+        min_len = 1
+    else:
+        min_len = int(s)
     postprocess = cp.get()
     decode = bd.get()
 
@@ -43,8 +47,9 @@ def print_param(root, cm, sp, cp, bd):
 def amount_changed(*args):
     if not re.match("^-?([0-9])+$", amount.get()):
         s = re.sub("[^-0-9]", "", amount.get())
-        if s == "":
-            amount.set("1")
+        if re.match("[0-9]+-", s):
+            s = s.replace("-", "")
+            amount.set(s)
         else:
             amount.set(s)
     elif int(amount.get()) < 1:
