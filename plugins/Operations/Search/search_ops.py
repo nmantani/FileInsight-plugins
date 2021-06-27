@@ -106,6 +106,8 @@ def search_xor_rol_hex(fi, data, offset, length, keyword):
     """
     LEN_AFTER_HIT = 30
 
+    time_start = time.time()
+
     values = valdict(data)
     num_hits = 0
     output = ""
@@ -156,15 +158,16 @@ def search_xor_rol_hex(fi, data, offset, length, keyword):
                 bookmark_list.append((offset + k, len(keyword)))
                 num_hits += 1
 
-    if output != "":
-        print(output)
+    print("Number of search hits: %d" % num_hits)
+    print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
+    time_start = time.time()
 
     if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
         do_bookmark = False
     else:
         do_bookmark = True
 
-    if do_bookmark:
+    if num_hits > 0 and do_bookmark:
         for (i, j) in bookmark_list:
             fi.setBookmark(i, j, hex(i), "#aaffaa")
 
@@ -173,7 +176,9 @@ def search_xor_rol_hex(fi, data, offset, length, keyword):
         elif num_hits > 1:
             print("Added bookmarks to the search hits.")
 
-    return num_hits
+        print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+    return (num_hits, output)
 
 def xor_hex_search(fi):
     """
@@ -185,6 +190,7 @@ def xor_hex_search(fi):
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     keyword = fi.showSimpleDialog("Search keyword (in hex):")
+    keyword_input = keyword
 
     # Dialog has been closed
     if keyword == None:
@@ -198,21 +204,28 @@ def xor_hex_search(fi):
         print("Error: search keyword is not hexadecimal.")
         return
 
-    disp_keyword = "0x" + keyword.lower()
     keyword = list(binascii.unhexlify(keyword))
 
     if len(keyword) > 0:
         if length_sel > 0:
             length = length_sel
             data = fi.getSelection()
-            print("Search XORed / bit-rotated data from offset %s to %s with keyword %s" % (hex(offset), hex(offset + length - 1), disp_keyword))
+            print('Searched XORed / bit-rotated data from offset %s to %s with keyword "%s".' % (hex(offset), hex(offset + length - 1), keyword_input))
         else:
             data = fi.getDocument()
             length = fi.getLength()
             offset = 0
-            print("Search XORed / bit-rotated data in the whole file with keyword %s" % disp_keyword)
+            print('Searched XORed / bit-rotated data in the whole file with keyword "%s".' % keyword_input)
 
-        num_hit = search_xor_rol_hex(fi, data, offset, length, keyword)
+        print('Search hits are shown in the new "XOR hex search hits" tab.')
+        print('Please use "Windows" tab -> "New Vertical Tab Group" to see search hits and file contents side by side.')
+
+        (num_hits, output) = search_xor_rol_hex(fi, data, offset, length, keyword)
+
+        if num_hits > 0:
+            output = ("Search keyword: %s\n" % keyword_input) + ("Number of search hits: %d\n" % num_hits) + output
+            fi.newDocument("XOR hex search hits", 0)
+            fi.setDocument(output)
 
 def search_xor_rol_text(fi, data, offset, length, keyword):
     """
@@ -220,6 +233,8 @@ def search_xor_rol_text(fi, data, offset, length, keyword):
     Used by xor_text_search()
     """
     LEN_AFTER_HIT = 50
+
+    time_start = time.time()
 
     values = valdict(data)
     num_hits = 0
@@ -271,15 +286,16 @@ def search_xor_rol_text(fi, data, offset, length, keyword):
                 bookmark_list.append((offset + k, len(keyword)))
                 num_hits += 1
 
-    if output != "":
-        print(output)
+    print("Number of search hits: %d" % num_hits)
+    print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
+    time_start = time.time()
 
     if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
         do_bookmark = False
     else:
         do_bookmark = True
 
-    if do_bookmark:
+    if num_hits > 0 and do_bookmark:
         for (i, j) in bookmark_list:
             fi.setBookmark(i, j, hex(i), "#aaffaa")
 
@@ -288,7 +304,9 @@ def search_xor_rol_text(fi, data, offset, length, keyword):
         elif num_hits > 1:
             print("Added bookmarks to the search hits.")
 
-    return num_hits
+        print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+    return (num_hits, output)
 
 def xor_text_search(fi):
     """
@@ -300,6 +318,7 @@ def xor_text_search(fi):
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     keyword = fi.showSimpleDialog("Search keyword:")
+    keyword_input = keyword
 
     # Dialog has been closed
     if keyword == None:
@@ -311,13 +330,22 @@ def xor_text_search(fi):
         if length_sel > 0:
             length = length_sel
             data = fi.getSelection()
-            print("Search XORed / bit-rotated string from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), "".join(keyword)))
+            print('Searched XORed / bit-rotated string from offset %s to %s with keyword "%s".' % (hex(offset), hex(offset + length - 1), keyword_input))
         else:
             data = fi.getDocument()
             length = fi.getLength()
             offset = 0
-            print("Search XORed / bit-rotated string in the whole file with keyword '%s'" % "".join(keyword))
-        num_hit = search_xor_rol_text(fi, data, offset, length, keyword)
+            print('Searched XORed / bit-rotated string in the whole file with keyword "%s".' % keyword_input)
+
+        print('Search hits are shown in the new "XOR text search hits" tab.')
+        print('Please use "Windows" tab -> "New Vertical Tab Group" to see search hits and file contents side by side.')
+
+        (num_hits, output) = search_xor_rol_text(fi, data, offset, length, keyword)
+
+        if num_hits > 0:
+            output = ("Search keyword: %s\n" % keyword_input) + ("Number of search hits: %d\n" % num_hits) + output
+            fi.newDocument("XOR text search hits", 0)
+            fi.setDocument(output)
 
 def is_printable(s):
     """
@@ -355,9 +383,11 @@ def regex_search(fi):
 
     if keyword != None and len(keyword) > 0:
         if length_sel > 0:
-            print("Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword))
+            print('Searched from offset %s to %s with keyword "%s".' % (hex(offset), hex(offset + length - 1), keyword))
         else:
-            print("Search in the whole file with keyword '%s'" % keyword)
+            print('Searched in the whole file with keyword "%s".' % keyword)
+        print('Search hits are shown in the new "Regex search hits" tab.')
+        print('Please use "Windows" tab -> "New Vertical Tab Group" to see search hits and file contents side by side.')
 
         try:
             re.compile(keyword)
@@ -382,9 +412,6 @@ def regex_search(fi):
                 bookmark_end.append(offset + m.end())
             num_hits += 1
 
-        if output != "":
-            print(output),
-
         print("Number of search hits: %d" % num_hits)
         print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
         time_start = time.time()
@@ -394,7 +421,7 @@ def regex_search(fi):
         else:
             do_bookmark = True
 
-        if do_bookmark:
+        if num_hits > 0 and do_bookmark:
             for i in range(0, len(bookmark_start)):
                 fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + keyword, "#aaffaa")
 
@@ -404,6 +431,11 @@ def regex_search(fi):
                 print("Added bookmarks to the search hits.")
 
             print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+        if num_hits > 0:
+            output = ("Search keyword: %s\n" % keyword) + ("Number of search hits: %d\n" % num_hits) + output
+            fi.newDocument("Regex search hits", 0)
+            fi.setDocument(output)
 
 def replace(fi):
     """
@@ -453,9 +485,12 @@ def replace(fi):
 
     if len(keyword) > 0:
         if length_sel > 0:
-            print("Replace from offset %s to %s with keyword '%s' and replacement '%s'" % (hex(offset), hex(offset + length - 1), keyword, replacement))
+            print('Replaced from offset %s to %s with search keyword "%s" and replacement "%s".' % (hex(offset), hex(offset + length - 1), keyword, replacement))
         else:
-            print("Replace in the whole file with keyword '%s' and replacement '%s'" % (keyword, replacement))
+            print('Replaced in the whole file with search keyword "%s" and replacement "%s".' % (keyword, replacement))
+        print('Output of replacement is shown in the new "Output of Replace" tab.')
+        print('Search hits are shown in the new "Search hits of Replace" tab.')
+        print('Please use "Windows" tab -> "New Vertical Tab Group" to see output, search hits, and file contents side by side.')
 
         try:
             re.compile(keyword)
@@ -497,9 +532,6 @@ def replace(fi):
 
             num_hits += 1
 
-        if output != "":
-            print(output),
-
         print("Number of search hits: %d" % num_hits)
         print("Elapsed time (replace): %f (sec)" % (time.time() - time_start))
         time_start = time.time()
@@ -516,7 +548,7 @@ def replace(fi):
         else:
             do_bookmark = True
 
-        if do_bookmark:
+        if num_hits > 0 and do_bookmark:
             for i in range(0, len(bookmark_start)):
                 fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + keyword, "#aaffaa")
 
@@ -526,6 +558,11 @@ def replace(fi):
                 print("Added bookmarks to the search hits.")
 
             print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+        if num_hits > 0:
+            output = ("Search keyword: %s\n" % keyword) + ("Number of search hits: %d\n" % num_hits) + output
+            fi.newDocument("Search hits of Replace", 0)
+            fi.setDocument(output)
 
 def yara_scan(fi):
     """
@@ -566,6 +603,7 @@ def yara_scan(fi):
     time_start = time.time()
 
     fi.activateDocumentAt(int(scanned_file_index))
+    scanned_filename = fi.getDocumentName()
     length_sel = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
     if length_sel > 0:
@@ -580,6 +618,7 @@ def yara_scan(fi):
         return
 
     fi.activateDocumentAt(int(rule_file_index))
+    rule_filename = fi.getDocumentName()
     rule = fi.getDocument()
 
     # Create a temporary file for scanned file
@@ -622,8 +661,8 @@ def yara_scan(fi):
         print("Scanned from offset %s to %s." % (hex(offset), hex(offset + data_len - 1)))
     else:
         print("Scanned the whole file.")
-
-    print(stdout_data),
+    print('YARA scan matches are shown in the new "YARA scan macthes" tab.')
+    print('Please use "Windows" tab -> "New Vertical Tab Group" to see YARA rule, matches, and file contents side by side.')
 
     if ret == 0:
         print("No YARA rule matched.")
@@ -658,17 +697,22 @@ def yara_scan(fi):
     else:
         do_bookmark = True
 
-    if do_bookmark:
+    if num_hits > 0 and do_bookmark:
         fi.activateDocumentAt(int(scanned_file_index))
         for i in range(0, len(bookmark_start)):
             fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + rule_identifier[i], "#aaffaa")
 
         if num_hits == 1:
-            print("Added a bookmark to the search hit.")
+            print("Added a bookmark to the search hit in %s." % scanned_filename)
         elif num_hits > 1:
-            print("Added bookmarks to the search hits.")
+            print("Added bookmarks to the search hits in %s." % scanned_filename)
 
         print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+    if num_hits > 0:
+        fi.newDocument("YARA scan matches", 0)
+        stdout_data = ("Scanned file: %s\n" % scanned_filename) + ("YARA rule file: %s\n" % rule_filename) + stdout_data
+        fi.setDocument(stdout_data)
 
 def regex_extraction(fi):
     """
@@ -696,9 +740,12 @@ def regex_extraction(fi):
 
     if keyword != None and len(keyword) > 0:
         if length_sel > 0:
-            print("Search from offset %s to %s with keyword '%s'" % (hex(offset), hex(offset + length - 1), keyword))
+            print("Searched from offset %s to %s with keyword '%s'." % (hex(offset), hex(offset + length - 1), keyword))
         else:
-            print("Search in the whole file with keyword '%s'" % keyword)
+            print("Searched in the whole file with keyword '%s'." % keyword)
+        print('Extraction output is shown in the new "Output of Regex extraction" tab.')
+        print('Search hits are shown in the new "Search hits of Regex extraction" tab.')
+        print('Please use "Windows" tab -> "New Vertical Tab Group" to see search hits and file contents side by side.')
 
         try:
             re.compile(keyword)
@@ -708,6 +755,8 @@ def regex_extraction(fi):
 
         num_hits = 0
         match = re.finditer(keyword, data)
+        bookmark_start = []
+        bookmark_end = []
         output = ""
         extracted = ""
         for m in match:
@@ -715,21 +764,44 @@ def regex_extraction(fi):
                 output += "Offset: 0x%x Search hit: %s\n" % (offset + m.start(), re.sub("[\r\n\v\f]", "", m.group()))
             else:
                 output += "Offset: 0x%x Search hit: %s (hex)\n" % (offset + m.start(), binascii.hexlify(m.group()))
+            if num_hits > 0 and offset + m.start() == bookmark_end[-1]:
+                bookmark_end[-1] = offset + m.end()
+            else:
+                bookmark_start.append(offset + m.start())
+                bookmark_end.append(offset + m.end())
+            num_hits += 1
 
             extracted += m.group()
             num_hits += 1
 
-        if output != "":
-            print(output),
-
+        print("Number of search hits: %d" % num_hits)
         print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
+        time_start = time.time()
+
+        if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
+            do_bookmark = False
+        else:
+            do_bookmark = True
+
+        if num_hits > 0 and do_bookmark:
+            for i in range(0, len(bookmark_start)):
+                fi.setBookmark(bookmark_start[i], bookmark_end[i] - bookmark_start[i], hex(bookmark_start[i]) + " " + keyword, "#aaffaa")
+
+            if num_hits == 1:
+                print("Added a bookmark to the search hit.")
+            elif num_hits > 1:
+                print("Added bookmarks to the search hits.")
+
+            print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
 
         len_extracted = len(extracted)
         if len_extracted > 0:
             fi.newDocument("Output of Regex extraction", 1)
             fi.setDocument(extracted)
 
-            print("Number of search hits: %d" % num_hits)
             print("Size of extracted data: %d (bytes)" % len_extracted)
-        else:
-            print("No search hit.")
+
+        if num_hits > 0:
+            output = ("Search keyword: %s\n" % keyword) + ("Number of search hits: %d\n" % num_hits) + output
+            fi.newDocument("Search hits of Regex extraction", 0)
+            fi.setDocument(output)
