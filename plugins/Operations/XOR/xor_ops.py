@@ -216,7 +216,7 @@ def xor_with_multibyte_key(data, key):
         d[i] = chr(ord(d[i]) ^ ord(k[i % 256]))
     return  "".join(d)
 
-def find_ole_header(fi, data, offset):
+def find_ole_header(fi, data, offset, output):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -229,13 +229,13 @@ def find_ole_header(fi, data, offset):
         if pos == -1:
             break
         else:
-            print("OLE2 Compound Document header found at offset %s." % hex(offset + pos))
+            output += "OLE2 Compound Document header found at offset %s.\n" % hex(offset + pos)
             fi.setBookmark(offset + pos, 8, hex(offset + pos), "#c8ffff")
             i = pos + 8
             found += 1
-    return found
+    return (found, output)
 
-def find_pdf_header(fi, data, offset):
+def find_pdf_header(fi, data, offset, output):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -248,13 +248,13 @@ def find_pdf_header(fi, data, offset):
         if pos == -1:
             break
         else:
-            print("PDF header found at offset %s." % hex(offset + pos))
+            output += "PDF header found at offset %s.\n" % hex(offset + pos)
             fi.setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
             i = pos + 4
             found += 1
-    return found
+    return (found, output)
 
-def find_pe_header(fi, data, offset):
+def find_pe_header(fi, data, offset, output):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -272,11 +272,11 @@ def find_pe_header(fi, data, offset):
     if ret == -1:
         print("pefile is not installed.")
         print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
-        return
+        return (-1, output)
 
     found = ret
     if found > 0:
-        print(stdout_data),
+        output += stdout_data
 
         for l in stdout_data.splitlines():
             if l[0:5] == "Win32" or l[0:5] == "Win64":
@@ -287,9 +287,9 @@ def find_pe_header(fi, data, offset):
                 else:
                     fi.setBookmark(off, size, hex(off), "#c8ffff")
 
-    return found
+    return (found, output)
 
-def find_elf_header(fi, data, offset):
+def find_elf_header(fi, data, offset, output):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -326,14 +326,14 @@ def find_elf_header(fi, data, offset):
                     machine = machine_dict[ord(data[pos + 0x13])]
 
             if bits != 0 and endian != "" and machine != "":
-                print("ELF%d (%s %s endian) file found at offset %s." % (bits, machine, endian, hex(offset + pos)))
+                output += "ELF%d (%s %s endian) file found at offset %s.\n" % (bits, machine, endian, hex(offset + pos))
                 fi.setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
                 found += 1
 
             i = pos + 4
-    return found
+    return (found, output)
 
-def find_rtf_header(fi, data, offset):
+def find_rtf_header(fi, data, offset, output):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -346,13 +346,13 @@ def find_rtf_header(fi, data, offset):
         if pos == -1:
             break
         else:
-            print("RTF header found at offset %s." % hex(offset + pos))
+            output += "RTF header found at offset %s.\n" % hex(offset + pos)
             fi.setBookmark(offset + pos, 5, hex(offset + pos), "#c8ffff")
             i = pos + 5
             found += 1
-    return found
+    return (found, output)
 
-def find_zip_header(fi, data, offset):
+def find_zip_header(fi, data, offset, output):
     """
     Used by guess_multibyte_xor_keys()
     """
@@ -368,7 +368,7 @@ def find_zip_header(fi, data, offset):
         if pos_start == -1:
             break
         elif pos_end == -1:
-            print("ZIP local file header found at offset %s, but end of central directory record is missing." % hex(offset + pos_start))
+            output += "ZIP local file header found at offset %s, but end of central directory record is missing.\n" % hex(offset + pos_start)
             fi.setBookmark(offset + pos_start, 4, hex(offset + pos_start), "#c8ffff")
             found += 1
             break
@@ -391,12 +391,12 @@ def find_zip_header(fi, data, offset):
             if pos_manifest != -1 and data[pos_manifest + 30:pos_manifest + 50] == "META-INF/MANIFEST.MF":
                 file_type = "Java Archive (JAR)"
 
-        print("%s found at offset %s size %d bytes." % (file_type, hex(offset + pos_start), (pos_end - pos_start + 22)))
+        output += "%s found at offset %s size %d bytes.\n" % (file_type, hex(offset + pos_start), (pos_end - pos_start + 22))
         fi.setBookmark(offset + pos_start, pos_end - pos_start + 22, hex(offset + pos_start), "#c8ffff")
         i = pos_end + 22
         found += 1
 
-    return found
+    return (found, output)
 
 def shorten_xor_key(key):
     """
@@ -426,13 +426,13 @@ def guess_multibyte_xor_keys(fi):
 
     if length > 0:
         data = fi.getSelection()
-        print("Top ten XOR keys guessed from offset %s to %s are as follows." % (hex(offset), hex(offset + length - 1)))
+        print('Top ten XOR keys guessed from offset %s to %s are shown in the new "Guessed XOR keys" tab.' % (hex(offset), hex(offset + length - 1)))
         print("Please select the whole file and use these XOR key in the Decode tab to decode the file.\n")
     else:
         offset = 0
         data = fi.getDocument()
         length = fi.getLength()
-        print("Top ten XOR keys guessed from the whole file are as follows.")
+        print('Top ten XOR keys guessed from the whole file are shown in the new "Guessed XOR keys" tab.')
         print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
 
     time_start = time.time()
@@ -453,28 +453,37 @@ def guess_multibyte_xor_keys(fi):
             else:
                 freq[h] += 1
 
+    output = ""
     i = 0
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         if i < 10:
             key = shorten_xor_key(block[k])
-            sys.stdout.write("XOR key: 0x")
+            output += "XOR key: 0x"
             for j in range(len(key) - 1, -1, -1):
-                sys.stdout.write("%02x" % ord(block[k][j]))
-            print
-            print("256 bytes pattern occurrence count: %i" % v)
+                output += "%02x" % ord(block[k][j])
+            output += "\n"
+            output += "256 bytes pattern occurrence count: %i\n" % v
             tmp = xor_with_multibyte_key(data, block[k])
-            num_pe = find_pe_header(fi, tmp, offset)
-            num_elf = find_elf_header(fi, tmp, offset)
-            num_ole = find_ole_header(fi, tmp, offset)
-            num_pdf = find_pdf_header(fi, tmp, offset)
-            num_rtf = find_rtf_header(fi, tmp, offset)
-            num_zip = find_zip_header(fi, tmp, offset)
+            (num_pe, output) = find_pe_header(fi, tmp, offset, output)
+
+            # pefile Python module is not installed
+            if num_pe == -1:
+                return
+
+            (num_elf, output) = find_elf_header(fi, tmp, offset, output)
+            (num_ole, output) = find_ole_header(fi, tmp, offset, output)
+            (num_pdf, output) = find_pdf_header(fi, tmp, offset, output)
+            (num_rtf, output) = find_rtf_header(fi, tmp, offset, output)
+            (num_zip, output) = find_zip_header(fi, tmp, offset, output)
             if num_pe + num_elf + num_ole + num_pdf + num_rtf + num_zip == 1:
-                print("Added a bookmark to the search hit.")
+                output += "Added a bookmark to the search hit.\n"
             elif num_pe + num_elf + num_ole + num_pdf + num_rtf + num_zip > 1:
-                print("Added bookmarks to the search hits.")
-            print("")
+                output += "Added bookmarks to the search hits.\n"
+            output += "\n"
             i += 1
+
+    fi.newDocument("Guessed XOR keys", 0)
+    fi.setDocument(output)
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))
 
