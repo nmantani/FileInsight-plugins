@@ -102,11 +102,9 @@ def binwalk_scan(fi):
         return
 
     if fi.getSelectionLength() > 0:
-        print("Scanned from offset %s to %s:" % (hex(offset), hex(offset + length)))
+        print('Scanned from offset %s to %s and the output is shown in the new "Binwalk output" tab.' % (hex(offset), hex(offset + length)))
     else:
-        print("Scanned the whole file:")
-
-    print(stdout_data),
+        print('Scanned the whole file and the output is shown in the new "Binwalk output" tab.')
 
     for l in stdout_data.splitlines():
         offset_found.append(int(l.split()[1], 0))
@@ -114,6 +112,7 @@ def binwalk_scan(fi):
     num_found = len(offset_found)
     if num_found == 0:
         print("No file has been detected.")
+
     print("Elapsed time (scan): %f (sec)" % (time.time() - time_start))
     time_start = time.time()
 
@@ -129,6 +128,9 @@ def binwalk_scan(fi):
 
             print("\r\nAdded bookmarks to the detected files.")
             print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
+
+        fi.newDocument("Binwalk output", 0)
+        fi.setDocument(stdout_data)
 
 def file_type(fi):
     """
@@ -256,7 +258,7 @@ def show_metadata(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute binwalk_scan.py for scanning with binwalk
+    # Execute exiftool.exe to get metadata
     p = subprocess.Popen(["Parsing/exiftool.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
@@ -264,7 +266,11 @@ def show_metadata(fi):
     ret = p.wait()
 
     os.remove(filepath) # Cleanup
-    print(stdout_data),
+
+    fi.newDocument("Metadata", 0)
+    fi.setDocument(stdout_data)
+
+    print('Metadata is shown in the new "Metadata" tab.')
 
 def strings_dedupe(matched, unicode, decode):
     """
