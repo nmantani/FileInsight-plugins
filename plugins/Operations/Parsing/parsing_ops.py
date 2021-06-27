@@ -33,16 +33,14 @@ import ctypes
 import json
 import os
 import re
-import struct
 import subprocess
-import sys
 import tempfile
 import time
 
 def bookmark_yesno_dialog(num_bookmark):
     """
     Show a confirmation dialog of adding many bookmarks
-    Used by binwalk_scan()
+    Used by binwalk_scan() and parse_file_structure()
     """
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
@@ -478,24 +476,6 @@ def strings(fi):
         print("Extracted text strings from offset %s to %s." % (hex(offset), hex(offset + length)))
     else:
         print("Extracted text strings from the whole file.")
-
-def bookmark_yesno_dialog(num_bookmark):
-    """
-    Show a confirmation dialog of adding many bookmarks
-    Used by parse_file_structure()
-    """
-    # Do not show command prompt window
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-    # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-
-    # Receive scan result
-    stdout_data, stderr_data = p.communicate()
-    ret = p.wait()
-
-    return ret
 
 def parse_file_structure(fi):
     """
