@@ -61,13 +61,12 @@ def byte_histogram(fi):
     if length > 0:
         whole_file = False
         data = fi.getSelection()
-        print("Byte frequency from offset %s to %s (descending order by count):" % (hex(offset), hex(offset + length - 1)))
+        print('Byte frequency from offset %s to %s (descending order by count) is shown in the new "Byte frequency" tab.' % (hex(offset), hex(offset + length - 1)))
     else:
         whole_file = True
         data = fi.getDocument()
         length = fi.getLength()
-        print("Byte frequency of the whole file (descending order by count):")
-    print("")
+        print('Byte frequency of the whole file (descending order by count) is shown in the new "Byte frequency" tab.')
 
     freq = {}
 
@@ -81,7 +80,8 @@ def byte_histogram(fi):
     output = ""
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         output += "0x%02X: %d\n" % (k, v)
-    print(output)
+    fi.newDocument("Byte frequency", 0)
+    fi.setDocument(output)
 
     # Create a temporary file
     fd, filepath = tempfile.mkstemp()
