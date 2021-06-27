@@ -327,7 +327,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 * File type  
   選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
 * Find PE file  
-  選択範囲から(選択していない場合は全体から) PE ファイルを検索します。
+  選択範囲から(選択していない場合は全体から) PE ヘッダ情報に基づいて PE ファイルを探します。
 * Parse file structure  
   選択範囲を(選択していない場合は全体を) のファイル構造を Kaitai Struct でパースします。  
   対応フォーマット: Gzip, RAR, ZIP, ELF, Mach-O, PE, MBR パーティションテーブル, BMP, GIF, JPEG, PNG, Windows ショートカット

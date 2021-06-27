@@ -330,7 +330,7 @@ Your customization will be reflected in menu items.
 * File type  
   Identify file type of selected region (the whole file if not selected)
 * Find PE file  
-  Find PE file from selected region (the whole file if not selected)
+  Find PE file from selected region (the whole file if not selected) based on PE header information
 * Parse file structure  
   Parse file structure of selected region (the whole file if not selected) with Kaitai Struct  
   Supported file formats: Gzip, RAR, ZIP, ELF, Mach-O, PE, MBR partition table, BMP, GIF, JPEG, PNG, Windows shortcut

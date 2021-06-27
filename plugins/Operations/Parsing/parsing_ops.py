@@ -167,7 +167,7 @@ def file_type(fi):
 
 def find_pe_file(fi):
     """
-    Find PE file from selected region (the whole file if not selected)
+    Find PE file from selected region (the whole file if not selected) based on PE header information
     """
     if fi.getDocumentCount() == 0:
         return

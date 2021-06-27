@@ -340,7 +340,7 @@ ops_dict["Parsing"] = ("Binwalk scan",
 tooltip_dict["Parsing"] = ("Scan selected region (the whole file if not selected)\nto find embedded files",
                            "Disassemble selected region\n(the whole file if not selected)",
                            "Identify file type of selected region\n(the whole file if not selected)",
-                           "Find PE file from selected region\n(the whole file if not selected)",
+                           "Find PE file from selected region\n(the whole file if not selected)\nbased on PE header information",
                            "Parse file structure of selected region\n(the whole file if not selected) with Kaitai Struct",
                            "Show metadata of selected region\n(the whole file if not selected) with ExifTool",
                            "Extract text strings from selected region\n(the whole file if not selected)")
