@@ -32,11 +32,18 @@ import tkinter
 def print_amount(r, s):
     if s.get() != "":
         print(s.get())
+    else:
+        print("13")
     root.quit()
 
 def amount_changed(*args):
     if not re.match("^-?([0-9])+$", amount.get()):
-        amount.set("13")
+        s = re.sub("[^-0-9]", "", amount.get())
+        if re.match("[0-9]+-", s):
+            s = s.replace("-", "")
+            amount.set(s)
+        else:
+            amount.set(s)
 
 # Create input dialog
 root = tkinter.Tk()
@@ -47,7 +54,7 @@ label.grid(row=0, column=0, padx=5, pady=5)
 amount = tkinter.StringVar()
 amount.set("13")
 amount.trace("w", amount_changed)
-spin = tkinter.Spinbox(root, textvariable=amount, state="readonly", width=4, from_=-100, to=100)
+spin = tkinter.Spinbox(root, textvariable=amount, width=4, from_=-100, to=100)
 spin.grid(row=0, column=1, padx=5, pady=5)
 button = tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_amount(r, s)))
 button.grid(row=0, column=2, padx=5, pady=5)
