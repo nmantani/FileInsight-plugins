@@ -230,7 +230,7 @@ def find_ole_header(fi, data, offset, output):
             break
         else:
             output += "OLE2 Compound Document header found at offset %s.\n" % hex(offset + pos)
-            fi.setBookmark(offset + pos, 8, hex(offset + pos), "#c8ffff")
+            fi.setBookmark(offset + pos, 8, hex(offset + pos) + " OLE2 Compound Document", "#c8ffff")
             i = pos + 8
             found += 1
     return (found, output)
@@ -249,7 +249,7 @@ def find_pdf_header(fi, data, offset, output):
             break
         else:
             output += "PDF header found at offset %s.\n" % hex(offset + pos)
-            fi.setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
+            fi.setBookmark(offset + pos, 4, hex(offset + pos) + " PDF", "#c8ffff")
             i = pos + 4
             found += 1
     return (found, output)
@@ -280,12 +280,13 @@ def find_pe_header(fi, data, offset, output):
 
         for l in stdout_data.splitlines():
             if l[0:5] == "Win32" or l[0:5] == "Win64":
+                file_type = l.split()[0] + " " + l.split()[1]
                 off = int(l.split()[5], 0)
                 size = int(l.split()[7], 0)
                 if off + size > len(data):
-                    fi.setBookmark(off, len(data) - off, hex(off), "#c8ffff")
+                    fi.setBookmark(off, len(data) - off, hex(off) + " " + file_type, "#c8ffff")
                 else:
-                    fi.setBookmark(off, size, hex(off), "#c8ffff")
+                    fi.setBookmark(off, size, hex(off) + " " + file_type, "#c8ffff")
 
     return (found, output)
 
@@ -326,8 +327,9 @@ def find_elf_header(fi, data, offset, output):
                     machine = machine_dict[ord(data[pos + 0x13])]
 
             if bits != 0 and endian != "" and machine != "":
-                output += "ELF%d (%s %s endian) file found at offset %s.\n" % (bits, machine, endian, hex(offset + pos))
-                fi.setBookmark(offset + pos, 4, hex(offset + pos), "#c8ffff")
+                file_type = "ELF%d (%s %s endian)" % (bits, machine, endian)
+                output += "%s file found at offset %s.\n" % (file_type, hex(offset + pos))
+                fi.setBookmark(offset + pos, 4, hex(offset + pos) + " " + file_type, "#c8ffff")
                 found += 1
 
             i = pos + 4
@@ -347,7 +349,7 @@ def find_rtf_header(fi, data, offset, output):
             break
         else:
             output += "RTF header found at offset %s.\n" % hex(offset + pos)
-            fi.setBookmark(offset + pos, 5, hex(offset + pos), "#c8ffff")
+            fi.setBookmark(offset + pos, 5, hex(offset + pos) + " RTF", "#c8ffff")
             i = pos + 5
             found += 1
     return (found, output)
@@ -369,7 +371,7 @@ def find_zip_header(fi, data, offset, output):
             break
         elif pos_end == -1:
             output += "ZIP local file header found at offset %s, but end of central directory record is missing.\n" % hex(offset + pos_start)
-            fi.setBookmark(offset + pos_start, 4, hex(offset + pos_start), "#c8ffff")
+            fi.setBookmark(offset + pos_start, 4, hex(offset + pos_start) + " ZIP local file header", "#c8ffff")
             found += 1
             break
         elif data[pos_start + 30:pos_start + 49] == "[Content_Types].xml": # Possible Microsoft Office file
@@ -392,7 +394,7 @@ def find_zip_header(fi, data, offset, output):
                 file_type = "Java Archive (JAR)"
 
         output += "%s found at offset %s size %d bytes.\n" % (file_type, hex(offset + pos_start), (pos_end - pos_start + 22))
-        fi.setBookmark(offset + pos_start, pos_end - pos_start + 22, hex(offset + pos_start), "#c8ffff")
+        fi.setBookmark(offset + pos_start, pos_end - pos_start + 22, hex(offset + pos_start) + " " + file_type, "#c8ffff")
         i = pos_end + 22
         found += 1
 
