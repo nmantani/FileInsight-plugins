@@ -114,7 +114,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (115個)
+## プラグインの一覧 (116個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -367,6 +367,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
 * XOR with next byte  
   選択範囲を次のバイトを XOR のキーにしながら XOR します。
+* XOR with next byte (reverse)  
+  "XOR with next byte" プラグインの逆の操作を行います。
 * Guess multibyte XOR keys  
   0x00 と XOR することによって現れているキーの値に基づいて選択範囲から(選択していない場合は全体から)複数バイトの XOR キーを推測します。
 * Visual encrypt  

@@ -193,8 +193,9 @@ def xor_with_next_byte(fi):
         data = list(fi.getDocument())
         for i in range(0, length_sel):
             j = offset + i
-            if ord(data[j]) != 0x00 and j < length_all - 1:
+            if j < length_all - 1:
                 data[j] = chr(ord(data[j]) ^ ord(data[j + 1]))
+
         fi.newDocument("Output of XOR with next byte", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length_sel, hex(offset), "#c8ffff")
@@ -203,6 +204,31 @@ def xor_with_next_byte(fi):
             print("XORed one byte from offset %s to %s while using next byte as XOR key." % (hex(offset), hex(offset)))
         else:
             print("XORed %s bytes from offset %s to %s while using next byte as XOR key." % (length_sel, hex(offset), hex(offset + length_sel - 1)))
+            print("Added a bookmark to XORed region.")
+
+def xor_with_next_byte_reverse(fi):
+    """
+    Reverse operation of "XOR with next byte" plugin
+    """
+    offset = fi.getSelectionOffset()
+    length_sel = fi.getSelectionLength()
+    length_all = fi.getLength()
+
+    if length_sel > 0:
+        data = list(fi.getDocument())
+        for i in range(length_sel - 1, -1, -1):
+            j = offset + i
+            if j < length_all - 1:
+                data[j] = chr(ord(data[j]) ^ ord(data[j + 1]))
+
+        fi.newDocument("Output of XOR with next byte (reverse)", 1)
+        fi.setDocument("".join(data))
+        fi.setBookmark(offset, length_sel, hex(offset), "#c8ffff")
+
+        if length_sel == 1:
+            print("XORed one byte from offset %s to %s while using next byte as XOR key (reverse direction)." % (hex(offset), hex(offset)))
+        else:
+            print("XORed %s bytes from offset %s to %s while using next byte as XOR key (reverse direction)." % (length_sel, hex(offset), hex(offset + length_sel - 1)))
             print("Added a bookmark to XORed region.")
 
 def xor_with_multibyte_key(data, key):
@@ -508,6 +534,10 @@ def visual_decrypt(fi):
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
+
+        if stdout_data == "":
+            return
+
         key_length = int(stdout_data.rstrip())
 
         for i in range(offset + length - key_length, offset, -key_length):
@@ -543,6 +573,10 @@ def visual_encrypt(fi):
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
+
+        if stdout_data == "":
+            return
+
         key_length = int(stdout_data.rstrip())
 
         for i in range(offset + key_length, offset + length, key_length):
