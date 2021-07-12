@@ -429,5 +429,6 @@ def bookmark(fi):
             return
         else:
             color = stdout_data
+            comment = hex(offset) + " " + comment
             fi.setBookmark(offset, length, comment, color)
             print("Added a bookmark to selected region.")
