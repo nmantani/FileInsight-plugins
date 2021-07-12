@@ -496,8 +496,22 @@ def visual_decrypt(fi):
 
     if length > 0:
         data = list(fi.getDocument())
-        for i in range(offset + length - 1, offset, -1):
-            data[i] = chr(ord(data[i]) ^ ord(data[i - 1]))
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute visual_encrypt_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "XOR/visual_encrypt_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get amount input
+        stdout_data, stderr_data = p.communicate()
+        key_length = int(stdout_data.rstrip())
+
+        for i in range(offset + length - key_length, offset, -key_length):
+            for j in range(key_length - 1, -1, -1):
+                data[i + j] = chr(ord(data[i + j]) ^ ord(data[i + j - key_length]))
+
         fi.newDocument("Output of Visual Decrypt", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
@@ -517,8 +531,22 @@ def visual_encrypt(fi):
 
     if length > 0:
         data = list(fi.getDocument())
-        for i in range(offset + 1, offset + length):
-            data[i] = chr(ord(data[i]) ^ ord(data[i - 1]))
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute visual_encrypt_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "XOR/visual_encrypt_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get amount input
+        stdout_data, stderr_data = p.communicate()
+        key_length = int(stdout_data.rstrip())
+
+        for i in range(offset + key_length, offset + length, key_length):
+            for j in range(0, key_length):
+                data[i + j] = chr(ord(data[i + j]) ^ ord(data[i + j - key_length]))
+
         fi.newDocument("Output of Visual Encrypt", 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
