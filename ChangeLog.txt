@@ -1,3 +1,65 @@
+2021-07-22 version 2.13
+* New plugin
+  - Search operations
+    - "Regex extraction" plugin
+      This plugin searches with regular expression in selected region (the whole file if not selected)
+      and extract matched regions as single concatenated region.
+  - XOR operations
+    - "XOR with next byte (reverse)" plugin
+      This plugin does reverse operation of "XOR with next byte" plugin.
+* Enhancements
+  - install.ps1
+    Proxy server setting of Windows is automatically used and specifying a proxy server by editing install.ps1 is no longer needed.
+  - Basic operations
+    - Bookmark plugin
+      Offset will be prepended to bookmark comment.
+  - Encoding operations
+    - "Hex text to binary data" plugin
+      Hex values of 0x0 ... 0xf are treated as 0x00 ... 0x0f.
+    - ROT13 plugin
+      Spinbox for amount of rotation is changed to editable.
+  - Search operations
+    - "Regex search" plugin and "Replace" plugin
+      Number of search hits will be shown.
+  - Parsing operations
+    - Strings plugin
+      Spinbox for minimum length is changed to editable.
+  - XOR operations
+   - "Guess multibyte XOR keys" plugin
+     File type will be noted as bookmark comment.
+   - "Visual decrypt" plugin and "Visual encrypt" plugin
+     Variable XOR key length is supported.
+* Bug fixes
+  - install.ps1
+    Behavior of pip with a proxy server is fixed.
+  - Parsing operations
+    - "Parse file structure" plugin
+      Bug of showing negative offset is fixed.
+  - XOR operations
+    - "XOR with next byte" plugin
+      Fix bug that XOR is skipped when value of current position is 0x00.
+* Other changes
+  - Misc operations
+    - "Emulate code" plugin
+      Emulation trace will be shown in a new "Emulation trace" tab instead of the Output pane.
+  - Parsing operations
+    - "Binwalk scan" plugin
+      Output will be shown in a new "Binwalk output" tab instead of the Output pane.
+    - "Show metadata" plugin
+      Output will be shown in a new "Metadata" tab instead of the Output pane.
+  - Search operations
+    - All plugins
+      Output will be shown in a new tab instead of the Output pane.
+    - "XOR hex search" plugin and "XOR text search" plugin
+      Elapsed time will be shown after execution of the plugins.
+  - Visualization operations
+    - "Byte histogram" plugin
+      Byte frequency wiil be shown in a new "Byte frequency" tab.
+  - XOR operations
+    - "Guess multibyte XOR keys" plugin
+      - Elapsed time will be shown after execution of the plugin.
+      - Output will be shown in a new "Guessed XOR keys" tab.
+
 2021-06-05 version 2.12
 * New plugin
   - Misc operations
