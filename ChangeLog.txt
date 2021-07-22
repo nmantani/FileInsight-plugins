@@ -1,5 +1,5 @@
 2021-07-22 version 2.13
-* New plugin
+* New plugins
   - Search operations
     - "Regex extraction" plugin
       This plugin searches with regular expression in selected region (the whole file if not selected)
