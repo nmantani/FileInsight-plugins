@@ -1,4 +1,5 @@
 # These files will be ignored in release version archives.
 install.ps1 export-ignore
+docs/FileInsight-plugins-Black[[:space:]]Hat[[:space:]]USA[[:space:]]2021[[:space:]]Arsenal.pdf export-ignore
 docs/FileInsight-plugins-CODE[[:space:]]BLUE[[:space:]]2019.pdf export-ignore
 docs/FileInsight-plugins-CODE[[:space:]]BLUE[[:space:]]2019-ja.pdf export-ignore
