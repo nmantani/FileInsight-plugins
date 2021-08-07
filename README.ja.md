@@ -1,3 +1,5 @@
+[![Black Hat Arsenal](https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/usa/2021.svg?sanitize=true)](https://www.blackhat.com/us-21/arsenal/schedule/#fileinsight-plugins-decoding-toolbox-of-mcafee-fileinsight-hex-editor-for-malware-analysis-23386)
+
 # FileInsight-plugins: McAfee FileInsight バイナリエディタのマルウェア解析用デコードツールボックス
 
 FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラグイン集です。

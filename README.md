@@ -1,3 +1,5 @@
+[![Black Hat Arsenal](https://raw.githubusercontent.com/toolswatch/badges/master/arsenal/usa/2021.svg?sanitize=true)](https://www.blackhat.com/us-21/arsenal/schedule/#fileinsight-plugins-decoding-toolbox-of-mcafee-fileinsight-hex-editor-for-malware-analysis-23386)
+
 # FileInsight-plugins: decoding toolbox of McAfee FileInsight hex editor for malware analysis
 
 FileInsight-plugins is a large set of plugins for McAfee FileInsight hex editor.
