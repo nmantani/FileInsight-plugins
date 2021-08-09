@@ -31,6 +31,16 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 #### Entropy graph of Windows executable file shown by "Entropy graph" plugin
 ![screenshot8.png](docs/screenshot8.png)
 
+## Presentations
+### Black Hat USA 2021 Arsenal
+* [Abstract at Black Hat USA website](https://www.blackhat.com/us-21/arsenal/schedule/#fileinsight-plugins-decoding-toolbox-of-mcafee-fileinsight-hex-editor-for-malware-analysis-23386)
+* [Slide deck](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-Black%20Hat%20USA%202021%20Arsenal.pdf)
+
+### CODE BLUE 2019 Bluebox
+* [Abstract at CODE BLUE website](https://codeblue.jp/2019/en/bluebox/FileInsight-plugins/)
+* [Slide deck (English)](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-CODE%20BLUE%202019.pdf)
+* [Slide deck (Japanese)](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-CODE%20BLUE%202019-ja.pdf)
+
 ## Use cases
 * [Use case 1: executable file embedded in Excel file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-1--executable-file-embedded-in-Excel-file)
 * [Use case 2: executable file embedded in RTF file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-2--executable-file-embedded-in-RTF-file)

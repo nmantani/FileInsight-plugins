@@ -31,6 +31,16 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 #### Entropy graph プラグインで表示した Windows の実行ファイルのエントロピーのグラフ
 ![screenshot8.png](docs/screenshot8.png)
 
+## 講演
+### Black Hat USA 2021 Arsenal
+* [概要 (Black Hat USA ウェブサイト)](https://www.blackhat.com/us-21/arsenal/schedule/#fileinsight-plugins-decoding-toolbox-of-mcafee-fileinsight-hex-editor-for-malware-analysis-23386)
+* [スライド](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-Black%20Hat%20USA%202021%20Arsenal.pdf)
+
+### CODE BLUE 2019 Bluebox
+* [概要 (CODE BLUE ウェブサイト)](https://codeblue.jp/2019/en/bluebox/FileInsight-plugins/)
+* [スライド (英語)](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-CODE%20BLUE%202019.pdf)
+* [スライド (日本語)](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-CODE%20BLUE%202019-ja.pdf)
+
 ## 使用例
 * [Use case 1: executable file embedded in Excel file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-1--executable-file-embedded-in-Excel-file)
 * [Use case 2: executable file embedded in RTF file](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-2--executable-file-embedded-in-RTF-file)
