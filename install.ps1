@@ -53,6 +53,7 @@ $RELEASE_VERSION = "2.13"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.9.7"
 $APLIB_VERSION = "1.1.1"
+$BINWALK_VERSION = "2.3.2"
 $EXIFTOOL_VERSION = "12.34"
 $QUICKLZ_VERSION = "1.5.0"
 
@@ -61,6 +62,7 @@ $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C
 $FILEINSIGHT_PLUGINS_HASH = "2DD010BD5EC368B5243302891F6239CE236750306AD203B0745EE1484544308B"
 $PYTHON_HASH = "3F63F4C77A6DA13F9BAE715EB6644A48BD5F900601E0F1F233862E8CA1A96DD8"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
+$BINWALK_HASH = "146E7E203305001488B4C1AEEFEAC8DF62DED92EC625F0E75B540DFA62B4DB80"
 $EXIFTOOL_HASH = "BE879F6ED7DCD12E71AE9BDC5A29F2C92611364A86AA0B15798D89843A059D93"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
@@ -442,8 +444,8 @@ function install_python_modules($work_dir, $update) {
         Write-Host "[*] binwalk Python module is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading binwalk..."
-        $binwalk_url = "https://github.com/ReFirmLabs/binwalk/archive/master.zip"
-        $zip_archive_path = "$work_dir\binwalk-master.zip"
+        $binwalk_url = "https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v$BINWALK_VERSION.zip"
+        $zip_archive_path = "$work_dir\binwalk-$BINWALK_VERSION.zip"
         download_file $binwalk_url $zip_archive_path
 
         if (!(Test-Path $zip_archive_path)) {
@@ -454,8 +456,19 @@ function install_python_modules($work_dir, $update) {
         }
         Write-Host "[+] Done."
 
-        Write-Host "[+] Extracting binwalk-master.zip..."
-        $extract_dir = "$work_dir\binwalk-master"
+        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $BINWALK_HASH)..."
+        $val = compute_hash $zip_archive_path
+        if ($val -eq $BINWALK_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
+        Write-Host "[+] Extracting binwalk-$BINWALK_VERSION.zip..."
+        $extract_dir = "$work_dir\binwalk-$BINWALK_VERSION"
         extract_zip $zip_archive_path $work_dir
         $file_path = "$extract_dir\README.md"
 
