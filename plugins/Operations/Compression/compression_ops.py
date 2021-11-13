@@ -61,7 +61,8 @@ def aplib_compress(fi):
             newdata += compressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of aPLib compress", 1)
+            tab_name = fi.get_new_document_name("Output of aPLib compress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -116,7 +117,8 @@ def aplib_decompress(fi):
             newdata += decompressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of aPLib decompress", 1)
+            tab_name = fi.get_new_document_name("Output of aPLib decompress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -148,7 +150,8 @@ def bzip2_compress(fi):
             newdata += compressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of Bzip2 compress", 1)
+            tab_name = fi.get_new_document_name("Output of Bzip2 compress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -178,7 +181,8 @@ def bzip2_decompress(fi):
             newdata += decompressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of Bzip2 decompress", 1)
+            tab_name = fi.get_new_document_name("Output of Bzip2 decompress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -212,7 +216,8 @@ def gzip_compress(fi):
             newdata += compressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of Gzip compress", 1)
+            tab_name = fi.get_new_document_name("Output of Gzip compress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -244,7 +249,8 @@ def gzip_decompress(fi):
             newdata += decompressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of Gzip decompress", 1)
+            tab_name = fi.get_new_document_name("Output of Gzip decompress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -277,7 +283,8 @@ def lznt1_compress(fi):
             ctypes.windll.ntdll.RtlCompressBuffer(2, ctypes.c_char_p(data), length, compressed, length * 3, 4096, ctypes.byref(final_size), workspace)
             newdata = orig[:offset] + compressed[:final_size.value] + orig[offset + length:]
 
-            fi.newDocument("Output of LZNT1 compress", 1)
+            tab_name = fi.get_new_document_name("Output of LZNT1 compress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
@@ -307,7 +314,8 @@ def lznt1_decompress(fi):
             ctypes.windll.ntdll.RtlDecompressBuffer(2, decompressed, length * 3, ctypes.c_char_p(data), length, ctypes.byref(final_size))
             newdata = orig[:offset] + decompressed[:final_size.value] + orig[offset + length:]
 
-            fi.newDocument("Output of LZNT1 decompress", 1)
+            tab_name = fi.get_new_document_name("Output of LZNT1 decompress")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
@@ -339,7 +347,8 @@ def raw_deflate(fi):
             newdata += compressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of Raw deflate", 1)
+            tab_name = fi.get_new_document_name("Output of Raw deflate")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -369,7 +378,8 @@ def raw_inflate(fi):
             newdata += decompressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of Raw inflate", 1)
+            tab_name = fi.get_new_document_name("Output of Raw inflate")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -421,7 +431,8 @@ def lz4_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of LZ4 compress", 1)
+        tab_name = fi.get_new_document_name("Output of LZ4 compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -470,7 +481,8 @@ def lz4_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of LZ4 decompress", 1)
+        tab_name = fi.get_new_document_name("Output of LZ4 decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -515,7 +527,8 @@ def lzma_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of LZMA compress", 1)
+        tab_name = fi.get_new_document_name("Output of LZMA compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -560,7 +573,8 @@ def lzma_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of LZMA decompress", 1)
+        tab_name = fi.get_new_document_name("Output of LZMA decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -605,7 +619,8 @@ def xz_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of XZ compress", 1)
+        tab_name = fi.get_new_document_name("Output of XZ compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -650,7 +665,8 @@ def xz_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of XZ decompress", 1)
+        tab_name = fi.get_new_document_name("Output of XZ decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -699,7 +715,8 @@ def zstandard_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Zstandard compress", 1)
+        tab_name = fi.get_new_document_name("Output of Zstandard compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -748,7 +765,8 @@ def zstandard_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of Zstandard decompress", 1)
+        tab_name = fi.get_new_document_name("Output of Zstandard decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -799,7 +817,8 @@ def lzo_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of LZO compress", 1)
+        tab_name = fi.get_new_document_name("Output of LZO compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -850,7 +869,8 @@ def lzo_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of LZO decompress", 1)
+        tab_name = fi.get_new_document_name("Output of LZO decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -880,7 +900,8 @@ def zlib_compress(fi):
             newdata += compressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of zlib compress (deflate)", 1)
+            tab_name = fi.get_new_document_name("Output of zlib compress (deflate)")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -913,7 +934,8 @@ def zlib_decompress(fi):
             newdata += decompressed
             newdata += orig[offset + length:]
 
-            fi.newDocument("Output of zlib decompress (inflate)", 1)
+            tab_name = fi.get_new_document_name("Output of zlib decompress (inflate)")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -969,7 +991,8 @@ def quicklz_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of QuickLZ compress", 1)
+        tab_name = fi.get_new_document_name("Output of QuickLZ compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -1021,7 +1044,8 @@ def quicklz_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of QuickLZ decompress", 1)
+        tab_name = fi.get_new_document_name("Output of QuickLZ decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -1072,7 +1096,8 @@ def ppmd_compress(fi):
         newdata += compressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of PPMd compress", 1)
+        tab_name = fi.get_new_document_name("Output of PPMd compress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
@@ -1123,7 +1148,8 @@ def ppmd_decompress(fi):
         newdata += decompressed
         newdata += orig[offset + length:]
 
-        fi.newDocument("Output of PPMd decompress", 1)
+        tab_name = fi.get_new_document_name("Output of PPMd decompress")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 

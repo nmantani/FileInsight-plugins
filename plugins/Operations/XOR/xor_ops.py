@@ -79,7 +79,8 @@ def decremental_xor(fi):
             key -= step
             key = key & 0xff
 
-        fi.newDocument("Output of Decremental XOR", 1)
+        tab_name = fi.get_new_document_name("Output of Decremental XOR")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -136,7 +137,8 @@ def incremental_xor(fi):
             key += step
             key = key & 0xff
 
-        fi.newDocument("Output of Incremental XOR", 1)
+        tab_name = fi.get_new_document_name("Output of Incremental XOR")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -171,7 +173,9 @@ def null_preserving_xor(fi):
             j = offset + i
             if ord(data[j]) != 0x00 and ord(data[j]) != key:
                 data[j] = chr(ord(data[j]) ^ key)
-        fi.newDocument("Output of Null-preserving XOR", 1)
+
+        tab_name = fi.get_new_document_name("Output of Null-preserving XOR")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -196,7 +200,8 @@ def xor_with_next_byte(fi):
             if j < length_all - 1:
                 data[j] = chr(ord(data[j]) ^ ord(data[j + 1]))
 
-        fi.newDocument("Output of XOR with next byte", 1)
+        tab_name = fi.get_new_document_name("Output of XOR with next byte")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length_sel, hex(offset), "#c8ffff")
 
@@ -221,7 +226,8 @@ def xor_with_next_byte_reverse(fi):
             if j < length_all - 1:
                 data[j] = chr(ord(data[j]) ^ ord(data[j + 1]))
 
-        fi.newDocument("Output of XOR with next byte (reverse)", 1)
+        tab_name = fi.get_new_document_name("Output of XOR with next byte (reverse)")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length_sel, hex(offset), "#c8ffff")
 
@@ -510,7 +516,8 @@ def guess_multibyte_xor_keys(fi):
             output += "\n"
             i += 1
 
-    fi.newDocument("Guessed XOR keys", 0)
+    tab_name = fi.get_new_document_name("Guessed XOR keys")
+    fi.newDocument(tab_name, 0)
     fi.setDocument(output)
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))
@@ -544,7 +551,8 @@ def visual_decrypt(fi):
             for j in range(key_length - 1, -1, -1):
                 data[i + j] = chr(ord(data[i + j]) ^ ord(data[i + j - key_length]))
 
-        fi.newDocument("Output of Visual Decrypt", 1)
+        tab_name = fi.get_new_document_name("Output of Visual Decrypt")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -583,7 +591,8 @@ def visual_encrypt(fi):
             for j in range(0, key_length):
                 data[i + j] = chr(ord(data[i + j]) ^ ord(data[i + j - key_length]))
 
-        fi.newDocument("Output of Visual Encrypt", 1)
+        tab_name = fi.get_new_document_name("Output of Visual Encrypt")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -593,3 +602,86 @@ def visual_encrypt(fi):
             print("Encoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to encoded region.")
 
+def xor_with_another_file(fi):
+    """
+    XOR selected region (the whole file if not selected) while using the content of another file as XOR key
+    """
+    num_file = fi.getDocumentCount()
+    if num_file < 2:
+        if num_file == 1:
+            print("Please open a file to be XORed and a XOR key file before using 'XOR with another file' plugin.")
+
+        return
+
+    file_list = ""
+    current_file = fi.getDocumentName()
+    current_file_index = 0
+    for i in range(num_file):
+        fi.activateDocumentAt(i)
+        f = fi.getDocumentName()
+        file_list += "%s\r\n" % f
+        if current_file == f:
+            current_file_index = i
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute xor_with_another_file_dialog.py to show GUI
+    p = subprocess.Popen(["py.exe", "-3", "XOR/xor_with_another_file_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate(input=file_list)
+    ret = p.wait()
+
+    if stdout_data == "":
+        fi.activateDocumentAt(current_file_index)
+        return
+    (xored_file_index, key_file_index) = stdout_data.split()
+
+    fi.activateDocumentAt(int(xored_file_index))
+    xored_filename = fi.getDocumentName()
+    sel_len = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    data_len = fi.getLength()
+    if data_len > 0:
+        data = fi.getDocument()
+        if sel_len == 0:
+            sel_len = data_len
+    else:
+        fi.activateDocumentAt(current_file_index)
+        print("%s is empty." % xored_filename)
+        return
+
+    if data == "":
+        fi.activateDocumentAt(current_file_index)
+        return
+    else:
+        data = list(data)
+
+    fi.activateDocumentAt(int(key_file_index))
+    key_filename = fi.getDocumentName()
+    key_len = fi.getLength()
+    if key_len > 0:
+        key = fi.getDocument()
+
+    if key_len == 0:
+        fi.activateDocumentAt(current_file_index)
+        print("XOR key file %s is empty." % key_filename)
+        return
+    else:
+        key = list(key)
+
+    for i in range(offset, offset + sel_len):
+        data[i] = chr(ord(data[i]) ^ ord(key[(i - offset) % key_len]))
+
+    tab_name = fi.get_new_document_name("Output of XOR with another file")
+    fi.newDocument(tab_name, 1)
+    fi.setDocument("".join(data))
+    fi.setBookmark(offset, sel_len, hex(offset), "#c8ffff")
+
+    if data_len == 1:
+        print("XORed one byte in '%s' from offset %s to %s with the content of '%s'." % (xored_filename, hex(offset), hex(offset), key_filename))
+    else:
+        print("XORed %s bytes in '%s' from offset %s to %s with the content of '%s'." % (sel_len, xored_filename, hex(offset), hex(offset + sel_len - 1), key_filename))
+    print("Added a bookmark to encoded region.")

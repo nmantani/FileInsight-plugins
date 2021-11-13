@@ -130,7 +130,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (116 plugins)
+## List of plugins (117 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -380,6 +380,8 @@ Your customization will be reflected in menu items.
   XOR selected region while incrementing XOR key
 * Null-preserving XOR  
   XOR selected region while skipping null bytes and XOR key itself
+* XOR with another file  
+  XOR selected region with the content of another file as XOR key
 * XOR with next byte  
   XOR selected region while using next byte as XOR key
 * XOR with next byte (reverse)  

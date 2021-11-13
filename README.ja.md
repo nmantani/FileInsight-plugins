@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (116個)
+## プラグインの一覧 (117個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -377,6 +377,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を XOR キーの値を増やしながら XOR します。
 * Null-preserving XOR  
   選択範囲をヌルバイトと XOR キー自体をスキップしながら XOR します。
+* XOR with another file  
+  選択範囲を別のファイルの内容をキーにして XOR します。
 * XOR with next byte  
   選択範囲を次のバイトを XOR のキーにしながら XOR します。
 * XOR with next byte (reverse)  

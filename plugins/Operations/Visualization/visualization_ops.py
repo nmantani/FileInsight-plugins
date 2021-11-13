@@ -80,7 +80,8 @@ def byte_histogram(fi):
     output = ""
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         output += "0x%02X: %d\n" % (k, v)
-    fi.newDocument("Byte frequency", 0)
+    tab_name = fi.get_new_document_name("Byte frequency")
+    fi.newDocument(tab_name, 0)
     fi.setDocument(output)
 
     # Create a temporary file

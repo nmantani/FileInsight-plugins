@@ -127,7 +127,8 @@ def binwalk_scan(fi):
             print("\r\nAdded bookmarks to the detected files.")
             print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
 
-        fi.newDocument("Binwalk output", 0)
+        tab_name = fi.get_new_document_name("Binwalk output")
+        fi.newDocument(tab_name, 0)
         fi.setDocument(stdout_data)
 
 def file_type(fi):
@@ -265,7 +266,8 @@ def show_metadata(fi):
 
     os.remove(filepath) # Cleanup
 
-    fi.newDocument("Metadata", 0)
+    tab_name = fi.get_new_document_name("Metadata")
+    fi.newDocument(tab_name, 0)
     fi.setDocument(stdout_data)
 
     print('Metadata is shown in the new "Metadata" tab.')
@@ -466,7 +468,8 @@ def strings(fi):
                     if s_decoded != "":
                         decoded += "%s -> %s \r\n" % (s_plain, s_decoded)
 
-    fi.newDocument("Strings output", 0) # Open a new tab with text mode
+    tab_name = fi.get_new_document_name("Strings output")
+    fi.newDocument(tab_name, 0) # Open a new tab with text mode
     if decode_hex:
         fi.setDocument(decoded + "\r\n" + newdata)
     else:
@@ -596,7 +599,8 @@ def parse_file_structure(fi):
     else:
         print("Skipped bookmarking.")
 
-    fi.newDocument("Parsed data", 0)
+    tab_name = fi.get_new_document_name("Parsed data")
+    fi.newDocument(tab_name, 0)
 
     fi.setDocument(parsed_data)
     print('Parsed data is shown in the new "Parsed data" tab.')
@@ -684,5 +688,6 @@ def disassemble(fi):
         print("Disassembly finished prematurely at offset %s." % hex(end_pos))
         print("Added bookmark to the end of disassembly.")
 
-    fi.newDocument("Disassembly")
+    tab_name = fi.get_new_document_name("Disassembly")
+    fi.newDocument(tab_name, 0)
     fi.setDocument("".join(stdout_data))

@@ -194,7 +194,8 @@ def do_decrypt(fi, name, script):
         decrypted_len = len(decrypted_data)
         newdata = orig[:offset] + decrypted_data + orig[offset + length:]
 
-        fi.newDocument("Output of %s decrypt" % name, 1)
+        tab_name = fi.get_new_document_name("Output of %s decrypt" % name)
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, decrypted_len, hex(offset), "#c8ffff")
 
@@ -249,7 +250,8 @@ def do_encrypt(fi, name, script):
         encrypted_len = len(encrypted_data)
         newdata = orig[:offset] + encrypted_data + orig[offset + length:]
 
-        fi.newDocument("Output of %s encrypt" % name, 1)
+        tab_name = fi.get_new_document_name("Output of %s encrypt" % name)
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, encrypted_len, hex(offset), "#c8ffff")
 

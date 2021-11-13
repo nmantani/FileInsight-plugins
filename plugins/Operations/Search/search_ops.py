@@ -224,7 +224,8 @@ def xor_hex_search(fi):
 
         if num_hits > 0:
             output = ("Search keyword: %s\n" % keyword_input) + ("Number of search hits: %d\n" % num_hits) + output
-            fi.newDocument("XOR hex search hits", 0)
+            tab_name = fi.get_new_document_name("XOR hex search hits")
+            fi.newDocument(tab_name, 0)
             fi.setDocument(output)
 
 def search_xor_rol_text(fi, data, offset, length, keyword):
@@ -344,7 +345,8 @@ def xor_text_search(fi):
 
         if num_hits > 0:
             output = ("Search keyword: %s\n" % keyword_input) + ("Number of search hits: %d\n" % num_hits) + output
-            fi.newDocument("XOR text search hits", 0)
+            tab_name = fi.get_new_document_name("XOR text search hits")
+            fi.newDocument(tab_name, 0)
             fi.setDocument(output)
 
 def is_printable(s):
@@ -434,7 +436,8 @@ def regex_search(fi):
 
         if num_hits > 0:
             output = ("Search keyword: %s\n" % keyword) + ("Number of search hits: %d\n" % num_hits) + output
-            fi.newDocument("Regex search hits", 0)
+            tab_name = fi.get_new_document_name("Regex search hits")
+            fi.newDocument(tab_name, 0)
             fi.setDocument(output)
 
 def replace(fi):
@@ -540,7 +543,8 @@ def replace(fi):
             if offset + m.end() < data_all_len - 1:
                 new_data.extend(data_list_all[offset + m.end():])
 
-            fi.newDocument("Output of Replace", 1)
+            tab_name = fi.get_new_document_name("Output of Replace")
+            fi.newDocument(tab_name, 1)
             fi.setDocument("".join(new_data))
 
         if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
@@ -561,7 +565,8 @@ def replace(fi):
 
         if num_hits > 0:
             output = ("Search keyword: %s\n" % keyword) + ("Number of search hits: %d\n" % num_hits) + output
-            fi.newDocument("Search hits of Replace", 0)
+            tab_name = fi.get_new_document_name("Search hits of Replace")
+            fi.newDocument(tab_name, 0)
             fi.setDocument(output)
 
 def yara_scan(fi):
@@ -576,9 +581,14 @@ def yara_scan(fi):
         return
 
     file_list = ""
+    current_file = fi.getDocumentName()
+    current_file_index = 0
     for i in range(num_file):
         fi.activateDocumentAt(i)
-        file_list += "%s\r\n" % fi.getDocumentName()
+        f = fi.getDocumentName()
+        file_list += "%s\r\n" % f
+        if current_file == f:
+            current_file_index = i
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
@@ -596,6 +606,7 @@ def yara_scan(fi):
         return
 
     if stdout_data == "":
+        fi.activateDocumentAt(current_file_index)
         return
     (scanned_file_index, rule_file_index) = stdout_data.split()
 
@@ -709,7 +720,8 @@ def yara_scan(fi):
         print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
 
     if num_hits > 0:
-        fi.newDocument("YARA scan matches", 0)
+        tab_name = fi.get_new_document_name("YARA scan matches")
+        fi.newDocument(tab_name, 0)
         stdout_data = ("Scanned file: %s\n" % scanned_filename) + ("YARA rule file: %s\n" % rule_filename) + stdout_data
         fi.setDocument(stdout_data)
 
@@ -795,12 +807,14 @@ def regex_extraction(fi):
 
         len_extracted = len(extracted)
         if len_extracted > 0:
-            fi.newDocument("Output of Regex extraction", 1)
+            tab_name = fi.get_new_document_name("Output of Regex extraction")
+            fi.newDocument(tab_name, 1)
             fi.setDocument(extracted)
 
             print("Size of extracted data: %d (bytes)" % len_extracted)
 
         if num_hits > 0:
             output = ("Search keyword: %s\n" % keyword) + ("Number of search hits: %d\n" % num_hits) + output
-            fi.newDocument("Search hits of Regex extraction", 0)
+            tab_name = fi.get_new_document_name("Search hits of Regex extraction")
+            fi.newDocument(tab_name, 0)
             fi.setDocument(output)

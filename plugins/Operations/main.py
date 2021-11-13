@@ -113,6 +113,23 @@ class FileInsight:
         else:
             return(stdout_data.rstrip())
 
+    def get_new_document_name(self, name):
+        """
+        Get new document name with index number
+        """
+        escaped_name = re.escape(name)
+        num_file = getDocumentCount()
+
+        lastindex = 0
+        for i in range(num_file):
+            activateDocumentAt(i)
+            n = getDocumentName()
+            m = re.match("%s (\d+)" % escaped_name, n)
+            if m != None and int(m.group(1)) >= lastindex:
+                lastindex = int(m.group(1)) + 1
+
+        return "%s %d" % (name, lastindex)
+
 def find_python3():
     pyexe_found = False
     python3_found = False
@@ -259,6 +276,7 @@ if __name__ == "__main__":
     operations += (xor_ops.decremental_xor,
                    xor_ops.incremental_xor,
                    xor_ops.null_preserving_xor,
+                   xor_ops.xor_with_another_file,
                    xor_ops.xor_with_next_byte,
                    xor_ops.xor_with_next_byte_reverse,
                    xor_ops.guess_multibyte_xor_keys,

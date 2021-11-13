@@ -48,7 +48,9 @@ def binary_data_to_hex_text(fi):
             converted += "%02x" % ord(data[i])
 
         newdata = orig[:offset] + converted + orig[offset + length:]
-        fi.newDocument("Output of Binary data to hex text", 1)
+
+        tab_name = fi.get_new_document_name("Output of Binary data to hex text")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -110,7 +112,8 @@ def hex_text_to_binary_data(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Hex text to binary data", 1)
+        tab_name = fi.get_new_document_name("Output of Hex text to binary data")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -152,7 +155,8 @@ def custom_base64_decode(fi):
 
                 newdata = orig[:offset] + encoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base64 decode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base64 decode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -197,7 +201,8 @@ def custom_base64_encode(fi):
 
                 newdata = orig[:offset] + encoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base64 encode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base64 encode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -250,7 +255,8 @@ def rot13(fi):
         for i in range(0, length):
             buf[offset + i] = d.get(data[i], data[i])
 
-        fi.newDocument("Output of ROT13", 1)
+        tab_name = fi.get_new_document_name("Output of ROT13")
+        fi.newDocument(tab_name, 1)
         fi.setDocument("".join(buf))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
@@ -275,7 +281,8 @@ def from_quoted_printable(fi):
         decoded = quopri.decodestring(data)
         newdata = orig[:offset] + decoded + orig[offset + length:]
 
-        fi.newDocument("Output of From quoted printable", 1)
+        tab_name = fi.get_new_document_name("Output of From quoted printable")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
@@ -300,7 +307,8 @@ def to_quoted_printable(fi):
         encoded = quopri.encodestring(data)
         newdata = orig[:offset] + encoded + orig[offset + length:]
 
-        fi.newDocument("Output of To quoted printable", 1)
+        tab_name = fi.get_new_document_name("Output of To quoted printable")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -327,7 +335,8 @@ def binary_data_to_binary_text(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Binary data to binary text", 1)
+        tab_name = fi.get_new_document_name("Output of Binary data to binary text")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -363,7 +372,8 @@ def binary_text_to_binary_data(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Binary text to binary data", 1)
+        tab_name = fi.get_new_document_name("Output of Binary text to binary data")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -412,7 +422,8 @@ def binary_data_to_decimal_text(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Binary data to decimal text", 1)
+        tab_name = fi.get_new_document_name("Output of Binary data to decimal text")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -474,7 +485,8 @@ def decimal_text_to_binary_data(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Decimal text to binary data", 1)
+        tab_name = fi.get_new_document_name("Output of Decimal text to binary data")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -525,7 +537,8 @@ def binary_data_to_octal_text(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Binary data to octal text", 1)
+        tab_name = fi.get_new_document_name("Output of Binary data to octal text")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -587,7 +600,8 @@ def octal_text_to_binary_data(fi):
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
-        fi.newDocument("Output of Octal text to binary data", 1)
+        tab_name = fi.get_new_document_name("Output of Octal text to binary data")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
@@ -609,7 +623,8 @@ def url_decode(fi):
         decoded = urllib.unquote(data)
         newdata = orig[:offset] + decoded + orig[offset + length:]
 
-        fi.newDocument("Output of URL decode", 1)
+        tab_name = fi.get_new_document_name("Output of URL decode")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
@@ -635,7 +650,8 @@ def url_encode(fi):
 
         newdata = orig[:offset] + encoded + orig[offset + length:]
 
-        fi.newDocument("Output of URL encode", 1)
+        tab_name = fi.get_new_document_name("Output of URL encode")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -708,7 +724,8 @@ def unicode_escape(fi):
 
         newdata = orig[:offset] + escaped + orig[offset + length:]
 
-        fi.newDocument("Output of Unicode escape", 1)
+        tab_name = fi.get_new_document_name("Output of Unicode escape")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(escaped), hex(offset), "#c8ffff")
 
@@ -793,7 +810,8 @@ def unicode_unescape(fi):
 
         newdata = orig[:offset] + unescaped + orig[offset + length:]
 
-        fi.newDocument("Output of Unicode unescape", 1)
+        tab_name = fi.get_new_document_name("Output of Unicode unescape")
+        fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, len(unescaped), hex(offset), "#c8ffff")
 
@@ -829,7 +847,8 @@ def protobuf_decode(fi):
             print("Please install it with 'py.exe -3 -m pip install blackboxprotobuf' and try again.")
             return
 
-        fi.newDocument("Output of Protobuf decode")
+        tab_name = fi.get_new_document_name("Output of Protobuf decode")
+        fi.newDocument(tab_name)
         fi.setDocument(stdout_data)
 
         if length == 1:
@@ -872,7 +891,8 @@ def custom_base16_decode(fi):
 
                 newdata = orig[:offset] + decoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base16 decode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base16 decode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
@@ -917,7 +937,8 @@ def custom_base16_encode(fi):
 
                 newdata = orig[:offset] + encoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base16 encode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base16 encode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -962,7 +983,8 @@ def custom_base32_decode(fi):
 
                 newdata = orig[:offset] + decoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base32 decode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base32 decode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
@@ -1007,7 +1029,8 @@ def custom_base32_encode(fi):
 
                 newdata = orig[:offset] + encoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base32 encode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base32 encode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -1063,7 +1086,8 @@ def custom_base58_decode(fi):
                 decoded = stdout_data
                 newdata = orig[:offset] + decoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base58 decode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base58 decode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
@@ -1120,7 +1144,8 @@ def custom_base58_encode(fi):
 
                 newdata = orig[:offset] + encoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base58 encode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base58 encode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 
@@ -1171,7 +1196,8 @@ def custom_base85_decode(fi):
                 decoded = stdout_data
                 newdata = orig[:offset] + decoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base85 decode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base85 decode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
@@ -1223,7 +1249,8 @@ def custom_base85_encode(fi):
 
                 newdata = orig[:offset] + encoded + orig[offset + length:]
 
-                fi.newDocument("Output of Custom base85 encode", 1)
+                tab_name = fi.get_new_document_name("Output of Custom base85 encode")
+                fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
                 fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
 

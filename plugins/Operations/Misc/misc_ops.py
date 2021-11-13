@@ -163,7 +163,8 @@ def send_to_cli(fi):
             print("Sent the whole file (%s bytes) to external program." % length)
 
     if len(stdout_data) > 0:
-        fi.newDocument("Output of Send to (CLI)")
+        tab_name = fi.get_new_document_name("Output of Send to (CLI)")
+        fi.newDocument(tab_name)
         fi.setDocument(stdout_data)
 
     print("Output of external program (stdout) is opened as new tab.")
@@ -345,9 +346,14 @@ def file_comparison(fi):
         return
 
     file_list = ""
+    current_file = fi.getDocumentName()
+    current_file_index = 0
     for i in range(num_file):
         fi.activateDocumentAt(i)
-        file_list += "%s\r\n" % fi.getDocumentName()
+        f = fi.getDocumentName()
+        file_list += "%s\r\n" % f
+        if current_file == f:
+            current_file_index = i
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
@@ -358,6 +364,7 @@ def file_comparison(fi):
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     if stdout_data == "":
+        fi.activateDocumentAt(current_file_index)
         return
     (first_index, second_index) = stdout_data.split()
 
@@ -583,14 +590,16 @@ def emulate_code(fi):
         trace += "Output of the emulated code:\n"
         trace += stdout_written
 
-    fi.newDocument("Emulation trace", 0)
+    tab_name = fi.get_new_document_name("Emulation trace")
+    fi.newDocument(tab_name, 0)
     fi.setDocument(trace)
 
     if len(stdout_splitted) > 1:
         bookmarked = False
+        tab_name = fi.get_new_document_name("Memory dump")
         for i in range(1, len(stdout_splitted)):
             memory_dump = stdout_splitted[i]
-            fi.newDocument("Memory dump %d" % (i - 1), 1)
+            fi.newDocument("%s - %d" % (tab_name, (i - 1)), 1)
             fi.setDocument("".join(memory_dump))
 
             start = None
