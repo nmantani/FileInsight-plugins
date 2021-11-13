@@ -97,7 +97,7 @@ Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_
 ```
 
 For the "Disassemble" plugin, it requires Capstone.
-Please get it from https://github.com/aquynh/capstone/
+Please get it from https://github.com/capstone-engine/capstone/
 or execute the following command.
 ```
 py.exe -3 -m pip install capstone

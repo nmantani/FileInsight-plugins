@@ -103,7 +103,7 @@ Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_
 ```
 
 Disassemble プラグインについては、Capstone が必要です。
-https://github.com/aquynh/capstone/ からダウンロード、インストールするか、
+https://github.com/capstone-engine/capstone/ からダウンロード、インストールするか、
 ```
 py.exe -3 -m pip install capstone
 ```
