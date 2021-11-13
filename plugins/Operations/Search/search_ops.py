@@ -584,8 +584,7 @@ def yara_scan(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute file_comparison_dialog.py to show GUI
-    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
+    # Execute yara_scan_dialog.py to show GUI
     p = subprocess.Popen(["py.exe", "-3", "Search/yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
