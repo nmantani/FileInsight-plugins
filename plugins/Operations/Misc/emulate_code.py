@@ -236,7 +236,14 @@ num_dump = 0
 heap = ""
 heap_start = None
 heap_end = None
-for i in range(1, len(all_mem) + 1):
+
+if distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.4.0"):
+    all_mem = all_mem["ram"]
+    start_index = 0
+else:
+    start_index = 1
+
+for i in range(start_index, len(all_mem) + start_index):
     start = all_mem[i][0]
     end = all_mem[i][1]
     info = all_mem[i][3]
