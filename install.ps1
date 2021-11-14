@@ -54,8 +54,10 @@ $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.9.7"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
-$EXIFTOOL_VERSION = "12.34"
+$EXIFTOOL_VERSION = "12.35"
 $QUICKLZ_VERSION = "1.5.0"
+$QILING_VERSION = "1.2.3"
+$UNICORN_VERSION = "1.0.3"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
@@ -63,7 +65,7 @@ $FILEINSIGHT_PLUGINS_HASH = "2DD010BD5EC368B5243302891F6239CE236750306AD203B0745
 $PYTHON_HASH = "3F63F4C77A6DA13F9BAE715EB6644A48BD5F900601E0F1F233862E8CA1A96DD8"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $BINWALK_HASH = "146E7E203305001488B4C1AEEFEAC8DF62DED92EC625F0E75B540DFA62B4DB80"
-$EXIFTOOL_HASH = "BE879F6ED7DCD12E71AE9BDC5A29F2C92611364A86AA0B15798D89843A059D93"
+$EXIFTOOL_HASH = "01228193A20A7824C4F33C0DA29D5B749B153917EC0D1AD430A715AE85BA7DDB"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function get_proxy_url {
@@ -429,9 +431,10 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "pycryptodomex" $update
     install_with_pip "pyimpfuzzy-windows" $update
     install_with_pip "python-magic-bin" $update
-    install_with_pip "qiling" $update
+    install_with_pip "qiling==$QILING_VERSION" $update
     install_with_pip "seaborn" $update
     install_with_pip "requests" $update
+    install_with_pip "unicorn==$UNICORN_VERSION" $update
     install_with_pip "watchdog" $update
     install_with_pip "xtea" $update
     install_with_pip "yara-python" $update

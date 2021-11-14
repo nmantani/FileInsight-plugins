@@ -10,9 +10,10 @@ ppmd-cffi
 pycryptodomex
 pyimpfuzzy-windows
 python-magic-bin
-qiling
+qiling==1.2.3
 seaborn
 requests
+unicorn==1.0.3
 watchdog
 xtea
 yara-python
