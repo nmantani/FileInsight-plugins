@@ -74,7 +74,7 @@ def wait_process_by_name(name):
         time.sleep(5)
 
 root = tkinter.Tk()
-root.bind("<FocusOut>", lambda x:root.quit())
+root.bind("<FocusOut>", lambda x:sys.exit(1))
 root.withdraw() # Hide root window
 
 config_file_name = "Misc/send_to.json"
@@ -192,6 +192,7 @@ for key,val in programs.items():
                 tkinter.messagebox.showinfo(None, message="Please edit 'send_to.json' to customize menu.")
                 p = subprocess.Popen(["C:\\Windows\\notepad.exe", "Misc\\send_to.json"])
                 p.wait()
+            sys.exit(1)
         else:
             program = replace_env_in_path(program)
 
