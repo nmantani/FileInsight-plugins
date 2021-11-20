@@ -65,7 +65,7 @@ root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 label_level = tkinter.Label(root, text="Compression level:")
 label_level.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo_level = tkinter.ttk.Combobox(root, width=18, state="readonly")
+combo_level = tkinter.ttk.Combobox(root, width=4, state="readonly")
 combo_level["values"] = ("1", "2", "3")
 combo_level.current(0)
 combo_level.grid(row=0, column=1, padx=5, pady=5, sticky="w")
