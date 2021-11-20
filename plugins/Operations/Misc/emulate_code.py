@@ -131,7 +131,7 @@ def execve_hook(ql, execve_pathname, execve_argv, execve_envp, *args, **kw):
 
     qiling.os.posix.syscall.unistd.ql_syscall_execve(ql, execve_pathname, execve_argv, execve_envp, *args, **kw)
 
-if len(sys.argv) == 8:
+if len(sys.argv) == 9:
     file_path = sys.argv[1]
     file_type = sys.argv[2].lower()
     os_type = sys.argv[3].lower()
@@ -145,6 +145,7 @@ if len(sys.argv) == 8:
         big_endian = False
     cmd_args = shlex.split(sys.argv[6])
     timeout = int(sys.argv[7])
+    tab_index = int(sys.argv[8])
 
     if not check_rootfs_files(rootfs_base):
         sys.exit(-3) # rootfs files are not properly set up
@@ -205,7 +206,7 @@ if len(sys.argv) == 8:
             sys.exit(1)
 else:
     print(sys.argv, file=sys.stderr)
-    print("Usage: emulate_code.py file_path file_type os arch big_endian cmd_args timeout", file=sys.stderr)
+    print("Usage: emulate_code.py file_path file_type os arch big_endian cmd_args timeout tab_index", file=sys.stderr)
     sys.exit(1)
 
 all_mem = None
@@ -252,7 +253,7 @@ for i in range(start_index, len(all_mem) + start_index):
         info += " (%s)" % image.path
 
     if file_path in info or info in ("[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
-        print('Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d"' % (info, start, end, end - start, num_dump), file=sys.stderr)
+        print('Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (info, start, end, end - start, tab_index, num_dump), file=sys.stderr)
         sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
         num_dump += 1
     elif info == "[heap]":
@@ -265,7 +266,7 @@ for i in range(start_index, len(all_mem) + start_index):
         heap += ql.mem.read(start, end - start)
 
 if len(heap) > 0:
-    print('Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as "Memory dump %d"' % (heap_start, heap_end, heap_end - heap_start, num_dump), file=sys.stderr)
+    print('Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (heap_start, heap_end, heap_end - heap_start, tab_index, num_dump), file=sys.stderr)
     sys.stdout.buffer.write(heap)
 
 handler.show_log()
