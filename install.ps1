@@ -54,7 +54,7 @@ $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.9.7"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
-$EXIFTOOL_VERSION = "12.35"
+$EXIFTOOL_VERSION = "12.36"
 $QUICKLZ_VERSION = "1.5.0"
 $QILING_VERSION = "1.2.3"
 $UNICORN_VERSION = "1.0.3"
@@ -65,7 +65,7 @@ $FILEINSIGHT_PLUGINS_HASH = "2DD010BD5EC368B5243302891F6239CE236750306AD203B0745
 $PYTHON_HASH = "3F63F4C77A6DA13F9BAE715EB6644A48BD5F900601E0F1F233862E8CA1A96DD8"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $BINWALK_HASH = "146E7E203305001488B4C1AEEFEAC8DF62DED92EC625F0E75B540DFA62B4DB80"
-$EXIFTOOL_HASH = "01228193A20A7824C4F33C0DA29D5B749B153917EC0D1AD430A715AE85BA7DDB"
+$EXIFTOOL_HASH = "B008E2787F1712119E5777E6E76564F256FA4A68BD8091DA7872234D34E5E9AD"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function get_proxy_url {
@@ -591,7 +591,7 @@ function install_qiling_rootfs($work_dir, $update) {
         $cwd = Convert-Path .
         cd "${dest_dir}\qiling-master"
         Write-Host "[+] Setting up DLL files and registry files in ${dest_dir}\qiling-master\examples\rootfs ..."
-        Write-Host "[+] Executing ${dest_dir}\qiling-master\examples\scripts\dllscollector.bat ..."
+        Write-Host "[+] Executing ${dest_dir}\qiling-master\examples\scripts\dllscollector.bat (this requires administrator privileges) ..."
         Start-Process powershell -Verb RunAs -Wait -ArgumentList "-Command `"cd '${dest_dir}\qiling-master'; examples\scripts\dllscollector.bat`""
         $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs\x8664_windows\Windows\System32\kernel32.dll"
         if (!(Test-Path $file_path)) {
