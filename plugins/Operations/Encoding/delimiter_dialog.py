@@ -29,32 +29,86 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import re
+import sys
 import tkinter
 import tkinter.ttk
 
 # Print delimiter setting to stdout
-def print_setting(r, c):
-    print(c.get())
+def print_setting(r, cd, ce, s):
+    print("%s\t%s\t%s" % (cd.get(), ce.get(), s.get()))
     root.quit()
+
+def single_int_checked(r, le1, le2, ce):
+    if single_int.get():
+        le1.grid()
+        le2.grid()
+        ce.grid()
+    else:
+        le1.grid_remove()
+        le2.grid_remove()
+        ce.grid_remove()
+
+single_int_checkbox = False
+endianess_menu = False
+
+if len(sys.argv) == 2 and sys.argv[1] == "-e":
+    endianess_menu = True
+elif len(sys.argv) == 2 and sys.argv[1] == "-s":
+    single_int_checkbox = True
+else:
+    endianess_menu = False
 
 # Create input dialog
 root = tkinter.Tk()
-root.title('Delimiter setting')
+root.title("Delimiter setting")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = tkinter.Label(root, text='Delimiter:')
-label.grid(row=0, column=0, padx=5, pady=5)
+label_delimiter = tkinter.Label(root, text="Delimiter:")
+label_delimiter.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 combo_delimiter = tkinter.ttk.Combobox(root, width=10, state="readonly")
 combo_delimiter["values"] = ("Space", "Comma", "Semi-colon", "Colon", "Tab", "LF", "CRLF")
 combo_delimiter.current(0)
 combo_delimiter.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-button = tkinter.Button(root, text='OK', command=(lambda r=root, c=combo_delimiter: print_setting(r, c)))
-button.grid(row=0, column=2, padx=5, pady=5)
-button.focus() # Focus to this widget
+
+label_endianess1 = tkinter.Label(root, text="Endianess:")
+combo_endianess = tkinter.ttk.Combobox(root, width=10, state="readonly")
+combo_endianess["values"] = ("Big", "Little")
+combo_endianess.current(0)
+label_endianess2 = tkinter.Label(root, text="Endianess is applied to multibyte\nvalues (> 255).", justify="left")
+
+single_int = tkinter.BooleanVar()
+single_int.set(False)
+checkbox = tkinter.Checkbutton(root, variable=single_int, text="Convert into single integer value\n(except leading / trailing zeros)", justify="left", command=(lambda r=root, le1=label_endianess1, le2=label_endianess2, ce=combo_endianess: single_int_checked(r, le1, le2, ce)))
+
+if single_int_checkbox:
+    checkbox.grid(row=1, column=0, padx=5, pady=5, sticky="w", columnspan=2)
+
+    label_endianess1.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+    label_endianess1.grid_remove()
+    combo_endianess.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+    combo_endianess.grid_remove()
+    label_endianess2.grid(row=3, column=0, padx=5, pady=5, sticky="w", columnspan=2)
+    label_endianess2.grid_remove()
+
+    button = tkinter.Button(root, text="OK", command=(lambda r=root, cd=combo_delimiter, ce=combo_endianess, s=single_int: print_setting(r, cd, ce, s)))
+    button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
+    button.focus() # Focus to this widget
+elif endianess_menu:
+    label_endianess1.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+    combo_endianess.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+    label_endianess2.grid(row=2, column=0, padx=5, pady=5, sticky="w", columnspan=2)
+
+    button = tkinter.Button(root, text="OK", command=(lambda r=root, cd=combo_delimiter, ce=combo_endianess, s=single_int: print_setting(r, cd, ce, s)))
+    button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
+    button.focus() # Focus to this widget
+else:
+    button = tkinter.Button(root, text="OK", command=(lambda r=root, cd=combo_delimiter, ce=combo_endianess, s=single_int: print_setting(r, cd, ce, s)))
+    button.grid(row=0, column=2, padx=5, pady=5)
+    button.focus() # Focus to this widget
 
 # Set callback functions
-combo_delimiter.bind("<Return>", lambda event, r=root, c=combo_delimiter: print_setting(r, c))
-button.bind("<Return>", lambda event, r=root, c=combo_delimiter: print_setting(r, c))
+combo_delimiter.bind("<Return>", lambda event, r=root, cd=combo_delimiter, ce=combo_endianess, s=single_int: print_setting(r, cd, ce, s))
+combo_endianess.bind("<Return>", lambda event, r=root, cd=combo_delimiter, ce=combo_endianess, s=single_int: print_setting(r, cd, ce, s))
+button.bind("<Return>", lambda event, r=root, cd=combo_delimiter, ce=combo_endianess, s=single_int: print_setting(r, cd, ce, s))
 
 # Adjust window position
 sw = root.winfo_screenwidth()
@@ -62,6 +116,6 @@ sh = root.winfo_screenheight()
 root.update_idletasks() # Necessary to get width and height of the window
 ww = root.winfo_width()
 wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+root.geometry("+%d+%d" % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
 
 root.mainloop()

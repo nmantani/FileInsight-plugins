@@ -26,6 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import base64
+import binascii
 import quopri
 import re
 import string
@@ -396,8 +397,7 @@ def binary_data_to_decimal_text(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py", "-s"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -405,6 +405,8 @@ def binary_data_to_decimal_text(fi):
 
         if setting == "":
             return
+        else:
+            (d, endianess, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -415,10 +417,49 @@ def binary_data_to_decimal_text(fi):
                       "CRLF": "\x0d\x0a"}
 
         converted = ""
-        for i in range(0, length):
-            if i > 0:
-                converted += delimiters[setting]
-            converted += str(ord(data[i]))
+        trail = ""
+        if single_int == "True":
+            data = list(data)
+            if endianess == "Big":
+                for i in range(0, length):
+                    if i > 0:
+                        converted += delimiters[d]
+
+                    if data[i] == b"\x00":
+                        converted += "0"
+                    else:
+                        break
+
+                if i < length - 1:
+                    data = data[i:]
+                    all_zero = False
+                else:
+                    all_zero = True
+            else:
+                for i in range(length - 1, -1, -1):
+                    if data[i] == b"\x00":
+                        trail += delimiters[d] + "0"
+                    else:
+                        break
+
+                if i > 0:
+                    data = data[:i + 1]
+                    data.reverse()
+                    all_zero = False
+                else:
+                    trail = trail[1:] # Remove first delimiter
+                    all_zero = True
+
+            if all_zero:
+                converted += trail
+            else:
+                h = binascii.b2a_hex("".join(data))
+                converted += str(int(h, 16)) + trail
+        else:
+            for i in range(0, length):
+                if i > 0:
+                    converted += delimiters[d]
+                converted += str(ord(data[i]))
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
@@ -444,8 +485,7 @@ def decimal_text_to_binary_data(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -453,6 +493,8 @@ def decimal_text_to_binary_data(fi):
 
         if setting == "":
             return
+        else:
+            (d, endianess, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -462,8 +504,7 @@ def decimal_text_to_binary_data(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
-        pattern = "([0-9]{1,3}),"
-        values = re.split(delimiters[setting], data, flags=re.MULTILINE | re.DOTALL)
+        values = re.split(delimiters[d], data, flags=re.MULTILINE | re.DOTALL)
 
         # Check of splitted data
         for i in range(0, len(values)):
@@ -473,15 +514,25 @@ def decimal_text_to_binary_data(fi):
             if re.search("[^0-9]", values[i]):
                 print("The selected region contains non-numeric or non-delimiter characters.")
                 return
-            if int(values[i]) < 0 or int(values[i]) > 255:
-                print("The selected region contains values out of range (0-255).")
+            if int(values[i]) < 0:
+                print("The selected region contains negative values.")
                 return
 
         orig = fi.getDocument()
 
         converted = ""
         for i in range(0, len(values)):
-            converted += chr(int(values[i]))
+            h = "%x" % int(values[i])
+            if len(h) % 2 == 1:
+                h = "0" + h
+
+            b = binascii.a2b_hex(h)
+            if endianess == "Little":
+                b = list(b)
+                b.reverse()
+                converted += "".join(b)
+            else:
+                converted += b
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
@@ -509,7 +560,6 @@ def binary_data_to_octal_text(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
         p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
@@ -518,6 +568,8 @@ def binary_data_to_octal_text(fi):
 
         if setting == "":
             return
+        else:
+            (d, endianess, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -532,7 +584,7 @@ def binary_data_to_octal_text(fi):
         converted = ""
         for i in range(0, length):
             if i > 0:
-                converted += delimiters[setting]
+                converted += delimiters[d]
             converted += oct(ord(data[i]))
 
         newdata = orig[:offset] + converted + orig[offset + length:]
@@ -559,7 +611,6 @@ def octal_text_to_binary_data(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        # GUI portion is moved to decimal_dialog.py to avoid hangup of FileInsight
         p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
@@ -568,6 +619,8 @@ def octal_text_to_binary_data(fi):
 
         if setting == "":
             return
+        else:
+            (d, endianess, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -577,8 +630,7 @@ def octal_text_to_binary_data(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
-        pattern = "([0-9]{1,3}),"
-        values = re.split(delimiters[setting], data, flags=re.MULTILINE | re.DOTALL)
+        values = re.split(delimiters[d], data, flags=re.MULTILINE | re.DOTALL)
 
         # Check of splitted data
         for i in range(0, len(values)):
