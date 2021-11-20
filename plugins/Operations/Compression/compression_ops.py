@@ -74,6 +74,8 @@ def aplib_compress(fi):
         except Exception as e:
             print("Error: compression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def aplib_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -132,6 +134,8 @@ def aplib_decompress(fi):
             print("Error: decompression failed.")
             print("invalid compressed data")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def bzip2_compress(fi):
     offset = fi.getSelectionOffset()
@@ -163,6 +167,8 @@ def bzip2_compress(fi):
         except Exception as e:
             print("Error: compression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def bzip2_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -194,6 +200,8 @@ def bzip2_decompress(fi):
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def gzip_compress(fi):
     offset = fi.getSelectionOffset()
@@ -229,6 +237,8 @@ def gzip_compress(fi):
         except Exception as e:
             print("Error: compression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def gzip_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -262,6 +272,8 @@ def gzip_decompress(fi):
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def lznt1_compress(fi):
     offset = fi.getSelectionOffset()
@@ -296,6 +308,8 @@ def lznt1_compress(fi):
         except Exception as e:
             print("Error: compression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def lznt1_decompress(fi):
     offset = fi.getSelectionOffset()
@@ -328,6 +342,8 @@ def lznt1_decompress(fi):
             print("Error: decompression failed.")
             print("invalid compressed data")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def raw_deflate(fi):
     offset = fi.getSelectionOffset()
@@ -360,6 +376,8 @@ def raw_deflate(fi):
         except Exception as e:
             print("Error: compression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def raw_inflate(fi):
     offset = fi.getSelectionOffset()
@@ -391,6 +409,8 @@ def raw_inflate(fi):
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def lz4_compress(fi):
     """
@@ -441,6 +461,8 @@ def lz4_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def lz4_decompress(fi):
     """
@@ -491,6 +513,8 @@ def lz4_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def lzma_compress(fi):
     """
@@ -537,6 +561,8 @@ def lzma_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def lzma_decompress(fi):
     """
@@ -583,6 +609,8 @@ def lzma_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def xz_compress(fi):
     """
@@ -629,6 +657,8 @@ def xz_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def xz_decompress(fi):
     """
@@ -675,6 +705,8 @@ def xz_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def zstandard_compress(fi):
     """
@@ -725,6 +757,8 @@ def zstandard_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def zstandard_decompress(fi):
     """
@@ -775,6 +809,8 @@ def zstandard_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def lzo_compress(fi):
     """
@@ -827,6 +863,8 @@ def lzo_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def lzo_decompress(fi):
     """
@@ -879,6 +917,8 @@ def lzo_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def zlib_compress(fi):
     """
@@ -913,6 +953,8 @@ def zlib_compress(fi):
         except Exception as e:
             print("Error: compression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def zlib_decompress(fi):
     """
@@ -947,6 +989,8 @@ def zlib_decompress(fi):
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
+    else:
+        print("Please select a region to use this plugin.")
 
 def quicklz_compress(fi):
     """
@@ -1001,6 +1045,8 @@ def quicklz_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def quicklz_decompress(fi):
     """
@@ -1054,6 +1100,8 @@ def quicklz_decompress(fi):
         else:
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def ppmd_compress(fi):
     """
@@ -1106,6 +1154,8 @@ def ppmd_compress(fi):
         else:
             print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def ppmd_decompress(fi):
     """
@@ -1159,3 +1209,5 @@ def ppmd_decompress(fi):
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
         print(stderr_data)
+    else:
+        print("Please select a region to use this plugin.")

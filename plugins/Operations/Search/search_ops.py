@@ -185,6 +185,7 @@ def xor_hex_search(fi):
     Search XORed / bit-rotated data in selected region (the whole file if not selected)
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length_sel = fi.getSelectionLength()
@@ -314,6 +315,7 @@ def xor_text_search(fi):
     Search XORed / bit-rotated string in selected region (the whole file if not selected)
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length_sel = fi.getSelectionLength()
@@ -364,6 +366,7 @@ def regex_search(fi):
     Search with regular expression in selected region (the whole file if not selected) and bookmark matched regions
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length_sel = fi.getSelectionLength()
@@ -445,6 +448,7 @@ def replace(fi):
     Search with regular expression in selected region (the whole file if not selected) and replace matched regions with specified data
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length_sel = fi.getSelectionLength()
@@ -575,9 +579,7 @@ def yara_scan(fi):
     """
     num_file = fi.getDocumentCount()
     if num_file < 2:
-        if num_file == 1:
-            print("Please open a file to be scanned and a YARA rule file before using YARA scan plugin.")
-
+        print("Please open a file to be scanned and a YARA rule file before using this plugin.")
         return
 
     file_list = ""
@@ -730,6 +732,7 @@ def regex_extraction(fi):
     Search with regular expression in selected region (the whole file if not selected) and extract matched regions as single concatenated region
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length_sel = fi.getSelectionLength()

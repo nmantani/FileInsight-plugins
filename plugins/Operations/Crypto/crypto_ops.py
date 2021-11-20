@@ -25,8 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import json
-import re
 import subprocess
 
 def aes_decrypt(fi):
@@ -204,6 +202,8 @@ def do_decrypt(fi, name, script):
         else:
             print("Decrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decrypted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def do_encrypt(fi, name, script):
     """
@@ -260,3 +260,5 @@ def do_encrypt(fi, name, script):
         else:
             print("Encrypted %s bytes with %s from offset %s to %s." % (length, name, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to encrypted region.")
+    else:
+        print("Please select a region to use this plugin.")

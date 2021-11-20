@@ -102,6 +102,7 @@ def send_to_cli(fi):
     Send selected region (the whole file if not selected) to other CLI program and get output
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     # Structure for mouse cursor position
@@ -145,10 +146,13 @@ def send_to_cli(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute send_to.py to show GUI
-    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
     p = subprocess.Popen(["py.exe", "-3", "Misc/send_to_cli.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
+
+    # No external program is selected or "Customize menu" is selected
+    if ret == 1:
+        return
 
     if length > 0:
         if length == 1:
@@ -177,6 +181,7 @@ def send_to_gui(fi):
     Send selected region (the whole file if not selected) to other program.
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     # Structure for mouse cursor position
@@ -220,7 +225,6 @@ def send_to_gui(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute send_to.py to show GUI
-    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
     p = subprocess.Popen(["py.exe", "-3", "Misc/send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
 
     if length > 0:
@@ -343,6 +347,7 @@ def file_comparison(fi):
     """
     num_file = fi.getDocumentCount()
     if num_file < 2:
+        print("Please open at least two file to use this plugin.")
         return
 
     file_list = ""
@@ -474,6 +479,7 @@ def emulate_code(fi):
     Emulate selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length = fi.getSelectionLength()
@@ -507,8 +513,11 @@ def emulate_code(fi):
     handle.write(data)
     handle.close()
 
+    tab_name = fi.get_new_document_name("Emulation trace")
+    tab_index = tab_name[16:] # Get index number
+
     # Execute emulate_code.py to emulate code
-    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args, timeout], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -628,8 +637,8 @@ def emulate_code(fi):
         if bookmarked == True:
             print("Added bookmarks to the region of the memory dumps that contain non-zero value.")
 
-    print('Emulation trace is shown in the new "Emulation trace" tab.')
-    print('Memory dumps after execution are shown in the new "Memory dump" tabs.')
+    print('Emulation trace is shown in the new "Emulation trace %s" tab.' % tab_index)
+    print('Memory dumps after execution are shown in the new "Memory dump %s - *" tabs.' % tab_index)
 
     # Set current tab to "Emulation trace" tab
     fi.activateDocumentAt(num_tabs)

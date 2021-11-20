@@ -89,6 +89,8 @@ def decremental_xor(fi):
         else:
             print("XORed %s bytes from offset %s to %s while decrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), hex(step)))
             print("Added a bookmark to XORed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def incremental_xor(fi):
     """
@@ -147,6 +149,8 @@ def incremental_xor(fi):
         else:
             print("XORed %s bytes from offset %s to %s while incrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), hex(step)))
             print("Added a bookmark to XORed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def null_preserving_xor(fi):
     """
@@ -184,6 +188,8 @@ def null_preserving_xor(fi):
         else:
             print("XORed %s bytes from offset %s to %s with key %s while skipping data 0x00 and %s." % (length, hex(offset), hex(offset + length - 1), hex(key), hex(key)))
         print("Added a bookmark to XORed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def xor_with_next_byte(fi):
     """
@@ -210,6 +216,8 @@ def xor_with_next_byte(fi):
         else:
             print("XORed %s bytes from offset %s to %s while using next byte as XOR key." % (length_sel, hex(offset), hex(offset + length_sel - 1)))
             print("Added a bookmark to XORed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def xor_with_next_byte_reverse(fi):
     """
@@ -236,6 +244,8 @@ def xor_with_next_byte_reverse(fi):
         else:
             print("XORed %s bytes from offset %s to %s while using next byte as XOR key (reverse direction)." % (length_sel, hex(offset), hex(offset + length_sel - 1)))
             print("Added a bookmark to XORed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def xor_with_multibyte_key(data, key):
     """
@@ -455,18 +465,24 @@ def guess_multibyte_xor_keys(fi):
     """
     Guess multibyte XOR keys from selected region (the whole file if not selected) based on revealed keys that are XORed with 0x00
     """
+    if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
+        return
+
     length = fi.getSelectionLength()
     offset = fi.getSelectionOffset()
 
+    tab_name = fi.get_new_document_name("Guessed XOR keys")
+
     if length > 0:
         data = fi.getSelection()
-        print('Top ten XOR keys guessed from offset %s to %s are shown in the new "Guessed XOR keys" tab.' % (hex(offset), hex(offset + length - 1)))
+        print('Top ten XOR keys guessed from offset %s to %s are shown in the new "%s" tab.' % (hex(offset), hex(offset + length - 1), tab_name))
         print("Please select the whole file and use these XOR key in the Decode tab to decode the file.\n")
     else:
         offset = 0
         data = fi.getDocument()
         length = fi.getLength()
-        print('Top ten XOR keys guessed from the whole file are shown in the new "Guessed XOR keys" tab.')
+        print('Top ten XOR keys guessed from the whole file are shown in the new "%s" tab.' % tab_name)
         print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
 
     time_start = time.time()
@@ -516,7 +532,6 @@ def guess_multibyte_xor_keys(fi):
             output += "\n"
             i += 1
 
-    tab_name = fi.get_new_document_name("Guessed XOR keys")
     fi.newDocument(tab_name, 0)
     fi.setDocument(output)
 
@@ -561,6 +576,8 @@ def visual_decrypt(fi):
         else:
             print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def visual_encrypt(fi):
     """
@@ -601,6 +618,8 @@ def visual_encrypt(fi):
         else:
             print("Encoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def xor_with_another_file(fi):
     """
@@ -608,9 +627,7 @@ def xor_with_another_file(fi):
     """
     num_file = fi.getDocumentCount()
     if num_file < 2:
-        if num_file == 1:
-            print("Please open a file to be XORed and a XOR key file before using 'XOR with another file' plugin.")
-
+        print("Please open a file to be XORed and a XOR key file before using this plugin.")
         return
 
     file_list = ""

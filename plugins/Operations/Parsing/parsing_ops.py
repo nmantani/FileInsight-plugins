@@ -60,6 +60,7 @@ def binwalk_scan(fi):
     Scan selected region (the whole file if not selected) to find embedded files
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     time_start = time.time()
@@ -171,6 +172,7 @@ def find_pe_file(fi):
     Find PE file from selected region (the whole file if not selected) based on PE header information
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length = fi.getSelectionLength()
@@ -229,6 +231,7 @@ def show_metadata(fi):
     Show metadata of selected region (the whole file if not selected) with ExifTool
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length = fi.getSelectionLength()
@@ -335,6 +338,7 @@ def strings(fi):
     Extract text strings from selected region (the whole file if not selected)
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length = fi.getSelectionLength()
@@ -485,6 +489,7 @@ def parse_file_structure(fi):
     Parsing file structure from selected region (the whole file if not selected)
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length = fi.getSelectionLength()
@@ -612,6 +617,7 @@ def disassemble(fi):
     Disassemble selected region (the whole file if not selected)
     """
     if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
         return
 
     length = fi.getSelectionLength()

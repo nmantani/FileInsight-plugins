@@ -57,6 +57,8 @@ def binary_data_to_hex_text(fi):
 
         print("Converted binary data from offset %s to %s (%s bytes) into hex text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def hex_text_to_binary_data(fi):
     """
@@ -68,6 +70,7 @@ def hex_text_to_binary_data(fi):
     if length > 0:
         string = fi.getSelection()
     else:
+        print("Please select a region to use this plugin.")
         return
 
     hexchars = list("0123456789abcdefABCDEF")
@@ -166,6 +169,8 @@ def custom_base64_decode(fi):
                 else:
                     print("Decoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base64_encode(fi):
     """
@@ -212,6 +217,8 @@ def custom_base64_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base64 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def rot13(fi):
     """
@@ -266,6 +273,8 @@ def rot13(fi):
         else:
             print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def from_quoted_printable(fi):
     """
@@ -292,6 +301,8 @@ def from_quoted_printable(fi):
         else:
             print("Decoded %s bytes quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def to_quoted_printable(fi):
     """
@@ -318,6 +329,8 @@ def to_quoted_printable(fi):
         else:
             print("Encoded %s bytes into quoted printable text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def binary_data_to_binary_text(fi):
     """
@@ -343,6 +356,8 @@ def binary_data_to_binary_text(fi):
 
         print("Converted binary from offset %s to %s (%s bytes) into binary text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def binary_text_to_binary_data(fi):
     """
@@ -350,7 +365,9 @@ def binary_text_to_binary_data(fi):
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
-    string = fi.getSelection()
+
+    if length > 0:
+        string = fi.getSelection()
 
     binchars = list("01")
 
@@ -380,6 +397,8 @@ def binary_text_to_binary_data(fi):
 
         print("Converted binary text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region at least 8 bytes to use this plugin.")
 
 def binary_data_to_decimal_text(fi):
     """
@@ -470,6 +489,8 @@ def binary_data_to_decimal_text(fi):
 
         print("Converted binary from offset %s to %s (%s bytes) into decimal text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def decimal_text_to_binary_data(fi):
     """
@@ -543,6 +564,8 @@ def decimal_text_to_binary_data(fi):
 
         print("Converted decimal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def binary_data_to_octal_text(fi):
     """
@@ -596,6 +619,8 @@ def binary_data_to_octal_text(fi):
 
         print("Converted binary from offset %s to %s (%s bytes) into octal text." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def octal_text_to_binary_data(fi):
     """
@@ -659,6 +684,8 @@ def octal_text_to_binary_data(fi):
 
         print("Converted octal text from offset %s to %s (%s bytes) into binary data." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def url_decode(fi):
     """
@@ -685,6 +712,8 @@ def url_decode(fi):
         else:
             print("Decoded %s bytes URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def url_encode(fi):
     """
@@ -712,6 +741,8 @@ def url_encode(fi):
         else:
             print("Encoded %s bytes into URL encoded text from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def unicode_escape(fi):
     """
@@ -786,6 +817,8 @@ def unicode_escape(fi):
         else:
             print("Escaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to escaped region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def convert_to_python_escape(pattern, data):
     """
@@ -872,6 +905,8 @@ def unicode_unescape(fi):
         else:
             print("Unescaped %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to unescaped region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def protobuf_decode(fi):
     """
@@ -907,6 +942,8 @@ def protobuf_decode(fi):
             print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base16_decode(fi):
     """
@@ -953,6 +990,8 @@ def custom_base16_decode(fi):
                 else:
                     print("Decoded %s bytes with custom base16 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base16_encode(fi):
     """
@@ -999,6 +1038,8 @@ def custom_base16_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base16 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base32_decode(fi):
     """
@@ -1045,6 +1086,8 @@ def custom_base32_decode(fi):
                 else:
                     print("Decoded %s bytes with custom base32 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base32_encode(fi):
     """
@@ -1091,6 +1134,8 @@ def custom_base32_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base32 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base58_decode(fi):
     """
@@ -1148,6 +1193,8 @@ def custom_base58_decode(fi):
                 else:
                     print("Decoded %s bytes with custom base58 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base58_encode(fi):
     """
@@ -1206,6 +1253,8 @@ def custom_base58_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base58 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base85_decode(fi):
     """
@@ -1258,6 +1307,8 @@ def custom_base85_decode(fi):
                 else:
                     print("Decoded %s bytes with custom base85 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def custom_base85_encode(fi):
     """
@@ -1311,3 +1362,5 @@ def custom_base85_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base85 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")

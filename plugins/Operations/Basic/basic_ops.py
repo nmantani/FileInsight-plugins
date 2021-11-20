@@ -91,6 +91,8 @@ def cut_binary_to_clipboard(fi):
             print("One byte has been cut and copied to clipboard at offset %s." % hex(offset))
         else:
             print("%s bytes have been cut and copied to clipboard at offset %s." % (length, hex(offset)))
+    else:
+        print("Please select a region to use this plugin.")
 
 def copy_binary_to_clipboard(fi):
     """
@@ -119,6 +121,8 @@ def copy_binary_to_clipboard(fi):
             print("One byte has been copied to clipboard.")
         else:
             print("%s bytes have been copied to clipboard." % length)
+    else:
+        print("Please select a region to use this plugin.")
 
 def paste_binary_from_clipboard(fi):
     """
@@ -230,6 +234,8 @@ def fill(fi):
         else:
             print("Filled %s bytes from offset %s to %s with the hex pattern %s." % (length, hex(offset), hex(offset + length - 1), hex(int(pat, 16))))
         print("Added a bookmark to filled region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def invert(fi):
     """
@@ -255,6 +261,8 @@ def invert(fi):
         else:
             print("Inverted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to inverted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def reverse_order(fi):
     """
@@ -263,7 +271,7 @@ def reverse_order(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 1):
+    if length > 0:
         data = list(fi.getDocument())
         i = 0
         end = length / 2
@@ -280,8 +288,13 @@ def reverse_order(fi):
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
-        print("Reversed order from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length))
+        if length == 1:
+            print("Reversed order from offset %s to %s (1 byte)." % (hex(offset), hex(offset + length - 1)))
+        else:
+            print("Reversed order from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to reversed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def swap_nibbles(fi):
     """
@@ -290,20 +303,23 @@ def swap_nibbles(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    data = list(fi.getDocument())
-    i = 0
-    while (i < length):
-        j = offset + i
-        data[j] = chr(((ord(data[j]) >> 4) & 0x0f ) | ((ord(data[j]) << 4) & 0xf0))
-        i += 1
+    if length > 0:
+        data = list(fi.getDocument())
+        i = 0
+        while (i < length):
+            j = offset + i
+            data[j] = chr(((ord(data[j]) >> 4) & 0x0f ) | ((ord(data[j]) << 4) & 0xf0))
+            i += 1
 
-    tab_name = fi.get_new_document_name("Output of Swap nibbles")
-    fi.newDocument(tab_name, 1)
-    fi.setDocument("".join(data))
-    fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+        tab_name = fi.get_new_document_name("Output of Swap nibbles")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument("".join(data))
+        fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
-    print("Swapped each pair of nibbles from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length))
-    print("Added a bookmark to swapped region.")
+        print("Swapped each pair of nibbles from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length))
+        print("Added a bookmark to swapped region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def swap_two_bytes(fi):
     """
@@ -312,7 +328,7 @@ def swap_two_bytes(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
-    if (length > 1):
+    if length > 1:
         data = list(fi.getDocument())
         i = 0
         while (i < length):
@@ -330,6 +346,8 @@ def swap_two_bytes(fi):
 
         print("Swapped each pair of bytes from offset %s to %s (%s bytes)." % (hex(offset), hex(offset + length - 1), length))
         print("Added a bookmark to swapped region.")
+    else:
+        print("Please select a region larger than one byte to use this plugin.")
 
 def to_upper_case(fi):
     """
@@ -355,6 +373,8 @@ def to_upper_case(fi):
         else:
             print("Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def to_lower_case(fi):
     """
@@ -380,6 +400,8 @@ def to_lower_case(fi):
         else:
             print("Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def swap_case(fi):
     """
@@ -405,6 +427,8 @@ def swap_case(fi):
         else:
             print("Converted %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to converted region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def bookmark(fi):
     """
@@ -436,3 +460,5 @@ def bookmark(fi):
             comment = hex(offset) + " " + comment
             fi.setBookmark(offset, length, comment, color)
             print("Added a bookmark to selected region.")
+    else:
+        print("Please select a region to use this plugin.")
