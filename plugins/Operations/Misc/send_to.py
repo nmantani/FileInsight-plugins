@@ -75,6 +75,7 @@ def wait_process_by_name(name):
 
 root = tkinter.Tk()
 root.bind("<FocusOut>", lambda x:sys.exit(1))
+root.attributes("-topmost", True) # Set root window to topmost to make messagebox modal
 root.withdraw() # Hide root window
 
 config_file_name = "Misc/send_to.json"

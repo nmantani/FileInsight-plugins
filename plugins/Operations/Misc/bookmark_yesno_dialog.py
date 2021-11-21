@@ -30,6 +30,7 @@ import tkinter
 import tkinter.messagebox
 
 root = tkinter.Tk()
+root.attributes("-topmost", True) # Set root window to topmost to make messagebox modal
 root.withdraw() # Hide root window
-ret = tkinter.messagebox.askyesno("Confirmation", "Adding many bookmarks (over 100) may take long time.\r\nWould you like to add %s bookmarks?" % sys.argv[1])
+ret = tkinter.messagebox.askyesno("Confirmation", "Adding many bookmarks (over 100) may take long time (more than 10 seconds).\r\n\r\nWould you like to add %s bookmarks?" % sys.argv[1])
 exit(ret) # Yes: True, No: False
