@@ -130,7 +130,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (117 plugins)
+## List of plugins (118 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -152,6 +152,8 @@ Your customization will be reflected in menu items.
   Invert bits of selected region
 * Reverse order  
   Reverse order of selected region
+* Change endianness  
+  Change endianness of selected region
 * Swap nibbles  
   Swap each pair of nibbles of selected region
 * Swap two bytes  

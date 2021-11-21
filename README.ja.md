@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (117個)
+## プラグインの一覧 (118個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -149,6 +149,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲のビットを反転します。
 * Reverse order  
   選択範囲のバイト列の順序を逆に並べ替えます。
+* Change endianness  
+  選択範囲のエンディアンを変換します。
 * Swap nibbles  
   選択範囲内のニブルの組を入れ替えます。
 * Swap two bytes  

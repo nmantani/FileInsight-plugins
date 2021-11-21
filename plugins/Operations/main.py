@@ -192,6 +192,7 @@ if __name__ == "__main__":
                   basic_ops.fill,
                   basic_ops.invert,
                   basic_ops.reverse_order,
+                  basic_ops.change_endianness,
                   basic_ops.swap_nibbles,
                   basic_ops.swap_two_bytes,
                   basic_ops.to_upper_case,

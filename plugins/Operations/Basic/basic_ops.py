@@ -462,3 +462,71 @@ def bookmark(fi):
             print("Added a bookmark to selected region.")
     else:
         print("Please select a region to use this plugin.")
+
+def change_endianness(fi):
+    """
+    Change endianness of selected region
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+    if length > 1:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute change_endianness_dialog.py to show unit setting dialog
+        p = subprocess.Popen(["py.exe", "-3", "Basic/change_endianness_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Get unit setting
+        stdout_data, stderr_data = p.communicate()
+        u = stdout_data.rstrip()
+
+        if u == "":
+            return
+
+        units = {"WORD (2 bytes)": 2,
+                 "DWORD (4 bytes)": 4,
+                 "QWORD (8 bytes)": 8}
+
+        # The remainder that is smaller than a unit will not be changed
+        if length % units[u] > 0:
+            unchanged = True
+        else:
+            unchanged = False
+
+        converted = ""
+        changed_len = 0
+        for i in range(0, length, units[u]):
+            tmp = list(data[i:i+units[u]])
+            if len(tmp) == units[u]:
+                tmp.reverse()
+                converted += "".join(tmp)
+                changed_len += len(tmp)
+            else:
+                converted += "".join(tmp)
+
+        end = i
+
+        newdata = orig[:offset] + converted + orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of Change endianness")
+
+        if changed_len > 0:
+            fi.newDocument(tab_name, 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+            print("Changed endianness from offset %s to %s (%s bytes, unit: %s)." % (hex(offset), hex(offset + changed_len - 1), changed_len, u))
+
+        if unchanged:
+            if length - end == 1:
+                print("Offset from %s to %s (%s byte) is not changed because it is smaller than a %s." % (hex(offset + end), hex(offset + length - 1), length - end, u))
+            else:
+                print("Offset from %s to %s (%s bytes) is not changed because it is smaller than a %s." % (hex(offset + end), hex(offset + length - 1), length - end, u))
+
+        if changed_len > 0:
+            print("Added a bookmark to selected region of plugin output.")
+    else:
+        print("Please select a region larger than one byte to use this plugin.")
