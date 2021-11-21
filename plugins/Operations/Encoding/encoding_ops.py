@@ -425,7 +425,7 @@ def binary_data_to_decimal_text(fi):
         if setting == "":
             return
         else:
-            (d, endianess, single_int) = setting.split()
+            (d, endianness, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -439,7 +439,7 @@ def binary_data_to_decimal_text(fi):
         trail = ""
         if single_int == "True":
             data = list(data)
-            if endianess == "Big":
+            if endianness == "Big":
                 for i in range(0, length):
                     if i > 0:
                         converted += delimiters[d]
@@ -515,7 +515,7 @@ def decimal_text_to_binary_data(fi):
         if setting == "":
             return
         else:
-            (d, endianess, single_int) = setting.split()
+            (d, endianness, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -548,7 +548,7 @@ def decimal_text_to_binary_data(fi):
                 h = "0" + h
 
             b = binascii.a2b_hex(h)
-            if endianess == "Little":
+            if endianness == "Little":
                 b = list(b)
                 b.reverse()
                 converted += "".join(b)
@@ -592,7 +592,7 @@ def binary_data_to_octal_text(fi):
         if setting == "":
             return
         else:
-            (d, endianess, single_int) = setting.split()
+            (d, endianness, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -645,7 +645,7 @@ def octal_text_to_binary_data(fi):
         if setting == "":
             return
         else:
-            (d, endianess, single_int) = setting.split()
+            (d, endianness, single_int) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
