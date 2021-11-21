@@ -48,6 +48,7 @@ label1.grid(row=0, column=0, padx=5, pady=5, columnspan=2, sticky="w")
 
 entry1 = tkinter.Entry(root, width=40)
 entry1.grid(row=0, column=2, padx=5, pady=5)
+entry1.focus() # Focus to this widget
 
 label2 = tkinter.Label(root, text="Replacement:")
 label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
@@ -62,7 +63,6 @@ entry2.grid(row=1, column=2, padx=5, pady=5)
 
 button = tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
 button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
-button.focus() # Focus to this widget
 
 # Set callback functions
 for x in (entry1, combo, entry2, button):
