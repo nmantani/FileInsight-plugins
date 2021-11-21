@@ -34,23 +34,6 @@ import sys
 import tempfile
 import time
 
-def bookmark_yesno_dialog(num_bookmark):
-    """
-    Show a confirmation dialog of adding many bookmarks
-    """
-    # Do not show command prompt window
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-    # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-
-    # Receive scan result
-    stdout_data, stderr_data = p.communicate()
-    ret = p.wait()
-
-    return ret
-
 def mask(x):
     """
     Masking bits
@@ -162,7 +145,7 @@ def search_xor_rol_hex(fi, data, offset, length, keyword):
     print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
     time_start = time.time()
 
-    if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
+    if num_hits > 100 and not fi.bookmark_yesno_dialog(num_hits):
         do_bookmark = False
     else:
         do_bookmark = True
@@ -292,7 +275,7 @@ def search_xor_rol_text(fi, data, offset, length, keyword):
     print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
     time_start = time.time()
 
-    if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
+    if num_hits > 100 and not fi.bookmark_yesno_dialog(num_hits):
         do_bookmark = False
     else:
         do_bookmark = True
@@ -421,7 +404,7 @@ def regex_search(fi):
         print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
         time_start = time.time()
 
-        if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
+        if num_hits > 100 and not fi.bookmark_yesno_dialog(num_hits):
             do_bookmark = False
         else:
             do_bookmark = True
@@ -551,7 +534,7 @@ def replace(fi):
             fi.newDocument(tab_name, 1)
             fi.setDocument("".join(new_data))
 
-        if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
+        if num_hits > 100 and not fi.bookmark_yesno_dialog(num_hits):
             do_bookmark = False
         else:
             do_bookmark = True
@@ -704,7 +687,7 @@ def yara_scan(fi):
         prev_string = identifier_matched
         num_hits += 1
 
-    if len(bookmark_start) > 100 and not bookmark_yesno_dialog(len(bookmark_start)):
+    if len(bookmark_start) > 100 and not fi.bookmark_yesno_dialog(len(bookmark_start)):
         do_bookmark = False
     else:
         do_bookmark = True
@@ -792,7 +775,7 @@ def regex_extraction(fi):
         print("Elapsed time (search): %f (sec)" % (time.time() - time_start))
         time_start = time.time()
 
-        if num_hits > 100 and not bookmark_yesno_dialog(num_hits):
+        if num_hits > 100 and not fi.bookmark_yesno_dialog(num_hits):
             do_bookmark = False
         else:
             do_bookmark = True

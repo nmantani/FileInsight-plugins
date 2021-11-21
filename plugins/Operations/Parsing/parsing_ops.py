@@ -37,24 +37,6 @@ import subprocess
 import tempfile
 import time
 
-def bookmark_yesno_dialog(num_bookmark):
-    """
-    Show a confirmation dialog of adding many bookmarks
-    Used by binwalk_scan() and parse_file_structure()
-    """
-    # Do not show command prompt window
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-    # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-
-    # Receive scan result
-    stdout_data, stderr_data = p.communicate()
-    ret = p.wait()
-
-    return ret
-
 def binwalk_scan(fi):
     """
     Scan selected region (the whole file if not selected) to find embedded files
@@ -116,8 +98,11 @@ def binwalk_scan(fi):
     time_start = time.time()
 
     if num_found > 0:
-        if num_found > 100 and not bookmark_yesno_dialog(num_found):
-            return # "No" is clicked
+        if num_found > 100 and not fi.bookmark_yesno_dialog(num_found):
+            # "No" is clicked
+            tab_name = fi.get_new_document_name("Binwalk output")
+            fi.newDocument(tab_name, 0)
+            fi.setDocument(stdout_data)
         else:
             for i in range(0, num_found):
                 if i + 1 == num_found:
@@ -128,9 +113,9 @@ def binwalk_scan(fi):
             print("\r\nAdded bookmarks to the detected files.")
             print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
 
-        tab_name = fi.get_new_document_name("Binwalk output")
-        fi.newDocument(tab_name, 0)
-        fi.setDocument(stdout_data)
+            tab_name = fi.get_new_document_name("Binwalk output")
+            fi.newDocument(tab_name, 0)
+            fi.setDocument(stdout_data)
 
 def file_type(fi):
     """
@@ -568,7 +553,7 @@ def parse_file_structure(fi):
     parsed_data_list = []
     parsed_dict_len = len(parsed_dict)
 
-    if parsed_dict_len > 100 and not bookmark_yesno_dialog(parsed_dict_len):
+    if parsed_dict_len > 100 and not fi.bookmark_yesno_dialog(parsed_dict_len):
         do_bookmark = False
     else:
         do_bookmark = True

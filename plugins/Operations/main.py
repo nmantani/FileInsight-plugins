@@ -120,15 +120,40 @@ class FileInsight:
         escaped_name = re.escape(name)
         num_file = getDocumentCount()
 
-        lastindex = 0
+        current_filename = getDocumentName()
+        current_index = 0
+
+        last_index = 0
         for i in range(num_file):
             activateDocumentAt(i)
             n = getDocumentName()
             m = re.match("%s (\d+)" % escaped_name, n)
-            if m != None and int(m.group(1)) >= lastindex:
-                lastindex = int(m.group(1)) + 1
+            if m != None and int(m.group(1)) >= last_index:
+                last_index = int(m.group(1)) + 1
 
-        return "%s %d" % (name, lastindex)
+            if n == current_filename:
+                current_index = i
+
+        activateDocumentAt(current_index)
+
+        return "%s %d" % (name, last_index)
+
+    def bookmark_yesno_dialog(self, num_bookmark):
+        """
+        Show a confirmation dialog of adding many bookmarks
+        """
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute bookmark_yesno_dialog.py to show confirmation dialog
+        p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive scan result
+        stdout_data, stderr_data = p.communicate()
+        ret = p.wait()
+
+        return ret
 
 def find_python3():
     pyexe_found = False

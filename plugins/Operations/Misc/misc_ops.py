@@ -35,24 +35,6 @@ import tempfile
 import time
 import zlib
 
-def bookmark_yesno_dialog(num_bookmark):
-    """
-    Show a confirmation dialog of adding many bookmarks
-    Used by file_comparison()
-    """
-    # Do not show command prompt window
-    startupinfo = subprocess.STARTUPINFO()
-    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-    # Execute bookmark_yesno_dialog.py to show confirmation dialog
-    p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-
-    # Receive scan result
-    stdout_data, stderr_data = p.communicate()
-    ret = p.wait()
-
-    return ret
-
 def hash_values(fi):
     """
     Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of selected region (the whole file if not selected)
@@ -411,7 +393,7 @@ def file_comparison(fi):
         bookmark_list.append((offset, i - offset + 1))
         offset = None
 
-    if len(bookmark_list) > 100 and not bookmark_yesno_dialog(len(bookmark_list)):
+    if len(bookmark_list) > 100 and not fi.bookmark_yesno_dialog(len(bookmark_list)):
         do_bookmark = False
     else:
         do_bookmark = True
