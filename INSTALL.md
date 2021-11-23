@@ -21,7 +21,8 @@ FileInsight installer is available at the McAfee Free Tools website.
 Please get it from https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html .
 
 ### **Installation of Python 3**
-FileInsight-plugins requires Python 3 (x64) since version 2.0 (older versions require Python 2 (x86)), though the built-in Python interpreter of FileInsight is Python 2. You no longer need to install Python 2 (x86) with the latest version (3.5) of FileInsight. Please get Python 3 (x64) installer from https://www.python.org/downloads/windows/ .
+FileInsight-plugins requires Python 3 (x64) since version 2.0 (older versions require Python 2 (x86)), though the built-in Python interpreter of FileInsight is Python 2. You no longer need to install Python 2 (x86) with the latest version (3.5) of FileInsight. Please get Python 3 (x64) installer from https://www.python.org/downloads/windows/ .  
+Python 3.9.x is recommended because some Python modules (such as ppmd-cffi and yara-python) are currently not available for Python 3.10.x.
 
 ### **Installation of FileInsight-plugins**
 Please copy "plugins" folder into %USERPROFILE%\Documents\McAfee FileInsight .

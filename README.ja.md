@@ -50,7 +50,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 
 ## インストール方法
 ### 自動でのインストール
-以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3 (x64) を含む全ての必要なものがインストールされます。
+以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3.9.x (x64) を含む全ての必要なものがインストールされます。
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"

@@ -22,7 +22,8 @@ https://www.mcafee.com/enterprise/en-us/downloads/free-tools/fileInsight.html
 
 ### **Python 3のインストール**
 FileInsight のビルトインの Python インタプリタは Python 2 ですが、FileInsight-plugins は 2.0 以降 Python 3 (x64) が必要です（過去のバージョンでは Python 2 (x86) が必要でした）。 最新バージョン (3.5) の FileInsight ではもう Python 2 (x86) をインストールする必要はありません。Python 3 (x64) のインストーラはこちらからダウンロードしてください。
-https://www.python.org/downloads/windows/
+https://www.python.org/downloads/windows/  
+現在 Python 3.10.x で使用できない Python モジュールがいくつかあります (ppmd-cffi や yara-python) ので Python 3.9.x の使用をお勧めします。
 
 ### **FileInsight-pluginsのインストール**
 plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight

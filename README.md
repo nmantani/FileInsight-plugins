@@ -50,7 +50,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 
 ## How to install
 ### Automatic installation
-Please execute the following command. The latest release version of FileInsight-plugins and all pre-requisites including FileInsight and Python 3 (x64) will be installed.
+Please execute the following command. The latest release version of FileInsight-plugins and all pre-requisites including FileInsight and Python 3.9.x (x64) will be installed.
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
