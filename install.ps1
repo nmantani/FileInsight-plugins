@@ -425,6 +425,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "blackboxprotobuf" $update
     install_with_pip "capstone" $update
     install_with_pip "lz4" $update
+    install_with_pip "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip" $update
     install_with_pip "matplotlib" $update
     install_with_pip "pefile" $update
     install_with_pip "ppmd-cffi" $update
