@@ -55,6 +55,7 @@ $PYTHON_VERSION = "3.9.7"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $EXIFTOOL_VERSION = "12.36"
+$LZ4_VERSION = "3.1.3"
 $QUICKLZ_VERSION = "1.5.0"
 $QILING_VERSION = "1.2.3"
 $UNICORN_VERSION = "1.0.3"
@@ -385,7 +386,16 @@ function install_python3($work_dir) {
     Write-Host ""
 }
 
-function install_with_pip($name, $update) {
+function install_with_pip($name, $update, $url="") {
+    # "--upgrade" option is disabled if version is specified
+    if ($name -match "==") {
+        $name_with_version = $name
+        $name = $name -replace "==.+", ""
+        $update = $false
+    } else {
+        $name_with_version = ""
+    }
+
     Write-Host "[+] Installing $name Python module..."
     $installed = &$PYTHON_EXE -3 -m pip show $name
     if ([bool]$installed -and !$update) {
@@ -397,12 +407,22 @@ function install_with_pip($name, $update) {
             $upgrade_opt = ""
         }
 
-        if ($PROXY_URL) {
-            Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $name"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $name"
+        if ($url -ne "") {
+            $package = $url
         } else {
-            Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $name"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $name"
+            if ($name_with_version -ne "") {
+                $package = $name_with_version
+            } else {
+                $package = $name
+            }
+        }
+
+        if ($PROXY_URL) {
+            Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
+        } else {
+            Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $package"
+            Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $package"
         }
         $installed = &$PYTHON_EXE -3 -m pip show $name
         if ([bool]$installed) {
@@ -424,8 +444,8 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "base58" $update
     install_with_pip "blackboxprotobuf" $update
     install_with_pip "capstone" $update
-    install_with_pip "lz4" $update
-    install_with_pip "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip" $update
+    install_with_pip "lz4==$LZ4_VERSION" $update
+    install_with_pip "lzjb" $update "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip"
     install_with_pip "matplotlib" $update
     install_with_pip "pefile" $update
     install_with_pip "ppmd-cffi" $update

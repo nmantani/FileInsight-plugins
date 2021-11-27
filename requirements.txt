@@ -3,7 +3,7 @@ PyTEA
 base58
 blackboxprotobuf
 capstone
-lz4
+lz4==3.1.3
 matplotlib
 pefile
 ppmd-cffi
