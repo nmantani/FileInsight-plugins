@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (118個)
+## プラグインの一覧 (120個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -178,6 +178,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を LZNT1 アルゴリズムで圧縮します。
 * LZO  
   選択範囲を LZO アルゴリズムで圧縮します。
+* LZRW1/KH  
+  選択範囲を LZRW1/KH アルゴリズムで圧縮します。
 * PPMd  
   選択範囲を PPMd アルゴリズムで圧縮します。
 * QuickLZ  
@@ -206,6 +208,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を LZNT1 アルゴリズムで展開します。
 * LZO  
   選択範囲を LZO アルゴリズムで展開します。
+* LZRW1/KH  
+  選択範囲を LZRW1/KH アルゴリズムで展開します。
 * PPMd  
   選択範囲を PPMd アルゴリズムで展開します。
 * QuickLZ  

@@ -29,6 +29,7 @@
 import bz2
 import ctypes
 import gzip
+import lzrw1_kh
 import os
 import StringIO
 import subprocess
@@ -1209,5 +1210,77 @@ def ppmd_decompress(fi):
             print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
         print("Added a bookmark to decompressed region.")
         print(stderr_data)
+    else:
+        print("Please select a region to use this plugin.")
+
+def lzrw1_kh_compress(fi):
+    """
+    Compress selected region with LZRW1/KH algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        try:
+            compressed = lzrw1_kh.compress(data)
+            final_size = len(compressed)
+
+            newdata = orig[:offset]
+            newdata += compressed
+            newdata += orig[offset + length:]
+
+            tab_name = fi.get_new_document_name("Output of LZRW1/KH compress")
+            fi.newDocument(tab_name, 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+            if length == 1:
+                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to compressed region.")
+        except Exception as e:
+            print("Error: compression failed.")
+            print(e)
+    else:
+        print("Please select a region to use this plugin.")
+
+def lzrw1_kh_decompress(fi):
+    """
+    Decompress selected region with LZRW1/KH algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        try:
+            decompressed = lzrw1_kh.decompress(data)
+            final_size = len(decompressed)
+
+            newdata = orig[:offset]
+            newdata += decompressed
+            newdata += orig[offset + length:]
+
+            tab_name = fi.get_new_document_name("Output of LZRW1/KH decompress")
+            fi.newDocument(tab_name, 1)
+            fi.setDocument(newdata)
+            fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+            if length == 1:
+                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+            else:
+                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+            print("Added a bookmark to decompressed region.")
+        except Exception as e:
+            print("Error: decompression failed.")
+            print(e)
     else:
         print("Please select a region to use this plugin.")

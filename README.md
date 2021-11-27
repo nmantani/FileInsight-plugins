@@ -130,7 +130,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (118 plugins)
+## List of plugins (120 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -181,6 +181,8 @@ Your customization will be reflected in menu items.
   Compress selected region with LZNT1 algorithm
 * LZO  
   Compress selected region with LZO algorithm
+* LZRW1/KH  
+  Compress selected region with LZRW1/KH algorithm
 * PPMd  
   Compress selected region with PPMd algorithm
 * QuickLZ  
@@ -209,6 +211,8 @@ Your customization will be reflected in menu items.
   Decompress selected region with LZNT1 algorithm
 * LZO  
   Decompress selected region with LZO algorithm
+* LZRW1/KH  
+  Decompress selected region with LZRW1/KH algorithm
 * PPMd  
   Decompress selected region with PPMd algorithm
 * QuickLZ  
