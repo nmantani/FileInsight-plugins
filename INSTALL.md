@@ -197,6 +197,13 @@ with the following command.
 py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl
 ```
 
+For the "LZJB compress" and "LZJB decompress" plugins, they require python-lzjb.
+Please get it from https://github.com/unwind/python-lzjb
+or execute the following command.
+```
+py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip
+```
+
 For the "Show metadata" plugin, it requires ExifTool.
 Please download ExifTool from https://exiftool.org/
 and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.

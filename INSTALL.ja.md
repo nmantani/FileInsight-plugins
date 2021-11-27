@@ -203,6 +203,13 @@ https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf からお使いの Python
 py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl
 ```
 
+LZJB compress と LZJB decompress のプラグインについては、python-lzjb が必要です。
+https://github.com/unwind/python-lzjb からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip
+```
+を実行してインストールしてください。
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

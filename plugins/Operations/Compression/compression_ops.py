@@ -1392,3 +1392,107 @@ def lzf_decompress(fi):
         print("Added a bookmark to decompressed region.")
     else:
         print("Please select a region to use this plugin.")
+
+def lzjb_compress(fi):
+    """
+    Compress selected region with LZJB algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzjb_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzjb_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # python-lzjb is not installed
+            print("python-lzjb is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip' and try again.")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
+            return
+
+        compressed = stdout_data
+        final_size = len(compressed)
+
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of LZJB compress")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def lzjb_decompress(fi):
+    """
+    Decompress selected region with LZJB algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzjb_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzjb_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # python-lzjb is not installed
+            print("python-lzjb is not installed.")
+            print("Please install it with 'py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip' and try again.")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
+            return
+
+        decompressed = stdout_data
+        final_size = len(decompressed)
+
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of LZJB decompress")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
