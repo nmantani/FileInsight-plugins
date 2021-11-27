@@ -1284,3 +1284,111 @@ def lzrw1_kh_decompress(fi):
             print(e)
     else:
         print("Please select a region to use this plugin.")
+
+def lzf_compress(fi):
+    """
+    Compress selected region with LZF algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzf_compress.py for compression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzf_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # python-lzf is not installed
+            print("python-lzf is not installed.")
+            print("Please manually download python-lzf wheel file (.whl) for your Python version")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with")
+            print("'py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl', then try again.")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
+            return
+
+        compressed = stdout_data
+        final_size = len(compressed)
+
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of LZF compress")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def lzf_decompress(fi):
+    """
+    Decompress selected region with LZF algorithm
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzf_decompress.py for decompression
+        p = subprocess.Popen(["py.exe", "-3", "Compression/lzf_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # python-lzf is not installed
+            print("python-lzf is not installed.")
+            print("Please manually download python-lzf wheel file (.whl) for your Python version")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with")
+            print("'py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl', then try again.")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
+            return
+
+        decompressed = stdout_data
+        final_size = len(decompressed)
+
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of LZF decompress")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")

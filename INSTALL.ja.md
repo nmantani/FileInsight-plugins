@@ -195,6 +195,14 @@ py.exe -3 -m pip install requests
 ```
 を実行してインストールしてください。
 
+LZF compress と LZF decompress のプラグインについては、python-lzf が必要です。
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf からお使いの Python の
+バージョン用の wheel ファイル (.whl) をダウンロードして、以下のコマンドを実行して
+インストールしてください。
+```
+py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl
+```
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

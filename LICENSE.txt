@@ -119,6 +119,9 @@ https://github.com/mwaskom/seaborn/blob/master/LICENSE
 requests is distributed under the Apache License 2.0.
 https://github.com/psf/requests/blob/master/LICENSE
 
+python-lzf is distributed under the BSD 3-Clause license.
+https://github.com/teepark/python-lzf/blob/master/LICENSE
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------

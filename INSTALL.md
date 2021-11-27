@@ -189,6 +189,14 @@ or execute the following command.
 py.exe -3 -m pip install requests
 ```
 
+For the "LZF compress" and "LZF decompress" plugins, they require python-lzf.
+Please manually download python-lzf wheel file (.whl) for your Python version
+from https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf and install it
+with the following command.
+```
+py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl
+```
+
 For the "Show metadata" plugin, it requires ExifTool.
 Please download ExifTool from https://exiftool.org/
 and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.

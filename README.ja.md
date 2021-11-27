@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (120個)
+## プラグインの一覧 (122個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -172,6 +172,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を gzip 形式で圧縮します。
 * LZ4  
   選択範囲を LZ4 アルゴリズムで圧縮します。
+* LZF  
+  選択範囲を LZF アルゴリズムで圧縮します。
 * LZMA  
   選択範囲を LZMA アルゴリズムで圧縮します。
 * LZNT1  
@@ -202,6 +204,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   gzip 形式で圧縮された選択範囲を展開します。
 * LZ4  
   選択範囲を LZ4 アルゴリズムで展開します。
+* LZF  
+  選択範囲を LZF アルゴリズムで展開します。
 * LZMA  
   選択範囲を LZMA アルゴリズムで展開します。
 * LZNT1  
