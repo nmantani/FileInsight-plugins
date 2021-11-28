@@ -200,6 +200,7 @@ if __name__ == "__main__":
                   basic_ops.swap_case)
 
     operations += (compression_ops.aplib_compress,
+                   compression_ops.brotli_compress,
                    compression_ops.bzip2_compress,
                    compression_ops.gzip_compress,
                    compression_ops.lz4_compress,
@@ -217,6 +218,7 @@ if __name__ == "__main__":
                    compression_ops.zlib_compress,
                    compression_ops.zstandard_compress,
                    compression_ops.aplib_decompress,
+                   compression_ops.brotli_decompress,
                    compression_ops.bzip2_decompress,
                    compression_ops.gzip_decompress,
                    compression_ops.lz4_decompress,

@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (128個)
+## プラグインの一覧 (130個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -166,6 +166,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
 #### Compress
 * aPLib  
   選択範囲を aPLib 圧縮ライブラリで圧縮します。
+* Brotli  
+  選択範囲を Brotli アルゴリズムで圧縮します。
 * Bzip2  
   選択範囲を bzip2 アルゴリズムで圧縮します。
 * Gzip  
@@ -202,6 +204,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
 #### Decompress
 * aPLib  
   選択範囲を aPLib 圧縮ライブラリで展開します。
+* Brotli  
+  選択範囲を Brotli アルゴリズムで展開します。
 * Bzip2  
   選択範囲を bzip2 アルゴリズムで展開します。
 * Gzip  

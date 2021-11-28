@@ -130,7 +130,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (128 plugins)
+## List of plugins (130 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -169,6 +169,8 @@ Your customization will be reflected in menu items.
 #### Compress
 * aPLib  
   Compress selected region with aPLib compression library
+* Brotli  
+  Compress selected region with Brotli algorithm
 * Bzip2  
   Compress selected region with bzip2 algorithm
 * Gzip  
@@ -205,6 +207,8 @@ Your customization will be reflected in menu items.
 #### Decompress
 * aPLib  
   Decompress selected region with aPLib compression library
+* Brotli  
+  Decompress selected region with Brotli algorithm
 * Bzip2  
   Decompress selected region with bzip2 algorithm
 * Gzip  

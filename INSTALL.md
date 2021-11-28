@@ -228,3 +228,10 @@ or execute the following command.
 ```
 py.exe -3 -m pip install python-snappy
 ```
+
+For the "Brotli compress" plugin and "Brotli decompress" plugin, they require brotli.
+Please get it from https://github.com/google/brotli
+or execute the following command.
+```
+py.exe -3 -m pip install brotli
+```

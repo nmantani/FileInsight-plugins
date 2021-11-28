@@ -443,6 +443,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "PyTEA" $update
     install_with_pip "base58" $update
     install_with_pip "blackboxprotobuf" $update
+    install_with_pip "brotli" $update
     install_with_pip "capstone" $update
     install_with_pip "lz4==$LZ4_VERSION" $update
     install_with_pip "lzjb" $update "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip"

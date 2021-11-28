@@ -235,3 +235,9 @@ py.exe -3 -m pip install python-snappy
 ```
 を実行してインストールしてください。
 
+Brotli compress と Brotli decompress のプラグインについては、brotli が必要です。
+https://github.com/google/brotli からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install brotli
+```
+を実行してインストールしてください。

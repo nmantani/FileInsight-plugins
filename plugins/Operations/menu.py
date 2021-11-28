@@ -172,6 +172,7 @@ tooltip_dict["Basic"] = ("Copy selected region (the whole file if not selected) 
                          "Swap case of selected region")
 
 ops_dict["Compress"] = ("aPLib",
+                        "Brotli",
                         "Bzip2",
                         "Gzip",
                         "LZ4",
@@ -189,6 +190,7 @@ ops_dict["Compress"] = ("aPLib",
                         "zlib (deflate)",
                         "Zstandard")
 tooltip_dict["Compress"] = ("Compress selected region with aPLib compression library",
+                            "Compress selected region with Brotli algorithm",
                             "Compress selected region with bzip2 algorithm",
                             "Compress selected region with gzip format",
                             "Compress selected region with LZ4 algorithm",
@@ -207,6 +209,7 @@ tooltip_dict["Compress"] = ("Compress selected region with aPLib compression lib
                             "Compress selected region with Zstandard algorithm")
 
 ops_dict["Decompress"] = ("aPLib",
+                           "Brotli",
                            "Bzip2",
                            "Gzip",
                            "LZ4",
@@ -224,6 +227,7 @@ ops_dict["Decompress"] = ("aPLib",
                            "zlib (inflate)",
                            "Zstandard")
 tooltip_dict["Decompress"] = ("Decompress selected region with aPLib compression library",
+                              "Decompress selected region with Brotli algorithm",
                               "Decompress selected region with bzip2 algorithm",
                               "Decompress selected gzip-compressed region",
                               "Decompress selected region with LZ4 algorithm",
