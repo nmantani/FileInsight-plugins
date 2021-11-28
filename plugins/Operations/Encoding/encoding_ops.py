@@ -154,6 +154,11 @@ def custom_base64_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
+
                 trans = string.maketrans(custom_table, standard_table)
                 encoded = base64.b64decode(data.translate(trans))
 
@@ -933,6 +938,10 @@ def protobuf_decode(fi):
             print("blackboxprotobuf (forked version) is not installed.")
             print("Please install it with 'py.exe -3 -m pip install blackboxprotobuf' and try again.")
             return
+        elif ret == 1:
+            print("Error: decode failed.")
+            print(stderr_data)
+            return
 
         tab_name = fi.get_new_document_name("Output of Protobuf decode")
         fi.newDocument(tab_name)
@@ -974,6 +983,11 @@ def custom_base16_decode(fi):
                 data = fi.getSelection()
                 orig = fi.getDocument()
                 orig_len = len(orig)
+
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
 
                 trans = string.maketrans(custom_table, standard_table)
                 decoded = base64.b16decode(data.translate(trans))
@@ -1071,6 +1085,11 @@ def custom_base32_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
+
                 trans = string.maketrans(custom_table, standard_table)
                 decoded = base64.b32decode(data.translate(trans))
 
@@ -1167,6 +1186,11 @@ def custom_base58_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
+
                 # Execute base58_decode.py to decode data
                 p = subprocess.Popen(["py.exe", "-3", "Encoding/base58_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -1178,6 +1202,10 @@ def custom_base58_decode(fi):
                 if ret == -1: # base58 is not installed
                     print("base58 is not installed.")
                     print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
+                    return
+                elif ret == 1:
+                    print("Error: decode failed.")
+                    print(stderr_data)
                     return
 
                 decoded = stdout_data
@@ -1237,6 +1265,10 @@ def custom_base58_encode(fi):
                     print("base58 is not installed.")
                     print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
                     return
+                elif ret == 1:
+                    print("Error: encode failed.")
+                    print(stderr_data)
+                    return
 
                 trans = string.maketrans(standard_table, custom_table)
                 encoded = stdout_data.translate(trans)
@@ -1286,6 +1318,11 @@ def custom_base85_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
+
                 # Execute base85_decode.py to decode data
                 p = subprocess.Popen(["py.exe", "-3", "Encoding/base85_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -1293,6 +1330,11 @@ def custom_base85_decode(fi):
                 trans = string.maketrans(custom_table, standard_table)
                 stdout_data, stderr_data = p.communicate(data.translate(trans))
                 ret = p.wait()
+
+                if ret == 1:
+                    print("Error: decode failed.")
+                    print(stderr_data)
+                    return
 
                 decoded = stdout_data
                 newdata = orig[:offset] + decoded + orig[offset + length:]
@@ -1347,6 +1389,11 @@ def custom_base85_encode(fi):
                 stdout_data, stderr_data = p.communicate(data)
                 ret = p.wait()
 
+                if ret == 1:
+                    print("Error: encode failed.")
+                    print(stderr_data)
+                    return
+
                 trans = string.maketrans(standard_table, custom_table)
                 encoded = stdout_data.translate(trans)
 
@@ -1361,6 +1408,138 @@ def custom_base85_encode(fi):
                     print("Encoded one byte with custom base85 table from offset %s to %s." % (hex(offset), hex(offset)))
                 else:
                     print("Encoded %s bytes with custom base85 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def custom_base62_decode(fi):
+    """
+    Decode selected region with custom base62 table
+    """
+    standard_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "62", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base62 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 62:
+                print("Error: base62 table must be 62 characters.")
+            else:
+                data = fi.getSelection()
+                orig = fi.getDocument()
+                orig_len = len(orig)
+
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
+
+                # Execute base62_decode.py to decode data
+                p = subprocess.Popen(["py.exe", "-3", "Encoding/base62_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                # Receive decoded data
+                trans = string.maketrans(custom_table, standard_table)
+                stdout_data, stderr_data = p.communicate(data.translate(trans))
+                ret = p.wait()
+
+                if ret == -1: # pybase62 is not installed
+                    print("pybase62 is not installed.")
+                    print("Please install it with 'py.exe -3 -m pip install pybase62' and try again.")
+                    return
+                elif ret == 1:
+                    print("Error: decode failed.")
+                    print(stderr_data)
+                    return
+
+                decoded = stdout_data
+                newdata = orig[:offset] + decoded + orig[offset + length:]
+
+                tab_name = fi.get_new_document_name("Output of Custom base62 decode")
+                fi.newDocument(tab_name, 1)
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Decoded one byte with custom base62 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Decoded %s bytes with custom base62 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def custom_base62_encode(fi):
+    """
+    Encode selected region with custom base62 table
+    """
+    standard_table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "62", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base62 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 62:
+                print("Error: base62 table must be 62 characters.")
+            else:
+                data = fi.getSelection()
+                orig = fi.getDocument()
+                orig_len = len(orig)
+
+                # Execute base62_encode.py to encode data
+                p = subprocess.Popen(["py.exe", "-3", "Encoding/base62_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+                # Receive encoded data
+                stdout_data, stderr_data = p.communicate(data)
+                ret = p.wait()
+
+                if ret == -1: # pybase62 is not installed
+                    print("pybase62 is not installed.")
+                    print("Please install it with 'py.exe -3 -m pip install pybase62' and try again.")
+                    return
+                elif ret == 1:
+                    print("Error: encode failed.")
+                    print(stderr_data)
+                    return
+
+                trans = string.maketrans(standard_table, custom_table)
+                encoded = stdout_data.translate(trans)
+
+                newdata = orig[:offset] + encoded + orig[offset + length:]
+
+                tab_name = fi.get_new_document_name("Output of Custom base62 encode")
+                fi.newDocument(tab_name, 1)
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Encoded one byte with custom base62 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Encoded %s bytes with custom base62 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
     else:
         print("Please select a region to use this plugin.")

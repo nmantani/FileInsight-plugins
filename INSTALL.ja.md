@@ -210,6 +210,20 @@ py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/head
 ```
 を実行してインストールしてください。
 
+Custom base58 decode と Custom base58 encode のプラグインについては、base58 が必要です。
+https://github.com/keis/base58 からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install base58
+```
+を実行してインストールしてください。
+
+Custom base62 decode と Custom base62 encode のプラグインについては、pybase62 が必要です。
+https://github.com/suminb/base62 からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install pybase62
+```
+を実行してインストールしてください。
+
 Show metadata プラグインについては、ExifTool が必要です。
 https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
 exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。

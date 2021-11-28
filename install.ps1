@@ -449,6 +449,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "matplotlib" $update
     install_with_pip "pefile" $update
     install_with_pip "ppmd-cffi" $update
+    install_with_pip "pybase62" $update
     install_with_pip "pycryptodomex" $update
     install_with_pip "pyimpfuzzy-windows" $update
     install_with_pip "python-magic-bin" $update

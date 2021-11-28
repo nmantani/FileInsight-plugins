@@ -32,6 +32,10 @@ try:
 except ImportError:
     exit(-1) # base58 is not installed
 
-data = sys.stdin.buffer.read()
-data = base58.b58decode(data)
-sys.stdout.buffer.write(data)
+try:
+    data = sys.stdin.buffer.read()
+    data = base58.b58decode(data)
+    sys.stdout.buffer.write(data)
+except Exception as e:
+    print(e, file=sys.stderr)
+    exit(1)

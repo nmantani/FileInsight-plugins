@@ -130,7 +130,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (124 plugins)
+## List of plugins (126 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -295,6 +295,8 @@ Your customization will be reflected in menu items.
   Decode selected region with custom base32 table
 * Custom base58 decode  
   Decode selected region with custom base58 table
+* Custom base62 decode  
+  Decode selected region with custom base62 table
 * Custom base64 decode  
   Decode selected region with custom base64 table
 * Custom base85 decode  
@@ -323,6 +325,8 @@ Your customization will be reflected in menu items.
   Encode selected region with custom base32 table
 * Custom base58 encode  
   Encode selected region with custom base58 table
+* Custom base62 encode  
+  Encode selected region with custom base62 table
 * Custom base64 encode  
   Encode selected region with custom base64 table
 * Custom base85 encode  

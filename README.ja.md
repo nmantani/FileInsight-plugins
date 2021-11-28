@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (124個)
+## プラグインの一覧 (126個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -292,6 +292,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase32テーブルを使ってデコードします。
 * Custom base58 decode  
   選択範囲をカスタムbase58テーブルを使ってデコードします。
+* Custom base62 decode  
+  選択範囲をカスタムbase62テーブルを使ってデコードします。
 * Custom base64 decode  
   選択範囲をカスタムbase64テーブルを使ってデコードします。
 * Custom base85 decode  
@@ -320,6 +322,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase32テーブルを使ってエンコードします。
 * Custom base58 encode  
   選択範囲をカスタムbase58テーブルを使ってエンコードします。
+* Custom base62 encode  
+  選択範囲をカスタムbase62テーブルを使ってエンコードします。
 * Custom base64 encode  
   選択範囲をカスタムbase64テーブルを使ってエンコードします。
 * Custom base85 encode  

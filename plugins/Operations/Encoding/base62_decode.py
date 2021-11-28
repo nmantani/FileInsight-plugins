@@ -1,6 +1,5 @@
 #
-# Protobuf decode - Decode selected region as Protocol Buffers serialized data
-# without .proto files
+# Custom base62 decode - Decode selected region with custom base62 table
 #
 # Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
@@ -26,22 +25,17 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import json
 import sys
 
 try:
-    import blackboxprotobuf
+    import base62
 except ImportError:
-    exit(-1) # blackboxprotobuf (forked version) is not installed
+    exit(-1) # pybase62 is not installed
 
 try:
     data = sys.stdin.buffer.read()
-    (message, typedef) = blackboxprotobuf.protobuf_to_json(data)
-    print("Message:")
-    print(message)
-    print("")
-    print("Type definition:")
-    print(json.dumps(typedef, indent=2))
+    data = base62.decodebytes(data.decode("UTF-8"))
+    sys.stdout.buffer.write(data)
 except Exception as e:
     print(e, file=sys.stderr)
     exit(1)

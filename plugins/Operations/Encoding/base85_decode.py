@@ -28,6 +28,10 @@
 import base64
 import sys
 
-data = sys.stdin.buffer.read()
-data = base64.b85decode(data)
-sys.stdout.buffer.write(data)
+try:
+    data = sys.stdin.buffer.read()
+    data = base64.b85decode(data)
+    sys.stdout.buffer.write(data)
+except Exception as e:
+    print(e, file=sys.stderr)
+    exit(1)

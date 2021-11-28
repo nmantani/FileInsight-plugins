@@ -4,8 +4,12 @@
 # Custom base32 encode
 # Custom base58 decode
 # Custom base58 encode
+# Custom base62 decode
+# Custom base62 encode
 # Custom base64 decode
 # Custom base64 encode
+# Custom base85 decode
+# Custom base85 encode
 #
 # Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
@@ -49,6 +53,8 @@ else:
         table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
     elif digits == "64":
         table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+    elif digits == "62":
+        table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     elif digits == "58":
         table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     elif digits == "32":
