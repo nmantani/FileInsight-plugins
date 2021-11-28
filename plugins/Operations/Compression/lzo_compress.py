@@ -26,7 +26,7 @@ import sys
 try:
     import lzo
 except ImportError:
-    exit(-1) # python-lz4 is not installed
+    exit(-1) # python-lzo is not installed
 
 try:
     data = sys.stdin.buffer.read()
