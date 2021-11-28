@@ -130,7 +130,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (126 plugins)
+## List of plugins (128 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -193,6 +193,8 @@ Your customization will be reflected in menu items.
   Compress selected region with QuickLZ compression library
 * Raw deflate  
   Compress selected region with Deflate algorithm without header and checksum (equivalent to gzdeflate() in PHP language)
+* Snappy  
+  Compress selected region with Snappy compression library
 * XZ  
   Compress selected region with XZ format
 * zlib (deflate)  
@@ -227,6 +229,8 @@ Your customization will be reflected in menu items.
   Decompress selected region with QuickLZ compression library
 * Raw inflate  
   Decompress selected Deflate compressed region that does not have header and checksum (equivalent to gzinflate() in PHP language)
+* Snappy  
+  Decompress selected region with Snappy compression library
 * XZ  
   Decompress selected XZ compressed region
 * zlib (inflate)  

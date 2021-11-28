@@ -128,6 +128,9 @@ https://github.com/unwind/python-lzjb/blob/master/LICENSE
 pybase62 is distributed under the BSD 2-Clause license.
 https://github.com/suminb/base62/blob/develop/LICENSE
 
+python-snappy is distributed under the BSD 3-Clause license.
+https://github.com/andrix/python-snappy/blob/master/LICENSE
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------

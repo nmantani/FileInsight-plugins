@@ -212,6 +212,7 @@ if __name__ == "__main__":
                    compression_ops.ppmd_compress,
                    compression_ops.quicklz_compress,
                    compression_ops.raw_deflate,
+                   compression_ops.snappy_compress,
                    compression_ops.xz_compress,
                    compression_ops.zlib_compress,
                    compression_ops.zstandard_compress,
@@ -228,6 +229,7 @@ if __name__ == "__main__":
                    compression_ops.ppmd_decompress,
                    compression_ops.quicklz_decompress,
                    compression_ops.raw_inflate,
+                   compression_ops.snappy_decompress,
                    compression_ops.xz_decompress,
                    compression_ops.zlib_decompress,
                    compression_ops.zstandard_decompress)

@@ -126,7 +126,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (126個)
+## プラグインの一覧 (128個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -190,6 +190,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を QuickLZ 圧縮ライブラリで圧縮します。
 * Raw deflate  
   選択範囲をヘッダとチェックサムを付けずに Deflate アルゴリズムで圧縮します。(PHP言語の gzdeflate() と同等)
+* Snappy  
+  選択範囲を Snappy 圧縮ライブラリで圧縮します。
 * XZ  
   選択範囲を XZ 形式で圧縮します。
 * zlib (deflate)  
@@ -224,6 +226,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を QuickLZ 圧縮ライブラリで展開します。
 * Raw inflate  
   ヘッダとチェックサムを付けずに Deflate 圧縮された選択範囲を展開します。(PHP言語の gzinflate() と同等)
+* Snappy  
+  選択範囲を Snappy 圧縮ライブラリで圧縮します。
 * XZ  
   選択範囲を XZ 形式として展開します。
 * zlib (inflate)  

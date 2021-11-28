@@ -11,6 +11,7 @@ pybase62
 pycryptodomex
 pyimpfuzzy-windows
 python-magic-bin
+python-snappy
 qiling==1.2.3
 seaborn
 requests

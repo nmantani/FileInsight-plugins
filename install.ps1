@@ -453,6 +453,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "pycryptodomex" $update
     install_with_pip "pyimpfuzzy-windows" $update
     install_with_pip "python-magic-bin" $update
+    install_with_pip "python-snappy" $update
     install_with_pip "qiling==$QILING_VERSION" $update
     install_with_pip "seaborn" $update
     install_with_pip "requests" $update

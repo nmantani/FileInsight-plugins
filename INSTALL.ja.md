@@ -41,6 +41,10 @@ QuickLZ の DLL ファイル を http://www.quicklz.com/150dll.zip からダウ�
 quicklz150_64_1_safe.dll、quicklz150_64_2_safe.dll、quicklz150_64_3_safe.dll (64 ビット版) を
 "plugins\Operations\Compression" のフォルダに置いてください。
 
+Show metadata プラグインについては、ExifTool が必要です。
+https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
+exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。
+
 Binwalk scan プラグインについては、 binwalk Python モジュールが必要です。
 https://github.com/ReFirmLabs/binwalk からダウンロード、インストールしてください
 (binwalk のインストールに pip は使用できません)。
@@ -224,6 +228,10 @@ py.exe -3 -m pip install pybase62
 ```
 を実行してインストールしてください。
 
-Show metadata プラグインについては、ExifTool が必要です。
-https://exiftool.org/ から ExifTool をダウンロードして、exiftool(-k).exe　を
-exiftool.exe という名前で "plugins\Operations\Parsing" フォルダにコピーしてください。
+Snappy compress と Snappy decompress のプラグインについては、python-snappy が必要です。
+https://github.com/andrix/python-snappy からダウンロード、インストールするか、
+```
+py.exe -3 -m pip install python-snappy
+```
+を実行してインストールしてください。
+

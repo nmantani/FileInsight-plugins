@@ -39,6 +39,10 @@ Please download QuickLZ DLL files from http://www.quicklz.com/150dll.zip and cop
 quicklz150_64_1_safe.dll, quicklz150_64_2_safe.dll and quicklz150_64_3_safe.dll (64 bits version)
 into "plugins\Operations\Compression" folder.
 
+For the "Show metadata" plugin, it requires ExifTool.
+Please download ExifTool from https://exiftool.org/
+and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.
+
 For the "Binwalk scan" plugin, it requires binwalk Python module.
 Please get it from https://github.com/ReFirmLabs/binwalk
 (pip cannot be used to install binwalk)."
@@ -218,6 +222,9 @@ or execute the following command.
 py.exe -3 -m pip install pybase62
 ```
 
-For the "Show metadata" plugin, it requires ExifTool.
-Please download ExifTool from https://exiftool.org/
-and copy exiftool(-k).exe as exiftool.exe into "plugins\Operations\Parsing" folder.
+For the "Snappy compress" plugin and "Snappy decompress" plugin, they require python-snappy.
+Please get it from https://github.com/andrix/python-snappy
+or execute the following command.
+```
+py.exe -3 -m pip install python-snappy
+```

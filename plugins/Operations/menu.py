@@ -184,6 +184,7 @@ ops_dict["Compress"] = ("aPLib",
                         "PPMd",
                         "QuickLZ",
                         "Raw deflate",
+                        "Snappy",
                         "XZ",
                         "zlib (deflate)",
                         "Zstandard")
@@ -200,6 +201,7 @@ tooltip_dict["Compress"] = ("Compress selected region with aPLib compression lib
                             "Compress selected region with PPMd algorithm",
                             "Compress selected region with QuickLZ compression library",
                             "Compress selected region with Deflate algorithm without\nheader and checksum (equivalent to gzdeflate() in PHP language)",
+                            "Compress selected region with Snappy compression library",
                             "Compress selected region with XZ format",
                             "Compress selected region with zlib (Deflate algorithm)",
                             "Compress selected region with Zstandard algorithm")
@@ -217,6 +219,7 @@ ops_dict["Decompress"] = ("aPLib",
                            "PPMd",
                            "QuickLZ",
                            "Raw inflate",
+                           "Snappy",
                            "XZ",
                            "zlib (inflate)",
                            "Zstandard")
@@ -233,6 +236,7 @@ tooltip_dict["Decompress"] = ("Decompress selected region with aPLib compression
                               "Decompress selected region with PPMd algorithm",
                               "Decompress selected region with QuickLZ compression library",
                               "Decompress selected Deflate compressed region that does\nnot have header and checksum (equivalent to gzinflate() in PHP language)",
+                              "Decompress selected region with Snappy compression library",
                               "Decompress selected XZ compressed region",
                               "Decompress selected region with zlib (Deflate algorithm)",
                               "Decompress selected region with Zstandard algorithm")
