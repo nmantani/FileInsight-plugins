@@ -32,6 +32,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import struct
+import sys
 
 HASH_SIZE = 4096
 CHUNK_MAX = 32768 # Maximum chunk size of source file
@@ -89,7 +90,12 @@ def compress_chunk(source):
     size = [0]
     pos = [0]
 
-    source_int = [ord(i) for i in source] # Convert binary data into list of integer
+    # Convert binary data into list of integer
+    if sys.version_info.major == 2:
+        source_int = [ord(i) for i in source]
+    else:
+        source_int = list(source)
+
     source_int += [0] * 15 # Extend list
     source_size = len(source)
     dest_int = [0] * len(source_int)
@@ -151,11 +157,19 @@ def compress_chunk(source):
             y += 1
 
         dest_int[0] = FLAG_COPIED
-        dest_bin = b"".join(map(chr, dest_int[:y+1])) # Convert into binary data
+        # Convert into binary data
+        if sys.version_info.major == 2:
+            dest_bin = b"".join(map(chr, dest_int[:y + 1]))
+        else:
+            dest_bin = bytes(dest_int[:y + 1])
 
         return dest_bin
     else:
-        dest_bin = b"".join(map(chr, dest_int[:y])) # Convert into binary data
+        # Convert into binary data
+        if sys.version_info.major == 2:
+            dest_bin = b"".join(map(chr, dest_int[:y]))
+        else:
+            dest_bin = bytes(dest_int[:y])
 
         return dest_bin
 
@@ -178,14 +192,23 @@ def decompress_chunk(source):
     size = 0
     pos = 0
 
-    source_int = [ord(i) for i in source] # Convert binary data into list of integer
+    if sys.version_info.major == 2:
+        source_int = [ord(i) for i in source] # Convert binary data into list of integer
+    else:
+        source_int = list(source)
+
     source_size = len(source)
     dest_int = [0] * (CHUNK_MAX + 15)
 
     command = (source_int[1] << 8) + source_int[2]
 
     if source_int[0] == FLAG_COPIED:
-        dest_bin = b"".join(map(chr, source_int[1:]))
+        # Convert into binary data
+        if sys.version_info.major == 2:
+            dest_bin = b"".join(map(chr, source_int[1:]))
+        else:
+            dest_bin = bytes(source_int[1:])
+
         return dest_bin
 
     while x < source_size:
@@ -228,6 +251,10 @@ def decompress_chunk(source):
         command <<= 1
         bit -= 1
 
-    dest_bin = b"".join(map(chr, dest_int[:y])) # Convert into binary data
+    # Convert into binary data
+    if sys.version_info.major == 2:
+        dest_bin = b"".join(map(chr, dest_int[:y]))
+    else:
+        dest_bin = bytes(dest_int[:y])
 
     return dest_bin
