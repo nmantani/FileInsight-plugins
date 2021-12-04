@@ -1,3 +1,52 @@
+2021-12-04 version 2.14
+* New plugins
+  - Basic operations
+    - "Change endianness" plugin
+      This plugin changes endianness of selected region.
+  - Compression operations
+    - Plugins for the following compression algorithms are added.
+      - Brotri
+      - LZF
+      - LZJB
+      - LZRW1/KH
+      - Snappy
+  - Encoding operations
+    - "Custom base62 decode" plugin and "Custom base62 encode" plugin
+      These plugins decode / encode selected region with custom base62 table.
+  - XOR operations
+    - "XOR with another file" plugin
+      This plugin does XOR selected region (the whole file if not selected) with the content of another file as XOR key.
+* Enhancements
+  - Encoding operations
+    - "Binary data to decimal text" plugin and "Decimal text to binary data" plugin
+      Conversion from / into single integer value larger than 255 is supported.
+  - Misc operations
+    "Emulate code" plugin
+    Qiling Framework 1.4.0 is supported. However, Qiling Framework 1.4.0 can not emulate dyniamically linked Linux executable file.
+    I recommend to use Qiling Framework 1.2.3 until this issue will be fixed.
+  - All plugins
+    Index number is appended to the name of newly opened tab.
+  - Plugins that require region selection
+    Instruction is shown when no file is opened or no region is selected.
+* Bug fixes
+  - Encoding operations
+    - "Custom base58 decode" plugin
+    - "Custom base58 encode" plugin
+    - "Custom base85 decode" plugin
+    - "Custom base85 encode" plugin
+    - "Protobuf decode" plugin
+      Error handling is fixed.
+  - Plugins that show a messagebox
+    messagebox becomes modal to prevent it from going behind FileInsight window and being inoperable.
+* Other changes
+  - install.ps1
+    - Python version is updated to 3.9.9. Currently some Python modules such as ppmd-cffi and yara-python
+      are not available for Python 3.10.x.
+    - ExifTool version is updated to 12.36.
+    - Binwalk version is fixed to 2.3.2 because newer versions does not work on Windows.
+    - lz4 version is fixed to 3.1.3 because Windows package of lz4 3.1.10 is currently not available.
+    - Qiling Framework version is fixed to 1.2.3 because Qiling Framework 1.4.0 can not emulate dyniamically linked Linux executable file.
+
 2021-07-22 version 2.13
 * New plugins
   - Search operations
