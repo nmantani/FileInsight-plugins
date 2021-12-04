@@ -665,6 +665,7 @@ def xor_with_another_file(fi):
         data = fi.getDocument()
         if sel_len == 0:
             sel_len = data_len
+            offset = 0
     else:
         fi.activateDocumentAt(current_file_index)
         print("%s is empty." % xored_filename)
