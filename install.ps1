@@ -706,8 +706,9 @@ function install_exiftool($work_dir, $update) {
 
         if ($need_install) {
             Write-Host "[+] Downloading ExifTool-$EXIFTOOL_VERSION..."
-            #$archive_url = "https://exiftool.org/exiftool-$EXIFTOOL_VERSION.zip"
-            $archive_url = "https://jaist.dl.sourceforge.net/project/exiftool/exiftool-$EXIFTOOL_VERSION.zip"
+            $archive_url = "https://exiftool.org/exiftool-$EXIFTOOL_VERSION.zip"
+            # Mirror site for website outage
+            #$archive_url = "https://jaist.dl.sourceforge.net/project/exiftool/exiftool-$EXIFTOOL_VERSION.zip"
             $zip_archive_path = "$work_dir\exiftool-$EXIFTOOL_VERSION.zip"
             download_file $archive_url $zip_archive_path
 
