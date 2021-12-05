@@ -198,7 +198,10 @@ def decompress_chunk(source):
         source_int = list(source)
 
     source_size = len(source)
-    dest_int = [0] * (CHUNK_MAX + 15)
+    if source_size > CHUNK_MAX:
+        dest_int = [0] * (CHUNK_MAX + 15) * 2
+    else:
+        dest_int = [0] * (CHUNK_MAX + 15)
 
     command = (source_int[1] << 8) + source_int[2]
 
