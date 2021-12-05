@@ -21,9 +21,9 @@
     - "Binary data to decimal text" plugin and "Decimal text to binary data" plugin
       Conversion from / into single integer value larger than 255 is supported.
   - Misc operations
-    "Emulate code" plugin
-    Qiling Framework 1.4.0 is supported. However, Qiling Framework 1.4.0 can not emulate dyniamically linked Linux executable file.
-    I recommend to use Qiling Framework 1.2.3 until this issue will be fixed.
+    - "Emulate code" plugin
+      Qiling Framework 1.4.0 is supported. However, Qiling Framework 1.4.0 can not emulate dyniamically linked Linux executable file.
+      I recommend to use Qiling Framework 1.2.3 until this issue will be fixed.
   - All plugins
     Index number is appended to the name of newly opened tab.
   - Plugins that require region selection
