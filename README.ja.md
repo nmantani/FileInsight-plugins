@@ -35,6 +35,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 ### Black Hat USA 2021 Arsenal
 * [概要 (Black Hat USA ウェブサイト)](https://www.blackhat.com/us-21/arsenal/schedule/#fileinsight-plugins-decoding-toolbox-of-mcafee-fileinsight-hex-editor-for-malware-analysis-23386)
 * [スライド](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-Black%20Hat%20USA%202021%20Arsenal.pdf)
+* [デモ動画](https://www.youtube.com/watch?v=nGDLnoiv9Xs)
 
 ### CODE BLUE 2019 Bluebox
 * [概要 (CODE BLUE ウェブサイト)](https://codeblue.jp/2019/en/bluebox/FileInsight-plugins/)

@@ -35,6 +35,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 ### Black Hat USA 2021 Arsenal
 * [Abstract at Black Hat USA website](https://www.blackhat.com/us-21/arsenal/schedule/#fileinsight-plugins-decoding-toolbox-of-mcafee-fileinsight-hex-editor-for-malware-analysis-23386)
 * [Slide deck](https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/docs/FileInsight-plugins-Black%20Hat%20USA%202021%20Arsenal.pdf)
+* [Demo movie](https://www.youtube.com/watch?v=nGDLnoiv9Xs)
 
 ### CODE BLUE 2019 Bluebox
 * [Abstract at CODE BLUE website](https://codeblue.jp/2019/en/bluebox/FileInsight-plugins/)
