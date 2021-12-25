@@ -40,7 +40,7 @@ FLAG_COMPRESS = 0x40
 FLAG_COPIED = 0x80
 
 # Format of compressed stream:
-# [size of compressed chunk (2 bytes, little endian)][flag (1 byte)][compressed chunk][size of compressed chunk][flag][compressed chunk]...
+# [size of compressed chunk and flag (2 bytes, little endian)][flag (1 byte)][compressed chunk][size of compressed chunk and flag][flag][compressed chunk]...
 #
 # If compressed chunk is larger than original chunk, flag is set to FLAG_COPIED (0x80)
 # and compressed chunk is replaced with copy of original chunk.
