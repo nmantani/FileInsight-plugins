@@ -22,8 +22,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import distutils.version
-import os
+import packaging.version
 import pathlib
 import shlex
 import sys
@@ -93,7 +92,7 @@ def check_rootfs_files(rootfs_base):
         if not pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32\\" + f).exists():
             print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32").resolve()), file=sys.stderr)
             rootfs_ok = False
-        if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1"):
+        if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.1"):
             if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\" + f).exists():
                 print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
                 rootfs_ok = False
@@ -103,12 +102,12 @@ def check_rootfs_files(rootfs_base):
                 rootfs_ok = False
 
     # ntdll.dll must be placed in System32 folder for Windows (x86) since Qiling Framework 1.2.2
-    if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1") \
+    if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.1") \
        and not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\ntdll.dll").exists():
         print("ntdll.dll is not found in %s ." % pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve(), file=sys.stderr)
         rootfs_ok = False
 
-    if distutils.version.StrictVersion(qiling.__version__) > distutils.version.StrictVersion("1.2.1") and rootfs_ok == False:
+    if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.1") and rootfs_ok == False:
         print("\nSince Qiling Framework 1.2.2, the location of x86 Windows DLL files has been changed from\n%s\nto\n%s ." % (pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve(), pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
 
     if not pathlib.Path(rootfs_base + "\\x8664_linux\\lib\\libc.so.6").exists():
@@ -159,10 +158,10 @@ if len(sys.argv) == 9:
     if file_type == "executable":
         try:
             # output parameter has been removed since Qiling Framework 1.2.3
-            if distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.3"):
+            if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
                 ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, verbose=4, profile="%s.ql" % os_type)
             # filename parameter has been renamed to argv since Qiling Framework 1.2.1
-            elif distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.1"):
+            elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.1"):
                 ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
             else:
                 ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
@@ -183,12 +182,12 @@ if len(sys.argv) == 9:
 
         try:
             # output parameter has been removed since Qiling Framework 1.2.3
-            if distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.3"):
+            if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
                 ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, verbose=4)
                 if os_type == "linux":
                     ql.set_syscall("execve", execve_hook)
             # shellcoder parameter has been renamed to code since Qiling Framework 1.2.2
-            elif distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.2.2"):
+            elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2"):
                 ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
                 if os_type == "linux":
                     ql.set_syscall("execve", execve_hook)
@@ -238,7 +237,7 @@ heap = ""
 heap_start = None
 heap_end = None
 
-if distutils.version.StrictVersion(qiling.__version__) >= distutils.version.StrictVersion("1.4.0"):
+if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.0"):
     all_mem = all_mem["ram"]
     start_index = 0
 else:
