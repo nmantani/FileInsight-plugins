@@ -139,7 +139,6 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲のバイナリデータをクリップボードにコピーします(16進テキストとして)。
 * Paste binary from clipboard  
   クリップボードからバイナリデータをペーストします(16進テキストから変換)。
-  Paste binary data (converted from hex-encoded text) from clipboard
 * Delete before  
   現在のカーソル位置より前を全て削除します。
 * Delete after  
