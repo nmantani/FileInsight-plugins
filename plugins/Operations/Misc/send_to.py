@@ -91,11 +91,11 @@ if os.path.exists(config_file_name):
 else:
     # Default external programs
     programs = collections.OrderedDict()
-    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 7.6\\ida64.exe"
+    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 7.7\\ida64.exe"
     programs["Cutter"] = ["%HOMEPATH%\\Desktop\\tools\\cutter\\cutter.exe", "-A", "1"]
     programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v9.28.0\\CyberChef_v9.28.0.html"
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v9.37.3\\CyberChef_v9.37.3.html"
 
     # Create new config file
     f = open(config_file_name, "w")
