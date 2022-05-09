@@ -452,9 +452,9 @@ def replace(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute send_to.py to show GUI
-    # GUI portion is moved to send_to.py to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "Search/replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+    # Execute replace_dialog.py to show GUI
+    # GUI portion is moved to replace_dialog.py to avoid hangup of FileInsight
+    p = subprocess.Popen([fi.get_venv_python(), "Search/replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     if stdout_data == "":
@@ -580,14 +580,14 @@ def yara_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute yara_scan_dialog.py to show GUI
-    p = subprocess.Popen(["py.exe", "-3", "Search/yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Search/yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     ret = p.wait()
 
+    # yara-python is not installed
     if ret == -1:
-        print("yara-python is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install yara-python' and try again.")
+        fi.show_module_install_instruction("yara", "yara-python")
         return
 
     if stdout_data == "":
@@ -633,7 +633,7 @@ def yara_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute yara_scan.py for scanning with YARA
-    p = subprocess.Popen(["py.exe", "-3", "Search/yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Search/yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -643,9 +643,9 @@ def yara_scan(fi):
     os.remove(scanned_filepath)
     os.remove(rule_filepath)
 
+    # yara-python is not installed
     if ret == -1:
-        print("yara-python is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install yara-python' and try again.")
+        fi.show_module_install_instruction("yara", "yara-python")
         return
 
     if ret == -2: # Exception caught

@@ -64,12 +64,15 @@ $QUICKLZ_VERSION = "1.5.0"
 $QILING_VERSION = "1.2.3"
 $UNICORN_VERSION = "1.0.3"
 
+$VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-venv"
+$VENV_PYTHON = $VENV_PATH + "\Scripts\python.exe"
+$VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
+
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3EC8DEB6756E6EF4CAA6F4FA4BB80E66D2AB7F101F212E39167B728BE92FA47A"
 $PYTHON_HASH = "2BA57AB2281094F78FC0227A27F4D47C90D94094E7CCA35CE78419E616B3CB63"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
-$BINWALK_HASH = "146E7E203305001488B4C1AEEFEAC8DF62DED92EC625F0E75B540DFA62B4DB80"
 $EXIFTOOL_HASH = "BA0B8A0C29D935434B8D0FC0324FCEF7B91E58B3AC399FA3376E86A98D88D6E0"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
@@ -390,6 +393,27 @@ function install_python3($work_dir) {
     Write-Host ""
 }
 
+function setup_venv($work_dir) {
+    Write-Host "[+] Setting up Python virtual environment python3-venv..."
+
+    if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP)) {
+        Write-Host "[*] python3-venv is already created. Skipping setup."
+    } else {
+        Write-Host "$PYTHON_EXE -3 -m venv '$VENV_PATH'"
+        Invoke-Expression "$PYTHON_EXE -3 -m venv '$VENV_PATH'"
+
+        if (!(Test-Path $VENV_PYTHON) -or !(Test-Path $VENV_PIP)) {
+            Write-Host "[!] Setup of python3-venv has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+        Write-Host "[+] Python virtual environment python3-venv has been created."
+    }
+    Write-Host ""
+}
+
 function install_with_pip($name, $update, $url="") {
     # "--upgrade" option is disabled if version is specified
     if ($name -match "==") {
@@ -469,6 +493,87 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "xtea" $update
     install_with_pip "yara-python" $update
     install_with_pip "zstandard" $update
+}
+
+function install_with_pip_venv($name, $update, $url="") {
+    # "--upgrade" option is disabled if version is specified
+    if ($name -match "==") {
+        $name_with_version = $name
+        $name = $name -replace "==.+", ""
+        $update = $false
+    } else {
+        $name_with_version = ""
+    }
+
+    Write-Host "[+] Installing $name Python module..."
+    $installed = &"$VENV_PIP" show $name
+    if ([bool]$installed -and !$update) {
+        Write-Host "[*] $name Python module is already installed. Skipping installation."
+    } else {
+        if ($update) {
+            $upgrade_opt = "--upgrade"
+        } else {
+            $upgrade_opt = ""
+        }
+
+        if ($url -ne "") {
+            $package = $url
+        } else {
+            if ($name_with_version -ne "") {
+                $package = $name_with_version
+            } else {
+                $package = $name
+            }
+        }
+
+        if ($PROXY_URL) {
+            Write-Host "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
+            Invoke-Expression "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
+        } else {
+            Write-Host "&'$VENV_PIP' install $upgrade_opt $package"
+            Invoke-Expression "&'$VENV_PIP' install $upgrade_opt $package"
+        }
+        $installed = &"$VENV_PIP" show $name
+        if ([bool]$installed) {
+            Write-Host "[+] Done."
+            Write-Host "[+] $name Python module has been installed."
+        } else {
+            Write-Host "[!] Failed to install $name Python module."
+            Write-Host "[!] Please install it manually."
+        }
+    }
+    Write-Host ""
+}
+
+function install_python_modules_venv($work_dir, $update) {
+    Write-Host "[+] Installing Python modules..."
+
+    install_with_pip_venv "Pillow" $update
+    install_with_pip_venv "PyTEA" $update
+    install_with_pip_venv "base58" $update
+    install_with_pip_venv "binwalk" $update "https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v$BINWALK_VERSION.zip"
+    install_with_pip_venv "blackboxprotobuf" $update
+    install_with_pip_venv "brotli" $update
+    install_with_pip_venv "capstone" $update
+    install_with_pip_venv "lz4" $update
+    install_with_pip_venv "lzjb" $update "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip"
+    install_with_pip_venv "matplotlib" $update
+    install_with_pip_venv "packaging" $update
+    install_with_pip_venv "pefile" $update
+    install_with_pip_venv "ppmd-cffi" $update
+    install_with_pip_venv "pybase62" $update
+    install_with_pip_venv "pycryptodomex" $update
+    install_with_pip_venv "pyimpfuzzy-windows" $update
+    install_with_pip_venv "python-magic-bin" $update
+    install_with_pip_venv "python-snappy" $update
+    install_with_pip_venv "qiling==$QILING_VERSION" $update
+    install_with_pip_venv "seaborn" $update
+    install_with_pip_venv "requests" $update
+    install_with_pip_venv "unicorn==$UNICORN_VERSION" $update
+    install_with_pip_venv "watchdog" $update
+    install_with_pip_venv "xtea" $update
+    install_with_pip_venv "yara-python" $update
+    install_with_pip_venv "zstandard" $update
 }
 
 function install_qiling_rootfs($work_dir, $update) {
@@ -811,19 +916,27 @@ if ($PROXY_URL) {
 }
 
 $work_dir = create_working_directory
+$venv = $false
 
 if ($update) {
     if ($snapshot) {
         Write-Host "[+] Updating FileInsight-plugins to the latest snapshot. Existing files will be overwritten."
         install_fileinsight $work_dir
         install_fileinsight_plugins $work_dir $true $true
+        $venv = $true
     } else {
         Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
         install_fileinsight $work_dir
         install_fileinsight_plugins $work_dir $true $false
+        $venv = $false
     }
     install_python3 $work_dir
-    install_python_modules $work_dir $true
+    if ($venv) {
+        setup_venv
+        install_python_modules_venv $work_dir $true
+    } else {
+        install_python_modules $work_dir $true
+    }
     install_qiling_rootfs $work_dir $true
     install_aplib $work_dir
     install_exiftool $work_dir $true
@@ -832,7 +945,12 @@ if ($update) {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir
     install_python3 $work_dir
-    install_python_modules $work_dir
+    if ($venv) {
+        setup_venv
+        install_python_modules_venv $work_dir $true
+    } else {
+        install_python_modules $work_dir
+    }
     install_qiling_rootfs $work_dir
     install_aplib $work_dir
     install_exiftool $work_dir

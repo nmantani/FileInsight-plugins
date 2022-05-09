@@ -69,7 +69,7 @@ def binwalk_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute binwalk_scan.py for scanning with binwalk
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -78,8 +78,11 @@ def binwalk_scan(fi):
     os.remove(filepath) # Cleanup
 
     if ret == -1:
-        print("binwalk is not installed.")
-        print("Please get it from https://github.com/ReFirmLabs/binwalk and install it (pip cannot be used to install binwalk).")
+        print("binwalk Python module is not installed.")
+        print("Please install it with the following commands and try again.")
+        print("&'%s'" % fi.get_venv_activate())
+        print("pip install https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v2.3.2.zip")
+        print("deactivate")
         return
 
     if fi.getSelectionLength() > 0:
@@ -134,15 +137,14 @@ def file_type(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute file_type.py for file type identification
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive file type
     stdout_data, stderr_data = p.communicate(data)
     ret = p.wait()
 
     if ret == -1:
-        print("python-magic is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
+        fi.show_module_install_instruction("magic", "python-magic-bin")
         return
 
     ftype = stdout_data
@@ -175,15 +177,14 @@ def find_pe_file(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute find_pe_file.py for finding PE files
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate(data)
     ret = p.wait()
 
     if ret == -1:
-        print("pefile is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
+        fi.show_module_install_instruction("pefile")
         return
 
     found = ret
@@ -341,7 +342,7 @@ def strings(fi):
 
     # Execute strings_dialog.py to show GUI
     # GUI portion is moved to external script to avoid hangup of FileInsight
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive parameters
     stdout_data, stderr_data = p.communicate()
@@ -514,7 +515,7 @@ def parse_file_structure(fi):
     point.y = point.y * DEFAULT_DPI / dpi_y
 
     # Show menu
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure_menu.py", str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/parse_file_structure_menu.py", str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive selection
     stdout_data, stderr_data = p.communicate()
@@ -526,7 +527,7 @@ def parse_file_structure(fi):
         parser = stdout_data
 
     # Execute parse_file_structure.py to parse data
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate(data)
@@ -620,16 +621,14 @@ def disassemble(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute disassemble_dialog.py to show GUI
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/disassemble_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/disassemble_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
     # Capstone is not installed
     if ret == -1:
-        print("Capstone is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install capstone'.")
-        print("")
+        fi.show_module_install_instruction("capstone")
         return
 
     # dialog is closed
@@ -646,7 +645,7 @@ def disassemble(fi):
     handle.write(data)
     handle.close()
 
-    p = subprocess.Popen(["py.exe", "-3", "Parsing/disassemble.py", file_path, str(offset), arch, mode], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Parsing/disassemble.py", file_path, str(offset), arch, mode], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive disassembly result
     stdout_data, stderr_data = p.communicate()
@@ -659,9 +658,7 @@ def disassemble(fi):
         print(stderr_data.replace("\x0d\x0a", "\x0a")),
         return
     elif ret == -1: # Capstone is not installed
-        print("Capstone is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install capstone'.")
-        print("")
+        fi.show_module_install_instruction("capstone")
         return
 
     if fi.getSelectionLength() > 0:

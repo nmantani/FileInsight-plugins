@@ -430,15 +430,14 @@ def lz4_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lz4_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lz4_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lz4 is not installed
-            print("python-lz4 is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
+            fi.show_module_install_instruction("lz4")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -482,15 +481,14 @@ def lz4_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lz4_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lz4_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lz4_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lz4 is not installed
-            print("python-lz4 is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install lz4' and try again.")
+            fi.show_module_install_instruction("lz4")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -534,7 +532,7 @@ def lzma_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzma_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzma_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
@@ -582,7 +580,7 @@ def lzma_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzma_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzma_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
@@ -630,7 +628,7 @@ def xz_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute xz_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/xz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
@@ -678,7 +676,7 @@ def xz_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute xz_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/xz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
@@ -726,15 +724,14 @@ def zstandard_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute zstandard_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/zstandard_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-zstandard is not installed
-            print("python-zstandard is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
+            fi.show_module_install_instruction("zstandard")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -778,15 +775,14 @@ def zstandard_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute zstandard_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/zstandard_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/zstandard_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-zstandard is not installed
-            print("python-zstandard is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install zstandard' and try again.")
+            fi.show_module_install_instruction("zstandard")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -830,17 +826,20 @@ def lzo_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzo_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzo_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzo is not installed
-            print("python-lzo is not installed.")
+            print("lzo Python module is not installed.")
             print("Please manually download python-lzo wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it with")
-            print("'py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl', then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it")
+            print("with the following commands, then try again.")
+            print("&'%s'" % fi.get_venv_activate())
+            print("pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl")
+            print("deactivate")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -884,17 +883,19 @@ def lzo_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzo_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzo_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzo_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzo is not installed
-            print("python-lzo is not installed.")
+            print("lzo Python module is not installed.")
             print("Please manually download python-lzo wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it with")
-            print("'py.exe -3 -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl', then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it with the following commands, then try again.")
+            print("&'%s'" % fi.get_venv_activate())
+            print("pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl")
+            print("deactivate")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1010,7 +1011,7 @@ def quicklz_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute quicklz_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/quicklz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/quicklz_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
@@ -1066,7 +1067,7 @@ def quicklz_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute quicklz_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/quicklz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/quicklz_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
@@ -1121,15 +1122,14 @@ def ppmd_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute ppmd_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/ppmd_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/ppmd_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # ppmd-cffi is not installed
-            print("ppmd-cffi is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install ppmd-cffi' and try again.")
+            fi.show_module_install_instruction("ppmd", "ppmd-cffi")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1175,15 +1175,14 @@ def ppmd_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute ppmd_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/ppmd_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/ppmd_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # ppmd-cffi is not installed
-            print("ppmd-cffi is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install ppmd-cffi' and try again.")
+            fi.show_module_install_instruction("ppmd", "ppmd-cffi")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1302,17 +1301,19 @@ def lzf_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzf_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzf_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzf_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzf is not installed
-            print("python-lzf is not installed.")
+            print("lzf Python module is not installed.")
             print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with")
-            print("'py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl', then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with the following commands, then try again.")
+            print("&'%s'" % fi.get_venv_activate())
+            print("pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl")
+            print("deactivate")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1356,17 +1357,19 @@ def lzf_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzf_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzf_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzf_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzf is not installed
-            print("python-lzf is not installed.")
+            print("lzf Python module is not installed.")
             print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with")
-            print("'py.exe -3 -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl', then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with the following commands, then try again.")
+            print("&'%s'" % fi.get_venv_activate())
+            print("pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl")
+            print("deactivate")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1410,15 +1413,18 @@ def lzjb_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzjb_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzjb_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzjb_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzjb is not installed
-            print("python-lzjb is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip' and try again.")
+            print("lzjb Python module is not installed.")
+            print("Please install it with the following commands and try again.")
+            print("&'%s'" % fi.get_venv_activate())
+            print("pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip")
+            print("deactivate")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1462,15 +1468,18 @@ def lzjb_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute lzjb_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/lzjb_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/lzjb_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-lzjb is not installed
-            print("python-lzjb is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip' and try again.")
+            print("lzjb Python module is not installed.")
+            print("Please install it with the following commands and try again.")
+            print("&'%s'" % fi.get_venv_activate())
+            print("pip install https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip")
+            print("deactivate")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1514,15 +1523,14 @@ def snappy_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute snappy_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/snappy_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/snappy_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-snappy is not installed
-            print("python-snappy is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install python-snappy' and try again.")
+            fi.show_module_install_instruction("snappy", "python-snappy")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1566,15 +1574,14 @@ def snappy_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute snappy_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/snappy_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/snappy_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # python-snappy is not installed
-            print("python-snappy is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install python-snappy' and try again.")
+            fi.show_module_install_instruction("snappy", "python-snappy")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1618,15 +1625,14 @@ def brotli_compress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute brotli_compress.py for compression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/brotli_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/brotli_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive compressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # brotli is not installed
-            print("brotli is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install brotli' and try again.")
+            fi.show_module_install_instruction("brotli")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1670,15 +1676,14 @@ def brotli_decompress(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute brotli_decompress.py for decompression
-        p = subprocess.Popen(["py.exe", "-3", "Compression/brotli_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Compression/brotli_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decompressed data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # brotli is not installed
-            print("brotli is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install brotli' and try again.")
+            fi.show_module_install_instruction("brotli")
             return
         elif ret == 1:
             print("Error: decompression failed.")

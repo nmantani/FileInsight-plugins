@@ -22,21 +22,25 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
-import packaging.version
 import pathlib
 import shlex
 import sys
 
 try:
+    import packaging.version
+except ImportError:
+    sys.exit(-1) # packaging is not installed
+
+try:
     import qiling
 except ImportError:
-    sys.exit(-1) # Qiling Framework is not installed
+    sys.exit(-2) # Qiling Framework is not installed
 
 try:
     from watchdog.observers import Observer
     from watchdog.events import FileSystemEventHandler
 except ImportError:
-    sys.exit(-2) # watchdog is not installed
+    sys.exit(-3) # watchdog is not installed
 
 rootfs_base = "Misc\\qiling-master\\examples\\rootfs"
 
@@ -147,7 +151,7 @@ if len(sys.argv) == 9:
     tab_index = int(sys.argv[8])
 
     if not check_rootfs_files(rootfs_base):
-        sys.exit(-3) # rootfs files are not properly set up
+        sys.exit(-4) # rootfs files are not properly set up
 
     rootfs = rootfs_path(rootfs_base, arch, os_type, big_endian)
 

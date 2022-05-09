@@ -26,14 +26,11 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import ctypes
-import hashlib
 import os
 import re
-import sys
 import subprocess
 import tempfile
 import time
-import zlib
 
 def hash_values(fi):
     """
@@ -53,7 +50,7 @@ def hash_values(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to get hash values
-    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash values
     stdout_data, stderr_data = p.communicate(input=data)
@@ -61,19 +58,13 @@ def hash_values(fi):
 
     # There is a missing module
     if ret == -1:
-        print("python-magic is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
-        print("")
+        fi.show_module_install_instruction("magic", "python-magic-bin")
         return
     elif ret == -2:
-        print("pefile is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
-        print("")
+        fi.show_module_install_instruction("pefile")
         return
     elif ret == -3:
-        print("pyimpfuzzy-windows is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
-        print("")
+        fi.show_module_install_instruction("pyimpfuzzy", "pyimpfuzzy-windows")
         return
     else:
         print(stdout_data),
@@ -128,7 +119,7 @@ def send_to_cli(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute send_to.py to show GUI
-    p = subprocess.Popen(["py.exe", "-3", "Misc/send_to_cli.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/send_to_cli.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
@@ -207,7 +198,7 @@ def send_to_gui(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute send_to.py to show GUI
-    p = subprocess.Popen(["py.exe", "-3", "Misc/send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
 
     if length > 0:
         if length == 1:
@@ -221,7 +212,7 @@ def send_to_gui(fi):
         else:
             print("Sending the whole file (%s bytes) to external program." % length)
 
-def get_ssdeep(data):
+def get_ssdeep(fi, data):
     """
     Get ssdeep hash value, used by file_comparison()
     """
@@ -230,7 +221,7 @@ def get_ssdeep(data):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to get ssdeep hash value
-    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "ssdeep"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py", "ssdeep"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate(input=data)
@@ -238,24 +229,18 @@ def get_ssdeep(data):
 
     # There is a missing module
     if ret == -1:
-        print("python-magic is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
-        print("")
+        fi.show_module_install_instruction("magic", "python-magic-bin")
         return
     elif ret == -2:
-        print("pefile is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
-        print("")
+        fi.show_module_install_instruction("pefile")
         return
     elif ret == -3:
-        print("pyimpfuzzy-windows is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
-        print("")
+        fi.show_module_install_instruction("pyimpfuzzy", "pyimpfuzzy-windows")
         return
 
     return stdout_data
 
-def get_impfuzzy(data):
+def get_impfuzzy(fi, data):
     """
     Get impfuzzy hash value, used by file_comparison()
     """
@@ -264,7 +249,7 @@ def get_impfuzzy(data):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to get impfuzzy hash value
-    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "impfuzzy"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py", "impfuzzy"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate(input=data)
@@ -272,33 +257,27 @@ def get_impfuzzy(data):
 
     # There is a missing module
     if ret == -1:
-        print("python-magic is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
-        print("")
+        fi.show_module_install_instruction("magic", "python-magic-bin")
         return
     elif ret == -2:
-        print("pefile is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
-        print("")
+        fi.show_module_install_instruction("pefile")
         return
     elif ret == -3:
-        print("pyimpfuzzy-windows is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
-        print("")
+        fi.show_module_install_instruction("pyimpfuzzy", "pyimpfuzzy-windows")
         return
 
     return stdout_data
 
-def compare_hash(hash1, hash2):
+def compare_hash(fi, hash1, hash2):
     """
-    Compare hash value,s used by file_comparison()
+    Compare fuzzy hash values, used by file_comparison()
     """
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute hash_values.py to get impfuzzy hash value
-    p = subprocess.Popen(["py.exe", "-3", "Misc/hash_values.py", "compare", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Execute hash_values.py to compare fuzzy hash values
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py", "compare", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate()
@@ -306,19 +285,13 @@ def compare_hash(hash1, hash2):
 
     # There is a missing module
     if ret == -1:
-        print("python-magic is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install python-magic-bin' and try again.")
-        print("")
+        fi.show_module_install_instruction("magic", "python-magic-bin")
         return
     elif ret == -2:
-        print("pefile is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pefile' and try again.")
-        print("")
+        fi.show_module_install_instruction("pefile")
         return
     elif ret == -3:
-        print("pyimpfuzzy-windows is not installed.")
-        print("Please install it with 'py.exe -3 -m pip install pyimpfuzzy-windows' and try again.")
-        print("")
+        fi.show_module_install_instruction("pyimpfuzzy", "pyimpfuzzy-windows")
         return
 
     return stdout_data
@@ -347,7 +320,7 @@ def file_comparison(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute file_comparison_dialog.py to show GUI
-    p = subprocess.Popen(["py.exe", "-3", "Misc/file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     if stdout_data == "":
@@ -429,29 +402,29 @@ def file_comparison(fi):
         first_data = "".join(first_data)
         second_data = "".join(second_data)
 
-        ssdeep_first = get_ssdeep(first_data)
-        ssdeep_second = get_ssdeep(second_data)
+        ssdeep_first = get_ssdeep(fi, first_data)
+        ssdeep_second = get_ssdeep(fi, second_data)
 
-        if ssdeep_first != "" and ssdeep_second != "":
+        if ssdeep_first != None and ssdeep_second != None:
             print("ssdeep hash of %s:\t%s" % (first_name, ssdeep_first))
             print("ssdeep hash of %s:\t%s" % (second_name, ssdeep_second))
-            print("ssdeep hash comparison score (0-100): %s" % compare_hash(ssdeep_first, ssdeep_second))
+            print("ssdeep hash comparison score (0-100): %s" % compare_hash(fi, ssdeep_first, ssdeep_second))
             print("")
 
         if first_data[:2] == "MZ":
-            impfuzzy_first = get_impfuzzy(first_data)
+            impfuzzy_first = get_impfuzzy(fi, first_data)
         else:
             impfuzzy_first = ""
 
         if second_data[:2] == "MZ":
-            impfuzzy_second = get_impfuzzy(second_data)
+            impfuzzy_second = get_impfuzzy(fi, second_data)
         else:
             impfuzzy_second = ""
 
-        if impfuzzy_first != "" and impfuzzy_second != "":
+        if impfuzzy_first != None and impfuzzy_second != None:
             print("impfuzzy hash of %s:\t%s" % (first_name, impfuzzy_first))
             print("impfuzzy hash of %s:\t%s" % (second_name, impfuzzy_second))
-            print("impfuzzy hash comparison score (0-100): %s" % compare_hash(impfuzzy_first, impfuzzy_second))
+            print("impfuzzy hash comparison score (0-100): %s" % compare_hash(fi, impfuzzy_first, impfuzzy_second))
             print("")
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))
@@ -480,7 +453,7 @@ def emulate_code(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute emulate_shellcode_dialog.py to show GUI
-    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     if stdout_data == "":
@@ -499,7 +472,7 @@ def emulate_code(fi):
     tab_index = tab_name[16:] # Get index number
 
     # Execute emulate_code.py to emulate code
-    p = subprocess.Popen(["py.exe", "-3", "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -516,18 +489,17 @@ def emulate_code(fi):
         stderr_data = re.sub("\x1b\[0m", "", stderr_data)
         print(stderr_data),
         return
-    elif ret == -1 or ret == -2 or ret == -3:
-        if ret == -1: # Qiling Framework is not installed
-            print("Qiling Framework is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install qiling'.")
-            print("")
+    elif ret == -1 or ret == -2 or ret == -3 or ret == -4:
+        if ret == -1: # packaging is not installed
+            fi.show_module_install_instruction("packaging")
 
-        if ret == -2: # watchdog is not installed
-            print("watchdog is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install watchdog'.")
-            print("")
+        if ret == -2: # Qiling Framework is not installed
+            fi.show_module_install_instruction("Qiling Framework", "qiling")
 
-        if ret == -3: # rootfs files are not installed
+        if ret == -3: # watchdog is not installed
+            fi.show_module_install_instruction("watchdog")
+
+        if ret == -4: # rootfs files are not installed
             print(stderr_data)
             print("Rootfs files of Qiling Framework are not properly installed.")
             print("Please download them from https://github.com/qilingframework/qiling/archive/master.zip")

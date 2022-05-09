@@ -26,7 +26,6 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import binascii
-import re
 import subprocess
 
 def copy_to_new_file(fi):
@@ -75,7 +74,7 @@ def cut_binary_to_clipboard(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute copy_to_clipboard.py
-        p = subprocess.Popen(["py.exe", "-3", "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive result
         stdout_data, stderr_data = p.communicate(binstr)
@@ -111,7 +110,7 @@ def copy_binary_to_clipboard(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute copy_to_clipboard.py
-        p = subprocess.Popen(["py.exe", "-3", "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive result
         stdout_data, stderr_data = p.communicate(binstr)
@@ -141,7 +140,7 @@ def paste_binary_from_clipboard(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute paste_from_clipboard.py
-    p = subprocess.Popen(["py.exe", "-3", "Basic/paste_from_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Basic/paste_from_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive result
     stdout_data, stderr_data = p.communicate()
@@ -447,7 +446,7 @@ def bookmark(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute colorchooser.py to show color chooser
-        p = subprocess.Popen(["py.exe", "-3", "colorchooser.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "colorchooser.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get output
         stdout_data, stderr_data = p.communicate()
@@ -478,7 +477,7 @@ def change_endianness(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute change_endianness_dialog.py to show unit setting dialog
-        p = subprocess.Popen(["py.exe", "-3", "Basic/change_endianness_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Basic/change_endianness_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get unit setting
         stdout_data, stderr_data = p.communicate()

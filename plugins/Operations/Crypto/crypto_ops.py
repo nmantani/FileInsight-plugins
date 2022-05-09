@@ -167,23 +167,20 @@ def do_decrypt(fi, name, script):
         # Execute xxxx_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
         script = "Crypto/" + script
-        p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # PyCryptodome is not installed
-            print("PyCryptodome is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install pycryptodomex' and try again.")
+            fi.show_module_install_instruction("Cryptodome", "pycryptodomex")
             return
         if ret == -2: # PyTEA is not installed
-            print("PyTEA is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install PyTEA' and try again.")
+            fi.show_module_install_instruction("pytea", "PyTEA")
             return
         if ret == -3: # xtea is not installed
-            print("xtea is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install xtea' and try again.")
+            fi.show_module_install_instruction("xtea")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
@@ -225,23 +222,20 @@ def do_encrypt(fi, name, script):
         # Execute xxxx_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
         script = "Crypto/" + script
-        p = subprocess.Popen(["py.exe", "-3", script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # PyCryptodome is not installed
-            print("PyCryptodome is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install pycryptodomex' and restart FileInsight.")
+            fi.show_module_install_instruction("Cryptodome", "pycryptodomex")
             return
         if ret == -2: # PyTEA is not installed
-            print("PyTEA is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install PyTEA' and try again.")
+            fi.show_module_install_instruction("pytea", "PyTEA")
             return
         if ret == -3: # xtea is not installed
-            print("xtea is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install xtea' and try again.")
+            fi.show_module_install_instruction("xtea")
             return
         elif ret == 1: # Do nothing if not decrypted
             return

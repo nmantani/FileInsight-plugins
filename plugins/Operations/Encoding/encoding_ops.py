@@ -139,7 +139,7 @@ def custom_base64_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "64", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "64", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -192,7 +192,7 @@ def custom_base64_encode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "64", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "64", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base64 table input
         stdout_data, stderr_data = p.communicate()
@@ -242,7 +242,7 @@ def rot13(fi):
 
         # Execute rot13_dialog.py to show GUI
         # GUI portion is moved to rot13_dialog.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/rot13_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
@@ -421,7 +421,7 @@ def binary_data_to_decimal_text(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py", "-s"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/delimiter_dialog.py", "-s"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -511,7 +511,7 @@ def decimal_text_to_binary_data(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/delimiter_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -588,7 +588,7 @@ def binary_data_to_octal_text(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -641,7 +641,7 @@ def octal_text_to_binary_data(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -762,7 +762,7 @@ def unicode_escape(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute unicode_format_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/unicode_format_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/unicode_format_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get format setting
         stdout_data, stderr_data = p.communicate()
@@ -862,7 +862,7 @@ def unicode_unescape(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute unicode_format_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/unicode_format_dialog.py", "-u"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/unicode_format_dialog.py", "-u"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get format setting
         stdout_data, stderr_data = p.communicate()
@@ -928,15 +928,14 @@ def protobuf_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute protobuf_decode.py to decode data
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/protobuf_decode.py", "-u"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/protobuf_decode.py", "-u"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Receive decoded data
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
         if ret == -1: # blackboxprotobuf (forked version) is not installed
-            print("blackboxprotobuf (forked version) is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install blackboxprotobuf' and try again.")
+            fi.show_module_install_instruction("blackboxprotobuf (forked version)", "blackboxprotobuf")
             return
         elif ret == 1:
             print("Error: decode failed.")
@@ -969,7 +968,7 @@ def custom_base16_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "16", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "16", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base16 table input
         stdout_data, stderr_data = p.communicate()
@@ -1022,7 +1021,7 @@ def custom_base16_encode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "16", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "16", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base16 table input
         stdout_data, stderr_data = p.communicate()
@@ -1070,7 +1069,7 @@ def custom_base32_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "32", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "32", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base32 table input
         stdout_data, stderr_data = p.communicate()
@@ -1123,7 +1122,7 @@ def custom_base32_encode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "32", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "32", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base32 table input
         stdout_data, stderr_data = p.communicate()
@@ -1171,7 +1170,7 @@ def custom_base58_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "58", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "58", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base58 table input
         stdout_data, stderr_data = p.communicate()
@@ -1192,7 +1191,7 @@ def custom_base58_decode(fi):
                         return
 
                 # Execute base58_decode.py to decode data
-                p = subprocess.Popen(["py.exe", "-3", "Encoding/base58_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([fi.get_venv_python(), "Encoding/base58_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive decoded data
                 trans = string.maketrans(custom_table, standard_table)
@@ -1200,8 +1199,7 @@ def custom_base58_decode(fi):
                 ret = p.wait()
 
                 if ret == -1: # base58 is not installed
-                    print("base58 is not installed.")
-                    print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
+                    fi.show_module_install_instruction("base58")
                     return
                 elif ret == 1:
                     print("Error: decode failed.")
@@ -1239,7 +1237,7 @@ def custom_base58_encode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "58", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "58", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base58 table input
         stdout_data, stderr_data = p.communicate()
@@ -1255,15 +1253,14 @@ def custom_base58_encode(fi):
                 orig_len = len(orig)
 
                 # Execute base58_encode.py to encode data
-                p = subprocess.Popen(["py.exe", "-3", "Encoding/base58_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([fi.get_venv_python(), "Encoding/base58_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive encoded data
                 stdout_data, stderr_data = p.communicate(data)
                 ret = p.wait()
 
                 if ret == -1: # base58 is not installed
-                    print("base58 is not installed.")
-                    print("Please install it with 'py.exe -3 -m pip install base58' and try again.")
+                    fi.show_module_install_instruction("base58")
                     return
                 elif ret == 1:
                     print("Error: encode failed.")
@@ -1303,7 +1300,7 @@ def custom_base85_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "85", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "85", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base85 table input
         stdout_data, stderr_data = p.communicate()
@@ -1324,7 +1321,7 @@ def custom_base85_decode(fi):
                         return
 
                 # Execute base85_decode.py to decode data
-                p = subprocess.Popen(["py.exe", "-3", "Encoding/base85_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([fi.get_venv_python(), "Encoding/base85_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive decoded data
                 trans = string.maketrans(custom_table, standard_table)
@@ -1367,7 +1364,7 @@ def custom_base85_encode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "85", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "85", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base85 table input
         stdout_data, stderr_data = p.communicate()
@@ -1383,7 +1380,7 @@ def custom_base85_encode(fi):
                 orig_len = len(orig)
 
                 # Execute base85_encode.py to encode data
-                p = subprocess.Popen(["py.exe", "-3", "Encoding/base85_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([fi.get_venv_python(), "Encoding/base85_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive encoded data
                 stdout_data, stderr_data = p.communicate(data)
@@ -1427,7 +1424,7 @@ def custom_base62_decode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "62", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "62", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base62 table input
         stdout_data, stderr_data = p.communicate()
@@ -1448,7 +1445,7 @@ def custom_base62_decode(fi):
                         return
 
                 # Execute base62_decode.py to decode data
-                p = subprocess.Popen(["py.exe", "-3", "Encoding/base62_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([fi.get_venv_python(), "Encoding/base62_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive decoded data
                 trans = string.maketrans(custom_table, standard_table)
@@ -1456,8 +1453,7 @@ def custom_base62_decode(fi):
                 ret = p.wait()
 
                 if ret == -1: # pybase62 is not installed
-                    print("pybase62 is not installed.")
-                    print("Please install it with 'py.exe -3 -m pip install pybase62' and try again.")
+                    fi.show_module_install_instruction("base62", "pybase62")
                     return
                 elif ret == 1:
                     print("Error: decode failed.")
@@ -1495,7 +1491,7 @@ def custom_base62_encode(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute custom_basexx_dialog.py to show GUI
-        p = subprocess.Popen(["py.exe", "-3", "Encoding/custom_basexx_dialog.py", "62", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_venv_python(), "Encoding/custom_basexx_dialog.py", "62", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get base62 table input
         stdout_data, stderr_data = p.communicate()
@@ -1511,15 +1507,14 @@ def custom_base62_encode(fi):
                 orig_len = len(orig)
 
                 # Execute base62_encode.py to encode data
-                p = subprocess.Popen(["py.exe", "-3", "Encoding/base62_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                p = subprocess.Popen([fi.get_venv_python(), "Encoding/base62_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
                 # Receive encoded data
                 stdout_data, stderr_data = p.communicate(data)
                 ret = p.wait()
 
                 if ret == -1: # pybase62 is not installed
-                    print("pybase62 is not installed.")
-                    print("Please install it with 'py.exe -3 -m pip install pybase62' and try again.")
+                    fi.show_module_install_instruction("base62", "pybase62")
                     return
                 elif ret == 1:
                     print("Error: encode failed.")

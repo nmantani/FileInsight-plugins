@@ -29,7 +29,13 @@ import re
 import subprocess
 import sys
 
-__version__ = "2.14"
+__version__ = "2.15"
+
+VENV_PATH = os.environ["USERPROFILE"] + "\\Documents\\McAfee FileInsight\\plugins\\Operations\\python3-venv"
+VENV_PATH_PARENT = os.environ["USERPROFILE"] + "\\Documents\\McAfee FileInsight\\plugins\\Operations"
+VENV_ACTIVATE = VENV_PATH + "\\Scripts\\Activate.ps1"
+VENV_PYTHON = VENV_PATH + "\\Scripts\\python.exe"
+VENV_PIP = VENV_PATH + "\\Scripts\\pip.exe"
 
 sys.path.append("./Basic")
 import basic_ops
@@ -60,7 +66,7 @@ import xor_ops
 
 class FileInsight:
     """
-    Class for FileInsight built-in functions
+    Class for FileInsight built-in functions and utility functions
     """
     def __init__(self):
         self.getLength = getLength
@@ -102,7 +108,7 @@ class FileInsight:
 
         # Execute show_simple_dialog.py to show GUI
         # GUI portion is moved to separate process to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "show_simple_dialog.py", prompt], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([VENV_PYTHON, "show_simple_dialog.py", prompt], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get input
         stdout_data, stderr_data = p.communicate()
@@ -147,13 +153,41 @@ class FileInsight:
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute bookmark_yesno_dialog.py to show confirmation dialog
-        p = subprocess.Popen(["py.exe", "-3", "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([VENV_PYTHON, "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive scan result
         stdout_data, stderr_data = p.communicate()
         ret = p.wait()
 
         return ret
+
+    def show_module_install_instruction(self, module_name=None, package_name=None):
+        if module_name == None or module_name == "":
+            return
+        elif package_name == None or package_name == "":
+            package_name = module_name
+
+        print("Error: %s Python module is not installed." % module_name)
+        print("Please install it with the following commands in PowerShell and try again:")
+        print("&'%s'" % VENV_ACTIVATE)
+        print("pip install %s" % package_name)
+        print("deactivate")
+        print("")
+
+    def get_venv_path(self):
+        return VENV_PATH
+
+    def get_venv_path_parent(self):
+        return VENV_PATH_PARENT
+
+    def get_venv_activate(self):
+        return VENV_ACTIVATE
+
+    def get_venv_python(self):
+        return VENV_PYTHON
+
+    def get_venv_pip(self):
+        return VENV_PIP
 
 def find_python3():
     pyexe_found = False
@@ -165,6 +199,10 @@ def find_python3():
     if not pyexe_found:
         print("Error: py.exe is not found. You need to install Python 3 to use FileInsight-plugins.")
     else:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
         # List Python installation
         p = subprocess.Popen(["py.exe", "--list"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -179,6 +217,17 @@ def find_python3():
         print("Error: no Python 3 installation is found. You need to install Python 3 to use FileInsight-plugins.")
 
     return pyexe_found and python3_found
+
+def find_venv():
+    if os.path.exists("python3-venv/Scripts/python.exe") and os.path.exists("python3-venv/Scripts/pip.exe"):
+        return True
+    else:
+        print("Error: venv 'python3-venv' (%s) is not properly set up." % VENV_PATH)
+        print("Please execute the following commands to setup venv:")
+        print("cd '%s'" % VENV_PATH_PARENT)
+        print("py.exe -3 -m venv python3-venv")
+
+        return False
 
 if __name__ == "__main__":
     # Tuple of plugin operations
@@ -347,19 +396,18 @@ if __name__ == "__main__":
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    if find_python3():
+    if find_python3() and find_venv():
         # Execute menu.py to show GUI
         # GUI portion is moved to menu.py to avoid hangup of FileInsight
-        p = subprocess.Popen(["py.exe", "-3", "menu.py", str(point.x), str(point.y), __version__], startupinfo=startupinfo)
+        p = subprocess.Popen([VENV_PYTHON, "menu.py", str(point.x), str(point.y), __version__], startupinfo=startupinfo)
         index = p.wait() # Receive exit value as index of selected plugin
 
+        fi = FileInsight()
+
         if index >= 0:
-            fi = FileInsight()
             operations[index](fi)
         elif index == -2: # requests is not installed
-            print("requests is not installed.")
-            print("Please install it with 'py.exe -3 -m pip install requests' and try again.")
-            print("")
+            fi.show_module_install_instruction("requests")
 
     # Workaround to avoid crash of FileInsight on Windows 7
     if "threading" in sys.modules:
