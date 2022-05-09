@@ -60,7 +60,6 @@ $PYTHON_VERSION = "3.9.12"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $EXIFTOOL_VERSION = "12.41"
-$LZ4_VERSION = "4.0.0"
 $QUICKLZ_VERSION = "1.5.0"
 $QILING_VERSION = "1.2.3"
 $UNICORN_VERSION = "1.0.3"
@@ -451,9 +450,10 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "blackboxprotobuf" $update
     install_with_pip "brotli" $update
     install_with_pip "capstone" $update
-    install_with_pip "lz4==$LZ4_VERSION" $update
+    install_with_pip "lz4" $update
     install_with_pip "lzjb" $update "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip"
     install_with_pip "matplotlib" $update
+    install_with_pip "packaging" $update
     install_with_pip "pefile" $update
     install_with_pip "ppmd-cffi" $update
     install_with_pip "pybase62" $update
