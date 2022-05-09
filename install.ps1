@@ -49,12 +49,17 @@
 # $PROXY_HOST = "" # example: 10.0.0.1
 # $PROXY_PORT = "" # example: 8080
 
+Param(
+    [Switch]$update,
+    [Switch]$snapshot
+)
+
 $RELEASE_VERSION = "2.14"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.9.10"
+$PYTHON_VERSION = "3.9.12"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
-$EXIFTOOL_VERSION = "12.40"
+$EXIFTOOL_VERSION = "12.41"
 $LZ4_VERSION = "4.0.0"
 $QUICKLZ_VERSION = "1.5.0"
 $QILING_VERSION = "1.2.3"
@@ -63,10 +68,10 @@ $UNICORN_VERSION = "1.0.3"
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3EC8DEB6756E6EF4CAA6F4FA4BB80E66D2AB7F101F212E39167B728BE92FA47A"
-$PYTHON_HASH = "7391537C87161625F1B82E2A8C543533C75152445F22A58C9B26961911477E76"
+$PYTHON_HASH = "2BA57AB2281094F78FC0227A27F4D47C90D94094E7CCA35CE78419E616B3CB63"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $BINWALK_HASH = "146E7E203305001488B4C1AEEFEAC8DF62DED92EC625F0E75B540DFA62B4DB80"
-$EXIFTOOL_HASH = "D5010590F90B2C55FFB8D1CEA6E9DA7292A704A0E981A10C43B1575EDFA9B39C"
+$EXIFTOOL_HASH = "BA0B8A0C29D935434B8D0FC0324FCEF7B91E58B3AC399FA3376E86A98D88D6E0"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function get_proxy_url {
@@ -442,6 +447,7 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "Pillow" $update
     install_with_pip "PyTEA" $update
     install_with_pip "base58" $update
+    install_with_pip "binwalk" $update "https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v$BINWALK_VERSION.zip"
     install_with_pip "blackboxprotobuf" $update
     install_with_pip "brotli" $update
     install_with_pip "capstone" $update
@@ -463,67 +469,6 @@ function install_python_modules($work_dir, $update) {
     install_with_pip "xtea" $update
     install_with_pip "yara-python" $update
     install_with_pip "zstandard" $update
-
-    Write-Host "[+] Installing binwalk Python module..."
-
-    $installed = &$PYTHON_EXE -3 -m pip show binwalk
-    if ([bool]$installed -and !$update) {
-        Write-Host "[*] binwalk Python module is already installed. Skipping installation."
-    } else {
-        Write-Host "[+] Downloading binwalk..."
-        $binwalk_url = "https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v$BINWALK_VERSION.zip"
-        $zip_archive_path = "$work_dir\binwalk-$BINWALK_VERSION.zip"
-        download_file $binwalk_url $zip_archive_path
-
-        if (!(Test-Path $zip_archive_path)) {
-            Write-Host "[!] Download has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-        Write-Host "[+] Done."
-
-        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $BINWALK_HASH)..."
-        $val = compute_hash $zip_archive_path
-        if ($val -eq $BINWALK_HASH) {
-            Write-Host "[+] OK."
-        } else {
-            Write-Host "[!] The hash value does not match ($val)."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-
-        Write-Host "[+] Extracting binwalk-$BINWALK_VERSION.zip..."
-        $extract_dir = "$work_dir\binwalk-$BINWALK_VERSION"
-        extract_zip $zip_archive_path $work_dir
-        $file_path = "$extract_dir\README.md"
-
-        if (!(Test-Path $file_path)) {
-            Write-Host "[!] Extraction has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-        Write-Host "[+] Done."
-
-        $cwd = Convert-Path .
-        cd $extract_dir
-        Write-Host "$PYTHON_EXE -3 setup.py install"
-        Invoke-Expression "$PYTHON_EXE -3 setup.py install"
-        cd $cwd
-
-        $installed = &$PYTHON_EXE -3 -m pip show binwalk
-        if (![bool]$installed) {
-            Write-Host "[!] Installation has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-        Write-Host "[+] Done."
-        Write-Host "[+] binwalk Python module has been installed."
-    }
-    Write-Host ""
 }
 
 function install_qiling_rootfs($work_dir, $update) {
@@ -867,8 +812,8 @@ if ($PROXY_URL) {
 
 $work_dir = create_working_directory
 
-if ($Args[0] -eq "-update") {
-    if ($Args[1] -eq "-snapshot") {
+if ($update) {
+    if ($snapshot) {
         Write-Host "[+] Updating FileInsight-plugins to the latest snapshot. Existing files will be overwritten."
         install_fileinsight $work_dir
         install_fileinsight_plugins $work_dir $true $true
