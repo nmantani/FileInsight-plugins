@@ -14,6 +14,7 @@ ppmd-cffi
 pybase62
 pycryptodomex
 pyimpfuzzy-windows
+pyppmd
 python-magic-bin
 python-snappy
 qiling==1.2.3

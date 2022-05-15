@@ -560,10 +560,10 @@ function install_python_modules_venv($work_dir, $update) {
     install_with_pip_venv "matplotlib" $update
     install_with_pip_venv "packaging" $update
     install_with_pip_venv "pefile" $update
-    install_with_pip_venv "ppmd-cffi" $update
     install_with_pip_venv "pybase62" $update
     install_with_pip_venv "pycryptodomex" $update
     install_with_pip_venv "pyimpfuzzy-windows" $update
+    install_with_pip_venv "pyppmd" $update
     install_with_pip_venv "python-magic-bin" $update
     install_with_pip_venv "python-snappy" $update
     install_with_pip_venv "qiling==$QILING_VERSION" $update

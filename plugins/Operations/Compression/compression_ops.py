@@ -1128,8 +1128,8 @@ def ppmd_compress(fi):
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
-        if ret == -1: # ppmd-cffi is not installed
-            fi.show_module_install_instruction("ppmd", "ppmd-cffi")
+        if ret == -1: # pyppmd is not installed
+            fi.show_module_install_instruction("pyppmd")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1181,8 +1181,8 @@ def ppmd_decompress(fi):
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
-        if ret == -1: # ppmd-cffi is not installed
-            fi.show_module_install_instruction("ppmd", "ppmd-cffi")
+        if ret == -1: # pyppmd is not installed
+            fi.show_module_install_instruction("pyppmd")
             return
         elif ret == 1:
             print("Error: decompression failed.")

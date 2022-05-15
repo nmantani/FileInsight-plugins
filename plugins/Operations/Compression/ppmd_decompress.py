@@ -1,7 +1,7 @@
 #
 # PPMd decompress - Decompress selected region with PPMd algorithm
 #
-# Copyright (c) 2021, Nobutaka Mantani
+# Copyright (c) 2022, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,53 +25,35 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import io
 import re
 import sys
 import tkinter
 import tkinter.ttk
 
 try:
-    import ppmd
+    import pyppmd
 except ImportError:
-    exit(-1) # ppmd-cffi is not installed
+    exit(-1) # pyppmd is not installed
 
 def decompress(root, combo_version, spin_order, data):
+    root.withdraw()
+
     version = combo_version.get()
     order = int(spin_order.get())
 
-    io_in = io.BytesIO(data)
-    decompressed = b""
-    io_out = io.BytesIO(decompressed)
-    mem = 32
-    restore = 0
-    blocksize = 16384
-
-    if version == "8 (version I)":
-        decoder = ppmd.Ppmd8Decoder(io_in, order, mem << 20, restore)
-    else:
-        decoder = ppmd.Ppmd7Decoder(io_in, order, mem << 20)
+    mem = 32 << 20 # 32 MiB
 
     try:
-        while io_in.tell() < len(data):
-            len_remain = len(data) - io_in.tell()
+        if version == "8 (version I)":
+            decoder = pyppmd.Ppmd8Decoder(order, mem)
+            decompressed = decoder.decode(data, -1)
+        else:
+            decoder = pyppmd.Ppmd7Decoder(order, mem)
+            decompressed = decoder.decode(data, 2**31 - 1) # About 2GiB
 
-            # XXX: set small blocksize to minimize garbage data at the end of PPMd7 decompressed data
-            # because PPMd7 compressed data does not have end mark
-            if len_remain < blocksize:
-                blocksize = 4
-
-            d = decoder.decode(blocksize)
-
-            if len(d) == 0:
-                break
-            io_out.write(d)
-
-        decoder.close()
-        sys.stdout.buffer.write(io_out.getvalue())
+        sys.stdout.buffer.write(decompressed)
         if version == "7 (version H)":
-            print("NOTE: Small amount of data may be appended or truncated at the end of decompressed data", file=sys.stderr)
-            print("because size of original data is unknown.", file=sys.stderr)
+            print("NOTE: The decompressed data may be redundant or truncated if the compressed data does not have an end mark.", file=sys.stderr)
     except Exception as e:
         print(e, file=sys.stderr)
         exit(1)

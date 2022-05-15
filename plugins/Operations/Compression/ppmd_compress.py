@@ -1,7 +1,7 @@
 #
 # PPMd compress - Compress selected region with PPMd algorithm
 #
-# Copyright (c) 2021, Nobutaka Mantani
+# Copyright (c) 2022, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -25,7 +25,6 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import io
 import re
 import sys
 import tkinter
@@ -33,29 +32,38 @@ import tkinter.ttk
 import tkinter.messagebox
 
 try:
-    import ppmd
+    import pyppmd
 except ImportError:
-    exit(-1) # ppmd-cffi is not installed
+    exit(-1) # pyppmd is not installed
 
 def compress(root, combo_version, spin_order, data):
+    root.withdraw()
+
     version = combo_version.get()
     order = int(spin_order.get())
 
-    compressed = b""
-    io_out = io.BytesIO(compressed)
-    mem = 32
-    restore = 0
+    mem = 32 << 20 # 32 MiB
 
-    if version == "8 (version I)":
-        encoder = ppmd.Ppmd8Encoder(io_out, order, mem << 20, restore)
-    else:
-        encoder = ppmd.Ppmd7Encoder(io_out, order, mem << 20)
+    block_size = 16384
+    remain_size = len(data)
+    pos = 0
 
     try:
-        encoder.encode(data)
-        encoder.flush()
-        encoder.close()
-        sys.stdout.buffer.write(io_out.getvalue())
+        if version == "8 (version I)":
+            encoder = pyppmd.Ppmd8Encoder(order, mem)
+        else:
+            encoder = pyppmd.Ppmd7Encoder(order, mem)
+
+        compressed = b""
+        while remain_size > 0:
+            encode_size = min(block_size, remain_size)
+            compressed += encoder.encode(data[pos:pos+encode_size])
+            remain_size -= encode_size
+            pos += encode_size
+
+        compressed += encoder.flush(True)
+
+        sys.stdout.buffer.write(compressed)
     except Exception as e:
         print(e, file=sys.stderr)
         exit(1)
