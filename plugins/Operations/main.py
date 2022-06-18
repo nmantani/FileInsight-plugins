@@ -85,6 +85,7 @@ class FileInsight:
         self.getDocumentCount = getDocumentCount
         self.getDocumentURL = getDocumentURL
         self.activateDocumentAt = activateDocumentAt
+        self.getdocument_informed = False
 
     # Workaround for the truncation bug of getDocument()
     def getDocument(self):
@@ -93,6 +94,11 @@ class FileInsight:
         if length == getSelectionLength():
             data = getSelection()
         else:
+            if length > (1000**2) * 10 and not self.getdocument_informed: # 10MB
+                self.show_info_dialog("Due to a bug in the plugin API of FileInsight, processing a whole file of a large file (> 10MB) without selecting the region takes a long time.\n\n" \
+                                      "Please select the whole file next time for faster processing.")
+                self.getdocument_informed = True # To not show the dialog multiple times
+
             data = getDocument()
             if length - len(data) > 0:
                 for i in range(len(data), length):
@@ -144,20 +150,47 @@ class FileInsight:
 
         return "%s %d" % (name, last_index)
 
-    def bookmark_yesno_dialog(self, num_bookmark):
+    def show_info_dialog(self, message):
         """
-        Show a confirmation dialog of adding many bookmarks
+        Show an information dialog
         """
         # Do not show command prompt window
         startupinfo = subprocess.STARTUPINFO()
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Execute bookmark_yesno_dialog.py to show confirmation dialog
-        p = subprocess.Popen([VENV_PYTHON, "Misc/bookmark_yesno_dialog.py", str(num_bookmark)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        # Execute info_dialog.py to show an information dialog
+        p = subprocess.Popen([VENV_PYTHON, "info_dialog.py", message], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
-        # Receive scan result
+        # Receive output
         stdout_data, stderr_data = p.communicate()
         ret = p.wait()
+
+        return ret
+
+    def show_yesno_dialog(self, message):
+        """
+        Show a confirmation dialog
+        """
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute yesno_dialog.py to show confirmation dialog
+        p = subprocess.Popen([VENV_PYTHON, "yesno_dialog.py", message], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+        # Receive output
+        stdout_data, stderr_data = p.communicate()
+        ret = p.wait()
+
+        return ret
+
+    def bookmark_yesno_dialog(self, num_bookmark):
+        """
+        Show a confirmation dialog of adding many bookmarks
+        """
+        message = "Adding many bookmarks (over 100) may take long time (more than 10 seconds).\r\n\r\nWould you like to add %s bookmarks?" % num_bookmark
+
+        ret = self.show_yesno_dialog(message)
 
         return ret
 
