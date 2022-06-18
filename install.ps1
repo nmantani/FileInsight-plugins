@@ -597,6 +597,7 @@ function install_python_modules_venv($work_dir, $update) {
     install_with_pip_venv "python-snappy" $update
     install_with_pip_venv "qiling==$QILING_VERSION" $update
     install_with_pip_venv "seaborn" $update
+    install_with_pip_venv "speakeasy-emulator" $update
     install_with_pip_venv "requests" $update
     install_with_pip_venv "unicorn==$UNICORN_VERSION" $update
     install_with_pip_venv "watchdog" $update

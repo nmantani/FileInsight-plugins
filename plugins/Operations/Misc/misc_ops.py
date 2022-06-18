@@ -460,7 +460,7 @@ def emulate_code(fi):
         return
 
     # Get parameters from emulate_code_dialog.py
-    (file_type, os_type, arch, big_endian, cmd_args, timeout) = stdout_data.split("\t")
+    (framework, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout) = stdout_data.split("\t")
 
     # Create a temporary file to write data
     fd, file_path = tempfile.mkstemp()
@@ -471,8 +471,11 @@ def emulate_code(fi):
     tab_name = fi.get_new_document_name("Emulation trace")
     tab_index = tab_name[16:] # Get index number
 
-    # Execute emulate_code.py to emulate code
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code.py", file_path, file_type, os_type, arch, big_endian, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    # Execute emulate_code_qiling.py or emulate_code_speakeasy.py to emulate code
+    if framework == "Qiling Framework":
+        p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code_qiling.py", file_path, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    else: # Speakeasy
+        p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code_speakeasy.py", file_path, file_type, os_type, arch, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -480,7 +483,7 @@ def emulate_code(fi):
 
     os.remove(file_path) # Cleanup temporary file
 
-    # emulate_code.py exited with error
+    # emulate_code_qiling.py exited with error
     if ret == 1:
         stderr_data = stderr_data.replace("\x0d\x0a", "\x0a")
         # Remove colorlized part of log data introduced since Qiling Framework 1.2.1
@@ -489,7 +492,7 @@ def emulate_code(fi):
         stderr_data = re.sub("\x1b\[0m", "", stderr_data)
         print(stderr_data),
         return
-    elif ret == -1 or ret == -2 or ret == -3 or ret == -4:
+    elif ret < 0:
         if ret == -1: # packaging is not installed
             fi.show_module_install_instruction("packaging")
 
@@ -513,6 +516,9 @@ def emulate_code(fi):
             print("You can also do the setup with install.ps1:")
             print("powershell -exec bypass -command \"IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))\"")
 
+        if ret == -5: # Speakeasy is not installed
+            fi.show_module_install_instruction("speakeasy", "speakeasy-emulator")
+
         return
 
     if fi.getSelectionLength() > 0:
@@ -521,11 +527,15 @@ def emulate_code(fi):
         print("Emulated the whole file as %s.\n" % file_type.lower())
 
     print("Emulation settings:")
+    print("Emulation framework: %s" % framework)
     print("File type: %s" % file_type.lower())
     print("OS: %s" % os_type)
     print("Architecture: %s" % arch)
-    print("Big endian: %s" % str(big_endian).lower())
+    if framework == "Qiling Framework":
+        print("Big endian: %s" % str(big_endian).lower())
     print("Command line arguments: %s" % cmd_args)
+    if framework == "Qiling Framework":
+        print("Multithread: %s" % str(multithread))
     print("Timeout: %s" % timeout)
     print("")
 
@@ -538,7 +548,7 @@ def emulate_code(fi):
     stderr_data = re.sub("\[=\]\t\[\+\] ", "", stderr_data)
     trace += stderr_data
 
-    # For the case that emulate_code.py exited during ql.run()
+    # For the case that emulate_code_qiling.py exited during ql.run()
     if stdout_data == "":
         print("Emulation aborted.")
         return
@@ -559,10 +569,10 @@ def emulate_code(fi):
 
     if len(stdout_splitted) > 1:
         bookmarked = False
-        tab_name = fi.get_new_document_name("Memory dump")
+        #tab_name = fi.get_new_document_name("Memory dump")
         for i in range(1, len(stdout_splitted)):
             memory_dump = stdout_splitted[i]
-            fi.newDocument("%s - %d" % (tab_name, (i - 1)), 1)
+            fi.newDocument("Memory dump %s - %d" % (tab_index, (i - 1)), 1)
             fi.setDocument("".join(memory_dump))
 
             start = None

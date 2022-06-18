@@ -1,6 +1,6 @@
 #
 # Emulate code - Emulate selected region as an executable or shellcode
-# with Qiling Framework (the whole file if not selected)
+# (the whole file if not selected)
 #
 # Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
@@ -139,7 +139,7 @@ def execve_hook(ql, execve_pathname, execve_argv, execve_envp, *args, **kw):
 
     qiling.os.posix.syscall.unistd.ql_syscall_execve(ql, execve_pathname, execve_argv, execve_envp, *args, **kw)
 
-if len(sys.argv) == 9:
+if len(sys.argv) == 10:
     file_path = sys.argv[1]
     file_type = sys.argv[2].lower()
     os_type = sys.argv[3].lower()
@@ -152,8 +152,13 @@ if len(sys.argv) == 9:
     else:
         big_endian = False
     cmd_args = shlex.split(sys.argv[6])
-    timeout = int(sys.argv[7])
-    tab_index = int(sys.argv[8])
+    multithread = sys.argv[7]
+    if multithread == "True":
+        multithread = True
+    else:
+        multithread = False
+    timeout = int(sys.argv[8])
+    tab_index = int(sys.argv[9])
 
     if not check_rootfs_files(rootfs_base):
         sys.exit(-4) # rootfs files are not properly set up
@@ -168,7 +173,7 @@ if len(sys.argv) == 9:
         try:
             # output parameter has been removed since Qiling Framework 1.2.3
             if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
-                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=True, verbose=4, profile="%s.ql" % os_type)
+                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=4, profile="%s.ql" % os_type)
             # filename parameter has been renamed to argv since Qiling Framework 1.2.1
             elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.1"):
                 ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
@@ -199,7 +204,7 @@ if len(sys.argv) == 9:
                 else:
                     endian = QL_ENDIAN.EL
 
-                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, endian=endian, verbose=4)
+                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, endian=endian, multithread=multithread, verbose=4)
 
                 if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2") and os_type == "linux":
                     ql.os.set_syscall("execve", execve_hook)
@@ -229,7 +234,7 @@ if len(sys.argv) == 9:
             sys.exit(1)
 else:
     print(sys.argv, file=sys.stderr)
-    print("Usage: emulate_code.py file_path file_type os arch big_endian cmd_args timeout tab_index", file=sys.stderr)
+    print("Usage: emulate_code_qiling.py file_path file_type os arch big_endian cmd_args multithread timeout tab_index", file=sys.stderr)
     sys.exit(1)
 
 all_mem = None
@@ -254,7 +259,8 @@ else:
 
 print("\nMemory map:", file=sys.stderr)
 if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-    ql.mem.get_mapinfo()
+    for info_line in ql.mem.get_formatted_mapinfo():
+        print(info_line, file=sys.stderr)
 else:
     ql.mem.show_mapinfo()
 print("", file=sys.stderr)
@@ -281,7 +287,7 @@ for i in range(start_index, len(all_mem) + start_index):
     if image:
         info += " (%s)" % image.path
 
-    if file_path in info or info in ("[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
+    if file_path in info or info in ("[shellcode]", "[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
         print('Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (info, start, end, end - start, tab_index, num_dump), file=sys.stderr)
         sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
         num_dump += 1

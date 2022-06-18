@@ -350,7 +350,7 @@ ops_dict["Misc"] = ("Emulate code",
                     "Hash values",
                     "Send to (CLI)",
                     "Send to (GUI)")
-tooltip_dict["Misc"] = ("Emulate selected region as an executable or shellcode\nwith Qiling Framework (the whole file if not selected)",
+tooltip_dict["Misc"] = ("Emulate selected region as an executable or shellcode\n(the whole file if not selected)",
                         "Compare contents of two files",
                         "Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of\nselected region (the whole file if not selected)",
                         "Send selected region (the whole file if not selected) to other CLI program and show output",
