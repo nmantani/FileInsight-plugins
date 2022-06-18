@@ -452,7 +452,7 @@ for c in categories:
     def menuselect_callback(event, tooltip_dict=tooltip_dict[c]):
         global tooltip_window
         # Ignore events when the menu is opened or closed
-        if event.y != 0 and event.widget.index("active") != None:
+        if event.widget.index("active") != None:
             # If tooltip is shown, hide it
             if tooltip_window:
                 tooltip_window.destroy()
