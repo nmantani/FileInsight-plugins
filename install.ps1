@@ -57,6 +57,7 @@ Param(
 $RELEASE_VERSION = "2.14"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.9.12"
+#$PYTHON_VERSION = "3.10.5" # python-lzo 1.12 does not work with Python 3.10
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $EXIFTOOL_VERSION = "12.42"
@@ -72,6 +73,7 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3EC8DEB6756E6EF4CAA6F4FA4BB80E66D2AB7F101F212E39167B728BE92FA47A"
 $PYTHON_HASH = "2BA57AB2281094F78FC0227A27F4D47C90D94094E7CCA35CE78419E616B3CB63"
+#$PYTHON_HASH = "69165821DAD57C6D8D29EC8598933DB7C4498F8EF9D477FA13C677FD82567B58" # Python 3.10.5
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $EXIFTOOL_HASH = "3CA80EE5DFC8C52AB4378260507B7A776FBBB500410C44DFCFB0655B11F897C8"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
@@ -393,12 +395,26 @@ function install_python3($work_dir) {
     Write-Host ""
 }
 
-function setup_venv($work_dir) {
+function setup_venv($work_dir, $update) {
     Write-Host "[+] Setting up Python virtual environment python3-venv..."
 
-    if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP)) {
+    if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP) -and !$update) {
         Write-Host "[*] python3-venv is already created. Skipping setup."
     } else {
+        if ($update) {
+            Write-Host "[+] Removing old Python virtual environment python3-venv..."
+            Remove-Item $VENV_PATH -Recurse -Force
+            Write-Host "[+] Done."
+        }
+
+        if ((Test-Path $VENV_PYTHON) -or (Test-Path $VENV_PIP)) {
+            Write-Host "[!] Removal of python3-venv has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
+        Write-Host "[+] Creating Python virtual environment python3-venv..."
         Write-Host "$PYTHON_EXE -3 -m venv '$VENV_PATH'"
         Invoke-Expression "$PYTHON_EXE -3 -m venv '$VENV_PATH'"
 
@@ -408,6 +424,19 @@ function setup_venv($work_dir) {
             Write-Host "[+] Aborting installation."
             exit
         }
+
+        if ($PROXY_URL) {
+            Write-Host "[+] Done."
+            Write-Host "[+] Updating pip for Python virtual environment python3-venv..."
+            Write-Host "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} --upgrade pip"
+            Invoke-Expression "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} --upgrade pip"
+        } else {
+            Write-Host "[+] Done."
+            Write-Host "[+] Updating pip for Python virtual environment python3-venv..."
+            Write-Host "&'$VENV_PYTHON' -m pip install --upgrade pip"
+            Invoke-Expression "&'$VENV_PYTHON' -m pip install --upgrade pip"
+        }
+
         Write-Host "[+] Done."
         Write-Host "[+] Python virtual environment python3-venv has been created."
     }
@@ -932,7 +961,7 @@ if ($update) {
     }
     install_python3 $work_dir
     if ($venv) {
-        setup_venv
+        setup_venv $work_dir $true
         install_python_modules_venv $work_dir $true
     } else {
         install_python_modules $work_dir $true
@@ -946,7 +975,7 @@ if ($update) {
     install_fileinsight_plugins $work_dir
     install_python3 $work_dir
     if ($venv) {
-        setup_venv
+        setup_venv $work_dir
         install_python_modules_venv $work_dir $true
     } else {
         install_python_modules $work_dir
