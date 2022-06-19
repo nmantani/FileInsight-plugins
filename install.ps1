@@ -401,17 +401,17 @@ function setup_venv($work_dir, $update) {
     if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP) -and !$update) {
         Write-Host "[*] python3-venv is already created. Skipping setup."
     } else {
-        if ($update) {
+        if ($update -and (Test-Path $VENV_PATH)) {
             Write-Host "[+] Removing old Python virtual environment python3-venv..."
             Remove-Item $VENV_PATH -Recurse -Force
             Write-Host "[+] Done."
-        }
 
-        if ((Test-Path $VENV_PYTHON) -or (Test-Path $VENV_PIP)) {
-            Write-Host "[!] Removal of python3-venv has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
+            if ((Test-Path $VENV_PATH)) {
+                Write-Host "[!] Removal of python3-venv has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
         }
 
         Write-Host "[+] Creating Python virtual environment python3-venv..."
