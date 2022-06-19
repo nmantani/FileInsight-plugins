@@ -33,7 +33,6 @@ import os
 import shlex
 import sys
 
-
 def get_logger():
     logger = logging.getLogger("speakeasy")
     if not logger.handlers:
@@ -42,6 +41,13 @@ def get_logger():
         logger.setLevel(logging.INFO)
 
     return logger
+
+def all_zero(data):
+    for d in data:
+        if d != 0:
+            return False
+
+    return True
 
 try:
     import speakeasy
@@ -137,6 +143,7 @@ if len(sys.argv) == 8:
             dump_data = b["data"]
             del(b["data"])
 
+            # Sort memory blocks except the first block
             consecutive = False
             for b in sorted(m["memory_blocks"][1:], key=lambda x: int(x["base"], 16)):
                 tag = b["tag"]
@@ -153,14 +160,22 @@ if len(sys.argv) == 8:
                     dump_num_block += 1
                 else:
                     consecutive = False
-                    sys.stdout.buffer.write(b"****MEMDUMP****" + dump_data)
 
-                    if dump_num_block > 1:
-                        dump_msg += 'Extracted region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
+                    if all_zero(dump_data):
+                        if dump_num_block > 1:
+                            dump_msg += 'The region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) contain only zero. Extraction is skipped."\n' % (dump_tag, dump_start,  dump_end, dump_size)
+                        else:
+                            dump_msg += 'The region %s (start: 0x%x end: 0x%x size: %d) contains only zero. Extraction is skipped."\n' % (dump_tag, dump_start, dump_end, dump_size)
                     else:
-                        dump_msg += 'Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
+                        sys.stdout.buffer.write(b"****MEMDUMP****" + dump_data)
 
-                    num_dump += 1
+                        if dump_num_block > 1:
+                            dump_msg += 'Extracted region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start,  dump_end, dump_size, tab_index, num_dump)
+                        else:
+                            dump_msg += 'Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
+
+                        num_dump += 1
+
                     dump_data = b["data"]
                     dump_start = base
                     dump_end = base + size
@@ -170,11 +185,17 @@ if len(sys.argv) == 8:
 
                 del(b["data"])
 
-        sys.stdout.buffer.write(b"****MEMDUMP****" + dump_data)
-        if dump_num_block > 1:
-            dump_msg += 'Extracted region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
+        if all_zero(dump_data):
+            if dump_num_block > 1:
+                dump_msg += 'The region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) contain only zero. Extraction is skipped."\n' % (dump_tag, dump_start,  dump_end, dump_size)
+            else:
+                dump_msg += 'The region %s (start: 0x%x end: 0x%x size: %d) contains only zero. Extraction is skipped."\n' % (dump_tag, dump_start, dump_end, dump_size)
         else:
-            dump_msg += 'Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
+            sys.stdout.buffer.write(b"****MEMDUMP****" + dump_data)
+            if dump_num_block > 1:
+                dump_msg += 'Extracted region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
+            else:
+                dump_msg += 'Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"\n' % (dump_tag, dump_start, dump_end, dump_size, tab_index, num_dump)
 
         print("", file=sys.stderr)
         print(dump_msg, file=sys.stderr)
