@@ -137,6 +137,9 @@ https://github.com/andrix/python-snappy/blob/master/LICENSE
 brotli is distributed under the MIT license.
 https://github.com/google/brotli/blob/master/LICENSE
 
+Speakeasy is distributed under the MIT license.
+https://github.com/mandiant/speakeasy/blob/master/LICENSE.txt
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------
