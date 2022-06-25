@@ -265,6 +265,7 @@ def find_venv():
 if __name__ == "__main__":
     # Tuple of plugin operations
     operations = (basic_ops.copy_to_new_file,
+                  basic_ops.switch_tabs,
                   basic_ops.bookmark,
                   basic_ops.cut_binary_to_clipboard,
                   basic_ops.copy_binary_to_clipboard,

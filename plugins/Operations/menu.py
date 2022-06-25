@@ -139,6 +139,7 @@ if len(sys.argv) < 4:
 ops_dict = {}
 tooltip_dict = {}
 ops_dict["Basic"] = ("Copy to new file",
+                     "Switch tabs",
                      "Bookmark",
                      "Cut binary to clipboard",
                      "Copy binary to clipboard",
@@ -155,6 +156,7 @@ ops_dict["Basic"] = ("Copy to new file",
                      "To lower case",
                      "Swap case")
 tooltip_dict["Basic"] = ("Copy selected region (the whole file if not selected) to a new file",
+                         "Switch file tabs with a listbox",
                          "Bookmark selected region with specified comment and color",
                          "Cut binary data of selected region to clipboard as hex-encoded text",
                          "Copy binary data of selected region to clipboard as hex-encoded text",

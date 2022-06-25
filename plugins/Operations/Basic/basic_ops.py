@@ -27,6 +27,7 @@
 
 import binascii
 import subprocess
+from sys import stdout
 
 def copy_to_new_file(fi):
     """
@@ -529,3 +530,35 @@ def change_endianness(fi):
             print("Added a bookmark to selected region of plugin output.")
     else:
         print("Please select a region larger than one byte to use this plugin.")
+
+def switch_tabs(fi):
+    """
+    Switch tabs with a listbox
+    """
+
+    num_tabs = fi.getDocumentCount()
+    tab_list = ""
+    current_tab = fi.getDocumentName()
+    current_tab_index = 0
+    for i in range(num_tabs):
+        fi.activateDocumentAt(i)
+        t = fi.getDocumentName()
+        tab_list += "%s\r\n" % t
+        if current_tab == t:
+            current_tab_index = i
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute switch_tabs_dialog.py to show GUI
+    p = subprocess.Popen([fi.get_venv_python(), "Basic/switch_tabs_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    stdout_data, stderr_data = p.communicate(input=tab_list)
+
+    if stdout_data == "":
+        fi.activateDocumentAt(current_tab_index)
+    else:
+        new_tab_index = int(stdout_data)
+        fi.activateDocumentAt(new_tab_index)
+        print('Switched to "%s".' % tab_list.split("\r\n")[new_tab_index])
