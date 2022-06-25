@@ -139,7 +139,7 @@ if len(sys.argv) < 4:
 ops_dict = {}
 tooltip_dict = {}
 ops_dict["Basic"] = ("Copy to new file",
-                     "Switch tabs",
+                     "Switch file tabs",
                      "Bookmark",
                      "Cut binary to clipboard",
                      "Copy binary to clipboard",

@@ -531,9 +531,9 @@ def change_endianness(fi):
     else:
         print("Please select a region larger than one byte to use this plugin.")
 
-def switch_tabs(fi):
+def switch_file_tabs(fi):
     """
-    Switch tabs with a listbox
+    Switch file tabs with a listbox
     """
 
     num_tabs = fi.getDocumentCount()
@@ -552,7 +552,7 @@ def switch_tabs(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute switch_tabs_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Basic/switch_tabs_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_venv_python(), "Basic/switch_file_tabs_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=tab_list)
 

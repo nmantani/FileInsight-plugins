@@ -1,5 +1,5 @@
 #
-# Switch tabs - Switch file tabs with a listbox
+# Switch file tabs - Switch file tabs with a listbox
 #
 # Copyright (c) 2022, Nobutaka Mantani
 # All rights reserved.
@@ -45,7 +45,7 @@ for t in tabs:
 
 # Create a dialog
 root = tkinter.Tk()
-root.title("Switch tabs")
+root.title("Switch file tabs")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 strvar_tabs = tkinter.StringVar(value=tabs)
