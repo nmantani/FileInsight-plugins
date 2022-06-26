@@ -537,6 +537,10 @@ def switch_file_tabs(fi):
     """
 
     num_tabs = fi.getDocumentCount()
+    if num_tabs == 0:
+        print("There is no file tab to switch.")
+        return
+
     tab_list = ""
     current_tab = fi.getDocumentName()
     current_tab_index = 0
