@@ -111,7 +111,7 @@ def show_version_dialog(root, version):
     label_version = tkinter.Label(dialog, text="FileInsight-plugins version %s" % version)
     label_version.grid(row=0, column=0, padx=15, pady=5, sticky="w")
 
-    label_copyright = tkinter.Label(dialog, text="Copyright (c) 2012-2021, Nobutaka Mantani\nAll rights reserved.", justify="left")
+    label_copyright = tkinter.Label(dialog, text="Copyright (c) 2012-2022, Nobutaka Mantani\nAll rights reserved.", justify="left")
     label_copyright.grid(row=1, column=0, padx=15, pady=5, sticky="w")
 
     label_link = tkinter.Label(dialog, text="https://github.com/nmantani/FileInsight-plugins/", fg="#0000ff", justify="left", cursor="hand2")
