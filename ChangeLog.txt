@@ -1,7 +1,7 @@
 2022-06-27 version 2.15
 * Important changes
-  - Python virtual environment (venv) is used to avoid Python module version conflicts with other analysis tools.
-  - All Python module dependencies are installed under "%USERPROFILE%\Documents\McAfee FileInsight\plugins\Operations\python3-venv" .
+  - Python virtual environment (venv) is used to avoid Python package version conflicts with other analysis tools.
+  - All Python package dependencies are installed under "%USERPROFILE%\Documents\McAfee FileInsight\plugins\Operations\python3-venv" .
 * New plugin
   - Basic operations
     - "Switch file tabs" plugin
