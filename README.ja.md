@@ -50,8 +50,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [Use case 5: Code emulation](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-5--Code-emulation)
 
 ## インストール方法
-### 自動でのインストール
-以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3.9.x (x64) を含む全ての必要なものがインストールされます。
+以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3.9.x (x64) を含む必要なものがインストールされます。
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
@@ -64,9 +63,7 @@ curl -x http://10.0.0.1:8080 -Lo install.ps1 https://raw.githubusercontent.com/n
 powershell -exec bypass .\install.ps1
 ```
 
-## 手動でのインストール
-詳しくは [INSTALL.ja.md](INSTALL.ja.md) をお読みください。
-手動でのインストールは多数の手順が必要となりますので、**自動でのインストールを強くおすすめします。**
+手動でインストールが必要な Python モジュールが数個あります。プラグインが表示するインストール手順に従ってください。
 
 ## 使い方
 Plugins タブにある "Operations" をクリックして、プラグインを選択してください。
@@ -127,10 +124,12 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (130個)
+## プラグインの一覧 (131個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
+* Switch file tabs  
+  ファイルのタブをリストボックスを使って切り替えます。
 * Bookmark  
   選択範囲を指定したコメントと色でブックマークします。
 * Cut binary to clipboard  

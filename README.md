@@ -50,8 +50,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [Use case 5: Code emulation](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-5--Code-emulation)
 
 ## How to install
-### Automatic installation
-Please execute the following command. The latest release version of FileInsight-plugins and all pre-requisites including FileInsight and Python 3.9.x (x64) will be installed.
+Please execute the following command. The latest release version of FileInsight-plugins and pre-requisites including FileInsight and Python 3.9.x (x64) will be installed.
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
@@ -64,9 +63,7 @@ curl -x http://10.0.0.1:8080 -Lo install.ps1 https://raw.githubusercontent.com/n
 powershell -exec bypass .\install.ps1
 ```
 
-### Manual installation
-Please read [INSTALL.md](INSTALL.md) for details.
-**I strongly recommend automatic installation** because manual installation requires many steps.
+There are a few Python modules that is necessary manual installation. Please follow installation instructions displayed by plugins.
 
 ## How to use
 Please click "Operations" in the "Plugins" tab then select a plugin.
@@ -131,10 +128,12 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (130 plugins)
+## List of plugins (131 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
+* Switch file tabs  
+  Switch file tabs with a listbox
 * Bookmark  
   Bookmark selected region with specified comment and color
 * Cut binary to clipboard  
