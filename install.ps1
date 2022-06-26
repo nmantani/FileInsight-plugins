@@ -514,11 +514,11 @@ function install_python_modules_venv($work_dir, $update) {
     install_with_pip_venv "pyppmd" $update
     install_with_pip_venv "python-magic-bin" $update
     install_with_pip_venv "python-snappy" $update
-    install_with_pip_venv "qiling==$QILING_VERSION" $update
     install_with_pip_venv "seaborn" $update
     install_with_pip_venv "speakeasy-emulator" $update
+    install_with_pip_venv "qiling" $update # Install qiling after speakeasy to make sure newer version of unicorn
     install_with_pip_venv "requests" $update
-    install_with_pip_venv "unicorn==$UNICORN_VERSION" $true # Make sure to install specified version because speakeasy depends on old version of unicorn
+    install_with_pip_venv "unicorn" $update
     install_with_pip_venv "watchdog" $update
     install_with_pip_venv "xtea" $update
     install_with_pip_venv "yara-python" $update
