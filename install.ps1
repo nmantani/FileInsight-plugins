@@ -54,16 +54,16 @@ Param(
     [Switch]$snapshot
 )
 
-$RELEASE_VERSION = "2.14"
+$RELEASE_VERSION = "2.15"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.9.12"
+$PYTHON_VERSION = "3.9.13"
 #$PYTHON_VERSION = "3.10.5" # python-lzo 1.12 does not work with Python 3.10
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $EXIFTOOL_VERSION = "12.42"
 $QUICKLZ_VERSION = "1.5.0"
-$QILING_VERSION = "1.2.3"
-$UNICORN_VERSION = "1.0.3"
+$QILING_VERSION = "1.4.3"
+$UNICORN_VERSION = "2.0.0rc7"
 
 $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-venv"
 $VENV_PYTHON = $VENV_PATH + "\Scripts\python.exe"
@@ -71,8 +71,8 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "3EC8DEB6756E6EF4CAA6F4FA4BB80E66D2AB7F101F212E39167B728BE92FA47A"
-$PYTHON_HASH = "2BA57AB2281094F78FC0227A27F4D47C90D94094E7CCA35CE78419E616B3CB63"
+$FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D9FD2FADCBB094"
+$PYTHON_HASH = "FB3D0466F3754752CA7FD839A09FFE53375FF2C981279FD4BC23A005458F7F5D"
 #$PYTHON_HASH = "69165821DAD57C6D8D29EC8598933DB7C4498F8EF9D477FA13C677FD82567B58" # Python 3.10.5
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $EXIFTOOL_HASH = "3CA80EE5DFC8C52AB4378260507B7A776FBBB500410C44DFCFB0655B11F897C8"
@@ -143,9 +143,9 @@ function download_file($url, $save_path) {
     if (Get-Command curl.exe -ea SilentlyContinue) {
         # XXX: setting user-agent header is required to download QuickLZ library
         if ($PROXY_URL) {
-            curl.exe -x "$PROXY_URL" -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" -Lo "$save_path" "$url"
+            curl.exe -x "$PROXY_URL" -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0" -Lo "$save_path" "$url"
         } else {
-            curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0" -Lo "$save_path" "$url"
+            curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0" -Lo "$save_path" "$url"
         }
     } else {
         Write-Host "[+] Progress of download is not shown. Please be patient."
@@ -157,7 +157,7 @@ function download_file($url, $save_path) {
         }
 
         # XXX: setting user-agent header is required to download QuickLZ library
-        $web_client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0")
+        $web_client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0")
         $web_client.DownloadFile($url, $save_path)
     }
 }
@@ -443,87 +443,6 @@ function setup_venv($work_dir, $update) {
     Write-Host ""
 }
 
-function install_with_pip($name, $update, $url="") {
-    # "--upgrade" option is disabled if version is specified
-    if ($name -match "==") {
-        $name_with_version = $name
-        $name = $name -replace "==.+", ""
-        $update = $false
-    } else {
-        $name_with_version = ""
-    }
-
-    Write-Host "[+] Installing $name Python module..."
-    $installed = &$PYTHON_EXE -3 -m pip show $name
-    if ([bool]$installed -and !$update) {
-        Write-Host "[*] $name Python module is already installed. Skipping installation."
-    } else {
-        if ($update) {
-            $upgrade_opt = "--upgrade"
-        } else {
-            $upgrade_opt = ""
-        }
-
-        if ($url -ne "") {
-            $package = $url
-        } else {
-            if ($name_with_version -ne "") {
-                $package = $name_with_version
-            } else {
-                $package = $name
-            }
-        }
-
-        if ($PROXY_URL) {
-            Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
-        } else {
-            Write-Host "$PYTHON_EXE -3 -m pip install $upgrade_opt $package"
-            Invoke-Expression "$PYTHON_EXE -3 -m pip install $upgrade_opt $package"
-        }
-        $installed = &$PYTHON_EXE -3 -m pip show $name
-        if ([bool]$installed) {
-            Write-Host "[+] Done."
-            Write-Host "[+] $name Python module has been installed."
-        } else {
-            Write-Host "[!] Failed to install $name Python module."
-            Write-Host "[!] Please install it manually."
-        }
-    }
-    Write-Host ""
-}
-
-function install_python_modules($work_dir, $update) {
-    Write-Host "[+] Installing Python modules..."
-
-    install_with_pip "Pillow" $update
-    install_with_pip "PyTEA" $update
-    install_with_pip "base58" $update
-    install_with_pip "binwalk" $update "https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v$BINWALK_VERSION.zip"
-    install_with_pip "blackboxprotobuf" $update
-    install_with_pip "brotli" $update
-    install_with_pip "capstone" $update
-    install_with_pip "lz4" $update
-    install_with_pip "lzjb" $update "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip"
-    install_with_pip "matplotlib" $update
-    install_with_pip "packaging" $update
-    install_with_pip "pefile" $update
-    install_with_pip "ppmd-cffi" $update
-    install_with_pip "pybase62" $update
-    install_with_pip "pycryptodomex" $update
-    install_with_pip "pyimpfuzzy-windows" $update
-    install_with_pip "python-magic-bin" $update
-    install_with_pip "python-snappy" $update
-    install_with_pip "qiling==$QILING_VERSION" $update
-    install_with_pip "seaborn" $update
-    install_with_pip "requests" $update
-    install_with_pip "unicorn==$UNICORN_VERSION" $update
-    install_with_pip "watchdog" $update
-    install_with_pip "xtea" $update
-    install_with_pip "yara-python" $update
-    install_with_pip "zstandard" $update
-}
-
 function install_with_pip_venv($name, $update, $url="") {
     # "--upgrade" option is disabled if version is specified
     if ($name -match "==") {
@@ -595,7 +514,7 @@ function install_python_modules_venv($work_dir, $update) {
     install_with_pip_venv "pyppmd" $update
     install_with_pip_venv "python-magic-bin" $update
     install_with_pip_venv "python-snappy" $update
-    install_with_pip_venv "qiling==$QILING_VERSION" $update
+    install_with_pip_venv "qiling==$QILING_VERSION" $true # Make sure to install specified version
     install_with_pip_venv "seaborn" $update
     install_with_pip_venv "speakeasy-emulator" $update
     install_with_pip_venv "requests" $update
@@ -946,27 +865,20 @@ if ($PROXY_URL) {
 }
 
 $work_dir = create_working_directory
-$venv = $false
 
 if ($update) {
     if ($snapshot) {
         Write-Host "[+] Updating FileInsight-plugins to the latest snapshot. Existing files will be overwritten."
         install_fileinsight $work_dir
         install_fileinsight_plugins $work_dir $true $true
-        $venv = $true
     } else {
         Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
         install_fileinsight $work_dir
         install_fileinsight_plugins $work_dir $true $false
-        $venv = $false
     }
     install_python3 $work_dir
-    if ($venv) {
-        setup_venv $work_dir $true
-        install_python_modules_venv $work_dir $true
-    } else {
-        install_python_modules $work_dir $true
-    }
+    setup_venv $work_dir $true
+    install_python_modules_venv $work_dir $true
     install_qiling_rootfs $work_dir $true
     install_aplib $work_dir
     install_exiftool $work_dir $true
@@ -975,12 +887,8 @@ if ($update) {
     install_fileinsight $work_dir
     install_fileinsight_plugins $work_dir
     install_python3 $work_dir
-    if ($venv) {
-        setup_venv $work_dir
-        install_python_modules_venv $work_dir $true
-    } else {
-        install_python_modules $work_dir
-    }
+    setup_venv $work_dir
+    install_python_modules_venv $work_dir $false
     install_qiling_rootfs $work_dir
     install_aplib $work_dir
     install_exiftool $work_dir
