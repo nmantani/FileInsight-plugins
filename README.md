@@ -350,7 +350,7 @@ Your customization will be reflected in menu items.
 
 ### Misc operations
 * Emulate code  
-  Emulate selected region as an executable or shellcode with Qiling Framework (the whole file if not selected)
+  Emulate selected region as an executable or shellcode (the whole file if not selected)
 * File comparison  
   Compare contents of two files
 * Hash values  

@@ -346,7 +346,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ### Misc operations
 * Emulate code  
-  選択範囲を(選択していない場合は全体を) Qiling Framework でエミュレートします。
+  選択範囲を(選択していない場合は全体を) 実行ファイルまたはシェルコードとしてエミュレートします。
 * File comparison  
   2つのファイルの内容を比較します。
 * Hash values  
