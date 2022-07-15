@@ -56,15 +56,12 @@ Param(
 
 $RELEASE_VERSION = "2.15"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.9.13"
-#$PYTHON_VERSION = "3.10.5" # python-lzo 1.12 does not work with Python 3.10
+$PYTHON_VERSION = "3.10.5"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $DIE_VERSION = "3.05"
 $EXIFTOOL_VERSION = "12.42"
 $QUICKLZ_VERSION = "1.5.0"
-$QILING_VERSION = "1.4.3"
-$UNICORN_VERSION = "2.0.0rc7"
 
 $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-venv"
 $VENV_PYTHON = $VENV_PATH + "\Scripts\python.exe"
@@ -73,8 +70,7 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D9FD2FADCBB094"
-$PYTHON_HASH = "FB3D0466F3754752CA7FD839A09FFE53375FF2C981279FD4BC23A005458F7F5D"
-#$PYTHON_HASH = "69165821DAD57C6D8D29EC8598933DB7C4498F8EF9D477FA13C677FD82567B58" # Python 3.10.5
+$PYTHON_HASH = "69165821DAD57C6D8D29EC8598933DB7C4498F8EF9D477FA13C677FD82567B58"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $DIE_HASH = "1D571F9A8788FADC17BBC9BC62F3F42C084FD431E71C65132788B5579C933917"
 $EXIFTOOL_HASH = "3CA80EE5DFC8C52AB4378260507B7A776FBBB500410C44DFCFB0655B11F897C8"
@@ -186,10 +182,18 @@ function extract_zip($zip_path, $dest_path) {
 }
 
 function install_fileinsight_plugins($work_dir, $update, $snapshot) {
-    if ($snapshot) {
-        Write-Host "[+] Installing FileInsight-plugins (the latest snapshot)..."
+    if ($update) {
+        if ($snapshot) {
+            Write-Host "[+] Updating FileInsight-plugins to the latest snapshot. Existing files will be overwritten."
+        } else {
+            Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
+        }
     } else {
-        Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
+        if ($snapshot) {
+            Write-Host "[+] Installing FileInsight-plugins (the latest snapshot)..."
+        } else {
+            Write-Host "[+] Installing FileInsight-plugins-$RELEASE_VERSION..."
+        }
     }
 
     $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\main.py"
@@ -400,7 +404,19 @@ function install_python3($work_dir) {
 function setup_venv($work_dir, $update) {
     Write-Host "[+] Setting up Python virtual environment python3-venv..."
 
-    if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP) -and !$update) {
+    if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP)) {
+        $host_python_version = Invoke-Expression "$PYTHON_EXE -3 -V"
+        $venv_python_version = Invoke-Expression "&'$VENV_PYTHON' -V 2>&1"
+        if ($host_python_version -ne $venv_python_version) {
+            $venv_need_refresh = $true
+        } else {
+            $venv_need_refresh = $false
+        }
+    } else {
+        $venv_need_refresh = $true
+    }
+
+    if (!$venv_need_refresh) {
         Write-Host "[*] python3-venv is already created. Skipping setup."
     } else {
         if ($update -and (Test-Path $VENV_PATH)) {
@@ -600,6 +616,21 @@ function install_qiling_rootfs($work_dir, $update) {
         Write-Host "[+] Done."
 
         $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples\rootfs"
+
+        if ($update) {
+            Write-Host "[+] Removing old rootfs folder..."
+            Remove-Item $dest_dir -Recurse -Force
+            Write-Host "[+] Done."
+
+            if ((Test-Path $dest_dir)) {
+                Write-Host "[!] Removal of old rootfs folder has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            mkdir $dest_dir | Out-Null
+        }
+
         Write-Host "[+] Copying rootfs-master to $dest_dir ..."
         Copy-Item $extract_dir\* -Destination $dest_dir -Recurse -Force
 
@@ -746,7 +777,7 @@ function install_detect_it_easy($work_dir, $update) {
             $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\die_win64_portable"
 
             if (!(Test-Path $dest_dir)) {
-                mkdir $dest_dir
+                mkdir $dest_dir | Out-Null
                 if (!(Test-Path $dest_dir)) {
                     Write-Host "[!] Creation of $dest_dir has been failed."
                     remove_working_directory $work_dir
@@ -949,36 +980,19 @@ if ($PROXY_URL) {
 
 $work_dir = create_working_directory
 
-if ($update) {
-    if ($snapshot) {
-        Write-Host "[+] Updating FileInsight-plugins to the latest snapshot. Existing files will be overwritten."
-        install_fileinsight $work_dir
-        install_fileinsight_plugins $work_dir $true $true
-    } else {
-        Write-Host "[+] Updating FileInsight-plugins to $RELEASE_VERSION. Existing files will be overwritten."
-        install_fileinsight $work_dir
-        install_fileinsight_plugins $work_dir $true $false
-    }
-    install_python3 $work_dir
-    setup_venv $work_dir $true
-    install_python_modules_venv $work_dir $true
-    install_qiling_rootfs $work_dir $true
-    install_aplib $work_dir
-    install_detect_it_easy $work_dir $true
-    install_exiftool $work_dir $true
-    install_quicklz $work_dir
-} else {
-    install_fileinsight $work_dir
-    install_fileinsight_plugins $work_dir
-    install_python3 $work_dir
-    setup_venv $work_dir
-    install_python_modules_venv $work_dir $false
-    install_qiling_rootfs $work_dir
-    install_aplib $work_dir
-    install_detect_it_easy $work_dir $false
-    install_exiftool $work_dir
-    install_quicklz $work_dir
+install_fileinsight $work_dir
+install_fileinsight_plugins $work_dir $update $snapshot
+install_python3 $work_dir
+setup_venv $work_dir $update
+install_python_modules_venv $work_dir $update
+install_qiling_rootfs $work_dir $update
+install_aplib $work_dir
+if ($snapshot) {
+    install_detect_it_easy $work_dir $update
 }
+install_exiftool $work_dir $update
+install_quicklz $work_dir
+
 migrate_plugin_config
 
 remove_working_directory $work_dir
