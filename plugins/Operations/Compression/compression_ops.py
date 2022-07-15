@@ -836,7 +836,7 @@ def lzo_compress(fi):
             print("lzo Python module is not installed.")
             print("Please manually download python-lzo wheel file (.whl) for your Python version")
             print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it")
-            print("with the following commands, then try again.")
+            print("with the following commands on PowerShell, then try again.")
             print("&'%s'" % fi.get_venv_activate())
             print("pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl")
             print("deactivate")
@@ -892,7 +892,8 @@ def lzo_decompress(fi):
         if ret == -1: # python-lzo is not installed
             print("lzo Python module is not installed.")
             print("Please manually download python-lzo wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it with the following commands, then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it")
+            print("with the following commands on PowerShell, then try again.")
             print("&'%s'" % fi.get_venv_activate())
             print("pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl")
             print("deactivate")
@@ -1310,7 +1311,8 @@ def lzf_compress(fi):
         if ret == -1: # python-lzf is not installed
             print("lzf Python module is not installed.")
             print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with the following commands, then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it")
+            print("with the following commands on PowerShell, then try again.")
             print("&'%s'" % fi.get_venv_activate())
             print("pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl")
             print("deactivate")
@@ -1366,7 +1368,8 @@ def lzf_decompress(fi):
         if ret == -1: # python-lzf is not installed
             print("lzf Python module is not installed.")
             print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it with the following commands, then try again.")
+            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it")
+            print("with the following commands on PowerShell, then try again.")
             print("&'%s'" % fi.get_venv_activate())
             print("pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl")
             print("deactivate")
