@@ -60,6 +60,7 @@ $PYTHON_VERSION = "3.9.13"
 #$PYTHON_VERSION = "3.10.5" # python-lzo 1.12 does not work with Python 3.10
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
+$DIE_VERSION = "3.05"
 $EXIFTOOL_VERSION = "12.42"
 $QUICKLZ_VERSION = "1.5.0"
 $QILING_VERSION = "1.4.3"
@@ -75,6 +76,7 @@ $FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D
 $PYTHON_HASH = "FB3D0466F3754752CA7FD839A09FFE53375FF2C981279FD4BC23A005458F7F5D"
 #$PYTHON_HASH = "69165821DAD57C6D8D29EC8598933DB7C4498F8EF9D477FA13C677FD82567B58" # Python 3.10.5
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
+$DIE_HASH = "1D571F9A8788FADC17BBC9BC62F3F42C084FD431E71C65132788B5579C933917"
 $EXIFTOOL_HASH = "3CA80EE5DFC8C52AB4378260507B7A776FBBB500410C44DFCFB0655B11F897C8"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
@@ -689,6 +691,87 @@ function install_aplib($work_dir) {
     Write-Host ""
 }
 
+function install_detect_it_easy($work_dir, $update) {
+    Write-Host "[+] Installing Detect It Easy..."
+
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\die_win64_portable\diec.exe"
+    if ((Test-Path $file_path) -and !$update) {
+        Write-Host "[*] Detect It Easy is already installed. Skipping installation."
+    } else {
+        if ((Test-Path $file_path) -and $update) {
+            $current_version = (&$file_path --version).Substring(4)
+            $need_install = [System.Version] $current_version -lt $DIE_VERSION
+        } else {
+            $need_install = $true
+        }
+
+        if ($need_install) {
+            Write-Host "[+] Downloading Detect It Easy $DIE_VERSION..."
+            $archive_url = "https://github.com/horsicq/DIE-engine/releases/download/$DIE_VERSION/die_win64_portable_$DIE_VERSION.zip"
+            $zip_archive_path = "$work_dir\die_win64_portable_$DIE_VERSION.zip"
+            download_file $archive_url $zip_archive_path
+
+            if (!(Test-Path $zip_archive_path)) {
+                Write-Host "[!] Download has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+
+            Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $DIE_HASH)..."
+            $val = compute_hash $zip_archive_path
+            if ($val -eq $DIE_HASH) {
+                Write-Host "[+] OK."
+            } else {
+                Write-Host "[!] The hash value does not match ($val)."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+
+            Write-Host "[+] Extracting die_win64_portable_$DIE_VERSION.zip..."
+            $extract_dir = "$work_dir\die_win64_portable"
+            extract_zip $zip_archive_path $extract_dir
+            $file_path = "$extract_dir\diec.exe"
+
+            if (!(Test-Path $file_path)) {
+                Write-Host "[!] Extraction has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+
+            $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\die_win64_portable"
+
+            if (!(Test-Path $dest_dir)) {
+                mkdir $dest_dir
+                if (!(Test-Path $dest_dir)) {
+                    Write-Host "[!] Creation of $dest_dir has been failed."
+                    remove_working_directory $work_dir
+                    Write-Host "[+] Aborting installation."
+                    exit
+                }
+            }
+
+            Write-Host "[+] Copying $extract_dir to $dest_dir ..."
+            Copy-Item $extract_dir\* -Destination $dest_dir -Recurse -Force
+            if (!(Test-Path $file_path)) {
+                Write-Host "[!] Installation has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+            Write-Host "[+] Detect It Easy $DIE_VERSION has been installed."
+        } else {
+            Write-Host "[*] Detect It Easy $DIE_VERSION is already installed. Skipping installation."
+        }
+        Write-Host ""
+    }
+}
+
 function install_exiftool($work_dir, $update) {
     Write-Host "[+] Installing ExifTool..."
 
@@ -753,7 +836,7 @@ function install_exiftool($work_dir, $update) {
                 exit
             }
             Write-Host "[+] Done."
-            Write-Host "[+] ExifTool has been installed."
+            Write-Host "[+] ExifTool $EXIFTOOL_VERSION has been installed."
         } else {
             Write-Host "[*] ExifTool $EXIFTOOL_VERSION is already installed. Skipping installation."
         }
@@ -881,6 +964,7 @@ if ($update) {
     install_python_modules_venv $work_dir $true
     install_qiling_rootfs $work_dir $true
     install_aplib $work_dir
+    install_detect_it_easy $work_dir $true
     install_exiftool $work_dir $true
     install_quicklz $work_dir
 } else {
@@ -891,6 +975,7 @@ if ($update) {
     install_python_modules_venv $work_dir $false
     install_qiling_rootfs $work_dir
     install_aplib $work_dir
+    install_detect_it_easy $work_dir $false
     install_exiftool $work_dir
     install_quicklz $work_dir
 }

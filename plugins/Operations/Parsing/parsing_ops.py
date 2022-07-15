@@ -147,12 +147,47 @@ def file_type(fi):
         fi.show_module_install_instruction("magic", "python-magic-bin")
         return
 
-    ftype = stdout_data
+    file_type_python_magic = stdout_data
+
+    if not os.path.exists("Parsing/die_win64_portable/diec.exe"):
+        print("Detect It Easy is not installed.")
+        print("Please download die_win64_portable_****.zip from https://github.com/horsicq/DIE-engine/releases")
+        print("and extract files into '%s' folder." % (os.getcwd() + "\\Parsing\\die_win64_portable"))
+        return
+
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute exiftool.exe to get metadata
+    p = subprocess.Popen(["Parsing/die_win64_portable/diec.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive scan result
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    file_type_die = stdout_data
+
+    os.remove(filepath) # Cleanup
 
     if length > 0:
-        print("File type from offset %s to %s: %s" % (hex(offset), hex(offset + length - 1), ftype))
+        print("File type from offset %s to %s:" % (hex(offset), hex(offset + length - 1)))
+        print("[File type identified with python-magic]")
+        print(file_type_python_magic)
+        print("[File type identified with Detect It Easy]")
+        print(file_type_die)
     else:
-        print("File type of the whole file: %s" % ftype)
+        print("File type of the whole file:")
+        print("[File type identified with python-magic]")
+        print(file_type_python_magic)
+        print("[File type identified with Detect It Easy]")
+        print(file_type_die)
 
 def find_pe_file(fi):
     """
