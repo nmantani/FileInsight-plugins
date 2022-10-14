@@ -138,12 +138,13 @@ function download_file($url, $save_path) {
     }
 
     # curl.exe has been available since Windows 10 version 1803
+    $agent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"
     if (Get-Command curl.exe -ea SilentlyContinue) {
         # XXX: setting user-agent header is required to download QuickLZ library
         if ($PROXY_URL) {
-            curl.exe -x "$PROXY_URL" -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0" -Lo "$save_path" "$url"
+            curl.exe -x "$PROXY_URL" -A "$agent" -Lo "$save_path" "$url"
         } else {
-            curl.exe -A "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0" -Lo "$save_path" "$url"
+            curl.exe -A "$agent" -Lo "$save_path" "$url"
         }
     } else {
         Write-Host "[+] Progress of download is not shown. Please be patient."
@@ -155,7 +156,7 @@ function download_file($url, $save_path) {
         }
 
         # XXX: setting user-agent header is required to download QuickLZ library
-        $web_client.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:101.0) Gecko/20100101 Firefox/101.0")
+        $web_client.Headers.Add("user-agent", "$agent")
         $web_client.DownloadFile($url, $save_path)
     }
 }
@@ -991,7 +992,7 @@ if ($snapshot) {
     install_detect_it_easy $work_dir $update
 }
 install_exiftool $work_dir $update
-install_quicklz $work_dir
+#install_quicklz $work_dir
 
 migrate_plugin_config
 
