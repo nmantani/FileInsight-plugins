@@ -56,11 +56,11 @@ Param(
 
 $RELEASE_VERSION = "2.15"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.10.5"
+$PYTHON_VERSION = "3.10.8"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
-$DIE_VERSION = "3.05"
-$EXIFTOOL_VERSION = "12.42"
+$DIE_VERSION = "3.06"
+$EXIFTOOL_VERSION = "12.50"
 $QUICKLZ_VERSION = "1.5.0"
 
 $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-venv"
@@ -70,10 +70,10 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D9FD2FADCBB094"
-$PYTHON_HASH = "69165821DAD57C6D8D29EC8598933DB7C4498F8EF9D477FA13C677FD82567B58"
+$PYTHON_HASH = "725F50F912D297812D98F251AA87DCF1035745E0C5C267D97736A1AF41D7C782"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
-$DIE_HASH = "1D571F9A8788FADC17BBC9BC62F3F42C084FD431E71C65132788B5579C933917"
-$EXIFTOOL_HASH = "3CA80EE5DFC8C52AB4378260507B7A776FBBB500410C44DFCFB0655B11F897C8"
+$DIE_HASH = "F1F075145A7B5EE8556DBF8A66C4E64E6B7EFF71BCFEAED669F8F8471862FAC9"
+$EXIFTOOL_HASH = "D5BA2B249CB395F35E70D0D6B7CDFB39994DE80A8754E433756A3B4773B146EE"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function get_proxy_url {
@@ -494,11 +494,21 @@ function install_with_pip_venv($name, $update, $url="") {
         }
 
         if ($PROXY_URL) {
-            Write-Host "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
-            Invoke-Expression "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
+            if ($package -eq "pip") {
+                Write-Host "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
+                Invoke-Expression "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
+            } else {
+                Write-Host "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
+                Invoke-Expression "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
+            }
         } else {
-            Write-Host "&'$VENV_PIP' install $upgrade_opt $package"
-            Invoke-Expression "&'$VENV_PIP' install $upgrade_opt $package"
+            if ($package -eq "pip") {
+                Write-Host "&'$VENV_PYTHON' -m pip install $upgrade_opt $package"
+                Invoke-Expression "&'$VENV_PYTHON' -m pip install $upgrade_opt $package"
+            } else {
+                Write-Host "&'$VENV_PIP' install $upgrade_opt $package"
+                Invoke-Expression "&'$VENV_PIP' install $upgrade_opt $package"
+            }
         }
         $installed = &"$VENV_PIP" show $name
         if ([bool]$installed) {
@@ -515,6 +525,7 @@ function install_with_pip_venv($name, $update, $url="") {
 function install_python_modules_venv($work_dir, $update) {
     Write-Host "[+] Installing Python modules..."
 
+    install_with_pip_venv "pip" $update
     install_with_pip_venv "Pillow" $update
     install_with_pip_venv "PyTEA" $update
     install_with_pip_venv "base58" $update
@@ -884,7 +895,7 @@ function install_quicklz($work_dir) {
         Write-Host "[*] QuickLZ is already installed. Skipping installation."
     } else {
         Write-Host "[+] Downloading QuickLZ-$QUICKLZ_VERSION..."
-        $archive_url = "http://www.quicklz.com/150dll.zip"
+        $archive_url = "https://web.archive.org/web/20190617194930/http://www.quicklz.com/150dll.zip"
         $zip_archive_path = "$work_dir\150dll.zip"
         download_file $archive_url $zip_archive_path
 
@@ -992,7 +1003,7 @@ if ($snapshot) {
     install_detect_it_easy $work_dir $update
 }
 install_exiftool $work_dir $update
-#install_quicklz $work_dir
+install_quicklz $work_dir
 
 migrate_plugin_config
 
