@@ -1076,7 +1076,7 @@ def quicklz_decompress(fi):
 
         if ret == -1: # QuickLZ DLLs are not installed
             print("Error: cannot load QuickLZ DLL file.")
-            print("Please download QuickLZ DLL files from http://www.quicklz.com/150dll.zip")
+            print("Please download QuickLZ DLL files from https://web.archive.org/web/20190617194930/http://www.quicklz.com/150dll.zip")
             print("and copy quicklz150_64_1_safe.dll, quicklz150_64_2_safe.dll and quicklz150_64_3_safe.dll (64 bits version)")
             print("into '%s' folder." % (os.getcwd() + "\\Compression"))
             return
