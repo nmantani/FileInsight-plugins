@@ -393,7 +393,8 @@ tooltip_dict["Visualization"] = ("Visualize the whole file as a bitmap represent
                                  "Show byte histogram of selected region\n(the whole file if not selected)",
                                  "Show entropy graph of selected region\n(the whole file if not selected)")
 
-ops_dict["XOR"] = ("Decremental XOR",
+ops_dict["XOR"] = ("Simple XOR",
+                   "Decremental XOR",
                    "Incremental XOR",
                    "Null-preserving XOR",
                    "XOR with another file",
@@ -402,7 +403,8 @@ ops_dict["XOR"] = ("Decremental XOR",
                    "Guess multibyte XOR keys",
                    "Visual Decrypt",
                    "Visual Encrypt")
-tooltip_dict["XOR"] = ("XOR selected region while decrementing XOR key",
+tooltip_dict["XOR"] = ("XOR selected region with specified XOR key",
+                       "XOR selected region while decrementing XOR key",
                        "XOR selected region while incrementing XOR key",
                        "XOR selected region while skipping null bytes and XOR key itself",
                        "XOR selected region (the whole file if not selected)\nwith the content of another file as XOR key",

@@ -25,9 +25,54 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import binascii
 import hashlib
 import subprocess
 import time
+
+def simple_xor(fi):
+    """
+    XOR selected region with specified XOR key
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        key = fi.showSimpleDialog("XOR key (in hex, like 1122aabb):")
+
+        # Dialog has been closed or XOR key is empty
+        if key == None or key == "":
+            return
+        elif key[:2] == "0x":
+            key = key[2:]
+
+        if len(key) % 2 == 1:
+            key = "0" + key
+
+        try:
+            key_list = list(binascii.a2b_hex(key))
+        except:
+            print("Error: XOR key is invalid.")
+            return
+
+        data = list(fi.getDocument())
+
+        for i in range(0, length):
+            j = offset + i
+            data[j] = chr(ord(data[j]) ^ ord(key_list[i % len(key_list)]))
+
+        tab_name = fi.get_new_document_name("Output of Simple XOR")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument("".join(data))
+        fi.setBookmark(offset, length, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("XORed one byte from offset %s to %s with XOR key %s." % (hex(offset), hex(offset), key))
+        else:
+            print("XORed %s bytes from offset %s to %s with XOR key %s." % (length, hex(offset), hex(offset + length - 1), key))
+            print("Added a bookmark to XORed region.")
+    else:
+        print("Please select a region to use this plugin.")
 
 def decremental_xor(fi):
     """
@@ -473,7 +518,7 @@ def guess_multibyte_xor_keys(fi):
     if length > 0:
         data = fi.getSelection()
         print('Top ten XOR keys guessed from offset %s to %s are shown in the new "%s" tab.' % (hex(offset), hex(offset + length - 1), tab_name))
-        print("Please select the whole file and use these XOR key in the Decode tab to decode the file.\n")
+        print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
     else:
         offset = 0
         data = fi.getDocument()

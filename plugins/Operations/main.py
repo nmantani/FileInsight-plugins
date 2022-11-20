@@ -394,7 +394,8 @@ if __name__ == "__main__":
                    visualization_ops.byte_histogram,
                    visualization_ops.entropy_graph)
 
-    operations += (xor_ops.decremental_xor,
+    operations += (xor_ops.simple_xor,
+                   xor_ops.decremental_xor,
                    xor_ops.incremental_xor,
                    xor_ops.null_preserving_xor,
                    xor_ops.xor_with_another_file,
