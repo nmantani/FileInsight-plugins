@@ -165,7 +165,7 @@ def file_type(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute exiftool.exe to get metadata
+    # Execute diec.exe for file type identification
     p = subprocess.Popen(["Parsing/die_win64_portable/diec.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
