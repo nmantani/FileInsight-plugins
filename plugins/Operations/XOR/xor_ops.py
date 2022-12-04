@@ -518,13 +518,13 @@ def guess_multibyte_xor_keys(fi):
     if length > 0:
         data = fi.getSelection()
         print('Top ten XOR keys guessed from offset %s to %s are shown in the new "%s" tab.' % (hex(offset), hex(offset + length - 1), tab_name))
-        print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
+        print('Please select the whole file and use these XOR keys with "Simple XOR" plugin to decode the file.\n')
     else:
         offset = 0
         data = fi.getDocument()
         length = fi.getLength()
         print('Top ten XOR keys guessed from the whole file are shown in the new "%s" tab.' % tab_name)
-        print("Please select the whole file and use these XOR keys in the Decode tab to decode the file.\n")
+        print('Please select the whole file and use these XOR keys with "Simple XOR" plugin to decode the file.\n')
 
     time_start = time.time()
 
@@ -549,8 +549,10 @@ def guess_multibyte_xor_keys(fi):
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         if i < 10:
             key = shorten_xor_key(block[k])
-            output += "XOR key: 0x"
-            for j in range(len(key) - 1, -1, -1):
+            #output += "XOR key: 0x"
+            #for j in range(len(key) - 1, -1, -1):
+            output += "XOR key: "
+            for j in range(0, len(key)):
                 output += "%02x" % ord(block[k][j])
             output += "\n"
             output += "256 bytes pattern occurrence count: %i\n" % v
