@@ -432,6 +432,18 @@ if __name__ == "__main__":
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     if find_python3() and find_venv():
+        # Preload diec.exe to run it faster when "File type" plugin use it
+        if os.path.exists("Parsing/die_win64_portable/diec.exe"):
+            pid = os.getpid()
+            kernel32 = ctypes.windll.kernel32
+            mutex = kernel32.CreateMutexA(0, 1, "fileinsight-diec-preload-%s" % pid) # pid is not changed in a FileInsight process
+            result = kernel32.WaitForSingleObject(mutex, 0) # check lock status
+
+            # Not locked
+            if result == 0x00000000:
+                # Execute diec.exe in the background only once
+                p = subprocess.Popen(["Parsing/die_win64_portable/diec.exe", "main.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
         # Execute menu.py to show GUI
         # GUI portion is moved to menu.py to avoid hangup of FileInsight
         p = subprocess.Popen([VENV_PYTHON, "menu.py", str(point.x), str(point.y), __version__], startupinfo=startupinfo)
