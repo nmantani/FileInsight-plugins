@@ -56,7 +56,7 @@ Param(
 
 $RELEASE_VERSION = "2.15"
 $PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.10.8"
+$PYTHON_VERSION = "3.10.9"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $DIE_VERSION = "3.06"
@@ -70,7 +70,7 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D9FD2FADCBB094"
-$PYTHON_HASH = "725F50F912D297812D98F251AA87DCF1035745E0C5C267D97736A1AF41D7C782"
+$PYTHON_HASH = "B8C707FB7A3A80F49AF5A51C94F428525A3AD4331C7B9E3B2E321CAF5CB56D7D"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $DIE_HASH = "F1F075145A7B5EE8556DBF8A66C4E64E6B7EFF71BCFEAED669F8F8471862FAC9"
 $EXIFTOOL_HASH = "D5BA2B249CB395F35E70D0D6B7CDFB39994DE80A8754E433756A3B4773B146EE"
@@ -172,7 +172,12 @@ function compute_hash($path) {
 }
 
 function extract_zip($zip_path, $dest_path) {
-    if ((Get-Host).Version.Major -ge 5) {
+    if (Test-Path "C:\Windows\System32\tar.exe") {
+        if (!(Test-Path $dest_path)) {
+            mkdir $dest_path | Out-Null
+        }
+        tar.exe -x -f $zip_path -C $dest_path
+    } elseif ((Get-Host).Version.Major -ge 5) {
         Expand-Archive -Path $zip_path -DestinationPath $dest_path
     } else {
         [void] (New-Item -Path $dest_path -ItemType Directory -Force)
