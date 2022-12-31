@@ -50,6 +50,7 @@ button.focus() # Focus to this widget
 
 # Set callback functions
 button.bind("<Return>", lambda event, r=root, cu=combo_unit: print_setting(r, cu))
+combo_unit.bind("<Return>", lambda event, r=root, cu=combo_unit: print_setting(r, cu))
 
 # Adjust window position
 sw = root.winfo_screenwidth()
