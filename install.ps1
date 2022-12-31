@@ -57,6 +57,7 @@ Param(
 $RELEASE_VERSION = "2.15"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.10.9"
+$PYTHON_EMBEDDABLE_PACKAGES_VERSION = "20221231"
 $APLIB_VERSION = "1.1.1"
 $BINWALK_VERSION = "2.3.2"
 $DIE_VERSION = "3.06"
@@ -71,6 +72,7 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D9FD2FADCBB094"
 $PYTHON_HASH = "B8C707FB7A3A80F49AF5A51C94F428525A3AD4331C7B9E3B2E321CAF5CB56D7D"
+$PYTHON_EMBEDDABLE_PACKAGES_HASH = "216625D53610C0FC2057B036D2740B3F2A6E57D9D905A8E4034743884192CE87"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $DIE_HASH = "F1F075145A7B5EE8556DBF8A66C4E64E6B7EFF71BCFEAED669F8F8471862FAC9"
 $EXIFTOOL_HASH = "D5BA2B249CB395F35E70D0D6B7CDFB39994DE80A8754E433756A3B4773B146EE"
@@ -176,7 +178,7 @@ function extract_zip($zip_path, $dest_path) {
         if (!(Test-Path $dest_path)) {
             mkdir $dest_path | Out-Null
         }
-        tar.exe -x -f $zip_path -C $dest_path
+        tar.exe -x -f $zip_path -C $dest_path 2>$null
     } elseif ((Get-Host).Version.Major -ge 5) {
         Expand-Archive -Path $zip_path -DestinationPath $dest_path
     } else {
@@ -467,6 +469,21 @@ function setup_venv($work_dir, $update) {
     Write-Host ""
 }
 
+function remove_venv() {
+    if ((Test-Path $VENV_PATH)) {
+        Write-Host "[+] Removing old Python virtual environment python3-venv..."
+        Remove-Item $VENV_PATH -Recurse -Force
+        Write-Host "[+] Done."
+
+        if ((Test-Path $VENV_PATH)) {
+            Write-Host "[!] Removal of python3-venv has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+    }
+}
+
 function install_with_pip_venv($name, $update, $url="") {
     # "--upgrade" option is disabled if version is specified
     if ($name -match "==") {
@@ -560,6 +577,71 @@ function install_python_modules_venv($work_dir, $update) {
     install_with_pip_venv "zstandard" $update
 }
 
+function install_embeddable_python_packages($work_dir, $update) {
+    Write-Host "[+] Installing FileInsight-plugins-embeddable-python-packages..."
+
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-embed\python.exe"
+    if ((Test-Path $file_path) -and !$update) {
+        Write-Host "[*] FileInsight-plugins-embeddable-python-packages is already installed. Skipping installation."
+    } else {
+        Write-Host "[+] Downloading FileInsight-plugins-embeddable-python-packages $PYTHON_EMBEDDABLE_PACKAGES_VERSION..."
+        $archive_url = "https://github.com/nmantani/FileInsight-plugins-embeddable-python-packages/releases/download/$PYTHON_EMBEDDABLE_PACKAGES_VERSION/FileInsight-plugins-python3-embed-$PYTHON_EMBEDDABLE_PACKAGES_VERSION.zip"
+        $zip_archive_path = "$work_dir\FileInsight-plugins-python3-embed-$PYTHON_EMBEDDABLE_PACKAGES_VERSION.zip"
+        download_file $archive_url $zip_archive_path
+
+        if (!(Test-Path $zip_archive_path)) {
+            Write-Host "[!] Download has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+
+        Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $PYTHON_EMBEDDABLE_PACKAGES_HASH)..."
+        $val = compute_hash $zip_archive_path
+        if ($val -eq $PYTHON_EMBEDDABLE_PACKAGES_HASH) {
+            Write-Host "[+] OK."
+        } else {
+            Write-Host "[!] The hash value does not match ($val)."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+
+        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-embed"
+
+        if ((Test-Path $dest_dir) -and $update) {
+            Write-Host "[+] Removing old python3-embed folder..."
+            Remove-Item $dest_dir -Recurse -Force
+            Write-Host "[+] Done."
+
+            if ((Test-Path $dest_dir)) {
+                Write-Host "[!] Removal of old python3-embed folder has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            mkdir $dest_dir | Out-Null
+        }
+
+        Write-Host "[+] Extracting FileInsight-plugins-python3-embed-$PYTHON_EMBEDDABLE_PACKAGES_VERSION.zip..."
+        $extract_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations"
+        extract_zip $zip_archive_path $extract_dir
+        $file_path = "$extract_dir\python3-embed\python.exe"
+
+        if (!(Test-Path $file_path)) {
+            Write-Host "[!] Extraction has been failed."
+            remove_working_directory $work_dir
+            Write-Host "[+] Aborting installation."
+            exit
+        }
+        Write-Host "[+] Done."
+        Write-Host "[+] FileInsight-plugins-embeddable-python-packages $PYTHON_EMBEDDABLE_PACKAGES_VERSIONhas been installed."
+    }
+    remove_venv
+    Write-Host ""
+}
+
 function install_qiling_rootfs($work_dir, $update) {
     Write-Host "[+] Installing rootfs files of Qiling Framework..."
 
@@ -590,9 +672,9 @@ function install_qiling_rootfs($work_dir, $update) {
         Write-Host "[+] Done."
 
         Write-Host "[+] Extracting qiling-master.zip..."
-        $extract_dir = "$work_dir\qiling-master"
-        extract_zip $zip_archive_path $work_dir
-        $file_path = "$extract_dir\README.md"
+        $extract_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
+        extract_zip $zip_archive_path $extract_dir
+        $file_path = "$extract_dir\qiling-master\README.md"
 
         if (!(Test-Path $file_path)) {
             Write-Host "[!] Extraction has been failed."
@@ -601,10 +683,6 @@ function install_qiling_rootfs($work_dir, $update) {
             exit
         }
         Write-Host "[+] Done."
-
-        $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc"
-        Write-Host "[+] Copying qiling-master to $dest_dir ..."
-        Copy-Item $extract_dir -Destination $dest_dir -Recurse -Force
 
         Write-Host "[+] Downloading Qiling Framework rootfs..."
         $rootfs_url = "https://github.com/qilingframework/rootfs/archive/master.zip"
@@ -613,19 +691,6 @@ function install_qiling_rootfs($work_dir, $update) {
 
         if (!(Test-Path $zip_archive_path)) {
             Write-Host "[!] Download has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-        Write-Host "[+] Done."
-
-        Write-Host "[+] Extracting rootfs-master.zip..."
-        $extract_dir = "$work_dir\rootfs-master"
-        extract_zip $zip_archive_path $work_dir
-        $file_path = "$extract_dir\README.md"
-
-        if (!(Test-Path $file_path)) {
-            Write-Host "[!] Extraction has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
             exit
@@ -648,12 +713,15 @@ function install_qiling_rootfs($work_dir, $update) {
             mkdir $dest_dir | Out-Null
         }
 
-        Write-Host "[+] Copying rootfs-master to $dest_dir ..."
-        Copy-Item $extract_dir\* -Destination $dest_dir -Recurse -Force
+        Write-Host "[+] Extracting rootfs-master.zip..."
+        $extract_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\qiling-master\examples"
+        extract_zip $zip_archive_path $extract_dir
+        Move-Item "$extract_dir\rootfs-master\*" "$extract_dir\rootfs"
+        Remove-Item "$extract_dir\rootfs-master" -Recurse -Force
+        $file_path = "$extract_dir\rootfs\x8664_windows\bin\argv.exe"
 
-        $file_path = "${dest_dir}\x8664_windows\bin\argv.exe"
         if (!(Test-Path $file_path)) {
-            Write-Host "[!] Installation has been failed."
+            Write-Host "[!] Extraction has been failed."
             remove_working_directory $work_dir
             Write-Host "[+] Aborting installation."
             exit
@@ -778,35 +846,29 @@ function install_detect_it_easy($work_dir, $update) {
                 exit
             }
 
+            $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\die_win64_portable"
+
+            if ((Test-Path $dest_dir)) {
+                Write-Host "[+] Removing old die_win64_portable folder..."
+                Remove-Item $dest_dir -Recurse -Force
+                Write-Host "[+] Done."
+
+                if ((Test-Path $dest_dir)) {
+                    Write-Host "[!] Removal of old die_win64_portable folder has been failed."
+                    remove_working_directory $work_dir
+                    Write-Host "[+] Aborting installation."
+                    exit
+                }
+                mkdir $dest_dir | Out-Null
+            }
+
             Write-Host "[+] Extracting die_win64_portable_$DIE_VERSION.zip..."
-            $extract_dir = "$work_dir\die_win64_portable"
+            $extract_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\die_win64_portable"
             extract_zip $zip_archive_path $extract_dir
             $file_path = "$extract_dir\diec.exe"
 
             if (!(Test-Path $file_path)) {
                 Write-Host "[!] Extraction has been failed."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            }
-            Write-Host "[+] Done."
-
-            $dest_dir = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\die_win64_portable"
-
-            if (!(Test-Path $dest_dir)) {
-                mkdir $dest_dir | Out-Null
-                if (!(Test-Path $dest_dir)) {
-                    Write-Host "[!] Creation of $dest_dir has been failed."
-                    remove_working_directory $work_dir
-                    Write-Host "[+] Aborting installation."
-                    exit
-                }
-            }
-
-            Write-Host "[+] Copying $extract_dir to $dest_dir ..."
-            Copy-Item $extract_dir\* -Destination $dest_dir -Recurse -Force
-            if (!(Test-Path $file_path)) {
-                Write-Host "[!] Installation has been failed."
                 remove_working_directory $work_dir
                 Write-Host "[+] Aborting installation."
                 exit
@@ -999,14 +1061,16 @@ $work_dir = create_working_directory
 
 install_fileinsight $work_dir
 install_fileinsight_plugins $work_dir $update $snapshot
-install_python3 $work_dir
-setup_venv $work_dir $update
-install_python_modules_venv $work_dir $update
+if ($snapshot) {
+    install_embeddable_python_packages $work_dir $update
+    install_detect_it_easy $work_dir $update
+} else {
+    install_python3 $work_dir
+    setup_venv $work_dir $update
+    install_python_modules_venv $work_dir $update
+}
 install_qiling_rootfs $work_dir $update
 install_aplib $work_dir
-if ($snapshot) {
-    install_detect_it_easy $work_dir $update
-}
 install_exiftool $work_dir $update
 install_quicklz $work_dir
 
