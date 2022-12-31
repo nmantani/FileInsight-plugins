@@ -82,7 +82,7 @@ def decremental_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (in hex, default = 0x00):")
+        key = fi.showSimpleDialog("XOR key (single byte in hex like 4e, default = 00):")
 
         # Dialog has been closed
         if key == None:
@@ -97,7 +97,11 @@ def decremental_xor(fi):
                 print("Error: XOR key is not hexadecimal.")
                 return
 
-        step = fi.showSimpleDialog("Decrement step (in hex, default = 0x01):")
+        if key > 255 or key < 0:
+            print("Error: Invalid XOR key (> 0xff or < 0x0).")
+            return
+
+        step = fi.showSimpleDialog("Decrement step (in hex, default = 01):")
 
         # Dialog has been closed
         if step == None:
@@ -111,6 +115,10 @@ def decremental_xor(fi):
             except:
                 print("Error: decrement step is not hexadecimal.")
                 return
+
+        if step > 255 or step < 0:
+            print("Error: Invalid decrement step (> 0xff or < 0x0).")
+            return
 
         init_key = key
         data = list(fi.getDocument())
@@ -142,7 +150,7 @@ def incremental_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (in hex, default = 0x00):")
+        key = fi.showSimpleDialog("XOR key (single byte in hex like 4e, default = 00):")
 
         # Dialog has been closed
         if key == None:
@@ -157,7 +165,11 @@ def incremental_xor(fi):
                 print("Error: XOR key is not hexadecimal.")
                 return
 
-        step = fi.showSimpleDialog("Increment step (in hex, default = 0x01):")
+        if key > 255 or key < 0:
+            print("Error: Invalid XOR key (> 0xff or < 0x0).")
+            return
+
+        step = fi.showSimpleDialog("Increment step (in hex, default = 01):")
 
         # Dialog has been closed
         if step == None:
@@ -171,6 +183,10 @@ def incremental_xor(fi):
             except:
                 print("Error: increment step is not hexadecimal.")
                 return
+
+        if step > 255 or step < 0:
+            print("Error: Invalid increment step (> 0xff or < 0x0).")
+            return
 
         init_key = key
         data = list(fi.getDocument())
@@ -196,29 +212,57 @@ def incremental_xor(fi):
 
 def null_preserving_xor(fi):
     """
-    XOR selected region while skipping null bytes
+    XOR selected region while skipping null bytes and XOR key itself
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (in hex):")
+        key = fi.showSimpleDialog("XOR key (in hex, like 1122aabb):")
 
-        # Dialog has been closed
-        if key == None:
+        # Dialog has been closed or XOR key is empty
+        if key == None or key == "":
             return
+        elif key[:2] == "0x":
+            key = key[2:]
+
+        if len(key) % 2 == 1:
+            key = "0" + key
 
         try:
-            key = int(key, 16)
+            key_list = list(binascii.a2b_hex(key))
         except:
-            print("Error: XOR key is not hexadecimal.")
+            print("Error: XOR key is invalid.")
             return
 
+        if len(key_list) > 1:
+            # Do not show command prompt window
+            startupinfo = subprocess.STARTUPINFO()
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+            # Execute null_preserving_xor_dialog.py to show operation mode setting dialog
+            p = subprocess.Popen([fi.get_embed_python(), "XOR/null_preserving_xor_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+            # Get operation mode setting
+            stdout_data, stderr_data = p.communicate()
+            mode = stdout_data.rstrip()
+
+            if mode == "":
+                return
+        else:
+            mode = "No"
+
         data = list(fi.getDocument())
+
+        k = 0
         for i in range(0, length):
             j = offset + i
-            if ord(data[j]) != 0x00 and ord(data[j]) != key:
-                data[j] = chr(ord(data[j]) ^ key)
+            if ord(data[j]) != 0x00 and ord(data[j]) != ord(key_list[k % len(key_list)]):
+                data[j] = chr(ord(data[j]) ^ ord(key_list[k % len(key_list)]))
+                k += 1
+            else:
+                if mode == "Yes":
+                    k += 1
 
         tab_name = fi.get_new_document_name("Output of Null-preserving XOR")
         fi.newDocument(tab_name, 1)
@@ -226,9 +270,13 @@ def null_preserving_xor(fi):
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
-            print("XORed one byte from offset %s to %s with key %s while skipping data 0x00 and %s." % (hex(offset), hex(offset), hex(key), hex(key)))
+            print("XORed one byte from offset %s to %s with key %s while skipping data 00 and %s." % (hex(offset), hex(offset), key, key))
         else:
-            print("XORed %s bytes from offset %s to %s with key %s while skipping data 0x00 and %s." % (length, hex(offset), hex(offset + length - 1), hex(key), hex(key)))
+            print("XORed %s bytes from offset %s to %s with key %s while skipping data 00 and %s." % (length, hex(offset), hex(offset + length - 1), key, key))
+
+        if len(key_list) > 1:
+            print("Use next XOR key byte when skipping XOR operation (for multibyte XOR key): %s" % mode)
+
         print("Added a bookmark to XORed region.")
     else:
         print("Please select a region to use this plugin.")
