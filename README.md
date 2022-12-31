@@ -128,7 +128,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (131 plugins)
+## List of plugins (132 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -400,6 +400,8 @@ Your customization will be reflected in menu items.
   Show entropy graph of selected region\n(the whole file if not selected)
 
 ### XOR operations
+* Simple XOR  
+  XOR selected region with specified XOR key
 * Decremental XOR  
   XOR selected region while decrementing XOR key
 * Incremental XOR  

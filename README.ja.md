@@ -124,7 +124,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (131個)
+## プラグインの一覧 (132個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -396,6 +396,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲の(選択していない場合は全体の)エントロピーのグラフを出力します。
 
 ### XOR operations
+* Simple XOR  
+  指定された XOR キーで XOR します。
 * Decremental XOR  
   選択範囲を XOR キーの値を減らしながら XOR します。
 * Incremental XOR  
