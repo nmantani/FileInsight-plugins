@@ -75,7 +75,7 @@ def cut_binary_to_clipboard(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute copy_to_clipboard.py
-        p = subprocess.Popen([fi.get_venv_python(), "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive result
         stdout_data, stderr_data = p.communicate(binstr)
@@ -111,7 +111,7 @@ def copy_binary_to_clipboard(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute copy_to_clipboard.py
-        p = subprocess.Popen([fi.get_venv_python(), "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Basic/copy_to_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive result
         stdout_data, stderr_data = p.communicate(binstr)
@@ -129,19 +129,24 @@ def paste_binary_from_clipboard(fi):
     Paste binary data (converted from hex-encoded text) from clipboard
     """
 
-    offset = fi.getSelectionOffset()
-    length = fi.getSelectionLength()
-
-    data = fi.getDocument()
-    before = data[:offset]
-    after = data[offset+length:]
+    if fi.getLength() > 0:
+        offset = fi.getSelectionOffset()
+        length = fi.getSelectionLength()
+        data = fi.getDocument()
+        before = data[:offset]
+        after = data[offset+length:]
+    else:
+        offset = 0
+        data = ""
+        before = ""
+        after = ""
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute paste_from_clipboard.py
-    p = subprocess.Popen([fi.get_venv_python(), "Basic/paste_from_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Basic/paste_from_clipboard.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive result
     stdout_data, stderr_data = p.communicate()
@@ -447,7 +452,7 @@ def bookmark(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute colorchooser.py to show color chooser
-        p = subprocess.Popen([fi.get_venv_python(), "colorchooser.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "colorchooser.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get output
         stdout_data, stderr_data = p.communicate()
@@ -478,7 +483,7 @@ def change_endianness(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute change_endianness_dialog.py to show unit setting dialog
-        p = subprocess.Popen([fi.get_venv_python(), "Basic/change_endianness_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Basic/change_endianness_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         # Get unit setting
         stdout_data, stderr_data = p.communicate()
@@ -556,7 +561,7 @@ def switch_file_tabs(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute switch_tabs_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Basic/switch_file_tabs_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Basic/switch_file_tabs_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=tab_list)
 

@@ -139,172 +139,173 @@ def execve_hook(ql, execve_pathname, execve_argv, execve_envp, *args, **kw):
 
     qiling.os.posix.syscall.unistd.ql_syscall_execve(ql, execve_pathname, execve_argv, execve_envp, *args, **kw)
 
-if len(sys.argv) == 10:
-    file_path = sys.argv[1]
-    file_type = sys.argv[2].lower()
-    os_type = sys.argv[3].lower()
-    arch = sys.argv[4]
-    if arch == "x64":
-        arch = "x8664"
-    big_endian = sys.argv[5]
-    if big_endian == "True":
-        big_endian = True
+if __name__ == "__main__":
+    if len(sys.argv) == 10:
+        file_path = sys.argv[1]
+        file_type = sys.argv[2].lower()
+        os_type = sys.argv[3].lower()
+        arch = sys.argv[4]
+        if arch == "x64":
+            arch = "x8664"
+        big_endian = sys.argv[5]
+        if big_endian == "True":
+            big_endian = True
+        else:
+            big_endian = False
+        cmd_args = shlex.split(sys.argv[6])
+        multithread = sys.argv[7]
+        if multithread == "True":
+            multithread = True
+        else:
+            multithread = False
+        timeout = int(sys.argv[8])
+        tab_index = int(sys.argv[9])
+
+        if not check_rootfs_files(rootfs_base):
+            sys.exit(-4) # rootfs files are not properly set up
+
+        rootfs = rootfs_path(rootfs_base, arch, os_type, big_endian)
+
+        if rootfs == None:
+            print("Abort emulation.", file=sys.stderr)
+            sys.exit(1)
+
+        if file_type == "executable":
+            try:
+                # output parameter has been removed since Qiling Framework 1.2.3
+                if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
+                    ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=4, profile="%s.ql" % os_type)
+                # filename parameter has been renamed to argv since Qiling Framework 1.2.1
+                elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.1"):
+                    ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+                else:
+                    ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+
+                # Start to watch file system events
+                handler = FileChangeHandler()
+                observer = Observer()
+                observer.schedule(handler, rootfs_base, recursive=True)
+                observer.start()
+            except Exception as e:
+                print("Emulation aborted.", file=sys.stderr)
+                print("Error: %s" % e, file=sys.stderr)
+                sys.exit(1)
+        else: # shellcode
+            # Receive code from temporary file
+            with open(file_path, "rb") as f:
+                shellcode = f.read()
+
+            try:
+                # bigendian parameter has been renamed to endian since Qiling Framework 1.4.3
+                if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
+                    from qiling.const import QL_ENDIAN
+
+                    if big_endian:
+                        endian = QL_ENDIAN.EB
+                    else:
+                        endian = QL_ENDIAN.EL
+
+                    ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, endian=endian, multithread=multithread, verbose=4)
+
+                    if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2") and os_type == "linux":
+                        ql.os.set_syscall("execve", execve_hook)
+                # output parameter has been removed since Qiling Framework 1.2.3
+                elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
+                    ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, verbose=4)
+
+                    if os_type == "linux":
+                        ql.set_syscall("execve", execve_hook)
+                # shellcoder parameter has been renamed to code since Qiling Framework 1.2.2
+                elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2"):
+                    ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
+
+                    if os_type == "linux":
+                        ql.set_syscall("execve", execve_hook)
+                else:
+                    ql = qiling.Qiling(shellcoder=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
+
+                # Start to watch file system events
+                handler = FileChangeHandler()
+                observer = Observer()
+                observer.schedule(handler, rootfs_base, recursive=True)
+                observer.start()
+            except Exception as e:
+                print("Emulation aborted.", file=sys.stderr)
+                print("Error: %s" % e, file=sys.stderr)
+                sys.exit(1)
     else:
-        big_endian = False
-    cmd_args = shlex.split(sys.argv[6])
-    multithread = sys.argv[7]
-    if multithread == "True":
-        multithread = True
-    else:
-        multithread = False
-    timeout = int(sys.argv[8])
-    tab_index = int(sys.argv[9])
-
-    if not check_rootfs_files(rootfs_base):
-        sys.exit(-4) # rootfs files are not properly set up
-
-    rootfs = rootfs_path(rootfs_base, arch, os_type, big_endian)
-
-    if rootfs == None:
-        print("Abort emulation.", file=sys.stderr)
+        print(sys.argv, file=sys.stderr)
+        print("Usage: emulate_code_qiling.py file_path file_type os arch big_endian cmd_args multithread timeout tab_index", file=sys.stderr)
         sys.exit(1)
 
-    if file_type == "executable":
-        try:
-            # output parameter has been removed since Qiling Framework 1.2.3
-            if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
-                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=4, profile="%s.ql" % os_type)
-            # filename parameter has been renamed to argv since Qiling Framework 1.2.1
-            elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.1"):
-                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
-            else:
-                ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+    all_mem = None
+    map_info = None
 
-            # Start to watch file system events
-            handler = FileChangeHandler()
-            observer = Observer()
-            observer.schedule(handler, rootfs_base, recursive=True)
-            observer.start()
-        except Exception as e:
-            print("Emulation aborted.", file=sys.stderr)
-            print("Error: %s" % e, file=sys.stderr)
-            sys.exit(1)
-    else: # shellcode
-        # Receive code from temporary file
-        with open(file_path, "rb") as f:
-            shellcode = f.read()
+    # Ignore emulation error
+    try:
+        if timeout > 0:
+            ql.run(timeout=1000000 * timeout) # timeout must be set as microseconds
+        else:
+            ql.run()
+        observer.stop()
+        observer.join()
+    except Exception as e:
+        print("Error: %s" % e, file=sys.stderr)
 
-        try:
-            # bigendian parameter has been renamed to endian since Qiling Framework 1.4.3
-            if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-                from qiling.const import QL_ENDIAN
-
-                if big_endian:
-                    endian = QL_ENDIAN.EB
-                else:
-                    endian = QL_ENDIAN.EL
-
-                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, endian=endian, multithread=multithread, verbose=4)
-
-                if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2") and os_type == "linux":
-                    ql.os.set_syscall("execve", execve_hook)
-            # output parameter has been removed since Qiling Framework 1.2.3
-            elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
-                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, verbose=4)
-
-                if os_type == "linux":
-                    ql.set_syscall("execve", execve_hook)
-            # shellcoder parameter has been renamed to code since Qiling Framework 1.2.2
-            elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2"):
-                ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
-
-                if os_type == "linux":
-                    ql.set_syscall("execve", execve_hook)
-            else:
-                ql = qiling.Qiling(shellcoder=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
-
-            # Start to watch file system events
-            handler = FileChangeHandler()
-            observer = Observer()
-            observer.schedule(handler, rootfs_base, recursive=True)
-            observer.start()
-        except Exception as e:
-            print("Emulation aborted.", file=sys.stderr)
-            print("Error: %s" % e, file=sys.stderr)
-            sys.exit(1)
-else:
-    print(sys.argv, file=sys.stderr)
-    print("Usage: emulate_code_qiling.py file_path file_type os arch big_endian cmd_args multithread timeout tab_index", file=sys.stderr)
-    sys.exit(1)
-
-all_mem = None
-map_info = None
-
-# Ignore emulation error
-try:
-    if timeout > 0:
-        ql.run(timeout=1000000 * timeout) # timeout must be set as microseconds
+    # execve_hook was called
+    if all_mem != None:
+        ql.mem.map_info = map_info
     else:
-        ql.run()
-    observer.stop()
-    observer.join()
-except Exception as e:
-    print("Error: %s" % e, file=sys.stderr)
+        all_mem = ql.mem.save()
 
-# execve_hook was called
-if all_mem != None:
-    ql.mem.map_info = map_info
-else:
-    all_mem = ql.mem.save()
-
-print("\nMemory map:", file=sys.stderr)
-if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-    for info_line in ql.mem.get_formatted_mapinfo():
-        print(info_line, file=sys.stderr)
-else:
-    ql.mem.show_mapinfo()
-print("", file=sys.stderr)
-
-num_dump = 0
-heap = ""
-heap_start = None
-heap_end = None
-
-if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.0"):
-    all_mem = all_mem["ram"]
-    start_index = 0
-else:
-    start_index = 1
-
-for i in range(start_index, len(all_mem) + start_index):
-    start = all_mem[i][0]
-    end = all_mem[i][1]
-    info = all_mem[i][3]
+    print("\nMemory map:", file=sys.stderr)
     if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-        image = ql.loader.find_containing_image(start)
+        for info_line in ql.mem.get_formatted_mapinfo():
+            print(info_line, file=sys.stderr)
     else:
-        image = ql.os.find_containing_image(start)
-    if image:
-        info += " (%s)" % image.path
+        ql.mem.show_mapinfo()
+    print("", file=sys.stderr)
 
-    if file_path in info or info in ("[shellcode]", "[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
-        print('Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (info, start, end, end - start, tab_index, num_dump), file=sys.stderr)
-        sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
-        num_dump += 1
-    elif info == "[heap]":
-        # Concatenate multiple heap regions
-        if heap_start == None:
-            heap = b"****MEMDUMP****"
-            heap_start = start
-        if heap_end == None or end > heap_end:
-            heap_end = end
-        heap += ql.mem.read(start, end - start)
+    num_dump = 0
+    heap = ""
+    heap_start = None
+    heap_end = None
 
-if len(heap) > 0:
-    print('Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (heap_start, heap_end, heap_end - heap_start, tab_index, num_dump), file=sys.stderr)
-    sys.stdout.buffer.write(heap)
+    if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.0"):
+        all_mem = all_mem["ram"]
+        start_index = 0
+    else:
+        start_index = 1
 
-handler.show_log()
+    for i in range(start_index, len(all_mem) + start_index):
+        start = all_mem[i][0]
+        end = all_mem[i][1]
+        info = all_mem[i][3]
+        if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
+            image = ql.loader.find_containing_image(start)
+        else:
+            image = ql.os.find_containing_image(start)
+        if image:
+            info += " (%s)" % image.path
 
-print("", file=sys.stderr)
-sys.exit(0)
+        if file_path in info or info in ("[shellcode]", "[shellcode_base]", "[shellcode_stack]", "[stack]", "[brk]"):
+            print('Extracted region %s (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (info, start, end, end - start, tab_index, num_dump), file=sys.stderr)
+            sys.stdout.buffer.write(b"****MEMDUMP****" + ql.mem.read(start, end - start))
+            num_dump += 1
+        elif info == "[heap]":
+            # Concatenate multiple heap regions
+            if heap_start == None:
+                heap = b"****MEMDUMP****"
+                heap_start = start
+            if heap_end == None or end > heap_end:
+                heap_end = end
+            heap += ql.mem.read(start, end - start)
+
+    if len(heap) > 0:
+        print('Extracted region [heap] (start: 0x%x end: 0x%x size: %d) as "Memory dump %d - %d"' % (heap_start, heap_end, heap_end - heap_start, tab_index, num_dump), file=sys.stderr)
+        sys.stdout.buffer.write(heap)
+
+    handler.show_log()
+
+    print("", file=sys.stderr)
+    sys.exit(0)

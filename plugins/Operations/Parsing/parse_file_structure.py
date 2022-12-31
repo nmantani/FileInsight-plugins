@@ -33,11 +33,13 @@ import enum
 import importlib
 import inspect
 import json
-from kaitaistruct import KaitaiStruct, KaitaiStream, BytesIO
 import re
 import struct
 import sys
 import time
+
+sys.path.append("./Parsing")
+from kaitaistruct import KaitaiStruct, KaitaiStream, BytesIO
 
 # Set to True to enable debug output
 DEBUG = False

@@ -454,7 +454,7 @@ def replace(fi):
 
     # Execute replace_dialog.py to show GUI
     # GUI portion is moved to replace_dialog.py to avoid hangup of FileInsight
-    p = subprocess.Popen([fi.get_venv_python(), "Search/replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Search/replace_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     if stdout_data == "":
@@ -580,7 +580,7 @@ def yara_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute yara_scan_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Search/yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Search/yara_scan_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     ret = p.wait()
@@ -633,7 +633,7 @@ def yara_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute yara_scan.py for scanning with YARA
-    p = subprocess.Popen([fi.get_venv_python(), "Search/yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Search/yara_scan.py", scanned_filepath, rule_filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()

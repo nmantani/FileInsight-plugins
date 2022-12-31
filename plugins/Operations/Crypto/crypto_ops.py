@@ -167,7 +167,7 @@ def do_decrypt(fi, name, script):
         # Execute xxxx_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
         script = "Crypto/" + script
-        p = subprocess.Popen([fi.get_venv_python(), script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
         stdout_data, stderr_data = p.communicate(data)
@@ -222,7 +222,7 @@ def do_encrypt(fi, name, script):
         # Execute xxxx_decrypt_dialog.py to show GUI
         # GUI portion is moved to external script to avoid hangup of FileInsight
         script = "Crypto/" + script
-        p = subprocess.Popen([fi.get_venv_python(), script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), script], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Receive decrypted data
         stdout_data, stderr_data = p.communicate(data)

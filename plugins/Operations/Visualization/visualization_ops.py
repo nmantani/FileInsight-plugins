@@ -47,7 +47,7 @@ def byte_histogram(fi):
 
     # Check existence of matplotlib and seaborn
     # "pip list" is used for checking because imporing seaborn takes a few seconds
-    p = subprocess.Popen([fi.get_venv_python(), "-m", "pip", "list"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "-m", "pip", "list"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
@@ -100,7 +100,7 @@ def byte_histogram(fi):
         print("Creating a byte histogram from offset %s to %s in a background process..." % (hex(offset), hex(offset + length - 1)))
 
     # Execute byte_histogram.py to show histogram
-    p = subprocess.Popen([fi.get_venv_python(), "Visualization/byte_histogram.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Visualization/byte_histogram.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def bitmap_view(fi):
     """
@@ -123,7 +123,7 @@ def bitmap_view(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Check existence of Pillow
-    p = subprocess.Popen([fi.get_venv_python(), "Visualization/bitmap_view.py", "-c"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Visualization/bitmap_view.py", "-c"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     ret = p.wait()
 
     if ret == -1: # Pillow is not installed
@@ -135,7 +135,7 @@ def bitmap_view(fi):
     print("You can also copy current offset by right-clicking bitmap image.")
 
     # Execute bitmap_view.py to show GUI in background
-    p = subprocess.Popen([fi.get_venv_python(), "Visualization/bitmap_view.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Visualization/bitmap_view.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 def entropy(data):
     """
@@ -172,7 +172,7 @@ def entropy_graph(fi):
 
     # Check existence of matplotlib and seaborn
     # "pip list" is used for checking because imporing seaborn takes a few seconds
-    p = subprocess.Popen([fi.get_venv_python(), "-m", "pip", "list"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "-m", "pip", "list"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
@@ -227,4 +227,4 @@ def entropy_graph(fi):
         print("Creating an entropy graph from offset %s to %s in a background process..." % (hex(offset), hex(offset + length - 1)))
 
     # Execute entropy_graph.py to show graph
-    p = subprocess.Popen([fi.get_venv_python(), "Visualization/entropy_graph.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Visualization/entropy_graph.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)

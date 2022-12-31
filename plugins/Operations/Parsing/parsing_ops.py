@@ -69,7 +69,7 @@ def binwalk_scan(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute binwalk_scan.py for scanning with binwalk
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
@@ -80,9 +80,7 @@ def binwalk_scan(fi):
     if ret == -1:
         print("binwalk Python module is not installed.")
         print("Please install it with the following commands and try again.")
-        print("&'%s'" % fi.get_venv_activate())
-        print("pip install https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v2.3.2.zip")
-        print("deactivate")
+        print("&'%s' -m pip install https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v2.3.2.zip" % fi.get_embed_python())
         return
 
     if fi.getSelectionLength() > 0:
@@ -137,7 +135,7 @@ def file_type(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute file_type.py for file type identification
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive file type
     stdout_data, stderr_data = p.communicate(data)
@@ -212,7 +210,7 @@ def find_pe_file(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute find_pe_file.py for finding PE files
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate(data)
@@ -377,7 +375,7 @@ def strings(fi):
 
     # Execute strings_dialog.py to show GUI
     # GUI portion is moved to external script to avoid hangup of FileInsight
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/strings_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive parameters
     stdout_data, stderr_data = p.communicate()
@@ -550,7 +548,7 @@ def parse_file_structure(fi):
     point.y = point.y * DEFAULT_DPI / dpi_y
 
     # Show menu
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/parse_file_structure_menu.py", str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/parse_file_structure_menu.py", str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive selection
     stdout_data, stderr_data = p.communicate()
@@ -562,7 +560,7 @@ def parse_file_structure(fi):
         parser = stdout_data
 
     # Execute parse_file_structure.py to parse data
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/parse_file_structure.py", parser], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate(data)
@@ -656,7 +654,7 @@ def disassemble(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute disassemble_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/disassemble_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/disassemble_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
@@ -680,7 +678,7 @@ def disassemble(fi):
     handle.write(data)
     handle.close()
 
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/disassemble.py", file_path, str(offset), arch, mode], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/disassemble.py", file_path, str(offset), arch, mode], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive disassembly result
     stdout_data, stderr_data = p.communicate()

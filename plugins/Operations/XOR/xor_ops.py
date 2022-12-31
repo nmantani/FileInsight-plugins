@@ -347,7 +347,7 @@ def find_pe_header(fi, data, offset, output):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute find_pe_file.py for finding PE files
-    p = subprocess.Popen([fi.get_venv_python(), "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/find_pe_file.py", str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate(data)
@@ -549,8 +549,6 @@ def guess_multibyte_xor_keys(fi):
     for k, v in sorted(freq.items(), key=lambda x:x[1], reverse=True):
         if i < 10:
             key = shorten_xor_key(block[k])
-            #output += "XOR key: 0x"
-            #for j in range(len(key) - 1, -1, -1):
             output += "XOR key: "
             for j in range(0, len(key)):
                 output += "%02x" % ord(block[k][j])
@@ -595,7 +593,7 @@ def visual_decrypt(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute visual_encrypt_dialog.py to show GUI
-        p = subprocess.Popen([fi.get_venv_python(), "XOR/visual_encrypt_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "XOR/visual_encrypt_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
@@ -637,7 +635,7 @@ def visual_encrypt(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute visual_encrypt_dialog.py to show GUI
-        p = subprocess.Popen([fi.get_venv_python(), "XOR/visual_encrypt_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "XOR/visual_encrypt_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get amount input
         stdout_data, stderr_data = p.communicate()
@@ -688,7 +686,7 @@ def xor_with_another_file(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute xor_with_another_file_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "XOR/xor_with_another_file_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "XOR/xor_with_another_file_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     ret = p.wait()

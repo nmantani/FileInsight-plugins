@@ -50,7 +50,7 @@ def hash_values(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to get hash values
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash values
     stdout_data, stderr_data = p.communicate(input=data)
@@ -119,7 +119,7 @@ def send_to_cli(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute send_to.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/send_to_cli.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/send_to_cli.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
@@ -198,7 +198,7 @@ def send_to_gui(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute send_to.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/send_to.py", filepath, str(point.x), str(point.y)], startupinfo=startupinfo)
 
     if length > 0:
         if length == 1:
@@ -221,7 +221,7 @@ def get_ssdeep(fi, data):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to get ssdeep hash value
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py", "ssdeep"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "ssdeep"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate(input=data)
@@ -249,7 +249,7 @@ def get_impfuzzy(fi, data):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to get impfuzzy hash value
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py", "impfuzzy"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "impfuzzy"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate(input=data)
@@ -277,7 +277,7 @@ def compare_hash(fi, hash1, hash2):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to compare fuzzy hash values
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/hash_values.py", "compare", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "compare", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate()
@@ -320,7 +320,7 @@ def file_comparison(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute file_comparison_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/file_comparison_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate(input=file_list)
     if stdout_data == "":
@@ -453,17 +453,20 @@ def emulate_code(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute emulate_shellcode_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/emulate_code_dialog.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     stdout_data, stderr_data = p.communicate()
     if stdout_data == "":
         return
 
     # Get parameters from emulate_code_dialog.py
-    (framework, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout) = stdout_data.split("\t")
+    (framework, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout, rootfs_path) = stdout_data.split("\t")
 
     # Create a temporary file to write data
-    fd, file_path = tempfile.mkstemp()
+    if rootfs_path != "None":
+        fd, file_path = tempfile.mkstemp(dir=rootfs_path) # For Qiling Framework, a temporary file is created under rootfs directory
+    else:
+        fd, file_path = tempfile.mkstemp()
     handle = os.fdopen(fd, "wb")
     handle.write(data)
     handle.close()
@@ -473,9 +476,9 @@ def emulate_code(fi):
 
     # Execute emulate_code_qiling.py or emulate_code_speakeasy.py to emulate code
     if framework == "Qiling Framework":
-        p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code_qiling.py", file_path, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Misc/emulate_code_qiling.py", file_path, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else: # Speakeasy
-        p = subprocess.Popen([fi.get_venv_python(), "Misc/emulate_code_speakeasy.py", file_path, file_type, os_type, arch, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Misc/emulate_code_speakeasy.py", file_path, file_type, os_type, arch, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()

@@ -27,13 +27,31 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
+import sys
 import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 
+sys.path.append("./Misc")
+import emulate_code_qiling
+
 # Print selected items
 def get_selection(r, cf, ct, co, ca, ce, ea, bt, t):
-    print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (cf.get(), ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), bt.get(), t.get()), end="")
+    if cf.get() == "Qiling Framework":
+        rootfs_base = "Misc\\qiling-master\\examples\\rootfs"
+        arch = ca.get().lower()
+        if arch == "x64":
+            arch = "x8664"
+        big_endian = ce.get()
+        if big_endian == "True":
+            big_endian = True
+        else:
+            big_endian = False
+        path = str(emulate_code_qiling.rootfs_path(rootfs_base, arch, co.get().lower(), big_endian))
+        print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (cf.get(), ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), bt.get(), t.get(), path), end="")
+    else:
+        print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (cf.get(), ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), bt.get(), t.get(), "None"), end="")
+
     root.quit()
 
 def combo_framework_selected(r, cf, co, ca, le, ce, lt, ct):
