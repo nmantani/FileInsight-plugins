@@ -1,7 +1,7 @@
 #
 # MessagePack encode - Encode JSON of selected region into MessagePack serialized data
 #
-# Copyright (c) 2022, Nobutaka Mantani
+# Copyright (c) 2023, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
