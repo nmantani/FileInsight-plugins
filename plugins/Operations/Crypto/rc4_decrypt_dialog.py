@@ -1,5 +1,5 @@
 #
-# ARC4 decrypt / encrypt - Decrypt / encrypt selected region with ARC4 (Alleged RC4)
+# RC4 decrypt / encrypt - Decrypt / encrypt selected region with RC4
 #
 # Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
@@ -71,7 +71,7 @@ data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()
-root.title("ARC4 decrypt / encrypt")
+root.title("RC4 decrypt / encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda root=root: root.quit()))
 
 label = tkinter.Label(root, text="Key:")

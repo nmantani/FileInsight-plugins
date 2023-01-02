@@ -79,7 +79,6 @@ Some plugins show an additional dialog for plugin settings at the point of use.
 ![how_to_use3.png](docs/how_to_use3.png)
 
 ## How to update
-### Semi-automatic update
 If you would like to update FileInsight-plugins to the latest release version,
 please click "Check for update" of the plugin menu. The installation
 PowerShell script (https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1)
@@ -109,10 +108,6 @@ please add "-snapshot" option.
 powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update -snapshot"
 ```
 
-### Manual update
-Please download the latest release version and copy the "plugins" folder into
-"%USERPROFILE%\Documents\McAfee FileInsight" to overwrite with the new version.
-
 ## Customization
 For the "Send to (CLI)" plugin and the "Send to (GUI)" plugin, you can open files with your favorite programs.
 Please click "Customize menu" of the plugin menu.
@@ -128,7 +123,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (132 plugins)
+## List of plugins (134 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -246,10 +241,10 @@ Your customization will be reflected in menu items.
 #### Decrypt
 * AES  
   Decrypt selected region with AES
-* ARC2  
-  Decrypt selected region with ARC2 (Alleged RC2)
-* ARC4  
-  Decrypt selected region with ARC4 (Alleged RC4)
+* RC2  
+  Decrypt selected region with RC2
+* RC4  
+  Decrypt selected region with RC4
 * Blowfish  
   Decrypt selected region with Blowfish
 * ChaCha20  
@@ -268,10 +263,10 @@ Your customization will be reflected in menu items.
 #### Encrypt
 * AES  
   Encrypt selected region with AES
-* ARC2  
-  Encrypt selected region with ARC2 (Alleged RC2)
-* ARC4  
-  Encrypt selected region with ARC4 (Alleged RC4)
+* RC2  
+  Encrypt selected region with RC2
+* RC4  
+  Encrypt selected region with RC4
 * Blowfish  
   Encrypt selected region with Blowfish
 * ChaCha20  
@@ -309,6 +304,8 @@ Your customization will be reflected in menu items.
   Decode selected region with custom base64 table
 * Custom base85 decode  
   Decode selected region with custom base85 table
+* MessagePack decode  
+  Decode selected region as MessagePack serialized data
 * Protobuf decode  
   Decode selected region as Protocol Buffers serialized data without .proto files
 * From quoted printable  
@@ -339,6 +336,8 @@ Your customization will be reflected in menu items.
   Encode selected region with custom base64 table
 * Custom base85 encode  
   Encode selected region with custom base85 table
+* MessagePack encode  
+  Encode JSON of selected region into MessagePack serialized data
 * ROT13  
   Rotate alphabet characters in selected region by the specified amount (default: 13)
 * To quoted printable  

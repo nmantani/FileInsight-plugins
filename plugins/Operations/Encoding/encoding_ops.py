@@ -1538,3 +1538,83 @@ def custom_base62_encode(fi):
                 print("Added a bookmark to encoded region.")
     else:
         print("Please select a region to use this plugin.")
+
+def messagepack_decode(fi):
+    """
+    Decode selected region as MessagePack serialized data
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute messagepack_decode.py to decode data
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/messagepack_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decoded data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # msgpack is not installed
+            fi.show_module_install_instruction("msgpack", "msgpack")
+            return
+        elif ret == 1:
+            print("Error: decode failed.")
+            print(stderr_data)
+            return
+
+        tab_name = fi.get_new_document_name("Output of MessagePack decode")
+        fi.newDocument(tab_name)
+        fi.setDocument(stdout_data)
+
+        if length == 1:
+            print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+    else:
+        print("Please select a region to use this plugin.")
+
+def messagepack_encode(fi):
+    """
+    Encode JSON of selected region into MessagePack serialized data
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute messagepack_encode.py to encode data
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/messagepack_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive encoded data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # msgpack is not installed
+            fi.show_module_install_instruction("msgpack", "msgpack")
+            return
+        elif ret == 1:
+            print("Error: encode failed.")
+            print(stderr_data)
+            return
+
+        tab_name = fi.get_new_document_name("Output of MessagePack encode")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(stdout_data)
+
+        if length == 1:
+            print("Encoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Encoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+    else:
+        print("Please select a region to use this plugin.")

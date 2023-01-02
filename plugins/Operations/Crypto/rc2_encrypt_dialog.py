@@ -1,5 +1,5 @@
 #
-# ARC2 encrypt - Encrypt selected region with ARC2 (Alleged RC2)
+# RC2 encrypt - Encrypt selected region with RC2
 #
 # Copyright (c) 2019, Nobutaka Mantani
 # All rights reserved.
@@ -125,7 +125,7 @@ data = sys.stdin.buffer.read()
 
 # Create input dialog
 root = tkinter.Tk()
-root.title("ARC2 encrypt")
+root.title("RC2 encrypt")
 root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
 label_mode = tkinter.Label(root, text="Mode:")

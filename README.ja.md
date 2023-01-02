@@ -79,7 +79,6 @@ Plugins タブにある "Operations" をクリックして、プラグインを�
 ![how_to_use3.png](docs/how_to_use3.png)
 
 ## アップデート方法
-### 半自動でのアップデート
 FileInsight-plugins を最新のリリース版にアップデートしたい場合はプラグインのメニューの
 Check for update をクリックしてください。新しいバージョンがある場合はインストール用の
 PowerShell スクリプト(https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1)
@@ -106,10 +105,6 @@ FileInsight-plugins を最新のスナップショットに更新したい場合
 powershell -exec bypass -command "& ([scriptblock]::Create((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))) -update -snapshot"
 ```
 
-### 手動でのアップデート
-最新のリリース版をダウンロードして plugins フォルダを %USERPROFILE%\Documents\McAfee FileInsight
-に上書きコピーしてください。
-
 ## カスタマイズ
 Send to (CLI) プラグインと Send to (GUI) プラグインはファイルをあなたのお好みのプログラムで開くことができます。
 Send to プラグインのメニューで Customize menu をクリックしてください。
@@ -124,7 +119,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (132個)
+## プラグインの一覧 (134個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -242,10 +237,10 @@ Send to プラグインのメニューで Customize menu をクリックして�
 #### Decrypt
 * AES  
   選択範囲を AES で復号します。
-* ARC2  
-  選択範囲を ARC2 (Alleged RC2) で復号します。
-* ARC4  
-  選択範囲を ARC4 (Alleged RC4) で復号します。
+* RC2  
+  選択範囲を RC2 で復号します。
+* RC4  
+  選択範囲を RC4 で復号します。
 * Blowfish  
   選択範囲を Blowfish で復号します。
 * ChaCha20  
@@ -264,10 +259,10 @@ Send to プラグインのメニューで Customize menu をクリックして�
 #### Encrypt
 * AES  
   選択範囲を AES で暗号化します。
-* ARC2  
-  選択範囲を ARC2 (Alleged RC2) で暗号化します。
-* ARC4  
-  選択範囲を ARC4 (Alleged RC4) で暗号化します。
+* RC2  
+  選択範囲を RC2 で暗号化します。
+* RC4  
+  選択範囲を RC4 で暗号化します。
 * Blowfish  
   選択範囲を Blowfish で暗号化します。
 * ChaCha20  
@@ -305,6 +300,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase64テーブルを使ってデコードします。
 * Custom base85 decode  
   選択範囲をカスタムbase85テーブルを使ってデコードします。
+* MessagePack decode  
+  選択範囲を MessagePack でシリアライズされたデータとしてデコードします。
 * Protobuf decode  
   選択範囲を Protocol Buffers でシリアライズされたデータとして .proto ファイル無しでデコードします。
 * From quoted printable  

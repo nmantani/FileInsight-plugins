@@ -137,6 +137,9 @@ https://github.com/google/brotli/blob/master/LICENSE
 Speakeasy is distributed under the MIT license.
 https://github.com/mandiant/speakeasy/blob/master/LICENSE.txt
 
+msgpack is distributed under the Apache License 2.0.
+https://github.com/msgpack/msgpack-python/blob/main/COPYING
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------

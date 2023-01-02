@@ -39,29 +39,29 @@ def aes_encrypt(fi):
     """
     do_encrypt(fi, "AES", "aes_encrypt_dialog.py")
 
-def arc2_decrypt(fi):
+def rc2_decrypt(fi):
     """
-    Decrypt selected region with ARC2 (Alleged RC2)
+    Decrypt selected region with RC2
     """
-    do_decrypt(fi, "ARC2", "arc2_decrypt_dialog.py")
+    do_decrypt(fi, "RC2", "rc2_decrypt_dialog.py")
 
-def arc2_encrypt(fi):
+def rc2_encrypt(fi):
     """
-    Encrypt selected region with ARC2 (Alleged RC2)
+    Encrypt selected region with RC2
     """
-    do_encrypt(fi, "ARC2", "arc2_encrypt_dialog.py")
+    do_encrypt(fi, "RC2", "rc2_encrypt_dialog.py")
 
-def arc4_decrypt(fi):
+def rc4_decrypt(fi):
     """
-    Decrypt selected region with ARC4 (Alleged RC4)
+    Decrypt selected region with RC4
     """
-    do_decrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
+    do_decrypt(fi, "RC4", "rc4_decrypt_dialog.py")
 
-def arc4_encrypt(fi):
+def rc4_encrypt(fi):
     """
-    Encrypt selected region with ARC4 (Alleged RC4)
+    Encrypt selected region with RC4
     """
-    do_encrypt(fi, "ARC4", "arc4_decrypt_dialog.py")
+    do_encrypt(fi, "RC4", "rc4_decrypt_dialog.py")
 
 def blowfish_decrypt(fi):
     """
