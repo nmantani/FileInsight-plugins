@@ -119,7 +119,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (134個)
+## プラグインの一覧 (136個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -170,6 +170,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を LZ4 アルゴリズムで圧縮します。
 * LZF  
   選択範囲を LZF アルゴリズムで圧縮します。
+* LZFSE  
+  選択範囲を LZFSE アルゴリズムで圧縮します。
 * LZJB  
   選択範囲を LZJB アルゴリズムで圧縮します。
 * LZMA  
@@ -208,6 +210,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を LZ4 アルゴリズムで展開します。
 * LZF  
   選択範囲を LZF アルゴリズムで展開します。
+* LZFSE  
+  選択範囲を LZFSE アルゴリズムで展開します。
 * LZJB  
   選択範囲を LZJB アルゴリズムで展開します。
 * LZMA  
