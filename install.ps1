@@ -54,7 +54,7 @@ Param(
     [Switch]$snapshot
 )
 
-$RELEASE_VERSION = "2.15"
+$RELEASE_VERSION = "2.16"
 $PYTHON_EXE = "C:\Windows\py.exe"
 $PYTHON_VERSION = "3.10.9"
 $PYTHON_EMBEDDABLE_PACKAGES_VERSION = "20230102"
@@ -70,7 +70,7 @@ $VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "3C2FD22932557D7E279DE74DBA717B7EC9656D309A9C1B6181D9FD2FADCBB094"
+$FILEINSIGHT_PLUGINS_HASH = "E5CF0165C90350B8996DECCA7FA6B8EB4EB4545C0F48DCE18D8AAA032465D3E3"
 $PYTHON_HASH = "B8C707FB7A3A80F49AF5A51C94F428525A3AD4331C7B9E3B2E321CAF5CB56D7D"
 $PYTHON_EMBEDDABLE_PACKAGES_HASH = "764686B71E353D1D9F5FFE25A799C1AA448C283EAB9AD86C1230E5F043B1A8FA"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
@@ -1061,14 +1061,8 @@ $work_dir = create_working_directory
 
 install_fileinsight $work_dir
 install_fileinsight_plugins $work_dir $update $snapshot
-if ($snapshot) {
-    install_embeddable_python_packages $work_dir $update
-    install_detect_it_easy $work_dir $update
-} else {
-    install_python3 $work_dir
-    setup_venv $work_dir $update
-    install_python_modules_venv $work_dir $update
-}
+install_embeddable_python_packages $work_dir $update
+install_detect_it_easy $work_dir $update
 install_qiling_rootfs $work_dir $update
 install_aplib $work_dir
 install_exiftool $work_dir $update
@@ -1078,4 +1072,3 @@ migrate_plugin_config
 
 remove_working_directory $work_dir
 Write-Host "[+] All installation has been finished!"
-
