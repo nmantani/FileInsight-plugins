@@ -6,9 +6,9 @@
 * New plugins
   - Compression operations
     - "LZFSE compress" plugin and "LZFSE decompress" plugin
-      These plugins compress and decompress selected region with LZFSE algorithm
+      These plugins compress and decompress selected region with LZFSE algorithm.
   - Encoding operations
-    - "MessagePack encode" plugin and "MessagePack encode" plugin
+    - "MessagePack encode" plugin and "MessagePack decode" plugin
       These plugins encode JSON of selected region into MessagePack serialized data and vice versa.
   - XOR operations
     - "Simple XOR" plugin
@@ -33,7 +33,7 @@
     - Rename ARC4 to RC4
   - XOR operations
     - "Guess multibyte XOR keys" plugin
-      Decode instruction is changed to use "Simple XOR" plugin instead of built-in XOR function of FileInsight
+      Decode instruction is changed to use "Simple XOR" plugin instead of built-in XOR function of FileInsight.
 
 2022-06-27 version 2.15
 * Important changes
