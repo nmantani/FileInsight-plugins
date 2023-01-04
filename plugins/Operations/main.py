@@ -29,7 +29,7 @@ import re
 import subprocess
 import sys
 
-__version__ = "2.16"
+__version__ = "2.17"
 
 EMBED_PATH = os.environ["USERPROFILE"] + "\\Documents\\McAfee FileInsight\\plugins\\Operations\\python3-embed"
 EMBED_PATH_PARENT = os.environ["USERPROFILE"] + "\\Documents\\McAfee FileInsight\\plugins\\Operations"
