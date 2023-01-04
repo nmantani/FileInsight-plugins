@@ -336,6 +336,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase64テーブルを使ってエンコードします。
 * Custom base85 encode  
   選択範囲をカスタムbase85テーブルを使ってエンコードします。
+* MessagePack encode  
+  選択範囲の JSON を MessagePack でシリアライズされたデータとしてエンコードします。
 * ROT13  
   選択範囲のアルファベットの文字列を指定した数だけローテートします。(デフォルト: 13)
 * To quoted printable  
