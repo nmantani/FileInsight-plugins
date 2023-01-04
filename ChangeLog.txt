@@ -1,3 +1,40 @@
+2023-01-04 version 2.16
+* Important changes
+  - Embeddable Python is used instead of Python virtual environment (venv) to fully isolate Python environment for FileInsight-plugins from existing Python installation.
+  - Embeddable Python and requisite Python packages are bundled into a single package and installed from the FileInsight-plugins-embeddable-python-packages (https://github.com/nmantani/FileInsight-plugins-embeddable-python-packages/) repository to speed up installation.
+  - Python version is 3.10.9.
+* New plugins
+  - Compression operations
+    - "LZFSE compress" plugin and "LZFSE decompress" plugin
+      These plugins compress and decompress selected region with LZFSE algorithm
+  - Encoding operations
+    - "MessagePack encode" plugin and "MessagePack encode" plugin
+      These plugins encode JSON of selected region into MessagePack serialized data and vice versa.
+  - XOR operations
+    - "Simple XOR" plugin
+      This plugin does XOR selected region with specified XOR key. You can specify a multibyte XOR key with big endian hex for this plugin, though built-in XOR function of FileInsight accepts a multibyte XOR key with "0x" prefix and little endian hex.
+* Enhancements
+  - Misc operations
+    - "Send to" plugin
+      Detect It Easy (https://github.com/horsicq/Detect-It-Easy) is added to default external GUI programs.
+  - Parsing operations
+    - "File type" plugin
+      Detect It Easy is used for file type detection in addition to python-magic.
+  - XOR operations
+    - "Null-preserving XOR" plugin
+      Multibyte XOR key is supported.
+* Bug fixes
+  - XOR operations
+    - "Incremental XOR" plugin and "Decremental XOR" plugin
+      Input parameter check is added.
+* Other changes
+  - Crypto operations
+    - Rename ARC2 to RC2
+    - Rename ARC4 to RC4
+  - XOR operations
+    - "Guess multibyte XOR keys" plugin
+      Decode instruction is changed to use "Simple XOR" plugin instead of built-in XOR function of FileInsight
+
 2022-06-27 version 2.15
 * Important changes
   - Python virtual environment (venv) is used to avoid Python package version conflicts with other analysis tools.
