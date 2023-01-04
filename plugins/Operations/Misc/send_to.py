@@ -92,11 +92,11 @@ else:
     # Default external programs
     programs = collections.OrderedDict()
     programs["Detect It Easy"] = ["C:%HOMEPATH%\\Documents\\McAfee FileInsight\\plugins\\Operations\\Parsing\\die_win64_portable\\die.exe"]
-    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 8.1\\ida64.exe"
+    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 8.2\\ida64.exe"
     programs["Cutter"] = ["C:%HOMEPATH%\\Desktop\\tools\\cutter\\cutter.exe", "-A", "1"]
     programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v9.49.0\\CyberChef_v9.49.0.html"
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v9.55.0\\CyberChef_v9.55.0.html"
 
     # Create new config file
     f = open(config_file_name, "w")
