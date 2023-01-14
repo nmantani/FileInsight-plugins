@@ -66,6 +66,12 @@ def hash_values(fi):
     elif ret == -3:
         fi.show_module_install_instruction("pyimpfuzzy", "pyimpfuzzy-windows")
         return
+    elif ret == -4:
+        fi.show_module_install_instruction("tlsh", "py-tlsh")
+        return
+    elif ret == -5:
+        fi.show_module_install_instruction("telfhash")
+        return
     else:
         print(stdout_data),
         print(stderr_data),
@@ -268,7 +274,29 @@ def get_impfuzzy(fi, data):
 
     return stdout_data
 
-def compare_hash(fi, hash1, hash2):
+def get_tlsh(fi, data):
+    """
+    Get TLSH value, used by file_comparison()
+    """
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute hash_values.py to get TLSH value
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "tlsh"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive hash value
+    stdout_data, stderr_data = p.communicate(input=data)
+    ret = p.wait()
+
+    # There is a missing module
+    if ret == -4:
+        fi.show_module_install_instruction("tlsh", "py-tlsh")
+        return
+
+    return stdout_data
+
+def compare_fuzzyhash(fi, hash1, hash2):
     """
     Compare fuzzy hash values, used by file_comparison()
     """
@@ -277,7 +305,7 @@ def compare_hash(fi, hash1, hash2):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute hash_values.py to compare fuzzy hash values
-    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "compare", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "compare-fuzzy", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash value
     stdout_data, stderr_data = p.communicate()
@@ -292,6 +320,28 @@ def compare_hash(fi, hash1, hash2):
         return
     elif ret == -3:
         fi.show_module_install_instruction("pyimpfuzzy", "pyimpfuzzy-windows")
+        return
+
+    return stdout_data
+
+def compare_tlsh(fi, hash1, hash2):
+    """
+    Compare TLSH values, used by file_comparison()
+    """
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute hash_values.py to compare TLSH values
+    p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py", "compare-tlsh", hash1, hash2], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive hash value
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    # There is a missing module
+    if ret == -4:
+        fi.show_module_install_instruction("tlsh", "py-tlsh")
         return
 
     return stdout_data
@@ -405,10 +455,23 @@ def file_comparison(fi):
         ssdeep_first = get_ssdeep(fi, first_data)
         ssdeep_second = get_ssdeep(fi, second_data)
 
-        if ssdeep_first != None and ssdeep_second != None:
+        if ssdeep_first != "" and ssdeep_second != "":
             print("ssdeep hash of %s:\t%s" % (first_name, ssdeep_first))
             print("ssdeep hash of %s:\t%s" % (second_name, ssdeep_second))
-            print("ssdeep hash comparison score (0-100): %s" % compare_hash(fi, ssdeep_first, ssdeep_second))
+            print("ssdeep hash comparison score (0-100, higher score means more similar): %s" % compare_fuzzyhash(fi, ssdeep_first, ssdeep_second))
+            print("")
+
+        tlsh_first = get_tlsh(fi, first_data)
+        if tlsh_first == "TNULL":
+            tlsh_first += " (the file size is less than the minimum size (50 bytes))"
+        tlsh_second = get_tlsh(fi, second_data)
+        if tlsh_second == "TNULL":
+            tlsh_second += " (the file size is less than the minimum size (50 bytes))"
+
+        if tlsh_first != "" and tlsh_second != "":
+            print("TLSH of %s:\t%s" % (first_name, tlsh_first))
+            print("TLSH of %s:\t%s" % (second_name, tlsh_second))
+            print("TLSH comparison score (lower score means more similar): %s" % compare_tlsh(fi, tlsh_first, tlsh_second))
             print("")
 
         if first_data[:2] == "MZ":
@@ -421,10 +484,10 @@ def file_comparison(fi):
         else:
             impfuzzy_second = ""
 
-        if impfuzzy_first != None and impfuzzy_second != None:
+        if impfuzzy_first != "" and impfuzzy_second != "":
             print("impfuzzy hash of %s:\t%s" % (first_name, impfuzzy_first))
             print("impfuzzy hash of %s:\t%s" % (second_name, impfuzzy_second))
-            print("impfuzzy hash comparison score (0-100): %s" % compare_hash(fi, impfuzzy_first, impfuzzy_second))
+            print("impfuzzy hash comparison score (0-100, higher score means more similar): %s" % compare_fuzzyhash(fi, impfuzzy_first, impfuzzy_second))
             print("")
 
     print("Elapsed time: %f (sec)" % (time.time() - time_start))

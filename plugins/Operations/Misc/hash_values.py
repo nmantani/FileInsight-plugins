@@ -27,6 +27,7 @@ import hashlib
 import os
 import pathlib
 import sys
+import tempfile
 import zlib
 
 try:
@@ -43,6 +44,16 @@ try:
     import pyimpfuzzy
 except ImportError:
     sys.exit(-3) # pyimpfuzzy-windows is not installed
+
+try:
+    import tlsh
+except ImportError:
+    sys.exit(-4) # py-tlsh is not installed
+
+try:
+    import telfhash
+except ImportError:
+    sys.exit(-5) # telfhash is not installed
 
 def ssdeep(data):
     # Length of an individual fuzzy hash signature component
@@ -72,8 +83,10 @@ if len(sys.argv) == 4:
     hash1 = sys.argv[2]
     hash2 = sys.argv[3]
 
-    if hash_type == "compare":
+    if hash_type == "compare-fuzzy":
         print(pyimpfuzzy.hash_compare(hash1, hash2), end="")
+    elif hash_type == "compare-tlsh":
+        print(tlsh.diff(hash1, hash2), end="")
 elif len(sys.argv) == 2:
     hash_type = sys.argv[1]
 
@@ -94,6 +107,8 @@ elif len(sys.argv) == 2:
                     print(pyimpfuzzy.get_impfuzzy_data(data), end="")
             except:
                 pass # Do nothing if data is not valid PE file
+    elif hash_type == "tlsh":
+        print(tlsh.hash(data), end="")
 else:
     # Receive data
     data = sys.stdin.buffer.read()
@@ -104,6 +119,11 @@ else:
     print("SHA1: %s" % hashlib.sha1(data).hexdigest())
     print("SHA256: %s" % hashlib.sha256(data).hexdigest())
     print("ssdeep: %s" % ssdeep(data))
+    tlsh_value = tlsh.hash(data)
+    if tlsh_value == "TNULL":
+        print("TLSH: %s (the file size is less than the minimum size (50 bytes))" % tlsh_value)
+    else:
+        print("TLSH: %s" % tlsh_value)
 
     file_type = magic.from_buffer(data)
 
@@ -113,7 +133,34 @@ else:
             pe = pefile.PE(data=data)
 
             if pe and hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
-                print("imphash: %s" % pe.get_imphash())
-                print("impfuzzy: %s" % pyimpfuzzy.get_impfuzzy_data(data))
+                imphash = pe.get_imphash()
+                if imphash:
+                    print("imphash: %s" % imphash)
+
+                impfuzzy = pyimpfuzzy.get_impfuzzy_data(data)
+                if impfuzzy:
+                    print("impfuzzy: %s" % impfuzzy)
+
+                rich_header_hash = pe.get_rich_header_hash()
+                if rich_header_hash:
+                    print("Rich PE header hash: %s" % rich_header_hash)
         except:
+            pass # Do nothing if data is not valid PE file
+    elif file_type[:4] == "ELF ":
+        try:
+            # Create a temporary file
+            fd, filepath = tempfile.mkstemp()
+            handle = os.fdopen(fd, "wb")
+            handle.write(data)
+            handle.close()
+
+            telfhash_dict = telfhash.telfhash(filepath)
+            if telfhash_dict:
+                if telfhash_dict[0]["msg"] != "":
+                    print("telfhash: %s (%s)" % (telfhash_dict[0]["telfhash"], telfhash_dict[0]["msg"]))
+                else:
+                    print("telfhash: %s" % telfhash_dict[0]["telfhash"])
+            os.remove(filepath) # Cleanup
+        except Exception as e:
+            print(e, file=sys.stderr)
             pass # Do nothing if data is not valid PE file

@@ -143,6 +143,12 @@ https://github.com/msgpack/msgpack-python/blob/main/COPYING
 pyliblzfse is distributed under the MIT license.
 https://github.com/ydkhatri/pyliblzfse
 
+tlsh is distributed under the Apache License 2.0.
+https://github.com/trendmicro/tlsh/blob/master/LICENSE
+
+telfhash is distributed under the Apache License 2.0.
+https://github.com/trendmicro/telfhash/blob/master/LICENSE
+
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
 -------------------------------------------------------------------------------
