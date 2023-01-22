@@ -312,7 +312,7 @@ function install_fileinsight($work_dir) {
     } else {
         Write-Host "[+] Downloading FileInsight installer..."
         #$installer_url = "http://downloadcenter.mcafee.com/products/mcafee-avert/fileinsight.msi"
-        $installer_url = "http://downloadcenter.trellix.com/products/mcafee-avert/fileinsight.msi"
+        $installer_url = "https://downloadcenter.trellix.com/products/mcafee-avert/fileinsight.msi"
         $installer_msi_path = "$work_dir\fileinsight.msi"
         download_file $installer_url $installer_msi_path
 
