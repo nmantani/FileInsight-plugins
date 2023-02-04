@@ -28,7 +28,6 @@
 import binascii
 import re
 import sys
-import time
 import tkinter
 import tkinter.ttk
 import tkinter.messagebox
@@ -51,8 +50,8 @@ def decrypt(data, root, combo, entry):
     else:
         key = key.encode()
 
-    if len(key) < 5 or len(key) > 256:
-        tkinter.messagebox.showerror("Error:", message="Key length is invalid (it must be in the range [5..256] bytes).")
+    if len(key) < 1 or len(key) > 256:
+        tkinter.messagebox.showerror("Error:", message="Key length is invalid (it must be in the range [1..256] bytes).")
         return
 
     try:
