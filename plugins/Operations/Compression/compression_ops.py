@@ -1775,7 +1775,7 @@ def lzfse_decompress(fi):
         stdout_data, stderr_data = p.communicate(data)
         ret = p.wait()
 
-        if ret == -1: # brotli is not installed
+        if ret == -1: # liblzfse is not installed
             fi.show_module_install_instruction("liblzfse", "pyliblzfse")
             return
         elif ret == 1:
@@ -1791,6 +1791,108 @@ def lzfse_decompress(fi):
         newdata += orig[offset + length:]
 
         tab_name = fi.get_new_document_name("Output of LZFSE decompress")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to decompressed region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def lzip_compress(fi):
+    """
+    Compress selected region with lzip format
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzip_compress.py for compression
+        p = subprocess.Popen([fi.get_embed_python(), "Compression/lzip_compress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive compressed data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # lzip is not installed
+            fi.show_module_install_instruction("lzip", "lzip")
+            return
+        elif ret == 1:
+            print("Error: compression failed.")
+            print(stderr_data)
+            return
+
+        compressed = stdout_data
+        final_size = len(compressed)
+
+        newdata = orig[:offset]
+        newdata += compressed
+        newdata += orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of lzip compress")
+        fi.newDocument(tab_name, 1)
+        fi.setDocument(newdata)
+        fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
+
+        if length == 1:
+            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+        print("Added a bookmark to compressed region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def lzip_decompress(fi):
+    """
+    Decompress selected lzip compressed region
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+        orig = fi.getDocument()
+        orig_len = len(orig)
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute lzip_decompress.py for decompression
+        p = subprocess.Popen([fi.get_embed_python(), "Compression/lzip_decompress.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decompressed data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # lzip is not installed
+            fi.show_module_install_instruction("lzip", "lzip")
+            return
+        elif ret == 1:
+            print("Error: decompression failed.")
+            print(stderr_data)
+            return
+
+        decompressed = stdout_data
+        final_size = len(decompressed)
+
+        newdata = orig[:offset]
+        newdata += decompressed
+        newdata += orig[offset + length:]
+
+        tab_name = fi.get_new_document_name("Output of lzip decompress")
         fi.newDocument(tab_name, 1)
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")

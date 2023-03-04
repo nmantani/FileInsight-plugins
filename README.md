@@ -123,7 +123,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (136 plugins)
+## List of plugins (138 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -176,6 +176,8 @@ Your customization will be reflected in menu items.
   Compress selected region with LZF algorithm
 * LZFSE  
   Compress selected region with LZFSE algorithm
+* lzip  
+  Compress selected region with lzip format
 * LZJB  
   Compress selected region with LZJB algorithm
 * LZMA  
@@ -216,6 +218,8 @@ Your customization will be reflected in menu items.
   Decompress selected region with LZF algorithm
 * LZFSE  
   Decompress selected region with LZFSE algorithm
+* lzip  
+  Decompress selected lzip compressed region
 * LZJB  
   Decompress selected region with LZJB algorithm
 * LZMA  
