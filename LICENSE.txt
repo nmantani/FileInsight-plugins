@@ -14,6 +14,10 @@ quicklz_compress.py and quicklz_decompress.py in plugins/Operations/Compression
 are distributed under GNU General Public License version 2 (GPLv2)
 because it uses QuickLZ DLL files that are distributed under GPLv2.
 
+lzip_compress.py and lzip_decompress.py in plugins/Operations/Compression
+are distributed under GNU General Public License version 3 (GPLv3)
+because it uses lzip Python module that is distributed under GPLv3.
+
 -------------------------------------------------------------------------------
 Copyright (c) 2012 Nobutaka Mantani
 All rights reserved.
@@ -56,8 +60,8 @@ https://opensource.org/licenses/MIT
 * License of other third party software
 FileInsight-plugins uses the following software.
 
-FileInsight is distributed under the McAfee Software Royalty-free License.
-https://www.mcafee.com/enterprise/en-in/downloads/free-tools/terms-of-use.html
+FileInsight is distributed under the Trellix Software Royalty-free License.
+https://www.trellix.com/en-in/downloads/free-tools/terms-of-use.html
 
 Python is distributed under the PSF License.
 https://docs.python.org/3.8/license.html#terms-and-conditions-for-accessing-or-otherwise-using-python
@@ -148,6 +152,9 @@ https://github.com/trendmicro/tlsh/blob/master/LICENSE
 
 telfhash is distributed under the Apache License 2.0.
 https://github.com/trendmicro/telfhash/blob/master/LICENSE
+
+Binary Refinery is distributed under the BSD 3-Clause license.
+https://github.com/binref/refinery/blob/master/LICENSE
 
 pyimpfuzzy-windows is distributed under the license as follows
 (https://github.com/JPCERTCC/aa-tools/blob/master/LICENSE.txt):
