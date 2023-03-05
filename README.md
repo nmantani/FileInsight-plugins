@@ -123,7 +123,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (138 plugins)
+## List of plugins (140 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -253,6 +253,8 @@ Your customization will be reflected in menu items.
   Decrypt selected region with RC2
 * RC4  
   Decrypt selected region with RC4
+* RC5  
+  Decrypt selected region with RC5
 * Blowfish  
   Decrypt selected region with Blowfish
 * ChaCha20  
@@ -275,6 +277,8 @@ Your customization will be reflected in menu items.
   Encrypt selected region with RC2
 * RC4  
   Encrypt selected region with RC4
+* RC5  
+  Encrypt selected region with RC5
 * Blowfish  
   Encrypt selected region with Blowfish
 * ChaCha20  

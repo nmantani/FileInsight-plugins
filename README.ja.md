@@ -119,7 +119,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (138個)
+## プラグインの一覧 (140個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -249,6 +249,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を RC2 で復号します。
 * RC4  
   選択範囲を RC4 で復号します。
+* RC5  
+  選択範囲を RC5 で復号します。
 * Blowfish  
   選択範囲を Blowfish で復号します。
 * ChaCha20  
@@ -271,6 +273,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を RC2 で暗号化します。
 * RC4  
   選択範囲を RC4 で暗号化します。
+* RC5  
+  選択範囲を RC5 で暗号化します。
 * Blowfish  
   選択範囲を Blowfish で暗号化します。
 * ChaCha20  

@@ -147,6 +147,18 @@ def xtea_encrypt(fi):
     """
     do_encrypt(fi, "XTEA", "xtea_encrypt_dialog.py")
 
+def rc5_decrypt(fi):
+    """
+    Decrypt selected region with RC5
+    """
+    do_decrypt(fi, "RC5", "rc5_decrypt_dialog.py")
+
+def rc5_encrypt(fi):
+    """
+    Encrypt selected region with RC5
+    """
+    do_encrypt(fi, "RC5", "rc5_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region
@@ -181,6 +193,9 @@ def do_decrypt(fi, name, script):
             return
         if ret == -3: # xtea is not installed
             fi.show_module_install_instruction("xtea")
+            return
+        if ret == -4: # Binary Refinery is not installed
+            fi.show_module_install_instruction("refinery", "binary-refinery")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
@@ -236,6 +251,9 @@ def do_encrypt(fi, name, script):
             return
         if ret == -3: # xtea is not installed
             fi.show_module_install_instruction("xtea")
+            return
+        if ret == -4: # Binary Refinery is not installed
+            fi.show_module_install_instruction("refinery", "binary-refinery")
             return
         elif ret == 1: # Do nothing if not decrypted
             return
