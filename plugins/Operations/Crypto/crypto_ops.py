@@ -159,6 +159,18 @@ def rc5_encrypt(fi):
     """
     do_encrypt(fi, "RC5", "rc5_encrypt_dialog.py")
 
+def rc6_decrypt(fi):
+    """
+    Decrypt selected region with RC6
+    """
+    do_decrypt(fi, "RC6", "rc6_decrypt_dialog.py")
+
+def rc6_encrypt(fi):
+    """
+    Encrypt selected region with RC6
+    """
+    do_encrypt(fi, "RC6", "rc6_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region

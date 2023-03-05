@@ -123,7 +123,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (140 plugins)
+## List of plugins (142 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -249,18 +249,20 @@ Your customization will be reflected in menu items.
 #### Decrypt
 * AES  
   Decrypt selected region with AES
-* RC2  
-  Decrypt selected region with RC2
-* RC4  
-  Decrypt selected region with RC4
-* RC5  
-  Decrypt selected region with RC5
 * Blowfish  
   Decrypt selected region with Blowfish
 * ChaCha20  
   Decrypt selected region with ChaCha20
 * DES  
   Decrypt selected region with DES
+* RC2  
+  Decrypt selected region with RC2
+* RC4  
+  Decrypt selected region with RC4
+* RC5  
+  Decrypt selected region with RC5
+* RC6  
+  Decrypt selected region with RC6
 * Salsa20  
   Decrypt selected region with Salsa20
 * TEA  
@@ -273,18 +275,20 @@ Your customization will be reflected in menu items.
 #### Encrypt
 * AES  
   Encrypt selected region with AES
-* RC2  
-  Encrypt selected region with RC2
-* RC4  
-  Encrypt selected region with RC4
-* RC5  
-  Encrypt selected region with RC5
 * Blowfish  
   Encrypt selected region with Blowfish
 * ChaCha20  
   Encrypt selected region with ChaCha20
 * DES  
   Encrypt selected region with DES
+* RC2  
+  Encrypt selected region with RC2
+* RC4  
+  Encrypt selected region with RC4
+* RC5  
+  Encrypt selected region with RC5
+* RC6  
+  Encrypt selected region with RC6
 * Salsa20  
   Encrypt selected region with Salsa20
 * TEA  

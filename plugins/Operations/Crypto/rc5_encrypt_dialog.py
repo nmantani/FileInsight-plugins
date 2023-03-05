@@ -67,12 +67,12 @@ def encrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei):
     else:
         iv = iv.encode()
 
-    if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != block_size:
-        tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % block_size)
-        return
-
     if len(key) < 1 or len(key) > 255: # 2040 bits
         tkinter.messagebox.showerror("Error:", message="Key size must be between 1 and 255 bytes.")
+        return
+
+    if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != block_size:
+        tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % block_size)
         return
 
     try:

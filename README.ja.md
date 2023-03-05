@@ -119,7 +119,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (140個)
+## プラグインの一覧 (142個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -245,18 +245,20 @@ Send to プラグインのメニューで Customize menu をクリックして�
 #### Decrypt
 * AES  
   選択範囲を AES で復号します。
-* RC2  
-  選択範囲を RC2 で復号します。
-* RC4  
-  選択範囲を RC4 で復号します。
-* RC5  
-  選択範囲を RC5 で復号します。
 * Blowfish  
   選択範囲を Blowfish で復号します。
 * ChaCha20  
   選択範囲を ChaCha20 で復号します。
 * DES  
   選択範囲を DES で復号します。
+* RC2  
+  選択範囲を RC2 で復号します。
+* RC4  
+  選択範囲を RC4 で復号します。
+* RC5  
+  選択範囲を RC5 で復号します。
+* RC6  
+  選択範囲を RC6 で復号します。
 * Salsa20  
   選択範囲を Salsa20 で復号します。
 * TEA  
@@ -269,18 +271,20 @@ Send to プラグインのメニューで Customize menu をクリックして�
 #### Encrypt
 * AES  
   選択範囲を AES で暗号化します。
-* RC2  
-  選択範囲を RC2 で暗号化します。
-* RC4  
-  選択範囲を RC4 で暗号化します。
-* RC5  
-  選択範囲を RC5 で暗号化します。
 * Blowfish  
   選択範囲を Blowfish で暗号化します。
 * ChaCha20  
   選択範囲を ChaCha20 で暗号化します。
 * DES  
   選択範囲を DES で暗号化します。
+* RC2  
+  選択範囲を RC2 で暗号化します。
+* RC4  
+  選択範囲を RC4 で暗号化します。
+* RC5  
+  選択範囲を RC5 で暗号化します。
+* RC6  
+  選択範囲を RC6 で暗号化します。
 * Salsa20  
   選択範囲を Salsa20 で暗号化します。
 * TEA  
