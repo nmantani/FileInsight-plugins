@@ -34,7 +34,8 @@ import time
 
 def hash_values(fi):
     """
-    Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy hash values of selected region (the whole file if not selected)
+    Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,
+    Rich PE header hash, telfhash values of selected region (the whole file if not selected)
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()

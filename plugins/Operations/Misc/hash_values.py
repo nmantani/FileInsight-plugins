@@ -1,6 +1,8 @@
 #
-# Hash values - Calculate MD5, SHA1, SHA256, ssdeep, imphash, impfuzzy
-# hash values of selected region (the whole file if not selected)
+# Hash values - Calculate CRC32, MD5, SHA1, SHA256, ssdeep,
+# TLSH, imphash, impfuzzy, exphash, Rich PE header hash,
+# telfhash values of selected region (the whole file if not
+# selected)
 #
 # Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
@@ -140,6 +142,10 @@ else:
                 impfuzzy = pyimpfuzzy.get_impfuzzy_data(data)
                 if impfuzzy:
                     print("impfuzzy: %s" % impfuzzy)
+
+                exphash = pe.get_exphash()
+                if exphash:
+                    print("exphash: %s" % exphash)
 
                 rich_header_hash = pe.get_rich_header_hash()
                 if rich_header_hash:
