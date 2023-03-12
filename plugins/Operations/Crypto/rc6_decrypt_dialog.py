@@ -81,9 +81,20 @@ def decrypt(data, root, cm, cks, ckt, ek, cit, ei):
 
         d = cipher.process(data=data)
     except Exception as e:
-        tkinter.messagebox.showerror("Error:", message=e)
-        root.quit()
-        exit(1) # Not decrypted
+        try:
+            # Try again without padding
+            # Decrypted plaintext may be truncated if ciphertext is encrypted without padding
+            # It may be a bug of Bianry Refinery?
+            if mode in ["CBC", "CFB", "OFB", "CTR"]:
+                cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, mode=mode, padding="raw")
+            elif mode == "ECB":
+                cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, mode=mode, padding="raw")
+
+            d = cipher.process(data=data)
+        except Exception as e:
+            tkinter.messagebox.showerror("Error:", message=e)
+            root.quit()
+            exit(1) # Not decrypted
 
     sys.stdout.buffer.write(d)
     root.quit()
