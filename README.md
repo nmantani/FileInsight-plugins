@@ -13,7 +13,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [How to use](#how-to-use)
 * [How to update](#how-to-update)
 * [Customization](#customization)
-* [List of plugins (142 plugins)](#list-of-plugins-142-plugins)
+* [List of plugins (144 plugins)](#list-of-plugins-144-plugins)
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
@@ -132,7 +132,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (142 plugins)
+## List of plugins (144 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -260,6 +260,8 @@ Your customization will be reflected in menu items.
   Decrypt selected region with AES
 * Blowfish  
   Decrypt selected region with Blowfish
+* Camellia  
+  Decrypt selected region with Camellia
 * ChaCha20  
   Decrypt selected region with ChaCha20
 * DES  
@@ -286,6 +288,8 @@ Your customization will be reflected in menu items.
   Encrypt selected region with AES
 * Blowfish  
   Encrypt selected region with Blowfish
+* Camellia  
+  Encrypt selected region with Camellia
 * ChaCha20  
   Encrypt selected region with ChaCha20
 * DES  

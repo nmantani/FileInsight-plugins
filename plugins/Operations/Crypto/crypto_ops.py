@@ -171,6 +171,18 @@ def rc6_encrypt(fi):
     """
     do_encrypt(fi, "RC6", "rc6_encrypt_dialog.py")
 
+def camellia_decrypt(fi):
+    """
+    Decrypt selected region with Camellia
+    """
+    do_decrypt(fi, "Camellia", "camellia_decrypt_dialog.py")
+
+def camellia_encrypt(fi):
+    """
+    Encrypt selected region with Camellia
+    """
+    do_encrypt(fi, "Camellia", "camellia_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region
