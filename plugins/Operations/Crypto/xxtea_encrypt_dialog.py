@@ -63,13 +63,13 @@ def encrypt(data, root, combo, entry):
     try:
         cipher = refinery.units.crypto.cipher.xxtea.xxtea(key=key)
         data = Cryptodome.Util.Padding.pad(data, block_size)
-        e = cipher.reverse(data=data)
+        c = cipher.reverse(data=data)
     except Exception as e:
         tkinter.messagebox.showerror("Error:", message=e)
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.buffer.write(e)
+    sys.stdout.buffer.write(c)
     root.quit()
     exit(0) # Decrypted successfully
 
