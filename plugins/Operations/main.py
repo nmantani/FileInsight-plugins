@@ -290,6 +290,7 @@ if __name__ == "__main__":
                    crypto_ops.tea_decrypt,
                    crypto_ops.triple_des_decrypt,
                    crypto_ops.xtea_decrypt,
+                   crypto_ops.xxtea_decrypt,
                    crypto_ops.aes_encrypt,
                    crypto_ops.blowfish_encrypt,
                    crypto_ops.camellia_encrypt,
@@ -302,7 +303,8 @@ if __name__ == "__main__":
                    crypto_ops.salsa20_encrypt,
                    crypto_ops.tea_encrypt,
                    crypto_ops.triple_des_encrypt,
-                   crypto_ops.xtea_encrypt)
+                   crypto_ops.xtea_encrypt,
+                   crypto_ops.xxtea_encrypt)
 
     operations += (encoding_ops.hex_text_to_binary_data,
                    encoding_ops.decimal_text_to_binary_data,

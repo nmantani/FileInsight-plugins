@@ -13,7 +13,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [How to use](#how-to-use)
 * [How to update](#how-to-update)
 * [Customization](#customization)
-* [List of plugins (144 plugins)](#list-of-plugins-144-plugins)
+* [List of plugins (146 plugins)](#list-of-plugins-146-plugins)
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
@@ -282,6 +282,8 @@ Your customization will be reflected in menu items.
   Decrypt selected region with Triple DES
 * XTEA  
   Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
+* XXTEA  
+  Decrypt selected region with XXTEA (Corrected Block Tiny Encryption Algorithm)
 
 #### Encrypt
 * AES  
@@ -310,6 +312,8 @@ Your customization will be reflected in menu items.
   Encrypt selected region with Triple DES
 * XTEA  
   Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
+* XXTEA  
+  Decrypt selected region with XXTEA (Corrected Block Tiny Encryption Algorithm)
 
 ### Encoding operations
 #### Decode

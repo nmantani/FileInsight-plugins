@@ -267,7 +267,8 @@ ops_dict["Decrypt"] = ("AES",
                        "Salsa20",
                        "TEA",
                        "Triple DES",
-                       "XTEA")
+                       "XTEA",
+                       "XXTEA")
 tooltip_dict["Decrypt"] = ("Decrypt selected region with AES",
                           "Decrypt selected region with Blowfish",
                           "Decrypt selected region with Camellia",
@@ -278,9 +279,10 @@ tooltip_dict["Decrypt"] = ("Decrypt selected region with AES",
                           "Decrypt selected region with RC5",
                           "Decrypt selected region with RC6",
                           "Decrypt selected region with Salsa20",
-                          "Decrypt selected region with TEA (Tiny Encryption Algorithm)",
+                          "Decrypt selected region with TEA\n(Tiny Encryption Algorithm)",
                           "Decrypt selected region with Triple DES",
-                          "Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)")
+                          "Decrypt selected region with XTEA\n(eXtended Tiny Encryption Algorithm)",
+                          "Decrypt selected region with XXTEA\n(Corrected Block Tiny Encryption Algorithm)")
 
 ops_dict["Encrypt"] = ("AES",
                        "Blowfish",
@@ -294,7 +296,8 @@ ops_dict["Encrypt"] = ("AES",
                        "Salsa20",
                        "TEA",
                        "Triple DES",
-                       "XTEA")
+                       "XTEA",
+                       "XXTEA")
 tooltip_dict["Encrypt"] = ("Encrypt selected region with AES",
                           "Encrypt selected region with Blowfish",
                           "Encrypt selected region with Camellia",
@@ -305,9 +308,10 @@ tooltip_dict["Encrypt"] = ("Encrypt selected region with AES",
                           "Encrypt selected region with RC5",
                           "Encrypt selected region with RC6",
                           "Encrypt selected region with Salsa20",
-                          "Encrypt selected region with TEA (Tiny Encryption Algorithm)",
+                          "Encrypt selected region with TEA\n(Tiny Encryption Algorithm)",
                           "Encrypt selected region with Triple DES",
-                          "Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)")
+                          "Encrypt selected region with XTEA\n(eXtended Tiny Encryption Algorithm)",
+                          "Encrypt selected region with XXTEA\n(Corrected Block Tiny Encryption Algorithm)")
 
 ops_dict["Decode"] = ("Hex text to binary data",
                       "Decimal text to binary data",

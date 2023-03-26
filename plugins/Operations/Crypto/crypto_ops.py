@@ -137,13 +137,13 @@ def triple_des_encrypt(fi):
 
 def xtea_decrypt(fi):
     """
-    Decrypt selected region with Triple DES
+    Decrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
     """
     do_decrypt(fi, "XTEA", "xtea_decrypt_dialog.py")
 
 def xtea_encrypt(fi):
     """
-    Encrypt selected region with Triple DES
+    Encrypt selected region with XTEA (eXtended Tiny Encryption Algorithm)
     """
     do_encrypt(fi, "XTEA", "xtea_encrypt_dialog.py")
 
@@ -182,6 +182,18 @@ def camellia_encrypt(fi):
     Encrypt selected region with Camellia
     """
     do_encrypt(fi, "Camellia", "camellia_encrypt_dialog.py")
+
+def xxtea_decrypt(fi):
+    """
+    Decrypt selected region with XXTEA (Corrected Block Tiny Encryption Algorithm)
+    """
+    do_decrypt(fi, "XXTEA", "xxtea_decrypt_dialog.py")
+
+def xxtea_encrypt(fi):
+    """
+    Encrypt selected region with XXTEA (Corrected Block Tiny Encryption Algorithm)
+    """
+    do_encrypt(fi, "XXTEA", "xxtea_encrypt_dialog.py")
 
 def do_decrypt(fi, name, script):
     """

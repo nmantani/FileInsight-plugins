@@ -13,7 +13,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [使い方](#使い方)
 * [アップデート方法](#アップデート方法)
 * [カスタマイズ](#カスタマイズ)
-* [プラグインの一覧 (144個)](#プラグインの一覧-144個)
+* [プラグインの一覧 (146個)](#プラグインの一覧-146個)
 
 ## スクリーンショット
 #### AES decrypt プラグインのダイアログ
@@ -128,7 +128,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (144個)
+## プラグインの一覧 (146個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -278,6 +278,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を Triple DES で復号します。
 * XTEA  
   選択範囲を XTEA (eXtended Tiny Encryption Algorithm) で復号します。
+* XXTEA  
+  選択範囲を XXTEA (Corrected Block Tiny Encryption Algorithm) で復号します。
 
 #### Encrypt
 * AES  
@@ -306,6 +308,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を Triple DES で暗号化します。
 * XTEA  
   選択範囲を XTEA (eXtended Tiny Encryption Algorithm) で暗号化します。
+* XXTEA  
+  選択範囲を XXTEA (Corrected Block Tiny Encryption Algorithm) で暗号化します。
 
 ### Encoding operations
 #### Decode
