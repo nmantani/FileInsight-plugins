@@ -86,23 +86,9 @@ def decrypt(data, root, cm, cks, ckt, ek, cit, ei):
         d = cipher.process(data=data)
 
     except Exception as e:
-        try:
-            # Try again without padding
-            # Decrypted plaintext may be truncated if ciphertext is encrypted without padding (such as OpenSSL)
-            # It may be a bug of Bianry Refinery?
-            if mode in ["CBC", "OFB", "CTR"]:
-                cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, mode=mode, padding="raw")
-            elif mode == "CFB":
-                segment_size = blocksize_bits
-                cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, mode=mode, padding="raw", segment_size=segment_size)
-            elif mode == "ECB":
-                cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, mode=mode, padding="raw")
-
-            d = cipher.process(data=data)
-        except Exception as e:
-            tkinter.messagebox.showerror("Error:", message=e)
-            root.quit()
-            exit(1) # Not decrypted
+        tkinter.messagebox.showerror("Error:", message=e)
+        root.quit()
+        exit(1) # Not decrypted
 
     sys.stdout.buffer.write(d)
     root.quit()

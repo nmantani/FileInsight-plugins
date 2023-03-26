@@ -42,6 +42,7 @@ def encrypt(data, root, cm, cks, ckt, ek, cit, ei):
 
     mode = cm.get()
     key_size = rc6_key_size[cks.current()]
+    segment_size = key_size * 8
     key_type = ckt.get()
     key = ek.get()
     iv_type = cit.get()
@@ -74,8 +75,10 @@ def encrypt(data, root, cm, cks, ckt, ek, cit, ei):
         return
 
     try:
-        if mode in ["CFB", "OFB", "CTR"]:
+        if mode in ["OFB", "CTR"]:
             cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, mode=mode)
+        elif mode == "CFB":
+            cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, mode=mode, segment_size=segment_size)
         elif mode == "CBC":
             cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, padding="pkcs7", mode=mode)
         elif mode == "ECB":

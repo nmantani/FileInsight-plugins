@@ -75,11 +75,13 @@ def encrypt(data, root, cm, cks, ckt, ek, cit, ei):
         return
 
     try:
-        if mode in ["CBC", "OFB", "CTR"]: # Binary Refinery requires padding for CFB, OFB, and CTR modes
-            cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, padding="pkcs7", mode=mode)
+        if mode in ["OFB", "CTR"]:
+            cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, mode=mode)
         elif mode == "CFB":
             segment_size = blocksize_bits
-            cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, mode=mode, padding="pkcs7", segment_size=segment_size)
+            cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, mode=mode, segment_size=segment_size)
+        elif mode == "CBC":
+            cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, iv=iv, padding="pkcs7", mode=mode)
         elif mode == "ECB":
             cipher = refinery.units.crypto.cipher.camellia.camellia(key=key, padding="pkcs7", mode=mode)
 

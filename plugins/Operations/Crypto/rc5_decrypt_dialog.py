@@ -43,6 +43,7 @@ def decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei):
     mode = cm.get()
     block_size = rc5_block_size[cbs.current()]
     word_size = block_size * 4
+    segment_size = block_size * 8
     rounds = int(sr.get())
     key_type = ckt.get()
     key = ek.get()
@@ -76,8 +77,10 @@ def decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei):
         return
 
     try:
-        if mode in ["CBC", "CFB", "OFB", "CTR"]:
+        if mode in ["CBC", "OFB", "CTR"]:
             cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, iv=iv, mode=mode, rounds=rounds, word_size=word_size)
+        elif mode == "CFB":
+            cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, iv=iv, mode=mode, segment_size=segment_size, rounds=rounds, word_size=word_size)
         elif mode == "ECB":
             cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, mode=mode, rounds=rounds, word_size=word_size)
 

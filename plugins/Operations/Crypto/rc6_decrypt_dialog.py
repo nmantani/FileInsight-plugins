@@ -42,6 +42,7 @@ def decrypt(data, root, cm, cks, ckt, ek, cit, ei):
 
     mode = cm.get()
     key_size = rc6_key_size[cks.current()]
+    segment_size = key_size * 8
     key_type = ckt.get()
     key = ek.get()
     iv_type = cit.get()
@@ -74,27 +75,18 @@ def decrypt(data, root, cm, cks, ckt, ek, cit, ei):
         return
 
     try:
-        if mode in ["CBC", "CFB", "OFB", "CTR"]:
+        if mode in ["CBC", "OFB", "CTR"]:
             cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, mode=mode)
+        elif mode == "CFB":
+            cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, mode=mode, segment_size=segment_size)
         elif mode == "ECB":
             cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, mode=mode)
 
         d = cipher.process(data=data)
     except Exception as e:
-        try:
-            # Try again without padding
-            # Decrypted plaintext may be truncated if ciphertext is encrypted without padding
-            # It may be a bug of Bianry Refinery?
-            if mode in ["CBC", "CFB", "OFB", "CTR"]:
-                cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, iv=iv, mode=mode, padding="raw")
-            elif mode == "ECB":
-                cipher = refinery.units.crypto.cipher.rc6.rc6(key=key, mode=mode, padding="raw")
-
-            d = cipher.process(data=data)
-        except Exception as e:
-            tkinter.messagebox.showerror("Error:", message=e)
-            root.quit()
-            exit(1) # Not decrypted
+        tkinter.messagebox.showerror("Error:", message=e)
+        root.quit()
+        exit(1) # Not decrypted
 
     sys.stdout.buffer.write(d)
     root.quit()
