@@ -556,6 +556,17 @@ def replace(fi):
             fi.newDocument(tab_name, 0)
             fi.setDocument(output)
 
+def sort_by_offset(s):
+    """
+    Return offset value
+    Used by yara_scan()
+    """
+    m = re.match("^offset: (.+), size", s)
+    if m == None:
+        return 0
+    else:
+        return int(m.groups()[0], 16)
+
 def yara_scan(fi):
     """
     Scan selected region (the whole file if not selected) with YARA
@@ -593,6 +604,7 @@ def yara_scan(fi):
     if stdout_data == "":
         fi.activateDocumentAt(current_file_index)
         return
+
     (scanned_file_index, rule_file_index) = stdout_data.split()
 
     time_start = time.time()
@@ -669,22 +681,25 @@ def yara_scan(fi):
 
     num_hits = 0
     prev_string = ""
+    prev_rule = ""
     bookmark_start = []
     bookmark_end = []
     rule_identifier = []
-    for l in stdout_data.splitlines():
-        offset_matched = int(l.split()[1], 0)
-        size_matched = int(l.split()[3], 0)
-        m = re.match("^Offset: (.+) size: (.+) rule: (.+) tag: (.*) identifier: (.+) matched: (.+)$", l)
+    stdout_bookmark = sorted(stdout_data.splitlines(), key=sort_by_offset) # Sort output by offset for bookmarks
+    for l in stdout_bookmark:
+        offset_matched = int(l.split()[1][:-1], 0)
+        size_matched = int(l.split()[3][:-1], 0)
+        m = re.match("^offset: (.+), size: (.+), rule: (.+), tag: (.*), identifier: (.+), matched: (.+)$", l)
         rule_matched = m.groups()[2]
         identifier_matched = m.groups()[4]
-        if num_hits > 0 and identifier_matched == prev_string and offset_matched <= bookmark_end[-1]:
+        if num_hits > 0 and rule_matched == prev_rule and identifier_matched == prev_string and offset_matched <= bookmark_end[-1]:
             bookmark_end[-1] = offset_matched + size_matched
         else:
             bookmark_start.append(offset_matched)
             bookmark_end.append(offset_matched + size_matched)
             rule_identifier.append("%s %s" % (rule_matched, identifier_matched))
         prev_string = identifier_matched
+        prev_rule = rule_matched
         num_hits += 1
 
     if len(bookmark_start) > 100 and not fi.bookmark_yesno_dialog(len(bookmark_start)):

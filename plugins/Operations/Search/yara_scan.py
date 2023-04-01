@@ -76,11 +76,30 @@ except Exception as e:
 if len(match) == 0:
     exit(0) # No YARA rule matched
 
-for m in match:
-    for i in range(0, len(m.strings)):
-        if is_printable(m.strings[i][2]):
-            print("Offset: 0x%x size: %s rule: %s tag: %s identifier: %s matched: %s" % (offset + m.strings[i][0], len(m.strings[i][2]), m.rule, " ".join(m.tags), m.strings[i][1], re.sub("[\r\n\v\f]", "", m.strings[i][2].decode())))
-        else:
-            print("Offset: 0x%x size: %s rule: %s tag: %s identifier: %s matched: %s (hex)" % (offset + m.strings[i][0], len(m.strings[i][2]), m.rule, " ".join(m.tags), m.strings[i][1], binascii.hexlify(m.strings[i][2]).decode()))
+try:
+    for m in match:
+        for i in range(0, len(m.strings)):
+            for j in range(0, len(m.strings[i].instances)):
+                output = "offset: 0x{:x}, size: {}, rule: {}, tag: {}, identifier: {}".format(offset + m.strings[i].instances[j].offset, m.strings[i].instances[j].matched_length, m.rule, " ".join(m.tags), m.strings[i].identifier)
+
+                if is_printable(m.strings[i].instances[j].matched_data):
+                    output += ", matched: {}".format(re.sub("[\r\n\v\f]", "", m.strings[i].instances[j].matched_data.decode()))
+                else:
+                    output += ", matched: {}".format(binascii.hexlify(m.strings[i].instances[j].matched_data).decode())
+
+                if m.strings[i].is_xor():
+                    output += ", xor_key: 0x{:x}".format(m.strings[i].instances[j].xor_key)
+                    # Python crashes if plaintext() called twice
+                    plaintext = m.strings[i].instances[j].plaintext()
+                    if is_printable(plaintext):
+                        output += ", plaintext: {}".format(re.sub("[\r\n\v\f]", "", plaintext.decode()))
+                    else:
+                        output += ", plaintext: {}".format(binascii.hexlify(plaintext).decode())
+                print(output)
+
+except Exception as e:
+    print("Error: match data processing failed")
+    print(e)
+    exit(-2)
 
 exit(1) # YARA rule matched
