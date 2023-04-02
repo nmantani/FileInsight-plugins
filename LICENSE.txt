@@ -111,12 +111,6 @@ http://www.quicklz.com/
 pyppmd is distributed under the GNU Lesser General Public License v2.1.
 https://github.com/miurahr/pyppmd/blob/main/LICENSE.rst
 
-PyTEA is distributed under the MIT License.
-https://github.com/codeif/PyTEA/blob/master/LICENSE
-
-xtea is distributed as public domain.
-https://github.com/Varbin/xtea/blob/master/xtea/__init__.py
-
 seaborn is distributed under the BSD 3-Clause license.
 https://github.com/mwaskom/seaborn/blob/master/LICENSE
 
