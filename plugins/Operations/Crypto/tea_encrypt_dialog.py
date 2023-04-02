@@ -28,21 +28,34 @@
 import binascii
 import re
 import sys
-import time
 import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 
 try:
-    import pytea
+    import refinery.units.crypto.cipher.tea
 except ImportError:
-    exit(-2) # PyTEA is not installed
+    exit(-4) # Binary Refinery is not installed
 
-# Encrypt received data
-def encrypt(data, root, combo, entry):
-    key = entry.get()
+# Print selected items
+def encrypt(data, root, cm, ce, ckt, ek, cit, ei):
+    block_size = 8
+    segment_size = block_size
+    key_size = 16
 
-    if combo.get() == "Hex":
+    mode = cm.get()
+    endianness = ce.get()
+    key_type = ckt.get()
+    key = ek.get()
+    iv_type = cit.get()
+    iv = ei.get()
+
+    if endianness == "big":
+        swap = True
+    else:
+        swap = False
+
+    if key_type == "Hex":
         if re.match("^([0-9A-Fa-f]{2})+$", key):
             key = binascii.a2b_hex(key)
         else:
@@ -51,20 +64,50 @@ def encrypt(data, root, combo, entry):
     else:
         key = key.encode()
 
-    if len(key) != 16:
-        tkinter.messagebox.showerror("Error:", message="Key length must be 16 bytes.")
+    if mode in ["CBC", "CFB", "OFB", "CTR"] and iv_type == "Hex":
+        if re.match("^([0-9A-Fa-f]{2})+$", iv):
+            iv = binascii.a2b_hex(iv)
+        else:
+            tkinter.messagebox.showerror("Error:", message="IV is not in hex format.")
+            return
+    else:
+        iv = iv.encode()
+
+    if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != block_size:
+        tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % block_size)
+        return
+
+    key_length = len(key)
+    if key_length != key_size:
+        tkinter.messagebox.showerror("Error:", message="Key size must be %d bytes." % key_size)
         return
 
     try:
-        cipher = pytea.TEA(key)
-        e = cipher.encrypt(data)
-    except:
+        if mode in ["CFB", "OFB", "CTR"]:
+            cipher = refinery.units.crypto.cipher.tea.tea(key=key, iv=iv, mode=mode, swap=swap)
+        elif mode == "CBC":
+            cipher = refinery.units.crypto.cipher.tea.tea(key=key, iv=iv, padding="pkcs7", mode=mode, swap=swap)
+        elif mode == "ECB":
+            cipher = refinery.units.crypto.cipher.tea.tea(key=key, padding="pkcs7", mode=mode, swap=swap)
+
+        c= cipher.reverse(data=data)
+    except Exception as e:
+        tkinter.messagebox.showerror("Error:", message=e)
         root.quit()
         exit(1) # Not decrypted
 
-    sys.stdout.buffer.write(e)
+    sys.stdout.buffer.write(c)
     root.quit()
-    exit(0) # Decrypted successfully
+    exit(0) # Encrypted successfully
+
+def combo_mode_selected(root, cm, cit, ei):
+    mode = cm.get()
+    if mode == "ECB":
+        cit.configure(state="disabled")
+        ei.configure(state="disabled")
+    else:
+        cit.configure(state="readonly")
+        ei.configure(state="normal")
 
 # Receive data
 data = sys.stdin.buffer.read()
@@ -72,27 +115,69 @@ data = sys.stdin.buffer.read()
 # Create input dialog
 root = tkinter.Tk()
 root.title("TEA encrypt")
-root.protocol("WM_DELETE_WINDOW", (lambda root=root: root.quit()))
+root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
 
-label = tkinter.Label(root, text="Key:")
-label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+label_mode = tkinter.Label(root, text="Mode:")
+label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo["values"] = ("Text", "Hex")
-combo.current(0)
-combo.grid(row=0, column=1, padx=5, pady=5)
+combo_mode = tkinter.ttk.Combobox(root, width=5, state="readonly")
+combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB", "CTR")
+combo_mode.current(0)
+combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-entry = tkinter.Entry(width=40)
-entry.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-entry.focus() # Focus to this widget
+label_endianness = tkinter.Label(root, text="Endianness:")
+label_endianness.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry)))
-button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+combo_endianness = tkinter.ttk.Combobox(root, width=5, state="readonly")
+combo_endianness["values"] = ("little", "big")
+combo_endianness.current(0)
+combo_endianness.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+label_key_type = tkinter.Label(root, text="Key type:")
+label_key_type.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
+combo_key_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
+combo_key_type["values"] = ("Text", "Hex")
+combo_key_type.current(0)
+combo_key_type.grid(row=2, column=1, padx=5, pady=5)
+
+label_key = tkinter.Label(root, text="Key:")
+label_key.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+
+entry_key = tkinter.Entry(width=32)
+entry_key.grid(row=2, column=3, padx=5, pady=5, sticky="w")
+entry_key.focus() # Focus to this widget
+
+label_iv_type = tkinter.Label(root, text="IV type:")
+label_iv_type.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+
+combo_iv_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
+combo_iv_type["values"] = ("Text", "Hex")
+combo_iv_type.current(0)
+combo_iv_type.grid(row=3, column=1, padx=5, pady=5)
+
+label_iv = tkinter.Label(root, text="IV:")
+label_iv.grid(row=3, column=2, padx=5, pady=5, sticky="w")
+
+entry_iv = tkinter.Entry(width=32)
+entry_iv.grid(row=3, column=3, padx=5, pady=5, sticky="w")
+
+button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei)))
+button.grid(row=4, column=0, padx=5, pady=5, columnspan=4)
 
 # Set callback functions
-combo.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry))
-entry.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry))
-button.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: encrypt(data, root, combo, entry))
+combo_mode.bind('<<ComboboxSelected>>', lambda event, root=root, cm=combo_mode, cit=combo_iv_type, ei=entry_iv: combo_mode_selected(root, cm, cit, ei))
+combo_mode.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+combo_endianness.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+combo_key_type.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+entry_key.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+combo_iv_type.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+entry_iv.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+button.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, ce=combo_endianness, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: encrypt(data, root, cm, ce, ckt, ek, cit, ei))
+
+# These are disabled in the initial state (ECB mode)
+combo_iv_type.configure(state = "disabled")
+entry_iv.configure(state = "disabled")
 
 # Adjust window position
 sw = root.winfo_screenwidth()
