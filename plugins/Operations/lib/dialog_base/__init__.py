@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2020, Nobutaka Mantani
+# Copyright (c) 2023, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -26,38 +26,28 @@
 import sys
 import tkinter
 
-sys.path.append("./lib")
-import dialog_base
-
-class SimpleDialog(dialog_base.DialogBase):
+class DialogBase:
     def __init__(self, title):
-        super().__init__(title)
+        # Create root window
+        self.root = tkinter.Tk()
+        self.root.title(title)
+        self.root.protocol("WM_DELETE_WINDOW", (lambda: sys.exit(1)))
 
+    def show(self):
+        # Adjust window position
+        sw = self.root.winfo_screenwidth()
+        sh = self.root.winfo_screenheight()
+        self.root.update_idletasks() # Necessary to get width and height of the window
+        ww = self.root.winfo_width()
+        wh = self.root.winfo_height()
+        self.root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+
+        self.root.mainloop()
+
+    # This function is implemented by subclasses
     def add_widgets(self, **kwargs):
-        label_text=kwargs["label_text"]
-        self.label = tkinter.Label(self.root, text=label_text)
-        self.label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        pass
 
-        self.entry = tkinter.Entry(self.root, width=80)
-        self.entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-        self.entry.bind("<Return>", lambda event: self.process()) # Event handler for hitting enter key
-        self.entry.focus() # Focus to this widget
-
-        self.button = tkinter.Button(self.root, text='OK', command=(lambda: self.process()))
-        self.button.grid(row=2, column=0, padx=5, pady=5, sticky="e")
-
-    # Print input to stdout
+    # This function is implemented by subclasses
     def process(self, **kwargs):
-        print(self.entry.get())
-        self.root.quit()
-
-if __name__ == "__main__":
-    dialog = SimpleDialog("Dialog")
-
-    if len(sys.argv) < 2:
-        label_text = ""
-    else:
-        label_text = sys.argv[1]
-
-    dialog.add_widgets(label_text=label_text)
-    dialog.show()
+        pass
