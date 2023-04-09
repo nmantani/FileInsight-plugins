@@ -30,46 +30,40 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 
-# Print selected items
-def get_selection(r, lb):
-    print("%d" % lb.curselection())
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-# Read list of tabs from stdin
-tabs = sys.stdin.readlines()
+class SwichFileTabsDialog(dialog_base.DialogBase):
+    def add_widgets(self, **kwargs):
+        # Read list of tabs from stdin
+        tabs = sys.stdin.readlines()
 
-max_len = 0
-for t in tabs:
-    if len(t) > max_len:
-        max_len = len(t)
+        max_len = 0
+        for t in tabs:
+            if len(t) > max_len:
+                max_len = len(t)
 
-# Create a dialog
-root = tkinter.Tk()
-root.title("Switch file tabs")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+        self.strvar_tabs = tkinter.StringVar(value=tabs)
+        self.listbox = tkinter.Listbox(self.root, selectmode="browse", listvariable=self.strvar_tabs, width=max_len+10, height=16)
+        self.scrollbar = tkinter.ttk.Scrollbar(self.root, orient='vertical', command=self.listbox.yview)
+        self.listbox["yscrollcommand"] = self.scrollbar.set
+        self.listbox.grid(row=0, column=0, padx=5, pady=5)
+        self.scrollbar.grid(row=0, column=1, sticky=(tkinter.N, tkinter.S))
+        self.listbox.selection_set(0)
+        self.listbox.focus() # Focus to this widget
 
-strvar_tabs = tkinter.StringVar(value=tabs)
-listbox = tkinter.Listbox(root, selectmode="single", listvariable=strvar_tabs, width=max_len+10, height=16)
-scrollbar = tkinter.ttk.Scrollbar(root, orient='vertical', command=listbox.yview)
-listbox["yscrollcommand"] = scrollbar.set
-listbox.grid(row=0, column=0, padx=5, pady=5)
-scrollbar.grid(row=0, column=1, sticky=(tkinter.N, tkinter.S))
-listbox.selection_set(0)
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
+        self.button.grid(row=1, column=0, padx=5, pady=5)
 
-button = tkinter.Button(root, text="OK", command=(lambda r=root, lb=listbox: get_selection(r, lb)))
-button.grid(row=1, column=0, padx=5, pady=5)
-button.focus() # Focus to this widget
+        # Set callback functions
+        for x in (self.listbox, self.button):
+            x.bind("<Return>", lambda event: self.process())
 
-# Set callback functions
-for x in (listbox, button):
-    x.bind("<Return>", lambda event, r=root, lb=listbox: get_selection(r, lb))
+    def process(self, **kwargs):
+        print("%d" % self.listbox.curselection())
+        self.root.quit()
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
+if __name__ == "__main__":
+    dialog = SwichFileTabsDialog("Switch file tabs")
+    dialog.add_widgets()
+    dialog.show()

@@ -25,39 +25,35 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import sys
 import tkinter
 import tkinter.ttk
 
-# Print setting to stdout
-def print_setting(r, cu):
-    print("%s" % cu.get())
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-# Create setting dialog
-root = tkinter.Tk()
-root.title("Change endianness")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label_unit = tkinter.Label(root, text="Unit to change:")
-label_unit.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-combo_unit = tkinter.ttk.Combobox(root, width=18, state="readonly")
-combo_unit["values"] = ("WORD (2 bytes)", "DWORD (4 bytes)", "QWORD (8 bytes)")
-combo_unit.current(0)
-combo_unit.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+class ChangeEndiannessDialog(dialog_base.DialogBase):
+    def add_widgets(self, **kwargs):
+        self.label_unit = tkinter.Label(self.root, text="Unit to change:")
+        self.label_unit.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.combo_unit = tkinter.ttk.Combobox(self.root, width=18, state="readonly")
+        self.combo_unit["values"] = ("WORD (2 bytes)", "DWORD (4 bytes)", "QWORD (8 bytes)")
+        self.combo_unit.current(0)
+        self.combo_unit.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.combo_unit.focus() # Focus to this widget
 
-button = tkinter.Button(root, text="OK", command=(lambda r=root, cu=combo_unit: print_setting(r, cu)))
-button.grid(row=1, column=0, padx=5, pady=5, columnspan=2)
-button.focus() # Focus to this widget
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
+        self.button.grid(row=1, column=0, padx=5, pady=5, columnspan=2)
 
-# Set callback functions
-button.bind("<Return>", lambda event, r=root, cu=combo_unit: print_setting(r, cu))
-combo_unit.bind("<Return>", lambda event, r=root, cu=combo_unit: print_setting(r, cu))
+        # Set callback functions
+        self.button.bind("<Return>", lambda event: self.process())
+        self.combo_unit.bind("<Return>", lambda event: self.process())
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry("+%d+%d" % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+    def process(self, **kwargs):
+        print("%s" % self.combo_unit.get())
+        self.root.quit()
 
-root.mainloop()
+if __name__ == "__main__":
+    dialog = ChangeEndiannessDialog("Change endianness")
+    dialog.add_widgets()
+    dialog.show()
