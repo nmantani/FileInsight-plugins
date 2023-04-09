@@ -55,29 +55,23 @@ Param(
 )
 
 $RELEASE_VERSION = "2.16"
-$PYTHON_EXE = "C:\Windows\py.exe"
-$PYTHON_VERSION = "3.10.9"
 $PYTHON_EMBEDDABLE_PACKAGES_RELEASE_VERSION = "20230102"
 $PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_VERSION = "20230402"
 $APLIB_VERSION = "1.1.1"
-$BINWALK_VERSION = "2.3.2"
 $DIE_VERSION = "3.07"
-$EXIFTOOL_VERSION = "12.50"
+$EXIFTOOL_VERSION = "12.60"
 $QUICKLZ_VERSION = "1.5.0"
 
 $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-venv"
-$VENV_PYTHON = $VENV_PATH + "\Scripts\python.exe"
-$VENV_PIP = $VENV_PATH + "\Scripts\pip.exe"
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "E5CF0165C90350B8996DECCA7FA6B8EB4EB4545C0F48DCE18D8AAA032465D3E3"
-$PYTHON_HASH = "B8C707FB7A3A80F49AF5A51C94F428525A3AD4331C7B9E3B2E321CAF5CB56D7D"
 $PYTHON_EMBEDDABLE_PACKAGES_RELEASE_HASH = "764686B71E353D1D9F5FFE25A799C1AA448C283EAB9AD86C1230E5F043B1A8FA"
 $PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_HASH = "6ECF820E59DBD25C0DD187059222C2C5A6D08FA8B37F447E06EE2011C4CA4639"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $DIE_HASH = "3450169643BE76484AC4BD5E1473F6F4745D9825C8A07255A3925A4A6E8BAD7E"
-$EXIFTOOL_HASH = "D5BA2B249CB395F35E70D0D6B7CDFB39994DE80A8754E433756A3B4773B146EE"
+$EXIFTOOL_HASH = "379AAB9B70C87D9FCB1745DEA1FBA004FF78BC719A5073F43C1222BD6E9CE8F2"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function get_proxy_url {
@@ -349,129 +343,6 @@ function install_fileinsight($work_dir) {
     Write-Host ""
 }
 
-function install_python3($work_dir) {
-    Write-Host "[+] Installing Python 3 (x64)..."
-
-    if (Test-Path $PYTHON_EXE) {
-        Write-Host "[*] Python 3 is already installed. Skipping installation."
-    } else {
-        Write-Host "[+] Downloading Python 3 installer..."
-        $installer_url = "https://www.python.org/ftp/python/$PYTHON_VERSION/python-$PYTHON_VERSION-amd64.exe"
-        $installer_exe_path = "$work_dir\python-$PYTHON_VERSION-amd64.exe"
-        download_file $installer_url $installer_exe_path
-
-        if (!(Test-Path $installer_exe_path)) {
-            Write-Host "[!] Download has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-        Write-Host "[+] Done."
-
-        Write-Host "[+] Verifying SHA256 hash value of $installer_exe_path (with $PYTHON_HASH)..."
-        $val = compute_hash $installer_exe_path
-        if ($val -eq $PYTHON_HASH) {
-            Write-Host "[+] OK."
-        } else {
-            Write-Host "[!] The hash value does not match ($val)."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-
-        Write-Host "[+] Executing Python 3 installer (automatic installation)..."
-        $process = Start-Process -FilePath "$installer_exe_path" -ArgumentList "/passive" -Verb runas -PassThru
-        $process.WaitForExit()
-
-        if (!(Test-Path $PYTHON_EXE)) {
-            Write-Host "[!] Installation has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        } else {
-            Write-Host "[+] Done."
-            Write-Host "[+] Installing pip for Python 3..."
-            Write-Host "$PYTHON_EXE -3 -m ensurepip"
-            Invoke-Expression "$PYTHON_EXE -3 -m ensurepip"
-
-            if ($PROXY_URL) {
-                Write-Host "[+] Done."
-                Write-Host "[+] Updating pip for Python 3..."
-                Write-Host "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} --upgrade pip"
-                Invoke-Expression "$PYTHON_EXE -3 -m pip install --proxy ${PROXY_URL} --upgrade pip"
-            } else {
-                Write-Host "[+] Done."
-                Write-Host "[+] Updating pip for Python 3..."
-                Write-Host "$PYTHON_EXE -3 -m pip install --upgrade pip"
-                Invoke-Expression "$PYTHON_EXE -3 -m pip install --upgrade pip"
-            }
-        }
-        Write-Host "[+] Done."
-        Write-Host "[+] Python 3 has been installed."
-    }
-    Write-Host ""
-}
-
-function setup_venv($work_dir, $update) {
-    Write-Host "[+] Setting up Python virtual environment python3-venv..."
-
-    if ((Test-Path $VENV_PYTHON) -and (Test-Path $VENV_PIP)) {
-        $host_python_version = Invoke-Expression "$PYTHON_EXE -3 -V"
-        $venv_python_version = Invoke-Expression "&'$VENV_PYTHON' -V 2>&1"
-        if ($host_python_version -ne $venv_python_version) {
-            $venv_need_refresh = $true
-        } else {
-            $venv_need_refresh = $false
-        }
-    } else {
-        $venv_need_refresh = $true
-    }
-
-    if (!$venv_need_refresh) {
-        Write-Host "[*] python3-venv is already created. Skipping setup."
-    } else {
-        if ($update -and (Test-Path $VENV_PATH)) {
-            Write-Host "[+] Removing old Python virtual environment python3-venv..."
-            Remove-Item $VENV_PATH -Recurse -Force
-            Write-Host "[+] Done."
-
-            if ((Test-Path $VENV_PATH)) {
-                Write-Host "[!] Removal of python3-venv has been failed."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            }
-        }
-
-        Write-Host "[+] Creating Python virtual environment python3-venv..."
-        Write-Host "$PYTHON_EXE -3 -m venv '$VENV_PATH'"
-        Invoke-Expression "$PYTHON_EXE -3 -m venv '$VENV_PATH'"
-
-        if (!(Test-Path $VENV_PYTHON) -or !(Test-Path $VENV_PIP)) {
-            Write-Host "[!] Setup of python3-venv has been failed."
-            remove_working_directory $work_dir
-            Write-Host "[+] Aborting installation."
-            exit
-        }
-
-        if ($PROXY_URL) {
-            Write-Host "[+] Done."
-            Write-Host "[+] Updating pip for Python virtual environment python3-venv..."
-            Write-Host "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} --upgrade pip"
-            Invoke-Expression "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} --upgrade pip"
-        } else {
-            Write-Host "[+] Done."
-            Write-Host "[+] Updating pip for Python virtual environment python3-venv..."
-            Write-Host "&'$VENV_PYTHON' -m pip install --upgrade pip"
-            Invoke-Expression "&'$VENV_PYTHON' -m pip install --upgrade pip"
-        }
-
-        Write-Host "[+] Done."
-        Write-Host "[+] Python virtual environment python3-venv has been created."
-    }
-    Write-Host ""
-}
-
 function remove_venv() {
     if ((Test-Path $VENV_PATH)) {
         Write-Host "[+] Removing old Python virtual environment python3-venv..."
@@ -485,99 +356,6 @@ function remove_venv() {
             exit
         }
     }
-}
-
-function install_with_pip_venv($name, $update, $url="") {
-    # "--upgrade" option is disabled if version is specified
-    if ($name -match "==") {
-        $name_with_version = $name
-        $name = $name -replace "==.+", ""
-        $update = $false
-    } else {
-        $name_with_version = ""
-    }
-
-    Write-Host "[+] Installing $name Python module..."
-    $installed = &"$VENV_PIP" show $name
-    if ([bool]$installed -and !$update) {
-        Write-Host "[*] $name Python module is already installed. Skipping installation."
-    } else {
-        if ($update) {
-            $upgrade_opt = "--upgrade"
-        } else {
-            $upgrade_opt = ""
-        }
-
-        if ($url -ne "") {
-            $package = $url
-        } else {
-            if ($name_with_version -ne "") {
-                $package = $name_with_version
-            } else {
-                $package = $name
-            }
-        }
-
-        if ($PROXY_URL) {
-            if ($package -eq "pip") {
-                Write-Host "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
-                Invoke-Expression "&'$VENV_PYTHON' -m pip install --proxy ${PROXY_URL} $upgrade_opt $package"
-            } else {
-                Write-Host "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
-                Invoke-Expression "&'$VENV_PIP' install --proxy ${PROXY_URL} $upgrade_opt $package"
-            }
-        } else {
-            if ($package -eq "pip") {
-                Write-Host "&'$VENV_PYTHON' -m pip install $upgrade_opt $package"
-                Invoke-Expression "&'$VENV_PYTHON' -m pip install $upgrade_opt $package"
-            } else {
-                Write-Host "&'$VENV_PIP' install $upgrade_opt $package"
-                Invoke-Expression "&'$VENV_PIP' install $upgrade_opt $package"
-            }
-        }
-        $installed = &"$VENV_PIP" show $name
-        if ([bool]$installed) {
-            Write-Host "[+] Done."
-            Write-Host "[+] $name Python module has been installed."
-        } else {
-            Write-Host "[!] Failed to install $name Python module."
-            Write-Host "[!] Please install it manually."
-        }
-    }
-    Write-Host ""
-}
-
-function install_python_modules_venv($work_dir, $update) {
-    Write-Host "[+] Installing Python modules..."
-
-    install_with_pip_venv "pip" $update
-    install_with_pip_venv "Pillow" $update
-    install_with_pip_venv "PyTEA" $update
-    install_with_pip_venv "base58" $update
-    install_with_pip_venv "binwalk" $update "https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v$BINWALK_VERSION.zip"
-    install_with_pip_venv "blackboxprotobuf" $update
-    install_with_pip_venv "brotli" $update
-    install_with_pip_venv "capstone" $update
-    install_with_pip_venv "lz4" $update
-    install_with_pip_venv "lzjb" $update "https://github.com/unwind/python-lzjb/archive/refs/heads/master.zip"
-    install_with_pip_venv "matplotlib" $update
-    install_with_pip_venv "packaging" $update
-    install_with_pip_venv "pefile" $update
-    install_with_pip_venv "pybase62" $update
-    install_with_pip_venv "pycryptodomex" $update
-    install_with_pip_venv "pyimpfuzzy-windows" $update
-    install_with_pip_venv "pyppmd" $update
-    install_with_pip_venv "python-magic-bin" $update
-    install_with_pip_venv "python-snappy" $update
-    install_with_pip_venv "seaborn" $update
-    install_with_pip_venv "speakeasy-emulator" $update
-    install_with_pip_venv "qiling" $update # Install qiling after speakeasy to make sure to install newer version of unicorn
-    install_with_pip_venv "requests" $update
-    install_with_pip_venv "unicorn" $update
-    install_with_pip_venv "watchdog" $update
-    install_with_pip_venv "xtea" $update
-    install_with_pip_venv "yara-python" $update
-    install_with_pip_venv "zstandard" $update
 }
 
 function install_embeddable_python_packages($work_dir, $update) {
