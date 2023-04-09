@@ -30,9 +30,6 @@ sys.path.append("./lib")
 import dialog_base
 
 class SimpleDialog(dialog_base.DialogBase):
-    def __init__(self, title):
-        super().__init__(title)
-
     def add_widgets(self, **kwargs):
         label_text=kwargs["label_text"]
         self.label = tkinter.Label(self.root, text=label_text)
@@ -40,11 +37,14 @@ class SimpleDialog(dialog_base.DialogBase):
 
         self.entry = tkinter.Entry(self.root, width=80)
         self.entry.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-        self.entry.bind("<Return>", lambda event: self.process()) # Event handler for hitting enter key
         self.entry.focus() # Focus to this widget
 
         self.button = tkinter.Button(self.root, text='OK', command=(lambda: self.process()))
         self.button.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+
+        # Event handlers for hitting enter key
+        self.button.bind("<Return>", lambda event: self.process())
+        self.entry.bind("<Return>", lambda event: self.process())
 
     # Print input to stdout
     def process(self, **kwargs):
