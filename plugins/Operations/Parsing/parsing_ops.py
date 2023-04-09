@@ -292,7 +292,7 @@ def show_metadata(fi):
     fi.newDocument(tab_name, 0)
     fi.setDocument(stdout_data)
 
-    print('Metadata is shown in the new "Metadata" tab.')
+    print('Metadata is shown in the new "%s" tab.' % tab_name)
 
 def strings_dedupe(matched, unicode, decode):
     """
