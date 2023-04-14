@@ -30,92 +30,90 @@ import sys
 import tkinter
 import tkinter.ttk
 
+sys.path.append("./lib")
+import dialog_base
+
 try:
     import pyppmd
 except ImportError:
     exit(-1) # pyppmd is not installed
 
-def decompress(root, combo_version, spin_order, data):
-    root.withdraw()
+class PPMDDecompressDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-    version = combo_version.get()
-    order = int(spin_order.get())
+        self.label_version = tkinter.Label(self.root, text="PPMd version:")
+        self.label_version.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-    mem = 32 << 20 # 32 MiB
+        self.combo_version = tkinter.ttk.Combobox(self.root, width=12, state="readonly")
+        self.combo_version["values"] = ("7 (version H)", "8 (version I)")
+        self.combo_version.current(0)
+        self.combo_version.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-    try:
-        if version == "8 (version I)":
-            decoder = pyppmd.Ppmd8Decoder(order, mem)
-            decompressed = decoder.decode(data, -1)
-        else:
-            decoder = pyppmd.Ppmd7Decoder(order, mem)
-            decompressed = decoder.decode(data, 2**31 - 1) # About 2GiB
+        self.label_order = tkinter.Label(self.root, text="Model order (2-64):")
+        self.label_order.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.order = tkinter.StringVar()
+        self.order.set("6")
+        self.order.trace("w", self.order_changed)
+        self.spin_order = tkinter.Spinbox(self.root, textvariable=self.order, width=4, from_=2, to=64)
+        self.spin_order.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-        sys.stdout.buffer.write(decompressed)
-        if version == "7 (version H)":
-            print("NOTE: The decompressed data may be redundant or truncated if the compressed data does not have an end mark.", file=sys.stderr)
-    except Exception as e:
-        print(e, file=sys.stderr)
-        exit(1)
+        self.label_description = tkinter.Label(self.root, text="7-zip uses the following values by default:\nFor .7z files: PPMd version -> 7, Model order -> 6\nFor .zip files: PPMd version -> 8, Model order -> 8", justify="left")
+        self.label_description.grid(row=2, column=0, padx=5, pady=0, columnspan=2, sticky="w")
 
-    root.quit()
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
+        self.button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
+        self.button.focus() # Focus to this widget
 
-def combo_version_changed(root, combo_version, order):
-    # Set order value to default that is used by 7-Zip
-    if combo_version.get() == "8 (version I)":
-        order.set("8")
-    else: # 7 (version H)
-        order.set("6")
+        # Set callback functions
+        self.combo_version.bind('<<ComboboxSelected>>', lambda event: self.combo_version_changed())
 
-def order_changed(*args):
-    if not re.match("^-?([0-9])+$", order.get()):
-        order.set("6")
-    elif int(order.get()) < 2:
-        order.set("2")
-    elif int(order.get()) > 64:
-        order.set("64")
+        for x in (self.combo_version, self.spin_order, self.button):
+            x.bind("<Return>", lambda event: self.process())
 
-data = sys.stdin.buffer.read()
+    def process(self, **kwargs):
+        self.root.withdraw()
 
-root = tkinter.Tk()
-root.title("PPMd decompress")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+        data = sys.stdin.buffer.read()
 
-label_version = tkinter.Label(root, text="PPMd version:")
-label_version.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        version = self.combo_version.get()
+        order = int(self.spin_order.get())
 
-combo_version = tkinter.ttk.Combobox(root, width=12, state="readonly")
-combo_version["values"] = ("7 (version H)", "8 (version I)")
-combo_version.current(0)
-combo_version.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        mem = 32 << 20 # 32 MiB
 
-label_order = tkinter.Label(root, text="Model order (2-64):")
-label_order.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-order = tkinter.StringVar()
-order.set("6")
-order.trace("w", order_changed)
-spin_order = tkinter.Spinbox(root, textvariable=order, width=4, from_=2, to=64)
-spin_order.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        try:
+            if version == "8 (version I)":
+                decoder = pyppmd.Ppmd8Decoder(order, mem)
+                decompressed = decoder.decode(data, -1)
+            else:
+                decoder = pyppmd.Ppmd7Decoder(order, mem)
+                decompressed = decoder.decode(data, 2**31 - 1) # About 2GiB
 
-label_description = tkinter.Label(root, text="7-Zip uses the following values by default:\nFor .7z files: PPMd version -> 7, Model order -> 6\nFor .zip files: PPMd version -> 8, Model order -> 8", justify="left")
-label_description.grid(row=2, column=0, padx=5, pady=0, columnspan=2, sticky="w")
+            sys.stdout.buffer.write(decompressed)
 
-button = tkinter.Button(root, text="OK", command=(lambda root=root, combo_version=combo_version, spin_order=spin_order, data=data: decompress(root, combo_version, spin_order, data)))
-button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
-button.focus() # Focus to this widget
+            if version == "7 (version H)":
+                print("NOTE: The decompressed data may be redundant or truncated if the compressed data does not have an end mark.", file=sys.stderr)
+        except Exception as e:
+            print(e, file=sys.stderr)
+            exit(1)
 
-# Set callback functions
-combo_version.bind('<<ComboboxSelected>>', lambda event, root=root, combo_version=combo_version, order=order: combo_version_changed(root, combo_version, order))
+        self.root.quit()
 
-for x in (combo_version, spin_order, button):
-    x.bind("<Return>", lambda event, root=root, combo_version=combo_version, spin_order=spin_order, data=data: decompress(root, combo_version, spin_order, data))
+    def combo_version_changed(self):
+        # Set order value to default that is used by 7-Zip
+        if self.combo_version.get() == "8 (version I)":
+            self.order.set("8")
+        else: # 7 (version H)
+            self.order.set("6")
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+    def order_changed(self, *args):
+        if not re.match("^-?([0-9])+$", self.order.get()):
+            self.order.set("6")
+        elif int(self.order.get()) < 2:
+            self.order.set("2")
+        elif int(self.order.get()) > 64:
+            self.order.set("64")
 
-root.mainloop()
+if __name__ == "__main__":
+    dialog = PPMDDecompressDialog(title="PPMd compress")
+    dialog.show()

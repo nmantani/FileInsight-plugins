@@ -27,63 +27,60 @@ import sys
 import tkinter
 import tkinter.ttk
 
-def compress(root, combo_level, data):
-    level = combo_level.get()
+sys.path.append("./lib")
+import dialog_base
 
-    try:
-        qlzlib = ctypes.windll.LoadLibrary("Compression/quicklz150_64_%s_safe.dll" % level)
+class QuickLZCompressDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-        scratch_size = 676000
-        scratch = ctypes.create_string_buffer(scratch_size)
-        compressed = ctypes.create_string_buffer(len(data) * 2)
-        final_size = qlzlib.qlz_compress(ctypes.c_char_p(data), compressed, len(data), scratch)
+        self.label_level = tkinter.Label(self.root, text="Compression level:")
+        self.label_level.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-        if final_size == 0:
-            raise Exception
+        self.combo_level = tkinter.ttk.Combobox(self.root, width=4, state="readonly")
+        self.combo_level["values"] = ("1", "2", "3")
+        self.combo_level.current(0)
+        self.combo_level.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-        compressed = compressed[:final_size]
-        sys.stdout.buffer.write(compressed)
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
+        self.button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
+        self.button.focus() # Focus to this widget
 
-    except Exception as e:
-        print(e, file=sys.stderr)
-        exit(1)
+        # Set callback functions
+        self.combo_level.bind("<Return>", lambda event: self.process())
+        self.button.bind("<Return>", lambda event: self.process())
 
-    root.quit()
+    def process(self, **kwargs):
+        level = self.combo_level.get()
 
-data = sys.stdin.buffer.read()
+        data = sys.stdin.buffer.read()
 
-dlls = ("quicklz150_64_1_safe.dll", "quicklz150_64_2_safe.dll", "quicklz150_64_3_safe.dll")
+        try:
+            qlzlib = ctypes.windll.LoadLibrary("Compression/quicklz150_64_%s_safe.dll" % level)
 
-for f in dlls:
-    if not os.path.exists("Compression/" + f):
-        exit(-1) # QuickLZ DLL is not installed
+            scratch_size = 676000
+            scratch = ctypes.create_string_buffer(scratch_size)
+            compressed = ctypes.create_string_buffer(len(data) * 2)
+            final_size = qlzlib.qlz_compress(ctypes.c_char_p(data), compressed, len(data), scratch)
 
-root = tkinter.Tk()
-root.title("QuickLZ compress")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+            if final_size == 0:
+                raise Exception
 
-label_level = tkinter.Label(root, text="Compression level:")
-label_level.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+            compressed = compressed[:final_size]
+            sys.stdout.buffer.write(compressed)
 
-combo_level = tkinter.ttk.Combobox(root, width=4, state="readonly")
-combo_level["values"] = ("1", "2", "3")
-combo_level.current(0)
-combo_level.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        except Exception as e:
+            print(e, file=sys.stderr)
+            exit(1)
 
-button = tkinter.Button(root, text="OK", command=(lambda root=root, combo_level=combo_level, data=data: compress(root, combo_level, data)))
-button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
-button.focus() # Focus to this widget
+        self.root.quit()
 
-# Set callback functions
-combo_level.bind("<Return>", lambda event, root=root, combo_level=combo_level, data=data: compress(root, combo_level, data))
-button.bind("<Return>", lambda event, root=root, combo_level=combo_level, data=data: compress(root, combo_level, data))
+if __name__ == "__main__":
+    dlls = ("quicklz150_64_1_safe.dll", "quicklz150_64_2_safe.dll", "quicklz150_64_3_safe.dll")
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+    for f in dlls:
+        if not os.path.exists("Compression/" + f):
+            exit(-1) # QuickLZ DLL is not installed
 
-root.mainloop()
+    dialog = QuickLZCompressDialog(title="QuickLZ compress")
+    dialog.show()

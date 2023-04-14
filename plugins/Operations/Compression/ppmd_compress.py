@@ -29,103 +29,99 @@ import re
 import sys
 import tkinter
 import tkinter.ttk
-import tkinter.messagebox
+
+sys.path.append("./lib")
+import dialog_base
 
 try:
     import pyppmd
 except ImportError:
     exit(-1) # pyppmd is not installed
 
-def compress(root, combo_version, spin_order, data):
-    root.withdraw()
+class PPMDCompressDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-    version = combo_version.get()
-    order = int(spin_order.get())
+        self.label_version = tkinter.Label(self.root, text="PPMd version:")
+        self.label_version.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-    mem = 32 << 20 # 32 MiB
+        self.combo_version = tkinter.ttk.Combobox(self.root, width=12, state="readonly")
+        self.combo_version["values"] = ("7 (version H)", "8 (version I)")
+        self.combo_version.current(0)
+        self.combo_version.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-    block_size = 16384
-    remain_size = len(data)
-    pos = 0
+        self.label_order = tkinter.Label(self.root, text="Model order (2-64):")
+        self.label_order.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.order = tkinter.StringVar()
+        self.order.set("6")
+        self.order.trace("w", self.order_changed)
+        self.spin_order = tkinter.Spinbox(self.root, textvariable=self.order, width=4, from_=2, to=64)
+        self.spin_order.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-    try:
-        if version == "8 (version I)":
-            encoder = pyppmd.Ppmd8Encoder(order, mem)
-        else:
-            encoder = pyppmd.Ppmd7Encoder(order, mem)
+        self.label_description = tkinter.Label(self.root, text="7-zip uses the following values by default:\nFor .7z files: PPMd version -> 7, Model order -> 6\nFor .zip files: PPMd version -> 8, Model order -> 8", justify="left")
+        self.label_description.grid(row=2, column=0, padx=5, pady=0, columnspan=2, sticky="w")
 
-        compressed = b""
-        while remain_size > 0:
-            encode_size = min(block_size, remain_size)
-            compressed += encoder.encode(data[pos:pos+encode_size])
-            remain_size -= encode_size
-            pos += encode_size
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
+        self.button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
+        self.button.focus() # Focus to this widget
 
-        compressed += encoder.flush(True)
+        # Set callback functions
+        self.combo_version.bind('<<ComboboxSelected>>', lambda event: self.combo_version_changed())
 
-        sys.stdout.buffer.write(compressed)
-    except Exception as e:
-        print(e, file=sys.stderr)
-        exit(1)
+        for x in (self.combo_version, self.spin_order, self.button):
+            x.bind("<Return>", lambda event: self.process())
 
-    root.quit()
+    def process(self, **kwargs):
+        self.root.withdraw()
 
-def combo_version_changed(root, combo_version, order):
-    # Set order value to default that is used by 7-Zip
-    if combo_version.get() == "8 (version I)":
-        order.set("8")
-    else: # 7 (version H)
-        order.set("6")
+        data = sys.stdin.buffer.read()
 
-def order_changed(*args):
-    if not re.match("^-?([0-9])+$", order.get()):
-        order.set("6")
-    elif int(order.get()) < 2:
-        order.set("2")
-    elif int(order.get()) > 64:
-        order.set("64")
+        version = self.combo_version.get()
+        order = int(self.spin_order.get())
 
-data = sys.stdin.buffer.read()
+        mem = 32 << 20 # 32 MiB
 
-root = tkinter.Tk()
-root.title("PPMd compress")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+        block_size = 16384
+        remain_size = len(data)
+        pos = 0
 
-label_version = tkinter.Label(root, text="PPMd version:")
-label_version.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        try:
+            if version == "8 (version I)":
+                encoder = pyppmd.Ppmd8Encoder(order, mem)
+            else:
+                encoder = pyppmd.Ppmd7Encoder(order, mem)
 
-combo_version = tkinter.ttk.Combobox(root, width=12, state="readonly")
-combo_version["values"] = ("7 (version H)", "8 (version I)")
-combo_version.current(0)
-combo_version.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+            compressed = b""
+            while remain_size > 0:
+                encode_size = min(block_size, remain_size)
+                compressed += encoder.encode(data[pos:pos+encode_size])
+                remain_size -= encode_size
+                pos += encode_size
 
-label_order = tkinter.Label(root, text="Model order (2-64):")
-label_order.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-order = tkinter.StringVar()
-order.set("6")
-order.trace("w", order_changed)
-spin_order = tkinter.Spinbox(root, textvariable=order, width=4, from_=2, to=64)
-spin_order.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+            compressed += encoder.flush(True)
 
-label_description = tkinter.Label(root, text="7-Zip uses the following values by default:\nFor .7z files: PPMd version -> 7, Model order -> 6\nFor .zip files: PPMd version -> 8, Model order -> 8", justify="left")
-label_description.grid(row=2, column=0, padx=5, pady=0, columnspan=2, sticky="w")
+            sys.stdout.buffer.write(compressed)
+        except Exception as e:
+            print(e, file=sys.stderr)
+            exit(1)
 
-button = tkinter.Button(root, text="OK", command=(lambda root=root, combo_version=combo_version, spin_order=spin_order, data=data: compress(root, combo_version, spin_order, data)))
-button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
-button.focus() # Focus to this widget
+        self.root.quit()
 
-# Set callback functions
-combo_version.bind('<<ComboboxSelected>>', lambda event, root=root, combo_version=combo_version, order=order: combo_version_changed(root, combo_version, order))
+    def combo_version_changed(self):
+        # Set order value to default that is used by 7-Zip
+        if self.combo_version.get() == "8 (version I)":
+            self.order.set("8")
+        else: # 7 (version H)
+            self.order.set("6")
 
-for x in (combo_version, spin_order, button):
-    x.bind("<Return>", lambda event, root=root, combo_version=combo_version, spin_order=spin_order, data=data: compress(root, combo_version, spin_order, data))
+    def order_changed(self, *args):
+        if not re.match("^-?([0-9])+$", self.order.get()):
+            self.order.set("6")
+        elif int(self.order.get()) < 2:
+            self.order.set("2")
+        elif int(self.order.get()) > 64:
+            self.order.set("64")
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
+if __name__ == "__main__":
+    dialog = PPMDCompressDialog(title="PPMd compress")
+    dialog.show()
