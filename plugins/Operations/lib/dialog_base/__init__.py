@@ -31,7 +31,7 @@ class DialogBase:
         # Create root window
         self.root = tkinter.Tk()
         self.root.title(kwargs["title"])
-        self.root.protocol("WM_DELETE_WINDOW", (lambda: sys.exit(1)))
+        self.root.protocol("WM_DELETE_WINDOW", (lambda: sys.exit(0)))
 
     def show(self):
         # Adjust window position
