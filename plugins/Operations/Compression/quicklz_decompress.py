@@ -33,6 +33,7 @@ import dialog_base
 class QuickLZDecompressDialog(dialog_base.DialogBase):
     def __init__(self, **kwargs):
         super().__init__(title=kwargs["title"])
+        self.data = kwargs["data"]
 
         self.label_level = tkinter.Label(self.root, text="Compression level:")
         self.label_level.grid(row=0, column=0, padx=5, pady=5, sticky="w")
@@ -53,16 +54,14 @@ class QuickLZDecompressDialog(dialog_base.DialogBase):
     def process(self, **kwargs):
         level = self.combo_level.get()
 
-        data = sys.stdin.buffer.read()
-
         try:
             qlzlib = ctypes.windll.LoadLibrary("Compression/quicklz150_64_%s_safe.dll" % level)
 
             scratch_size = 676000
             scratch = ctypes.create_string_buffer(scratch_size)
-            decompressed = ctypes.create_string_buffer(len(data) * 2)
+            decompressed = ctypes.create_string_buffer(len(self.data) * 2)
 
-            final_size = qlzlib.qlz_decompress(ctypes.c_char_p(data), decompressed, scratch)
+            final_size = qlzlib.qlz_decompress(ctypes.c_char_p(self.data), decompressed, scratch)
 
             if final_size == 0:
                 raise Exception
@@ -83,5 +82,7 @@ if __name__ == "__main__":
         if not os.path.exists("Compression/" + f):
             exit(-1) # QuickLZ DLL is not installed
 
-    dialog = QuickLZDecompressDialog(title="QuickLZ decompress")
+    data = sys.stdin.buffer.read()
+
+    dialog = QuickLZDecompressDialog(title="QuickLZ decompress", data=data)
     dialog.show()

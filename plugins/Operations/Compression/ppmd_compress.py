@@ -41,6 +41,7 @@ except ImportError:
 class PPMDCompressDialog(dialog_base.DialogBase):
     def __init__(self, **kwargs):
         super().__init__(title=kwargs["title"])
+        self.data = kwargs["data"]
 
         self.label_version = tkinter.Label(self.root, text="PPMd version:")
         self.label_version.grid(row=0, column=0, padx=5, pady=5, sticky="w")
@@ -74,15 +75,13 @@ class PPMDCompressDialog(dialog_base.DialogBase):
     def process(self, **kwargs):
         self.root.withdraw()
 
-        data = sys.stdin.buffer.read()
-
         version = self.combo_version.get()
         order = int(self.spin_order.get())
 
         mem = 32 << 20 # 32 MiB
 
         block_size = 16384
-        remain_size = len(data)
+        remain_size = len(self.data)
         pos = 0
 
         try:
@@ -94,7 +93,7 @@ class PPMDCompressDialog(dialog_base.DialogBase):
             compressed = b""
             while remain_size > 0:
                 encode_size = min(block_size, remain_size)
-                compressed += encoder.encode(data[pos:pos+encode_size])
+                compressed += encoder.encode(self.data[pos:pos+encode_size])
                 remain_size -= encode_size
                 pos += encode_size
 
@@ -123,5 +122,7 @@ class PPMDCompressDialog(dialog_base.DialogBase):
             self.order.set("64")
 
 if __name__ == "__main__":
-    dialog = PPMDCompressDialog(title="PPMd compress")
+    data = sys.stdin.buffer.read()
+
+    dialog = PPMDCompressDialog(title="PPMd compress", data=data)
     dialog.show()

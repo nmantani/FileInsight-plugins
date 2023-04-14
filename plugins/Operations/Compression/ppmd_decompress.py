@@ -41,6 +41,7 @@ except ImportError:
 class PPMDDecompressDialog(dialog_base.DialogBase):
     def __init__(self, **kwargs):
         super().__init__(title=kwargs["title"])
+        self.data = kwargs["data"]
 
         self.label_version = tkinter.Label(self.root, text="PPMd version:")
         self.label_version.grid(row=0, column=0, padx=5, pady=5, sticky="w")
@@ -74,8 +75,6 @@ class PPMDDecompressDialog(dialog_base.DialogBase):
     def process(self, **kwargs):
         self.root.withdraw()
 
-        data = sys.stdin.buffer.read()
-
         version = self.combo_version.get()
         order = int(self.spin_order.get())
 
@@ -84,10 +83,10 @@ class PPMDDecompressDialog(dialog_base.DialogBase):
         try:
             if version == "8 (version I)":
                 decoder = pyppmd.Ppmd8Decoder(order, mem)
-                decompressed = decoder.decode(data, -1)
+                decompressed = decoder.decode(self.data, -1)
             else:
                 decoder = pyppmd.Ppmd7Decoder(order, mem)
-                decompressed = decoder.decode(data, 2**31 - 1) # About 2GiB
+                decompressed = decoder.decode(self.data, 2**31 - 1) # About 2GiB
 
             sys.stdout.buffer.write(decompressed)
 
@@ -115,5 +114,7 @@ class PPMDDecompressDialog(dialog_base.DialogBase):
             self.order.set("64")
 
 if __name__ == "__main__":
-    dialog = PPMDDecompressDialog(title="PPMd compress")
+    data = sys.stdin.buffer.read()
+
+    dialog = PPMDDecompressDialog(title="PPMd compress", data=data)
     dialog.show()
