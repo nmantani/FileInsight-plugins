@@ -27,10 +27,10 @@ import sys
 import tkinter
 
 class DialogBase:
-    def __init__(self, title):
+    def __init__(self, **kwargs):
         # Create root window
         self.root = tkinter.Tk()
-        self.root.title(title)
+        self.root.title(kwargs["title"])
         self.root.protocol("WM_DELETE_WINDOW", (lambda: sys.exit(1)))
 
     def show(self):
@@ -43,10 +43,6 @@ class DialogBase:
         self.root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
 
         self.root.mainloop()
-
-    # This function is implemented by subclasses
-    def add_widgets(self, **kwargs):
-        pass
 
     # This function is implemented by subclasses
     def process(self, **kwargs):

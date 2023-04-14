@@ -34,7 +34,9 @@ sys.path.append("./lib")
 import dialog_base
 
 class SwichFileTabsDialog(dialog_base.DialogBase):
-    def add_widgets(self, **kwargs):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+
         # Read list of tabs from stdin
         tabs = sys.stdin.readlines()
 
@@ -64,6 +66,5 @@ class SwichFileTabsDialog(dialog_base.DialogBase):
         self.root.quit()
 
 if __name__ == "__main__":
-    dialog = SwichFileTabsDialog("Switch file tabs")
-    dialog.add_widgets()
+    dialog = SwichFileTabsDialog(title="Switch file tabs")
     dialog.show()

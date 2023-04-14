@@ -33,7 +33,9 @@ sys.path.append("./lib")
 import dialog_base
 
 class ChangeEndiannessDialog(dialog_base.DialogBase):
-    def add_widgets(self, **kwargs):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+
         self.label_unit = tkinter.Label(self.root, text="Unit to change:")
         self.label_unit.grid(row=0, column=0, padx=5, pady=5, sticky="w")
         self.combo_unit = tkinter.ttk.Combobox(self.root, width=18, state="readonly")
@@ -54,6 +56,5 @@ class ChangeEndiannessDialog(dialog_base.DialogBase):
         self.root.quit()
 
 if __name__ == "__main__":
-    dialog = ChangeEndiannessDialog("Change endianness")
-    dialog.add_widgets()
+    dialog = ChangeEndiannessDialog(title="Change endianness")
     dialog.show()
