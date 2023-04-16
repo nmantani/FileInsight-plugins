@@ -29,6 +29,7 @@ import re
 import sys
 import tkinter
 import tkinter.ttk
+import tkinter.messagebox
 
 sys.path.append("./lib")
 import dialog_base
@@ -73,10 +74,18 @@ class PPMDCompressDialog(dialog_base.DialogBase):
             x.bind("<Return>", lambda event: self.process())
 
     def process(self, **kwargs):
-        self.root.withdraw()
-
         version = self.combo_version.get()
-        order = int(self.spin_order.get())
+
+        if self.spin_order.get() == "":
+            tkinter.messagebox.showerror("Error:", message="Order must be between 2 and 64.")
+            return
+        else:
+            order = int(self.spin_order.get())
+            if order < 2 or order > 64:
+                tkinter.messagebox.showerror("Error:", message="Order must be between 2 and 64.")
+                return
+
+        self.root.withdraw()
 
         mem = 32 << 20 # 32 MiB
 
@@ -114,12 +123,12 @@ class PPMDCompressDialog(dialog_base.DialogBase):
             self.order.set("6")
 
     def order_changed(self, *args):
-        if not re.match("^-?([0-9])+$", self.order.get()):
-            self.order.set("6")
-        elif int(self.order.get()) < 2:
-            self.order.set("2")
-        elif int(self.order.get()) > 64:
-            self.order.set("64")
+        order = self.order.get()
+        if not re.match("^-?([0-9])+$", order) and order != "":
+            if self.combo_version.get() == "8 (version I)":
+                self.order.set("8")
+            else: # 7 (version H)
+                self.order.set("6")
 
 if __name__ == "__main__":
     data = sys.stdin.buffer.read()
