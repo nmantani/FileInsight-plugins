@@ -32,74 +32,47 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 
+sys.path.append("./lib")
+import stream_cipher
+
 try:
     import Cryptodome.Cipher.ARC4
 except ImportError:
     exit(-1) # PyCryptodome is not installed
 
-# Decrypt received data
-def decrypt(data, root, combo, entry):
-    key = entry.get()
+class RC4DecryptDialog(stream_cipher.StreamCipherDialog):
+    def process(self, **kwargs):
+        key_type = self.combo_key_type.get()
+        key = self.entry_key.get()
 
-    if combo.get() == "Hex":
-        if re.match("^([0-9A-Fa-f]{2})+$", key):
-            key = binascii.a2b_hex(key)
+        if key_type == "Hex":
+            if re.match("^([0-9A-Fa-f]{2})+$", key):
+                key = binascii.a2b_hex(key)
+            else:
+                tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
+                return
         else:
-            tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
+            key = key.encode()
+
+        if len(key) < 1 or len(key) > 256:
+            tkinter.messagebox.showerror("Error:", message="Key length is invalid (it must be in the range [1..256] bytes).")
             return
-    else:
-        key = key.encode()
 
-    if len(key) < 1 or len(key) > 256:
-        tkinter.messagebox.showerror("Error:", message="Key length is invalid (it must be in the range [1..256] bytes).")
-        return
+        try:
+            cipher = Cryptodome.Cipher.ARC4.new(key)
+            plaintext = cipher.decrypt(self.data)
+        except:
+            self.root.quit()
+            exit(1) # Not decrypted
 
-    try:
-        cipher = Cryptodome.Cipher.ARC4.new(key)
-        d = cipher.decrypt(data)
-    except:
-        root.quit()
-        exit(1) # Not decrypted
+        sys.stdout.buffer.write(plaintext)
+        self.root.quit()
+        exit(0) # Decrypted successfully
 
-    sys.stdout.buffer.write(d)
-    root.quit()
-    exit(0) # Decrypted successfully
+if __name__ == "__main__":
+    # Receive data
+    data = sys.stdin.buffer.read()
 
-# Receive data
-data = sys.stdin.buffer.read()
-
-# Create input dialog
-root = tkinter.Tk()
-root.title("RC4 decrypt / encrypt")
-root.protocol("WM_DELETE_WINDOW", (lambda root=root: root.quit()))
-
-label = tkinter.Label(root, text="Key:")
-label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-combo = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo["values"] = ("Text", "Hex")
-combo.current(0)
-combo.grid(row=0, column=1, padx=5, pady=5)
-
-entry = tkinter.Entry(width=40)
-entry.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-entry.focus() # Focus to this widget
-
-button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, combo=combo, entry=entry: decrypt(data, root, combo, entry)))
-button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
-
-# Set callback functions
-combo.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: decrypt(data, root, combo, entry))
-entry.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: decrypt(data, root, combo, entry))
-button.bind("<Return>", lambda event, data=data, root=root, combo=combo, entry=entry: decrypt(data, root, combo, entry))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
-exit(1) # Not decrypted
+    dialog = RC4DecryptDialog(title="RC4 decrypt / encrypt", data=data, use_nonce=False)
+    dialog.show()
+    exit(1) # Not decrypted

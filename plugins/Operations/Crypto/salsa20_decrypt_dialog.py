@@ -28,116 +28,68 @@
 import binascii
 import re
 import sys
-import time
 import tkinter
 import tkinter.ttk
 import tkinter.messagebox
+
+sys.path.append("./lib")
+import stream_cipher
 
 try:
     import Cryptodome.Cipher.Salsa20
 except ImportError:
     exit(-1) # PyCryptodome is not installed
 
-# Print selected items
-def decrypt(data, root, ckt, ek, cnt, en):
-    key_type = ckt.get()
-    key = ek.get()
-    nonce_type = cnt.get()
-    nonce = en.get()
+class Salsa20DecryptDialog(stream_cipher.StreamCipherDialog):
+    def process(self, **kwargs):
+        key_type = self.combo_key_type.get()
+        key = self.entry_key.get()
+        nonce_type = self.combo_nonce_type.get()
+        nonce = self.entry_nonce.get()
 
-    if key_type == "Hex":
-        if re.match("^([0-9A-Fa-f]{2})+$", key):
-            key = binascii.a2b_hex(key)
+        if key_type == "Hex":
+            if re.match("^([0-9A-Fa-f]{2})+$", key):
+                key = binascii.a2b_hex(key)
+            else:
+                tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
+                return
         else:
-            tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
-            return
-    else:
-        key = key.encode()
+            key = key.encode()
 
-    if nonce_type == "Hex":
-        if re.match("^([0-9A-Fa-f]{2})+$", nonce):
-            nonce = binascii.a2b_hex(nonce)
+        if nonce_type == "Hex":
+            if re.match("^([0-9A-Fa-f]{2})+$", nonce):
+                nonce = binascii.a2b_hex(nonce)
+            else:
+                tkinter.messagebox.showerror("Error:", message="Nonce is not in hex format.")
+                return
         else:
-            tkinter.messagebox.showerror("Error:", message="Nonce is not in hex format.")
+            nonce = nonce.encode()
+
+        if len(key) != 16 and len(key) != 32:
+            tkinter.messagebox.showerror("Error:", message="Key size must be 16 bytes or 32 bytes.")
             return
-    else:
-        nonce = nonce.encode()
 
-    if len(key) != 16 and len(key) != 32:
-        tkinter.messagebox.showerror("Error:", message="Key size must be 16 bytes or 32 bytes.")
-        return
+        len_nonce = len(nonce)
+        if len_nonce != 8:
+            tkinter.messagebox.showerror("Error:", message="Nonce size must be 8 bytes.")
+            return
 
-    len_nonce = len(nonce)
-    if len_nonce != 8:
-        tkinter.messagebox.showerror("Error:", message="Nonce size must be 8 bytes.")
-        return
+        try:
+            cipher = Cryptodome.Cipher.Salsa20.new(key=key, nonce=nonce)
+            plaintext = cipher.decrypt(self.data)
+        except Exception as e:
+            tkinter.messagebox.showerror("Error:", message=e)
+            self.root.quit()
+            exit(1) # Not decrypted
 
-    try:
-        cipher = Cryptodome.Cipher.Salsa20.new(key=key, nonce=nonce)
-        d = cipher.decrypt(data)
-    except Exception as e:
-        tkinter.messagebox.showerror("Error:", message=e)
-        root.quit()
-        exit(1) # Not decrypted
+        sys.stdout.buffer.write(plaintext)
+        self.root.quit()
+        exit(0) # Decrypted successfully
 
-    sys.stdout.buffer.write(d)
-    root.quit()
-    exit(0) # Decrypted successfully
+if __name__ == "__main__":
+    # Receive data
+    data = sys.stdin.buffer.read()
 
-# Receive data
-data = sys.stdin.buffer.read()
-
-# Create input dialog
-root = tkinter.Tk()
-root.title("Salsa20 decrypt / encrypt")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-
-label_key_type = tkinter.Label(root, text="Key type:")
-label_key_type.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-combo_key_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo_key_type["values"] = ("Text", "Hex")
-combo_key_type.current(0)
-combo_key_type.grid(row=0, column=1, padx=5, pady=5)
-
-label_key = tkinter.Label(root, text="Key:")
-label_key.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-
-entry_key = tkinter.Entry(width=48)
-entry_key.grid(row=0, column=3, padx=5, pady=5, sticky="w")
-entry_key.focus() # Focus to this widget
-
-label_nonce_type = tkinter.Label(root, text="Nonce type:")
-label_nonce_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-combo_nonce_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo_nonce_type["values"] = ("Text", "Hex")
-combo_nonce_type.current(0)
-combo_nonce_type.grid(row=1, column=1, padx=5, pady=5)
-
-label_nonce = tkinter.Label(root, text="Nonce:")
-label_nonce.grid(row=1, column=2, padx=5, pady=5, sticky="w")
-
-entry_nonce = tkinter.Entry(width=48)
-entry_nonce.grid(row=1, column=3, padx=5, pady=5, sticky="w")
-
-button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en)))
-button.grid(row=2, column=0, padx=5, pady=5, columnspan=4)
-
-# Set callback functions
-combo_key_type.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
-entry_key.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
-combo_nonce_type.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
-entry_nonce.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
-button.bind("<Return>", lambda event, data=data, root=root, ckt=combo_key_type, ek=entry_key, cnt=combo_nonce_type, en=entry_nonce: decrypt(data, root, ckt, ek, cnt, en))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
-exit(1) # Not decrypted
+    dialog = Salsa20DecryptDialog(title="Salsa20 decrypt / encrypt", data=data)
+    dialog.show()
+    exit(1) # Not decrypted

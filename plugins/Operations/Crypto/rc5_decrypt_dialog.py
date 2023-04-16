@@ -32,173 +32,174 @@ import tkinter
 import tkinter.ttk
 import tkinter.messagebox
 
+sys.path.append("./lib")
+import dialog_base
+
 try:
     import refinery.units.crypto.cipher.rc5
 except ImportError:
-    exit(-4) # Binary Refinery is not installed
+    exit(-2) # Binary Refinery is not installed
 
-def decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei):
-    rc5_block_size = (4, 8, 16)
+class RC5DecryptDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+        self.data = kwargs["data"]
 
-    mode = cm.get()
-    block_size = rc5_block_size[cbs.current()]
-    word_size = block_size * 4
-    segment_size = block_size * 8
-    rounds = int(sr.get())
-    key_type = ckt.get()
-    key = ek.get()
-    iv_type = cit.get()
-    iv = ei.get()
+        self.label_mode = tkinter.Label(self.root, text="Mode:")
+        self.label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-    if key_type == "Hex":
-        if re.match("^([0-9A-Fa-f]{2})+$", key):
-            key = binascii.a2b_hex(key)
-        else:
-            tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
+        self.combo_mode = tkinter.ttk.Combobox(self.root, width=5, state="readonly")
+        self.combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB", "CTR")
+        self.combo_mode.current(0)
+        self.combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+        self.label_block_size = tkinter.Label(self.root, text="Block size:")
+        self.label_block_size.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+
+        self.combo_block_size = tkinter.ttk.Combobox(self.root, width=20, state="readonly")
+        self.combo_block_size["values"] = ("32 bits (4 bytes)", "64 bits (8 bytes)", "128 bits (16 bytes)")
+        self.combo_block_size.current(1)
+        self.combo_block_size.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+
+        self.label_rounds = tkinter.Label(self.root, text="Rounds:")
+        self.label_rounds.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
+        self.rounds = tkinter.StringVar()
+        self.rounds.set("12")
+        self.rounds.trace("w", self.rounds_changed)
+        self.spin_rounds = tkinter.Spinbox(self.root, textvariable=self.rounds, width=6, from_=1, to=255)
+        self.spin_rounds.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        self.label_key_type = tkinter.Label(self.root, text="Key type:")
+        self.label_key_type.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_key_type = tkinter.ttk.Combobox(self.root, width=5, state="readonly")
+        self.combo_key_type["values"] = ("Text", "Hex")
+        self.combo_key_type.current(0)
+        self.combo_key_type.grid(row=2, column=1, padx=5, pady=5)
+
+        self.label_key = tkinter.Label(self.root, text="Key:")
+        self.label_key.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+
+        self.entry_key = tkinter.Entry(width=32)
+        self.entry_key.grid(row=2, column=3, padx=5, pady=5, sticky="w")
+        self.entry_key.focus() # Focus to this widget
+
+        self.label_iv_type = tkinter.Label(self.root, text="IV type:")
+        self.label_iv_type.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_iv_type = tkinter.ttk.Combobox(self.root, width=5, state="readonly")
+        self.combo_iv_type["values"] = ("Text", "Hex")
+        self.combo_iv_type.current(0)
+        self.combo_iv_type.grid(row=3, column=1, padx=5, pady=5)
+
+        self.label_iv = tkinter.Label(self.root, text="IV:")
+        self.label_iv.grid(row=3, column=2, padx=5, pady=5, sticky="w")
+
+        self.entry_iv = tkinter.Entry(width=32)
+        self.entry_iv.grid(row=3, column=3, padx=5, pady=5, sticky="w")
+
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
+        self.button.grid(row=4, column=0, padx=5, pady=5, columnspan=4)
+
+        # Set callback functions
+        self.combo_mode.bind('<<ComboboxSelected>>', lambda event: self.combo_mode_selected())
+        self.combo_mode.bind("<Return>", lambda event: self.process())
+        self.combo_block_size.bind("<Return>", lambda event: self.process())
+        self.spin_rounds.bind("<Return>", lambda event: self.process())
+        self.combo_key_type.bind("<Return>", lambda event: self.process())
+        self.entry_key.bind("<Return>", lambda event: self.process())
+        self.combo_iv_type.bind("<Return>", lambda event: self.process())
+        self.entry_iv.bind("<Return>", lambda event: self.process())
+        self.button.bind("<Return>", lambda event: self.process())
+
+        # These are disabled in the initial state (ECB mode)
+        self.combo_iv_type.configure(state = "disabled")
+        self.entry_iv.configure(state = "disabled")
+
+    def process(self, **kwargs):
+        rc5_block_size = (4, 8, 16)
+
+        mode = self.combo_mode.get()
+        block_size = rc5_block_size[self.combo_block_size.current()]
+        word_size = block_size * 4
+        segment_size = block_size * 8
+        key_type = self.combo_key_type.get()
+        key = self.entry_key.get()
+        iv_type = self.combo_iv_type.get()
+        iv = self.entry_iv.get()
+
+        if self.spin_rounds.get() == "":
+            tkinter.messagebox.showerror("Error:", message="Rounds must be between 1 and 255 bytes.")
             return
-    else:
-        key = key.encode()
-
-    if mode in ["CBC", "CFB", "OFB", "CTR"] and iv_type == "Hex":
-        if re.match("^([0-9A-Fa-f]{2})+$", iv):
-            iv = binascii.a2b_hex(iv)
         else:
-            tkinter.messagebox.showerror("Error:", message="IV is not in hex format.")
+            rounds = int(self.spin_rounds.get())
+            if rounds < 1 or rounds > 255:
+                tkinter.messagebox.showerror("Error:", message="Rounds must   be between 1 and 255 bytes.")
+                return
+
+        if key_type == "Hex":
+            if re.match("^([0-9A-Fa-f]{2})+$", key):
+                key = binascii.a2b_hex(key)
+            else:
+                tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
+                return
+        else:
+            key = key.encode()
+
+        if mode in ["CBC", "CFB", "OFB", "CTR"] and iv_type == "Hex":
+            if re.match("^([0-9A-Fa-f]{2})+$", iv):
+                iv = binascii.a2b_hex(iv)
+            else:
+                tkinter.messagebox.showerror("Error:", message="IV is not in hex format.")
+                return
+        else:
+            iv = iv.encode()
+
+        if len(key) < 1 or len(key) > 255: # 2040 bits
+            tkinter.messagebox.showerror("Error:", message="Key size must be between 1 and 255 bytes.")
             return
-    else:
-        iv = iv.encode()
 
-    if len(key) < 1 or len(key) > 255: # 2040 bits
-        tkinter.messagebox.showerror("Error:", message="Key size must be between 1 and 255 bytes.")
-        return
+        if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != block_size:
+            tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % block_size)
+            return
 
-    if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != block_size:
-        tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % block_size)
-        return
+        try:
+            if mode in ["CBC", "OFB", "CTR"]:
+                cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, iv=iv, mode=mode, rounds=rounds, word_size=word_size)
+            elif mode == "CFB":
+                cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, iv=iv, mode=mode, segment_size=segment_size, rounds=rounds, word_size=word_size)
+            elif mode == "ECB":
+                cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, mode=mode, rounds=rounds, word_size=word_size)
 
-    try:
-        if mode in ["CBC", "OFB", "CTR"]:
-            cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, iv=iv, mode=mode, rounds=rounds, word_size=word_size)
-        elif mode == "CFB":
-            cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, iv=iv, mode=mode, segment_size=segment_size, rounds=rounds, word_size=word_size)
-        elif mode == "ECB":
-            cipher = refinery.units.crypto.cipher.rc5.rc5(key=key, mode=mode, rounds=rounds, word_size=word_size)
+            plaintext = cipher.process(data=self.data)
+        except Exception as e:
+            tkinter.messagebox.showerror("Error:", message=e)
+            self.root.quit()
+            exit(1) # Not decrypted
 
-        d = cipher.process(data=data)
-    except Exception as e:
-        tkinter.messagebox.showerror("Error:", message=e)
-        root.quit()
-        exit(1) # Not decrypted
+        sys.stdout.buffer.write(plaintext)
+        self.root.quit()
+        exit(0) # Decrypted successfully
 
-    sys.stdout.buffer.write(d)
-    root.quit()
-    exit(0) # Decrypted successfully
+    def combo_mode_selected(self):
+        mode = self.combo_mode.get()
+        if mode == "ECB":
+            self.combo_iv_type.configure(state = "disabled")
+            self.entry_iv.configure(state = "disabled")
+        else:
+            self.combo_iv_type.configure(state = "readonly")
+            self.entry_iv.configure(state = "normal")
 
-def combo_mode_selected(root, cm, cit, ei):
-    mode = cm.get()
-    if mode == "ECB":
-        cit.configure(state = "disabled")
-        ei.configure(state = "disabled")
-    else:
-        cit.configure(state = "readonly")
-        ei.configure(state = "normal")
+    def rounds_changed(self, *args):
+        r = self.rounds.get()
+        if not re.match("^([0-9])+$", r) and r != "":
+            self.rounds.set("12")
 
-def rounds_changed(*args):
-    r = rounds.get()
-    if not re.match("^([0-9])+$", r):
-        rounds.set("12")
-    elif int(r) < 1:
-        rounds.set("1")
-    elif int(r) > 255:
-        rounds.set("255")
+if __name__ == "__main__":
+    # Receive data
+    data = sys.stdin.buffer.read()
 
-# Receive data
-data = sys.stdin.buffer.read()
-
-# Create input dialog
-root = tkinter.Tk()
-root.title("RC5 decrypt")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-
-label_mode = tkinter.Label(root, text="Mode:")
-label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-combo_mode = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB", "CTR")
-combo_mode.current(0)
-combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
-
-label_block_size = tkinter.Label(root, text="Block size:")
-label_block_size.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-
-combo_block_size = tkinter.ttk.Combobox(root, width=20, state="readonly")
-combo_block_size["values"] = ("32 bits (4 bytes)", "64 bits (8 bytes)", "128 bits (16 bytes)")
-combo_block_size.current(1)
-combo_block_size.grid(row=0, column=3, padx=5, pady=5, sticky="w")
-
-label_rounds = tkinter.Label(root, text="Rounds:")
-label_rounds.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-rounds = tkinter.StringVar()
-rounds.set("12")
-rounds.trace("w", rounds_changed)
-spin_rounds = tkinter.Spinbox(root, textvariable=rounds, width=6, from_=1, to=255)
-spin_rounds.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-label_key_type = tkinter.Label(root, text="Key type:")
-label_key_type.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-
-combo_key_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo_key_type["values"] = ("Text", "Hex")
-combo_key_type.current(0)
-combo_key_type.grid(row=2, column=1, padx=5, pady=5)
-
-label_key = tkinter.Label(root, text="Key:")
-label_key.grid(row=2, column=2, padx=5, pady=5, sticky="w")
-
-entry_key = tkinter.Entry(width=32)
-entry_key.grid(row=2, column=3, padx=5, pady=5, sticky="w")
-entry_key.focus() # Focus to this widget
-
-label_iv_type = tkinter.Label(root, text="IV type:")
-label_iv_type.grid(row=3, column=0, padx=5, pady=5, sticky="w")
-
-combo_iv_type = tkinter.ttk.Combobox(root, width=5, state="readonly")
-combo_iv_type["values"] = ("Text", "Hex")
-combo_iv_type.current(0)
-combo_iv_type.grid(row=3, column=1, padx=5, pady=5)
-
-label_iv = tkinter.Label(root, text="IV:")
-label_iv.grid(row=3, column=2, padx=5, pady=5, sticky="w")
-
-entry_iv = tkinter.Entry(width=32)
-entry_iv.grid(row=3, column=3, padx=5, pady=5, sticky="w")
-
-button = tkinter.Button(root, text="OK", command=(lambda data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei)))
-button.grid(row=4, column=0, padx=5, pady=5, columnspan=4)
-
-# Set callback functions
-combo_mode.bind('<<ComboboxSelected>>', lambda event, root=root, cm=combo_mode, cit=combo_iv_type, ei=entry_iv: combo_mode_selected(root, cm, cit, ei))
-combo_mode.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-combo_block_size.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-spin_rounds.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-combo_key_type.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-entry_key.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-combo_iv_type.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-entry_iv.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-button.bind("<Return>", lambda event, data=data, root=root, cm=combo_mode, cbs=combo_block_size, sr=spin_rounds, ckt=combo_key_type, ek=entry_key, cit=combo_iv_type, ei=entry_iv: decrypt(data, root, cm, cbs, sr, ckt, ek, cit, ei))
-
-# These are disabled in the initial state (ECB mode)
-combo_iv_type.configure(state = "disabled")
-entry_iv.configure(state = "disabled")
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
-exit(1) # Not decrypted
+    dialog = RC5DecryptDialog(title="RC5 decrypt", data=data)
+    dialog.show()
+    exit(1) # Not decrypted

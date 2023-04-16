@@ -224,10 +224,10 @@ def do_decrypt(fi, name, script):
         if ret == -1: # PyCryptodome is not installed
             fi.show_module_install_instruction("Cryptodome", "pycryptodomex")
             return
-        if ret == -4: # Binary Refinery is not installed
+        if ret == -2: # Binary Refinery is not installed
             fi.show_module_install_instruction("refinery", "binary-refinery")
             return
-        elif ret == 1: # Do nothing if not decrypted
+        elif stdout_data == "": # dialog is closed
             return
 
         decrypted_data = stdout_data
@@ -276,16 +276,10 @@ def do_encrypt(fi, name, script):
         if ret == -1: # PyCryptodome is not installed
             fi.show_module_install_instruction("Cryptodome", "pycryptodomex")
             return
-        if ret == -2: # PyTEA is not installed
-            fi.show_module_install_instruction("pytea", "PyTEA")
-            return
-        if ret == -3: # xtea is not installed
-            fi.show_module_install_instruction("xtea")
-            return
-        if ret == -4: # Binary Refinery is not installed
+        if ret == -2: # Binary Refinery is not installed
             fi.show_module_install_instruction("refinery", "binary-refinery")
             return
-        elif ret == 1: # Do nothing if not decrypted
+        elif stdout_data == "": # dialog is closed
             return
 
         encrypted_data = stdout_data
