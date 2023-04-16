@@ -130,12 +130,12 @@ class RC5EncryptDialog(dialog_base.DialogBase):
         iv = self.entry_iv.get()
 
         if self.spin_rounds.get() == "":
-            tkinter.messagebox.showerror("Error:", message="Rounds must be between 1 and 255 bytes.")
+            tkinter.messagebox.showerror("Error:", message="Rounds must be between 1 and 255.")
             return
         else:
             rounds = int(self.spin_rounds.get())
             if rounds < 1 or rounds > 255:
-                tkinter.messagebox.showerror("Error:", message="Rounds must   be between 1 and 255 bytes.")
+                tkinter.messagebox.showerror("Error:", message="Rounds must   be between 1 and 255.")
                 return
 
         if key_type == "Hex":
