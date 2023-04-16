@@ -26,51 +26,49 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
+import sys
 import tkinter
 
-# Print amount of rotation to stdout
-def print_amount(r, s):
-    if s.get() != "":
-        print(s.get())
-    else:
-        print("13")
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-def amount_changed(*args):
-    if not re.match("^-?([0-9])+$", amount.get()):
-        s = re.sub("[^-0-9]", "", amount.get())
-        if re.match("[0-9]+-", s):
-            s = s.replace("-", "")
-            amount.set(s)
+class ROT13Dialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+
+        self.label = tkinter.Label(self.root, text='Amount of rotation:')
+        self.label.grid(row=0, column=0, padx=5, pady=5)
+        self.amount = tkinter.StringVar()
+        self.amount.set("13")
+        self.amount.trace("w", self.amount_changed)
+        self.spin = tkinter.Spinbox(self.root, textvariable=self.amount, width=4, from_=-100, to=100)
+        self.spin.grid(row=0, column=1, padx=5, pady=5)
+        self.button = tkinter.Button(self.root, text='OK', command=(lambda: self.print_amount()))
+        self.button.grid(row=0, column=2, padx=5, pady=5)
+        self.button.focus() # Focus to this widget
+
+        # Set callback functions
+        self.spin.bind("<Return>", lambda event: self.print_amount())
+        self.button.bind("<Return>", lambda event: self.print_amount())
+
+    # Print amount of rotation to stdout
+    def print_amount(self):
+        if self.spin.get() != "":
+            print(self.spin.get())
         else:
-            amount.set(s)
+            print("13")
+        self.root.quit()
 
-# Create input dialog
-root = tkinter.Tk()
-root.title('ROT13')
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = tkinter.Label(root, text='Amount of rotation:')
-label.grid(row=0, column=0, padx=5, pady=5)
-amount = tkinter.StringVar()
-amount.set("13")
-amount.trace("w", amount_changed)
-spin = tkinter.Spinbox(root, textvariable=amount, width=4, from_=-100, to=100)
-spin.grid(row=0, column=1, padx=5, pady=5)
-button = tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_amount(r, s)))
-button.grid(row=0, column=2, padx=5, pady=5)
-button.focus() # Focus to this widget
+    def amount_changed(self, *args):
+        a = self.amount.get()
+        if not re.match("^-?([0-9])+$", a):
+            s = re.sub("[^-0-9]", "", a)
+            if re.match("[0-9]+-", s):
+                s = s.replace("-", "")
+                self.amount.set(s)
+            else:
+                self.amount.set(s)
 
-# Set callback functions
-spin.bind("<Return>", lambda event, r=root, s=spin: print_amount(r, s))
-button.bind("<Return>", lambda event, r=root, s=spin: print_amount(r, s))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
-
+if __name__ == "__main__":
+    dialog = ROT13Dialog(title="ROT13")
+    dialog.show()

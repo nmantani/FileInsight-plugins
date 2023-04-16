@@ -38,55 +38,55 @@
 import sys
 import tkinter
 
-# Print entered table to stdout
-def print_table(r, e):
-    print(e.get())
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-if len(sys.argv) < 3:
-    sys.exit(0)
-else:
-    digits = sys.argv[1]
-    action = sys.argv[2]
+class CustomBASEXXDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+        digits = kwargs["digits"]
 
-    if digits == "85":
-        table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
-    elif digits == "64":
-        table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
-    elif digits == "62":
-        table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
-    elif digits == "58":
-        table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
-    elif digits == "32":
-        table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567="
-    elif digits == "16":
-        table = "0123456789ABCDEF"
+        if digits == "85":
+            table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
+        elif digits == "64":
+            table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
+        elif digits == "62":
+            table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+        elif digits == "58":
+            table = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+        elif digits == "32":
+            table = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567="
+        elif digits == "16":
+            table = "0123456789ABCDEF"
+        else:
+            sys.exit(1)
+
+        self.label = tkinter.Label(self.root, text="BASE%s table:" % digits)
+        self.label.grid(row=0, column=0, padx=5, pady=5)
+
+        self.entry = tkinter.Entry(self.root, width=(len(table) + 16))
+        self.entry.insert(tkinter.END, table)
+        self.entry.grid(row=0, column=1, padx=5, pady=5)
+        self.entry.focus() # Focus to this widget
+
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.print_table()))
+        self.button.grid(row=0, column=2, padx=5, pady=5)
+
+        # Event handlers for hitting enter key
+        self.entry.bind("<Return>", lambda event: self.print_table())
+        self.button.bind("<Return>", lambda event: self.print_table())
+
+    # Print entered table to stdout
+    def print_table(self):
+        print(self.entry.get())
+        self.root.quit()
+
+if __name__ == "__main__":
+    if len(sys.argv) < 3:
+        sys.exit(0)
     else:
-        sys.exit(1)
+        digits = sys.argv[1]
+        action = sys.argv[2]
 
-# Create input dialog
-root = tkinter.Tk()
-root.title("Custom base%s %s" % (digits, action))
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-
-label = tkinter.Label(root, text="BASE%s table:" % digits)
-label.grid(row=0, column=0, padx=5, pady=5)
-
-entry = tkinter.Entry(root, width=(len(table) + 16))
-entry.insert(tkinter.END, table)
-entry.grid(row=0, column=1, padx=5, pady=5)
-entry.bind("<Return>", lambda event, r=root, e=entry: print_table(r, e)) # Event handler for hitting enter key
-entry.focus() # Focus to this widget
-
-button = tkinter.Button(root, text="OK", command=(lambda r=root, e=entry: print_table(r, e)))
-button.grid(row=0, column=2, padx=5, pady=5)
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry("+%d+%d" % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
+    dialog = CustomBASEXXDialog(title="Custom base%s %s" % (digits, action), digits=digits)
+    dialog.show()

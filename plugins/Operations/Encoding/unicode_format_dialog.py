@@ -31,63 +31,61 @@ import sys
 import tkinter
 import tkinter.ttk
 
-# Print setting to stdout
-def print_setting(r, cf, ce):
-    escape_format = {"\\uXXXX    (Java, JavaScript)": "\\u",
-                     "\\uXXXX and \\UXXXXXXXX    (C, Python)": "\\U",
-                     "\\u{XXXX}    (JavaScript ES6+, PHP 7+)": "\\u{",
-                     "`u{XXXX}    (PowerShell 6+)": "`u",
-                     "%uXXXX    (Legacy JavaScript)": "%u",
-                     "U+XXXX    (Unicode code point)": "U+"}
-    print("%s\t%s" % (escape_format[cf.get()], ce.get()))
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-# Create input dialog
-root = tkinter.Tk()
-root.title("Unicode escape/unescape format setting")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+class UnicodeFormatDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-label_format = tkinter.Label(root, text="Unicode escape format:")
-label_format.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.label_format = tkinter.Label(self.root, text="Unicode escape format:")
+        self.label_format.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-combo_format = tkinter.ttk.Combobox(root, width=40, state="readonly")
-combo_format["values"] = ("\\uXXXX    (Java, JavaScript)",
-                          "\\uXXXX and \\UXXXXXXXX    (C, Python)",
-                          "\\u{XXXX}    (JavaScript ES6+, PHP 7+)",
-                          "`u{XXXX}    (PowerShell 6+)",
-                          "%uXXXX    (Legacy JavaScript)",
-                          "U+XXXX    (Unicode code point)")
-combo_format.current(0)
-combo_format.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.combo_format = tkinter.ttk.Combobox(self.root, width=40, state="readonly")
+        self.combo_format["values"] = ("\\uXXXX    (Java, JavaScript)",
+                                "\\uXXXX and \\UXXXXXXXX    (C, Python)",
+                                "\\u{XXXX}    (JavaScript ES6+, PHP 7+)",
+                                "`u{XXXX}    (PowerShell 6+)",
+                                "%uXXXX    (Legacy JavaScript)",
+                                "U+XXXX    (Unicode code point)")
+        self.combo_format.current(0)
+        self.combo_format.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-if len(sys.argv) > 1 and sys.argv[1] == "-e":
-    label_encoding = tkinter.Label(root, text="Input encoding:")
-elif len(sys.argv) > 1 and sys.argv[1] == "-u":
-    label_encoding = tkinter.Label(root, text="Output encoding:")
-else:
-    label_encoding = tkinter.Label(root, text="Encoding:")
+        self.label_encoding = tkinter.Label(self.root, text=kwargs["label_text"])
 
-label_encoding.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.label_encoding.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo_encoding = tkinter.ttk.Combobox(root, width=10, state="readonly")
-combo_encoding["values"] = ("UTF-8", "UTF-16LE", "UTF-16BE")
-combo_encoding.current(0)
-combo_encoding.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        self.combo_encoding = tkinter.ttk.Combobox(self.root, width=10, state="readonly")
+        self.combo_encoding["values"] = ("UTF-8", "UTF-16LE", "UTF-16BE")
+        self.combo_encoding.current(0)
+        self.combo_encoding.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-button = tkinter.Button(root, text='OK', command=(lambda r=root, cf=combo_format, ce=combo_encoding: print_setting(r, cf, ce)))
-button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
-button.focus() # Focus to this widget
+        self.button = tkinter.Button(self.root, text='OK', command=(lambda: self.print_setting()))
+        self.button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+        self.button.focus() # Focus to this widget
 
-# Set callback functions
-for x in (combo_format, combo_encoding, button):
-    x.bind("<Return>", lambda event, r=root, cf=combo_format, ce=combo_encoding: print_setting(r, cf, ce))
+        # Set callback functions
+        for x in (self.combo_format, self.combo_encoding, self.button):
+            x.bind("<Return>", lambda event: self.print_setting())
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+    # Print setting to stdout
+    def print_setting(self):
+        escape_format = {"\\uXXXX    (Java, JavaScript)": "\\u",
+                        "\\uXXXX and \\UXXXXXXXX    (C, Python)": "\\U",
+                        "\\u{XXXX}    (JavaScript ES6+, PHP 7+)": "\\u{",
+                        "`u{XXXX}    (PowerShell 6+)": "`u",
+                        "%uXXXX    (Legacy JavaScript)": "%u",
+                        "U+XXXX    (Unicode code point)": "U+"}
+        print("%s\t%s" % (escape_format[self.combo_format.get()], self.combo_encoding.get()))
+        self.root.quit()
 
-root.mainloop()
+if __name__ == "__main__":
+    if len(sys.argv) > 1 and sys.argv[1] == "-e":
+        label_text = "Input encoding:"
+    elif len(sys.argv) > 1 and sys.argv[1] == "-u":
+        label_text = "Output encoding:"
+    else:
+        label_text = "Encoding:"
+
+    dialog = UnicodeFormatDialog(title="Unicode escape/unescape format setting", label_text=label_text)
+    dialog.show()
