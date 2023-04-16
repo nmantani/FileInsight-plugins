@@ -35,155 +35,151 @@ import tkinter.messagebox
 sys.path.append("./Misc")
 import emulate_code_qiling
 
-# Print selected items
-def get_selection(r, cf, ct, co, ca, ce, ea, bt, t):
-    if cf.get() == "Qiling Framework":
-        rootfs_base = "Misc\\qiling-master\\examples\\rootfs"
-        arch = ca.get().lower()
-        if arch == "x64":
-            arch = "x8664"
-        big_endian = ce.get()
-        if big_endian == "True":
-            big_endian = True
+sys.path.append("./lib")
+import dialog_base
+
+class EmulateCodeDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+
+        self.label_framework = tkinter.Label(self.root, text="Emulation framework:")
+        self.label_framework.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_framework = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_framework["values"] = ("Qiling Framework", "Speakeasy")
+        self.combo_framework.current(0)
+        self.combo_framework.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+
+        self.label_type = tkinter.Label(self.root, text="File type:")
+        self.label_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_type = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_type["values"] = ("Executable", "Shellcode")
+        self.combo_type.current(0)
+        self.combo_type.grid(row=1, column=2, padx=5, pady=5, sticky="w")
+
+        self.label_os = tkinter.Label(self.root, text="OS:")
+        self.label_os.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_os = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_os["values"] = ("Windows", "Linux") # Currently macOS, UEFI and FreeBSD are excluded
+        self.combo_os.current(0)
+        self.combo_os.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+
+        self.label_arch = tkinter.Label(self.root, text="Architecture:")
+        self.label_arch.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_arch = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS")
+        self.combo_arch.current(0)
+        self.combo_arch.grid(row=3, column=2, padx=5, pady=5, sticky="w")
+
+        self.label_endian = tkinter.Label(self.root, text="Big endian:")
+        self.label_endian.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.label_endian.grid_remove()
+
+        self.combo_endian = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_endian["values"] = ("False", "True")
+        self.combo_endian.current(0)
+        self.combo_endian.grid(row=4, column=2, padx=5, pady=5, sticky="w")
+        self.combo_endian.grid_remove()
+
+        self.label_args = tkinter.Label(self.root, text="Command line arguments:")
+        self.label_args.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+
+        self.entry_args = tkinter.Entry(width=24)
+        self.entry_args.grid(row=5, column=2, padx=5, pady=5, sticky="w")
+
+        self.label_thread = tkinter.Label(self.root, text="Multithread:")
+        self.label_thread.grid(row=6, column=0, padx=5, pady=5, sticky="w")
+        self.bool_thread = tkinter.BooleanVar()
+        self.bool_thread.set(False)
+        self.check_thread = tkinter.Checkbutton(self.root, variable=self.bool_thread, text="", onvalue=True, offvalue=False)
+        self.check_thread.grid(row=6, column=2, padx=5, pady=5, sticky="w")
+
+        self.label_timeout = tkinter.Label(self.root, text="Emulation timeout\n(seconds, 0 = no timeout):", justify="left")
+        self.label_timeout.grid(row=7, column=0, padx=5, pady=5, sticky="w")
+        self.timeout = tkinter.StringVar()
+        self.timeout.set("60")
+        self.timeout.trace("w", self.timeout_changed)
+        self.spin_timeout = tkinter.Spinbox(self.root, textvariable=self.timeout, width=4, from_=0, to=10000)
+        self.spin_timeout.grid(row=7, column=2, padx=5, pady=5, sticky="w")
+
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.get_selection()))
+        self.button.grid(row=8, column=0, padx=5, pady=5, columnspan=3)
+        self.button.focus() # Focus to this widget
+
+        # Set callback functions
+        self.combo_framework.bind('<<ComboboxSelected>>', lambda event: self.combo_framework_selected())
+        self.combo_arch.bind('<<ComboboxSelected>>', lambda event: self.combo_arch_selected())
+        self.combo_type.bind('<<ComboboxSelected>>', lambda event: self.combo_type_selected())
+
+        for x in (self.combo_framework, self.combo_type, self.combo_os, self.combo_arch, self.combo_endian, self.entry_args, self.check_thread, self.spin_timeout, self.button):
+            x.bind("<Return>", lambda event: self.get_selection())
+
+    # Print selected items
+    def get_selection(self):
+        if self.combo_framework.get() == "Qiling Framework":
+            rootfs_base = "Misc\\qiling-master\\examples\\rootfs"
+            arch = self.combo_arch.get().lower()
+            if arch == "x64":
+                arch = "x8664"
+            big_endian = self.combo_endian.get()
+            if big_endian == "True":
+                big_endian = True
+            else:
+                big_endian = False
+            path = str(emulate_code_qiling.rootfs_path(rootfs_base, arch, self.combo_os.get().lower(), big_endian))
+            print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.combo_framework.get(), self.combo_type.get(), self.combo_os.get(), self.combo_arch.get().lower(), self.combo_endian.get(), self.entry_args.get(), self.bool_thread.get(), self.timeout.get(), path), end="")
         else:
-            big_endian = False
-        path = str(emulate_code_qiling.rootfs_path(rootfs_base, arch, co.get().lower(), big_endian))
-        print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (cf.get(), ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), bt.get(), t.get(), path), end="")
-    else:
-        print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (cf.get(), ct.get(), co.get(), ca.get().lower(), ce.get(), ea.get(), bt.get(), t.get(), "None"), end="")
+            print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.combo_framework.get(), self.combo_type.get(), self.combo_os.get(), self.combo_arch.get().lower(), self.combo_endian.get(), self.entry_args.get(), self.bool_thread.get(), self.timeout.get(), "None"), end="")
 
-    root.quit()
+        self.root.quit()
 
-def combo_framework_selected(r, cf, co, ca, le, ce, lt, ct):
-    # Hide / show endian combobox
-    if cf.get() == "Speakeasy":
-        co.current(0)
-        co.configure(state="disabled")
-        ca.configure(values=("x64", "x86"))
-        ca.current(0)
-        le.grid_remove()
-        ce.grid_remove()
-        lt.grid_remove()
-        ct.grid_remove()
-    else: # Qiling Framework
-        co.configure(state="readonly")
-        co.current(0)
-        ca.configure(values=("x64", "x86", "ARM", "ARM64", "MIPS"))
-        ca.current(0)
-        lt.grid()
-        ct.grid()
+    def combo_framework_selected(self):
+        # Hide / show endian combobox
+        if self.combo_framework.get() == "Speakeasy":
+            self.combo_os.current(0)
+            self.combo_os.configure(state="disabled")
+            self.combo_arch.configure(values=("x64", "x86"))
+            self.combo_arch.current(0)
+            self.label_endian.grid_remove()
+            self.combo_endian.grid_remove()
+            self.label_thread.grid_remove()
+            self.check_thread.grid_remove()
+        else: # Qiling Framework
+            self.combo_os.configure(state="readonly")
+            self.combo_os.current(0)
+            self.combo_arch.configure(values=("x64", "x86", "ARM", "ARM64", "MIPS"))
+            self.combo_arch.current(0)
+            self.label_thread.grid()
+            self.check_thread.grid()
 
-def combo_arch_selected(r, ca, le, ce):
-    # Hide / show endian combobox
-    if ca.get() in ("ARM", "ARM64", "MIPS"):
-        le.grid()
-        ce.grid()
-    else:
-        ce.current(0)
-        le.grid_remove()
-        ce.grid_remove()
+    def combo_arch_selected(self):
+        # Hide / show endian combobox
+        if self.combo_arch.get() in ("ARM", "ARM64", "MIPS"):
+            self.label_endian.grid()
+            self.combo_endian.grid()
+        else:
+            self.combo_endian.current(0)
+            self.label_endian.grid_remove()
+            self.combo_endian.grid_remove()
 
-def combo_type_selected(r, ct, la, ea):
-    # Hide / show arguments entry
-    if ct.get() == "Executable":
-        la.grid()
-        ea.grid()
-    else:
-        la.grid_remove()
-        ea.grid_remove()
+    def combo_type_selected(self):
+        # Hide / show arguments entry
+        if self.combo_type.get() == "Executable":
+            self.label_args.grid()
+            self.entry_args.grid()
+        else:
+            self.label_args.grid_remove()
+            self.entry_args.grid_remove()
 
-def timeout_changed(*args):
-    if not re.match("^-?([0-9])+$", timeout.get()):
-        timeout.set("60")
-    elif int(timeout.get()) < 0:
-        timeout.set("0")
+    def timeout_changed(self, *args):
+        if not re.match("^-?([0-9])+$", self.timeout.get()):
+            self.timeout.set("60")
+        elif int(self.timeout.get()) < 0:
+            self.timeout.set("0")
 
-# Create selection dialog
-root = tkinter.Tk()
-root.title("Emulate code")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-
-label_framework = tkinter.Label(root, text="Emulation framework:")
-label_framework.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-
-combo_framework = tkinter.ttk.Combobox(root, state="readonly")
-combo_framework["values"] = ("Qiling Framework", "Speakeasy")
-combo_framework.current(0)
-combo_framework.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-
-label_type = tkinter.Label(root, text="File type:")
-label_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-
-combo_type = tkinter.ttk.Combobox(root, state="readonly")
-combo_type["values"] = ("Executable", "Shellcode")
-combo_type.current(0)
-combo_type.grid(row=1, column=2, padx=5, pady=5, sticky="w")
-
-label_os = tkinter.Label(root, text="OS:")
-label_os.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-
-combo_os = tkinter.ttk.Combobox(root, state="readonly")
-combo_os["values"] = ("Windows", "Linux") # Currently macOS, UEFI and FreeBSD are excluded
-combo_os.current(0)
-combo_os.grid(row=2, column=2, padx=5, pady=5, sticky="w")
-
-label_arch = tkinter.Label(root, text="Architecture:")
-label_arch.grid(row=3, column=0, padx=5, pady=5, sticky="w")
-
-combo_arch = tkinter.ttk.Combobox(root, state="readonly")
-combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS")
-combo_arch.current(0)
-combo_arch.grid(row=3, column=2, padx=5, pady=5, sticky="w")
-
-label_endian = tkinter.Label(root, text="Big endian:")
-label_endian.grid(row=4, column=0, padx=5, pady=5, sticky="w")
-label_endian.grid_remove()
-
-combo_endian = tkinter.ttk.Combobox(root, state="readonly")
-combo_endian["values"] = ("False", "True")
-combo_endian.current(0)
-combo_endian.grid(row=4, column=2, padx=5, pady=5, sticky="w")
-combo_endian.grid_remove()
-
-label_args = tkinter.Label(root, text="Command line arguments:")
-label_args.grid(row=5, column=0, padx=5, pady=5, sticky="w")
-
-entry_args = tkinter.Entry(width=24)
-entry_args.grid(row=5, column=2, padx=5, pady=5, sticky="w")
-
-label_thread = tkinter.Label(root, text="Multithread:")
-label_thread.grid(row=6, column=0, padx=5, pady=5, sticky="w")
-bool_thread = tkinter.BooleanVar()
-bool_thread.set(False)
-check_thread = tkinter.Checkbutton(root, variable=bool_thread, text="", onvalue=True, offvalue=False)
-check_thread.grid(row=6, column=2, padx=5, pady=5, sticky="w")
-
-label_timeout = tkinter.Label(root, text="Emulation timeout\n(seconds, 0 = no timeout):", justify="left")
-label_timeout.grid(row=7, column=0, padx=5, pady=5, sticky="w")
-timeout = tkinter.StringVar()
-timeout.set("60")
-timeout.trace("w", timeout_changed)
-spin_timeout = tkinter.Spinbox(root, textvariable=timeout, width=4, from_=0, to=10000)
-spin_timeout.grid(row=7, column=2, padx=5, pady=5, sticky="w")
-
-button = tkinter.Button(root, text="OK", command=(lambda r=root, cf=combo_framework, ct=combo_type, co=combo_os, ca=combo_arch, ce=combo_endian, ea=entry_args, bt=bool_thread, t=timeout: get_selection(r, cf, ct, co, ca, ce, ea, bt, t)))
-button.grid(row=8, column=0, padx=5, pady=5, columnspan=3)
-button.focus() # Focus to this widget
-
-# Set callback functions
-combo_framework.bind('<<ComboboxSelected>>', lambda event, r=root, cf=combo_framework, co=combo_os, ca=combo_arch, le=label_endian, ce=combo_endian, lt=label_thread, ct=check_thread: combo_framework_selected(r, cf, co, ca, le, ce, lt, ct))
-combo_arch.bind('<<ComboboxSelected>>', lambda event, r=root, ca=combo_arch, le=label_endian, ce=combo_endian: combo_arch_selected(r, ca, le, ce))
-combo_type.bind('<<ComboboxSelected>>', lambda event, r=root, ct=combo_type, la=label_args, ea=entry_args: combo_type_selected(r, ct, la, ea))
-
-for x in (combo_framework, combo_type, combo_os, combo_arch, combo_endian, entry_args, check_thread, spin_timeout, button):
-    x.bind("<Return>", lambda event, r=root, cf=combo_framework, ct=combo_type, co=combo_os, ca=combo_arch, ce=combo_endian, ea=entry_args, bt=bool_thread, t=timeout: get_selection(r, cf, ct, co, ca, ce, ea, bt, t))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
+if __name__ == "__main__":
+    dialog = EmulateCodeDialog(title="Emulate code")
+    dialog.show()
