@@ -27,53 +27,48 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-import time
 import tkinter
 import tkinter.ttk
 
-# Print selected items
-def get_input(r, e1, e2, c):
-    print(e1.get())
-    print(e2.get())
-    print(c.get())
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-# Create input dialog
-root = tkinter.Tk()
-root.title("Replace")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+class ReplaceDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-label1 = tkinter.Label(root, text="Search keyword\n(Python regular expression):", justify="left")
-label1.grid(row=0, column=0, padx=5, pady=5, columnspan=2, sticky="w")
+        self.label1 = tkinter.Label(self.root, text="Search keyword\n(Python regular expression):", justify="left")
+        self.label1.grid(row=0, column=0, padx=5, pady=5, columnspan=2, sticky="w")
 
-entry1 = tkinter.Entry(root, width=40)
-entry1.grid(row=0, column=2, padx=5, pady=5)
-entry1.focus() # Focus to this widget
+        self.entry1 = tkinter.Entry(self.root, width=40)
+        self.entry1.grid(row=0, column=2, padx=5, pady=5)
+        self.entry1.focus() # Focus to this widget
 
-label2 = tkinter.Label(root, text="Replacement:")
-label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.label2 = tkinter.Label(self.root, text="Replacement:")
+        self.label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-combo = tkinter.ttk.Combobox(root, state="readonly", width=4)
-combo["values"] = ["Text", "Hex"]
-combo.current(0)
-combo.grid(row=1, column=1, padx=5, pady=5)
+        self.combo = tkinter.ttk.Combobox(self.root, state="readonly", width=4)
+        self.combo["values"] = ["Text", "Hex"]
+        self.combo.current(0)
+        self.combo.grid(row=1, column=1, padx=5, pady=5)
 
-entry2 = tkinter.Entry(root, width=40)
-entry2.grid(row=1, column=2, padx=5, pady=5)
+        self.entry2 = tkinter.Entry(self.root, width=40)
+        self.entry2.grid(row=1, column=2, padx=5, pady=5)
 
-button = tkinter.Button(root, text="OK", command=(lambda r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c)))
-button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.get_input()))
+        self.button.grid(row=2, column=0, padx=5, pady=5, columnspan=3)
 
-# Set callback functions
-for x in (entry1, combo, entry2, button):
-    x.bind("<Return>", lambda event, r=root, e1=entry1, e2=entry2, c=combo: get_input(r, e1, e2, c))
+        # Set callback functions
+        for x in (self.entry1, self.combo, self.entry2, self.button):
+            x.bind("<Return>", lambda event: self.get_input())
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+    # Print selected items
+    def get_input(self):
+        print(self.entry1.get())
+        print(self.entry2.get())
+        print(self.combo.get())
+        self.root.quit()
 
-root.mainloop()
+if __name__ == "__main__":
+    dialog = ReplaceDialog(title="Replace")
+    dialog.show()
