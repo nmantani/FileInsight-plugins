@@ -26,84 +26,81 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
+import sys
 import tkinter
 import tkinter.ttk
 
-# Print parameters
-def print_param(root, cm, sp, cp, bd):
-    mode = cm.get()
-    s = sp.get()
-    if s == "":
-        min_len = 1
-    else:
-        min_len = int(s)
-    postprocess = cp.get()
-    decode = bd.get()
+sys.path.append("./lib")
+import dialog_base
 
-    print("%s\t%s\t%s\t%s" % (mode, min_len, postprocess, decode))
+class StringsDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-    root.quit()
+        self.label_mode = tkinter.Label(self.root, text="Mode:")
+        self.label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-def amount_changed(*args):
-    if not re.match("^-?([0-9])+$", amount.get()):
-        s = re.sub("[^-0-9]", "", amount.get())
-        if re.match("[0-9]+-", s):
-            s = s.replace("-", "")
-            amount.set(s)
+        self.combo_mode = tkinter.ttk.Combobox(self.root, width=18, state="readonly")
+        self.combo_mode["values"] = ("ASCII + UTF-16", "ASCII", "UTF-16")
+        self.combo_mode.current(0)
+        self.combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+
+        self.label_length = tkinter.Label(self.root, text='Minimum length:')
+        self.label_length.grid(row=1, column=0, padx=5, pady=5)
+        self.amount = tkinter.StringVar()
+        self.amount.set("4")
+        self.amount.trace("w", self.amount_changed)
+
+        self.spin = tkinter.Spinbox(self.root, textvariable=self.amount, width=4, from_=1, to=100)
+        self.spin.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+
+        self.label_postprocess = tkinter.Label(self.root, text="Post-process:")
+        self.label_postprocess.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+
+        self.combo_postprocess = tkinter.ttk.Combobox(self.root, width=18, state="readonly")
+        self.combo_postprocess["values"] = ("None", "Show offset", "Remove duplicates")
+        self.combo_postprocess.current(0)
+        self.combo_postprocess.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+
+        self.bool_decode = tkinter.BooleanVar()
+        self.bool_decode.set(False)
+        self.check_decode = tkinter.Checkbutton(self.root, variable=self.bool_decode, text='Decode hex / BASE64 encoded text strings', onvalue=True, offvalue=False)
+        self.check_decode.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
+
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.print_param()))
+        self.button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
+        self.button.focus() # Focus to this widget
+
+        # Set callback functions
+        for x in (self.combo_mode, self.spin, self.combo_postprocess, self.check_decode, self.button):
+            x.bind("<Return>", lambda event: self.print_param())
+
+    # Print parameters
+    def print_param(self):
+        mode = self.combo_mode.get()
+        s = self.spin.get()
+        if s == "":
+            min_len = 1
         else:
-            amount.set(s)
-    elif int(amount.get()) < 1:
-        amount.set("1")
+            min_len = int(s)
+        postprocess = self.combo_postprocess.get()
+        decode = self.bool_decode.get()
 
-# Create input dialog
-root = tkinter.Tk()
-root.title("Strings")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+        print("%s\t%s\t%s\t%s" % (mode, min_len, postprocess, decode))
 
-label_mode = tkinter.Label(root, text="Mode:")
-label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.root.quit()
 
-combo_mode = tkinter.ttk.Combobox(root, width=18, state="readonly")
-combo_mode["values"] = ("ASCII + UTF-16", "ASCII", "UTF-16")
-combo_mode.current(0)
-combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+    def amount_changed(self, *args):
+        if not re.match("^-?([0-9])+$", self.amount.get()):
+            s = re.sub("[^-0-9]", "", self.amount.get())
+            if re.match("[0-9]+-", s):
+                s = s.replace("-", "")
+                self.amount.set(s)
+            else:
+                self.amount.set(s)
+        elif int(self.amount.get()) < 1:
+            self.amount.set("1")
 
-label_length = tkinter.Label(root, text='Minimum length:')
-label_length.grid(row=1, column=0, padx=5, pady=5)
-amount = tkinter.StringVar()
-amount.set("4")
-amount.trace("w", amount_changed)
-
-spin = tkinter.Spinbox(root, textvariable=amount, width=4, from_=1, to=100)
-spin.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-
-label_postprocess = tkinter.Label(root, text="Post-process:")
-label_postprocess.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-
-combo_postprocess = tkinter.ttk.Combobox(root, width=18, state="readonly")
-combo_postprocess["values"] = ("None", "Show offset", "Remove duplicates")
-combo_postprocess.current(0)
-combo_postprocess.grid(row=2, column=1, padx=5, pady=5, sticky="w")
-
-bool_decode = tkinter.BooleanVar()
-bool_decode.set(False)
-check_decode = tkinter.Checkbutton(root, variable=bool_decode, text='Decode hex / BASE64 encoded text strings', onvalue=True, offvalue=False)
-check_decode.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
-
-button = tkinter.Button(root, text="OK", command=(lambda root=root, cm=combo_mode, sp=spin, cp=combo_postprocess, bd=bool_decode: print_param(root, cm, sp, cp, bd)))
-button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
-button.focus() # Focus to this widget
-
-# Set callback functions
-for x in (combo_mode, spin, combo_postprocess, check_decode, button):
-    x.bind("<Return>", lambda event, root=root, cm=combo_mode, sp=spin, cp=combo_postprocess, bd=bool_decode: print_param(root, cm, sp, cp, bd))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
+if __name__ == "__main__":
+    dialog = StringsDialog(title="Strings")
+    dialog.show()

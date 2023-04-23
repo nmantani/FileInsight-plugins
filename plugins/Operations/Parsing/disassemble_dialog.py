@@ -26,346 +26,325 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
-import time
 import tkinter
 import tkinter.ttk
 import tkinter.messagebox
+
+sys.path.append("./lib")
+import dialog_base
 
 try:
     import capstone
 except ImportError:
     sys.exit(-1) # Capstone is not installed
 
-# Print selected items
-def get_selection(r, w):
-    if w["combo_arch"].get() == "x64":
-        arch = capstone.CS_ARCH_X86
-        mode = capstone.CS_MODE_64
-    elif w["combo_arch"].get() == "x86":
-        arch = capstone.CS_ARCH_X86
-        mode = capstone.CS_MODE_32
-    elif w["combo_arch"].get() == "ARM":
-        arch = capstone.CS_ARCH_ARM
+class DisassembleDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
 
-        if w["combo_arm_mode"].get() == "ARM":
-            mode = capstone.CS_MODE_ARM
-            if w["combo_mclass"].get() == "True":
-                mode += capstone.CS_MODE_MCLASS
-        else: # Thumb
-            mode = capstone.CS_MODE_THUMB
+        self.label_arch = tkinter.Label(self.root, text="Architecture:")
+        self.label_arch.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-        if w["combo_v8"].get() == "True":
-            mode += capstone.CS_MODE_V8
+        self.combo_arch = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS", "PowerPC", "PowerPC64", "SPARC")
+        self.combo_arch.current(0)
+        self.combo_arch.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-        if w["combo_endian"].get() == "True":
-            mode += capstone.CS_MODE_BIG_ENDIAN
-        else:
-            mode += capstone.CS_MODE_LITTLE_ENDIAN
-    elif w["combo_arch"].get() == "ARM64":
-        arch = capstone.CS_ARCH_ARM64
-        mode = capstone.CS_MODE_ARM
+        self.label_arm_mode = tkinter.Label(self.root, text="Mode:")
+        self.label_arm_mode.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.label_arm_mode.grid_remove()
 
-        if w["combo_endian"].get() == "True":
-            mode += capstone.CS_MODE_BIG_ENDIAN
-        else:
-            mode += capstone.CS_MODE_LITTLE_ENDIAN
-    elif w["combo_arch"].get() == "MIPS":
-        arch = capstone.CS_ARCH_MIPS
+        self.combo_arm_mode = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_arm_mode["values"] = ("ARM", "Thumb")
+        self.combo_arm_mode.current(0)
+        self.combo_arm_mode.grid(row=1, column=2, padx=5, pady=5, sticky="w")
+        self.combo_arm_mode.grid_remove()
 
-        if w["combo_mips_mode"].get() == "MIPS32":
-            mode = capstone.CS_MODE_MIPS32
-        elif w["combo_mips_mode"].get() == "MIPS64":
-            mode = capstone.CS_MODE_MIPS64
-        elif w["combo_mips_mode"].get() == "MIPS32R6":
-            mode = capstone.CS_MODE_MIPS32R6
+        self.label_mips_mode = tkinter.Label(self.root, text="Mode:")
+        self.label_mips_mode.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.label_mips_mode.grid_remove()
 
-        if w["combo_micromips"].get() == "True":
-            mode += capstone.CS_MODE_MICRO
+        self.combo_mips_mode = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_mips_mode["values"] = ("MIPS32", "MIPS64", "MIPS32R6")
+        self.combo_mips_mode.current(0)
+        self.combo_mips_mode.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+        self.combo_mips_mode.grid_remove()
 
-        if w["combo_endian"].get() == "True":
-            mode += capstone.CS_MODE_BIG_ENDIAN
-        else:
-            mode += capstone.CS_MODE_LITTLE_ENDIAN
-    elif w["combo_arch"].get() == "PowerPC":
-        arch = capstone.CS_ARCH_PPC
-        mode = capstone.CS_MODE_32
+        self.label_endian = tkinter.Label(self.root, text="Big endian:")
+        self.label_endian.grid(row=3, column=0, padx=5, pady=5, sticky="w")
+        self.label_endian.grid_remove()
 
-        if w["combo_endian"].get() == "True":
-            mode += capstone.CS_MODE_BIG_ENDIAN
-        else:
-            mode += capstone.CS_MODE_LITTLE_ENDIAN
-    elif w["combo_arch"].get() == "PowerPC64":
-        arch = capstone.CS_ARCH_PPC
-        mode = capstone.CS_MODE_64
+        self.combo_endian = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_endian["values"] = ("False", "True")
+        self.combo_endian.current(0)
+        self.combo_endian.grid(row=3, column=2, padx=5, pady=5, sticky="w")
+        self.combo_endian.grid_remove()
 
-        if w["combo_endian"].get() == "True":
-            mode += capstone.CS_MODE_BIG_ENDIAN
-        else:
-            mode += capstone.CS_MODE_LITTLE_ENDIAN
-    elif w["combo_arch"].get() == "SPARC":
-        arch = capstone.CS_ARCH_SPARC
-        mode = capstone.CS_MODE_BIG_ENDIAN
+        self.label_micromips = tkinter.Label(self.root, text="microMIPS:")
+        self.label_micromips.grid(row=4, column=0, padx=5, pady=5, sticky="w")
+        self.label_micromips.grid_remove()
 
-    print("%s\t%s" % (str(arch), str(mode))) # These values will be passed to disassemble.py
-    show_disassembly_setting(arch, mode) # Pass message of disassembly settings via stderr
-    root.quit()
+        self.combo_micromips = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_micromips["values"] = ("False", "True")
+        self.combo_micromips.current(0)
+        self.combo_micromips.grid(row=4, column=2, padx=5, pady=5, sticky="w")
+        self.combo_micromips.grid_remove()
 
-def show_disassembly_setting(arch, mode):
-    print("Disassembly settings:", file=sys.stderr)
-    if arch == capstone.CS_ARCH_X86:
-        if mode & capstone.CS_MODE_32:
-            print("  Architecture: x86", file=sys.stderr)
-        elif mode & capstone.CS_MODE_64:
-            print("  Architecture: x64", file=sys.stderr)
-    elif arch == capstone.CS_ARCH_ARM:
-        print("  Architecture: ARM", file=sys.stderr)
+        self.label_mclass = tkinter.Label(self.root, text="ARM M-class:")
+        self.label_mclass.grid(row=5, column=0, padx=5, pady=5, sticky="w")
+        self.label_mclass.grid_remove()
 
-        if mode & capstone.CS_MODE_THUMB:
-            print("  Mode: Thumb", file=sys.stderr)
-        else: # capstone.CS_MODE_ARM (0)
-            print("  Mode: ARM", file=sys.stderr)
+        self.combo_mclass = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_mclass["values"] = ("False", "True")
+        self.combo_mclass.current(0)
+        self.combo_mclass.grid(row=5, column=2, padx=5, pady=5, sticky="w")
+        self.combo_mclass.grid_remove()
 
-        if mode & capstone.CS_MODE_BIG_ENDIAN:
-            print("  Big endian: true", file=sys.stderr)
-        else:
-            print("  Big endian: false", file=sys.stderr)
+        self.label_v8 = tkinter.Label(self.root, text="ARM v8:")
+        self.label_v8.grid(row=6, column=0, padx=5, pady=5, sticky="w")
+        self.label_v8.grid_remove()
 
-        if not mode & capstone.CS_MODE_THUMB: # capstone.CS_MODE_ARM (0)
-            if mode & capstone.CS_MODE_MCLASS:
-                print("  ARM M-class: true", file=sys.stderr)
+        self.combo_v8 = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_v8["values"] = ("False", "True")
+        self.combo_v8.current(0)
+        self.combo_v8.grid(row=6, column=2, padx=5, pady=5, sticky="w")
+        self.combo_v8.grid_remove()
+
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.get_selection()))
+        self.button.grid(row=7, column=0, padx=5, pady=5, columnspan=3)
+        self.button.focus() # Focus to this widget
+
+        # Set callback functions
+        self.combo_arch.bind('<<ComboboxSelected>>', lambda event: self.combo_arch_selected())
+        self.combo_arm_mode.bind('<<ComboboxSelected>>', lambda event: self.combo_arm_mode_selected())
+
+        for x in (self.combo_arch, self.combo_arm_mode, self.combo_mips_mode, self.combo_endian, self.combo_micromips, self.combo_mclass, self.combo_v8, self.button):
+            x.bind("<Return>", lambda event: self.get_selection())
+
+    # Print selected items
+    def get_selection(self):
+        if self.combo_arch.get() == "x64":
+            arch = capstone.CS_ARCH_X86
+            mode = capstone.CS_MODE_64
+        elif self.combo_arch.get() == "x86":
+            arch = capstone.CS_ARCH_X86
+            mode = capstone.CS_MODE_32
+        elif self.combo_arch.get() == "ARM":
+            arch = capstone.CS_ARCH_ARM
+
+            if self.combo_arm_mode.get() == "ARM":
+                mode = capstone.CS_MODE_ARM
+                if self.combo_mclass.get() == "True":
+                    mode += capstone.CS_MODE_MCLASS
+            else: # Thumb
+                mode = capstone.CS_MODE_THUMB
+
+            if self.combo_v8.get() == "True":
+                mode += capstone.CS_MODE_V8
+
+            if self.combo_endian.get() == "True":
+                mode += capstone.CS_MODE_BIG_ENDIAN
             else:
-                print("  ARM M-class: false", file=sys.stderr)
+                mode += capstone.CS_MODE_LITTLE_ENDIAN
+        elif self.combo_arch.get() == "ARM64":
+            arch = capstone.CS_ARCH_ARM64
+            mode = capstone.CS_MODE_ARM
 
-        if mode & capstone.CS_MODE_V8:
-            print("  ARM v8: true", file=sys.stderr)
-        else:
-            print("  ARM v8: false", file=sys.stderr)
-    elif arch == capstone.CS_ARCH_ARM64:
-        print("  Architecture: ARM64", file=sys.stderr)
+            if self.combo_endian.get() == "True":
+                mode += capstone.CS_MODE_BIG_ENDIAN
+            else:
+                mode += capstone.CS_MODE_LITTLE_ENDIAN
+        elif self.combo_arch.get() == "MIPS":
+            arch = capstone.CS_ARCH_MIPS
 
-        if mode & capstone.CS_MODE_BIG_ENDIAN:
-            print("  Big endian: true", file=sys.stderr)
-        else:
-            print("  Big endian: false", file=sys.stderr)
-    elif arch == capstone.CS_ARCH_MIPS:
-        print("  Architecture: MIPS", file=sys.stderr)
+            if self.combo_mips_mode.get() == "MIPS32":
+                mode = capstone.CS_MODE_MIPS32
+            elif self.combo_mips_mode.get() == "MIPS64":
+                mode = capstone.CS_MODE_MIPS64
+            elif self.combo_mips_mode.get() == "MIPS32R6":
+                mode = capstone.CS_MODE_MIPS32R6
 
-        if mode & capstone.CS_MODE_MIPS32:
-            print("  Mode: MIPS32", file=sys.stderr)
-        elif mode & capstone.CS_MODE_MIPS64:
-            print("  Mode: MIPS64", file=sys.stderr)
-        elif mode & capstone.CS_MODE_MIPS32R6:
-            print("  Mode: MIPS32R6", file=sys.stderr)
+            if self.combo_micromips.get() == "True":
+                mode += capstone.CS_MODE_MICRO
 
-        if mode & capstone.CS_MODE_BIG_ENDIAN:
-            print("  Big endian: true", file=sys.stderr)
-        else:
-            print("  Big endian: false", file=sys.stderr)
+            if self.combo_endian.get() == "True":
+                mode += capstone.CS_MODE_BIG_ENDIAN
+            else:
+                mode += capstone.CS_MODE_LITTLE_ENDIAN
+        elif self.combo_arch.get() == "PowerPC":
+            arch = capstone.CS_ARCH_PPC
+            mode = capstone.CS_MODE_32
 
-        if mode & capstone.CS_MODE_MICRO:
-            print("  microMIPS: true", file=sys.stderr)
-        else:
-            print("  microMIPS: false", file=sys.stderr)
-    elif arch == capstone.CS_ARCH_PPC:
-        if mode & capstone.CS_MODE_32:
-            print("  Architecture: PowerPC", file=sys.stderr)
-        elif mode & capstone.CS_MODE_64:
-            print("  Architecture: PowerPC64", file=sys.stderr)
+            if self.combo_endian.get() == "True":
+                mode += capstone.CS_MODE_BIG_ENDIAN
+            else:
+                mode += capstone.CS_MODE_LITTLE_ENDIAN
+        elif self.combo_arch.get() == "PowerPC64":
+            arch = capstone.CS_ARCH_PPC
+            mode = capstone.CS_MODE_64
 
-        if mode & capstone.CS_MODE_BIG_ENDIAN:
-            print("  Big endian: true", file=sys.stderr)
-        else:
-            print("  Big endian: false", file=sys.stderr)
-    elif arch == capstone.CS_ARCH_SPARC:
-            print("  Architecture: SPARC", file=sys.stderr)
+            if self.combo_endian.get() == "True":
+                mode += capstone.CS_MODE_BIG_ENDIAN
+            else:
+                mode += capstone.CS_MODE_LITTLE_ENDIAN
+        elif self.combo_arch.get() == "SPARC":
+            arch = capstone.CS_ARCH_SPARC
+            mode = capstone.CS_MODE_BIG_ENDIAN
 
-def combo_arch_selected(r, w):
-    # Hide / show labels and comboboxes
-    if w["combo_arch"].get() in ["x64", "x86", "SPARC"]:
-        w["label_arm_mode"].grid_remove()
-        w["combo_arm_mode"].grid_remove()
-        w["label_mips_mode"].grid_remove()
-        w["combo_mips_mode"].grid_remove()
-        w["label_endian"].grid_remove()
-        w["combo_endian"].grid_remove()
-        w["label_micromips"].grid_remove()
-        w["combo_micromips"].grid_remove()
-        w["label_mclass"].grid_remove()
-        w["combo_mclass"].grid_remove()
-        w["label_v8"].grid_remove()
-        w["combo_v8"].grid_remove()
-    elif w["combo_arch"].get() == "ARM":
-        w["label_arm_mode"].grid()
-        w["combo_arm_mode"].grid()
-        w["label_mips_mode"].grid_remove()
-        w["combo_mips_mode"].grid_remove()
-        w["label_endian"].grid()
-        w["combo_endian"].grid()
-        w["combo_endian"].current(0) # set default to little endian
-        w["label_micromips"].grid_remove()
-        w["combo_micromips"].grid_remove()
-        w["label_mclass"].grid()
-        w["combo_mclass"].grid()
-        w["label_v8"].grid()
-        w["combo_v8"].grid()
-    elif w["combo_arch"].get() == "ARM64":
-        w["label_arm_mode"].grid_remove()
-        w["combo_arm_mode"].grid_remove()
-        w["label_mips_mode"].grid_remove()
-        w["combo_mips_mode"].grid_remove()
-        w["label_endian"].grid()
-        w["combo_endian"].grid()
-        w["combo_endian"].current(0) # set default to little endian
-        w["label_micromips"].grid_remove()
-        w["combo_micromips"].grid_remove()
-        w["label_mclass"].grid_remove()
-        w["combo_mclass"].grid_remove()
-        w["label_v8"].grid_remove()
-        w["combo_v8"].grid_remove()
-    elif w["combo_arch"].get() == "MIPS":
-        w["label_arm_mode"].grid_remove()
-        w["combo_arm_mode"].grid_remove()
-        w["label_mips_mode"].grid()
-        w["combo_mips_mode"].grid()
-        w["label_endian"].grid()
-        w["combo_endian"].grid()
-        w["combo_endian"].current(0) # set default to little endian
-        w["label_micromips"].grid()
-        w["combo_micromips"].grid()
-        w["label_mclass"].grid_remove()
-        w["combo_mclass"].grid_remove()
-        w["label_v8"].grid_remove()
-        w["combo_v8"].grid_remove()
-    elif w["combo_arch"].get() in ["PowerPC", "PowerPC64"]:
-        w["label_arm_mode"].grid_remove()
-        w["combo_arm_mode"].grid_remove()
-        w["label_mips_mode"].grid_remove()
-        w["combo_mips_mode"].grid_remove()
-        w["label_endian"].grid()
-        w["combo_endian"].grid()
-        w["combo_endian"].current(1) # set default to big endian
-        w["label_micromips"].grid_remove()
-        w["combo_micromips"].grid_remove()
-        w["label_mclass"].grid_remove()
-        w["combo_mclass"].grid_remove()
-        w["label_v8"].grid_remove()
-        w["combo_v8"].grid_remove()
+        print("%s\t%s" % (str(arch), str(mode))) # These values will be passed to disassemble.py
+        self.show_disassembly_setting(arch, mode) # Pass message of disassembly settings via stderr
+        self.root.quit()
 
-def combo_arm_mode_selected(r, w):
-    # Hide / show labels and comboboxes
-    if w["combo_arm_mode"].get() == "Thumb":
-        w["label_mclass"].grid_remove()
-        w["combo_mclass"].grid_remove()
-    else: # ARM
-        w["label_mclass"].grid()
-        w["combo_mclass"].grid()
+    def show_disassembly_setting(self, arch, mode):
+        print("Disassembly settings:", file=sys.stderr)
+        if arch == capstone.CS_ARCH_X86:
+            if mode & capstone.CS_MODE_32:
+                print("  Architecture: x86", file=sys.stderr)
+            elif mode & capstone.CS_MODE_64:
+                print("  Architecture: x64", file=sys.stderr)
+        elif arch == capstone.CS_ARCH_ARM:
+            print("  Architecture: ARM", file=sys.stderr)
 
-# Create selection dialog
-root = tkinter.Tk()
-root.title("Disassemble")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+            if mode & capstone.CS_MODE_THUMB:
+                print("  Mode: Thumb", file=sys.stderr)
+            else: # capstone.CS_MODE_ARM (0)
+                print("  Mode: ARM", file=sys.stderr)
 
-widgets = {}
+            if mode & capstone.CS_MODE_BIG_ENDIAN:
+                print("  Big endian: true", file=sys.stderr)
+            else:
+                print("  Big endian: false", file=sys.stderr)
 
-label_arch = tkinter.Label(root, text="Architecture:")
-label_arch.grid(row=0, column=0, padx=5, pady=5, sticky="w")
-widgets["label_arch"] = label_arch
+            if not mode & capstone.CS_MODE_THUMB: # capstone.CS_MODE_ARM (0)
+                if mode & capstone.CS_MODE_MCLASS:
+                    print("  ARM M-class: true", file=sys.stderr)
+                else:
+                    print("  ARM M-class: false", file=sys.stderr)
 
-combo_arch = tkinter.ttk.Combobox(root, state="readonly")
-combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS", "PowerPC", "PowerPC64", "SPARC")
-combo_arch.current(0)
-combo_arch.grid(row=0, column=2, padx=5, pady=5, sticky="w")
-widgets["combo_arch"] = combo_arch
+            if mode & capstone.CS_MODE_V8:
+                print("  ARM v8: true", file=sys.stderr)
+            else:
+                print("  ARM v8: false", file=sys.stderr)
+        elif arch == capstone.CS_ARCH_ARM64:
+            print("  Architecture: ARM64", file=sys.stderr)
 
-label_arm_mode = tkinter.Label(root, text="Mode:")
-label_arm_mode.grid(row=1, column=0, padx=5, pady=5, sticky="w")
-label_arm_mode.grid_remove()
-widgets["label_arm_mode"] = label_arm_mode
+            if mode & capstone.CS_MODE_BIG_ENDIAN:
+                print("  Big endian: true", file=sys.stderr)
+            else:
+                print("  Big endian: false", file=sys.stderr)
+        elif arch == capstone.CS_ARCH_MIPS:
+            print("  Architecture: MIPS", file=sys.stderr)
 
-combo_arm_mode = tkinter.ttk.Combobox(root, state="readonly")
-combo_arm_mode["values"] = ("ARM", "Thumb")
-combo_arm_mode.current(0)
-combo_arm_mode.grid(row=1, column=2, padx=5, pady=5, sticky="w")
-combo_arm_mode.grid_remove()
-widgets["combo_arm_mode"] = combo_arm_mode
+            if mode & capstone.CS_MODE_MIPS32:
+                print("  Mode: MIPS32", file=sys.stderr)
+            elif mode & capstone.CS_MODE_MIPS64:
+                print("  Mode: MIPS64", file=sys.stderr)
+            elif mode & capstone.CS_MODE_MIPS32R6:
+                print("  Mode: MIPS32R6", file=sys.stderr)
 
-label_mips_mode = tkinter.Label(root, text="Mode:")
-label_mips_mode.grid(row=2, column=0, padx=5, pady=5, sticky="w")
-label_mips_mode.grid_remove()
-widgets["label_mips_mode"] = label_mips_mode
+            if mode & capstone.CS_MODE_BIG_ENDIAN:
+                print("  Big endian: true", file=sys.stderr)
+            else:
+                print("  Big endian: false", file=sys.stderr)
 
-combo_mips_mode = tkinter.ttk.Combobox(root, state="readonly")
-combo_mips_mode["values"] = ("MIPS32", "MIPS64", "MIPS32R6")
-combo_mips_mode.current(0)
-combo_mips_mode.grid(row=2, column=2, padx=5, pady=5, sticky="w")
-combo_mips_mode.grid_remove()
-widgets["combo_mips_mode"] = combo_mips_mode
+            if mode & capstone.CS_MODE_MICRO:
+                print("  microMIPS: true", file=sys.stderr)
+            else:
+                print("  microMIPS: false", file=sys.stderr)
+        elif arch == capstone.CS_ARCH_PPC:
+            if mode & capstone.CS_MODE_32:
+                print("  Architecture: PowerPC", file=sys.stderr)
+            elif mode & capstone.CS_MODE_64:
+                print("  Architecture: PowerPC64", file=sys.stderr)
 
-label_endian = tkinter.Label(root, text="Big endian:")
-label_endian.grid(row=3, column=0, padx=5, pady=5, sticky="w")
-label_endian.grid_remove()
-widgets["label_endian"] = label_endian
+            if mode & capstone.CS_MODE_BIG_ENDIAN:
+                print("  Big endian: true", file=sys.stderr)
+            else:
+                print("  Big endian: false", file=sys.stderr)
+        elif arch == capstone.CS_ARCH_SPARC:
+                print("  Architecture: SPARC", file=sys.stderr)
 
-combo_endian = tkinter.ttk.Combobox(root, state="readonly")
-combo_endian["values"] = ("False", "True")
-combo_endian.current(0)
-combo_endian.grid(row=3, column=2, padx=5, pady=5, sticky="w")
-combo_endian.grid_remove()
-widgets["combo_endian"] = combo_endian
+    def combo_arch_selected(self):
+        # Hide / show labels and comboboxes
+        if self.combo_arch.get() in ["x64", "x86", "SPARC"]:
+            self.label_arm_mode.grid_remove()
+            self.combo_arm_mode.grid_remove()
+            self.label_mips_mode.grid_remove()
+            self.combo_mips_mode.grid_remove()
+            self.label_endian.grid_remove()
+            self.combo_endian.grid_remove()
+            self.label_micromips.grid_remove()
+            self.combo_micromips.grid_remove()
+            self.label_mclass.grid_remove()
+            self.combo_mclass.grid_remove()
+            self.label_v8.grid_remove()
+            self.combo_v8.grid_remove()
+        elif self.combo_arch.get() == "ARM":
+            self.label_arm_mode.grid()
+            self.combo_arm_mode.grid()
+            self.label_mips_mode.grid_remove()
+            self.combo_mips_mode.grid_remove()
+            self.label_endian.grid()
+            self.combo_endian.grid()
+            self.combo_endian.current(0) # set default to little endian
+            self.label_micromips.grid_remove()
+            self.combo_micromips.grid_remove()
+            self.label_mclass.grid()
+            self.combo_mclass.grid()
+            self.label_v8.grid()
+            self.combo_v8.grid()
+        elif self.combo_arch.get() == "ARM64":
+            self.label_arm_mode.grid_remove()
+            self.combo_arm_mode.grid_remove()
+            self.label_mips_mode.grid_remove()
+            self.combo_mips_mode.grid_remove()
+            self.label_endian.grid()
+            self.combo_endian.grid()
+            self.combo_endian.current(0) # set default to little endian
+            self.label_micromips.grid_remove()
+            self.combo_micromips.grid_remove()
+            self.label_mclass.grid_remove()
+            self.combo_mclass.grid_remove()
+            self.label_v8.grid_remove()
+            self.combo_v8.grid_remove()
+        elif self.combo_arch.get() == "MIPS":
+            self.label_arm_mode.grid_remove()
+            self.combo_arm_mode.grid_remove()
+            self.label_mips_mode.grid()
+            self.combo_mips_mode.grid()
+            self.label_endian.grid()
+            self.combo_endian.grid()
+            self.combo_endian.current(0) # set default to little endian
+            self.label_micromips.grid()
+            self.combo_micromips.grid()
+            self.label_mclass.grid_remove()
+            self.combo_mclass.grid_remove()
+            self.label_v8.grid_remove()
+            self.combo_v8.grid_remove()
+        elif self.combo_arch.get() in ["PowerPC", "PowerPC64"]:
+            self.label_arm_mode.grid_remove()
+            self.combo_arm_mode.grid_remove()
+            self.label_mips_mode.grid_remove()
+            self.combo_mips_mode.grid_remove()
+            self.label_endian.grid()
+            self.combo_endian.grid()
+            self.combo_endian.current(1) # set default to big endian
+            self.label_micromips.grid_remove()
+            self.combo_micromips.grid_remove()
+            self.label_mclass.grid_remove()
+            self.combo_mclass.grid_remove()
+            self.label_v8.grid_remove()
+            self.combo_v8.grid_remove()
 
-label_micromips = tkinter.Label(root, text="microMIPS:")
-label_micromips.grid(row=4, column=0, padx=5, pady=5, sticky="w")
-label_micromips.grid_remove()
-widgets["label_micromips"] = label_micromips
+    def combo_arm_mode_selected(self):
+        # Hide / show labels and comboboxes
+        if self.combo_arm_mode.get() == "Thumb":
+            self.label_mclass.grid_remove()
+            self.combo_mclass.grid_remove()
+        else: # ARM
+            self.label_mclass.grid()
+            self.combo_mclass.grid()
 
-combo_micromips = tkinter.ttk.Combobox(root, state="readonly")
-combo_micromips["values"] = ("False", "True")
-combo_micromips.current(0)
-combo_micromips.grid(row=4, column=2, padx=5, pady=5, sticky="w")
-combo_micromips.grid_remove()
-widgets["combo_micromips"] = combo_micromips
-
-label_mclass = tkinter.Label(root, text="ARM M-class:")
-label_mclass.grid(row=5, column=0, padx=5, pady=5, sticky="w")
-label_mclass.grid_remove()
-widgets["label_mclass"] = label_mclass
-
-combo_mclass = tkinter.ttk.Combobox(root, state="readonly")
-combo_mclass["values"] = ("False", "True")
-combo_mclass.current(0)
-combo_mclass.grid(row=5, column=2, padx=5, pady=5, sticky="w")
-combo_mclass.grid_remove()
-widgets["combo_mclass"] = combo_mclass
-
-label_v8 = tkinter.Label(root, text="ARM v8:")
-label_v8.grid(row=6, column=0, padx=5, pady=5, sticky="w")
-label_v8.grid_remove()
-widgets["label_v8"] = label_v8
-
-combo_v8 = tkinter.ttk.Combobox(root, state="readonly")
-combo_v8["values"] = ("False", "True")
-combo_v8.current(0)
-combo_v8.grid(row=6, column=2, padx=5, pady=5, sticky="w")
-combo_v8.grid_remove()
-widgets["combo_v8"] = combo_v8
-
-button = tkinter.Button(root, text="OK", command=(lambda r=root, w=widgets: get_selection(r, w)))
-button.grid(row=7, column=0, padx=5, pady=5, columnspan=3)
-button.focus() # Focus to this widget
-
-# Set callback functions
-combo_arch.bind('<<ComboboxSelected>>', lambda event, r=root, w=widgets: combo_arch_selected(r, w))
-combo_arm_mode.bind('<<ComboboxSelected>>', lambda event, r=root, w=widgets: combo_arm_mode_selected(r, w))
-
-for x in (combo_arch, combo_arm_mode, combo_mips_mode, combo_endian, combo_micromips, combo_mclass, combo_v8, button):
-    x.bind("<Return>", lambda event, r=root, w=widgets: get_selection(r, w))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
+if __name__ == "__main__":
+    dialog = DisassembleDialog(title="Disassemble")
+    dialog.show()
