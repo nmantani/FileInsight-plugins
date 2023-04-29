@@ -76,7 +76,9 @@ class BlockCipherDialog(dialog_base.DialogBase):
         self.label_key = tkinter.Label(self.root, text="Key:")
         self.label_key.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_key = tkinter.Entry(width=32)
+        self.key = tkinter.StringVar()
+        self.key.trace("w", lambda *_: self.entry_key_changed())
+        self.entry_key = tkinter.Entry(textvariable=self.key, width=32)
         self.entry_key.grid(row=1, column=3, padx=5, pady=5, sticky="w")
         self.entry_key.focus() # Focus to this widget
 
@@ -91,7 +93,9 @@ class BlockCipherDialog(dialog_base.DialogBase):
         self.label_iv = tkinter.Label(self.root, text="IV:")
         self.label_iv.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_iv = tkinter.Entry(width=32)
+        self.iv = tkinter.StringVar()
+        self.iv.trace("w", lambda *_: self.entry_iv_changed())
+        self.entry_iv = tkinter.Entry(textvariable=self.iv, width=32)
         self.entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 
         self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
@@ -105,22 +109,20 @@ class BlockCipherDialog(dialog_base.DialogBase):
 
         # Set callback functions
         self.combo_mode.bind('<<ComboboxSelected>>', lambda event: self.combo_mode_selected())
-        self.combo_mode.bind("<Return>", lambda event: self.process())
+        self.combo_key_type.bind('<<ComboboxSelected>>', lambda event: self.entry_key_changed())
+        self.combo_iv_type.bind('<<ComboboxSelected>>', lambda event: self.entry_iv_changed())
 
         if use_key_length:
             self.combo_key_length.bind("<Return>", lambda event: self.process())
 
-        self.combo_key_type.bind("<Return>", lambda event: self.process())
-        self.entry_key.bind("<Return>", lambda event: self.process())
-        self.combo_iv_type.bind("<Return>", lambda event: self.process())
-        self.entry_iv.bind("<Return>", lambda event: self.process())
-        self.button.bind("<Return>", lambda event: self.process())
+        for x in (self.combo_mode, self.combo_key_type, self.entry_key, self.combo_iv_type, self.entry_iv, self.button):
+            x.bind("<Return>", lambda event: self.process())
 
         # These are disabled in the initial state (ECB mode)
         self.combo_iv_type.configure(state = "disabled")
         self.entry_iv.configure(state = "disabled")
 
-    def combo_mode_selected(self, **kwargs):
+    def combo_mode_selected(self):
         mode = self.combo_mode.get()
 
         if mode == "ECB":
@@ -135,6 +137,14 @@ class BlockCipherDialog(dialog_base.DialogBase):
                 self.label_ctr.grid()
             else:
                 self.label_ctr.grid_remove()
+
+    def entry_key_changed(self):
+        if self.combo_key_type.get() == "Hex":
+            self.key.set(re.sub("[^0-9A-Fa-f]", "", self.key.get()))
+
+    def entry_iv_changed(self):
+        if self.combo_iv_type.get() == "Hex":
+            self.iv.set(re.sub("[^0-9A-Fa-f]", "", self.iv.get()))
 
 class TEADialogBase(dialog_base.DialogBase):
     def __init__(self, **kwargs):
@@ -170,7 +180,9 @@ class TEADialogBase(dialog_base.DialogBase):
         self.label_key = tkinter.Label(self.root, text="Key:")
         self.label_key.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_key = tkinter.Entry(width=32)
+        self.key = tkinter.StringVar()
+        self.key.trace("w", lambda *_: self.entry_key_changed())
+        self.entry_key = tkinter.Entry(textvariable=self.key, width=32)
         self.entry_key.grid(row=1, column=3, padx=5, pady=5, sticky="w")
         self.entry_key.focus() # Focus to this widget
 
@@ -185,7 +197,9 @@ class TEADialogBase(dialog_base.DialogBase):
         self.label_iv = tkinter.Label(self.root, text="IV:")
         self.label_iv.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_iv = tkinter.Entry(width=32)
+        self.iv = tkinter.StringVar()
+        self.iv.trace("w", lambda *_: self.entry_iv_changed())
+        self.entry_iv = tkinter.Entry(textvariable=self.iv, width=32)
         self.entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
 
         self.label_endianness = tkinter.Label(self.root, text="Endianness:")
@@ -224,17 +238,14 @@ class TEADialogBase(dialog_base.DialogBase):
 
         # Set callback functions
         self.combo_mode.bind('<<ComboboxSelected>>', lambda event: self.combo_mode_selected())
-        self.combo_mode.bind("<Return>", lambda event: self.process())
-        self.combo_endianness.bind("<Return>", lambda event: self.process())
-        self.combo_key_type.bind("<Return>", lambda event: self.process())
-        self.entry_key.bind("<Return>", lambda event: self.process())
-        self.combo_iv_type.bind("<Return>", lambda event: self.process())
-        self.entry_iv.bind("<Return>", lambda event: self.process())
+        self.combo_key_type.bind('<<ComboboxSelected>>', lambda event: self.entry_key_changed())
+        self.combo_iv_type.bind('<<ComboboxSelected>>', lambda event: self.entry_iv_changed())
 
         if self.use_single_block:
             self.spin_block_size.bind("<Return>", lambda event: self.process())
 
-        self.button.bind("<Return>", lambda event: self.process())
+        for x in (self.combo_mode, self.combo_endianness, self.combo_key_type, self.entry_key, self.combo_iv_type, self.entry_iv, self.button):
+            x.bind("<Return>", lambda event: self.process())
 
         # These are disabled in the initial state (ECB mode)
         self.combo_iv_type.configure(state = "disabled")
@@ -244,7 +255,7 @@ class TEADialogBase(dialog_base.DialogBase):
             # Disabled in the initial state
             self.spin_block_size.configure(state="disabled")
 
-    def combo_mode_selected(self, **kwargs):
+    def combo_mode_selected(self):
         mode = self.combo_mode.get()
 
         if mode == "ECB":
@@ -260,16 +271,24 @@ class TEADialogBase(dialog_base.DialogBase):
             else:
                 self.label_ctr.grid_remove()
 
-    def block_size_changed(self, *args):
+    def block_size_changed(self):
         s = self.block_size.get()
         if not re.match("^([0-9])+$", s):
             self.block_size.set("8")
         elif int(s) < 8:
             self.block_size.set("8")
 
-    def check_single_block_changed(self, *args):
+    def check_single_block_changed(self):
         if self.bool_single_block.get() == True:
             self.spin_block_size.configure(state="disabled")
         else:
             self.spin_block_size.configure(state="normal")
         return
+
+    def entry_key_changed(self):
+        if self.combo_key_type.get() == "Hex":
+            self.key.set(re.sub("[^0-9A-Fa-f]", "", self.key.get()))
+
+    def entry_iv_changed(self):
+        if self.combo_iv_type.get() == "Hex":
+            self.iv.set(re.sub("[^0-9A-Fa-f]", "", self.iv.get()))

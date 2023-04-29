@@ -66,7 +66,7 @@ class RC5EncryptDialog(dialog_base.DialogBase):
 
         self.rounds = tkinter.StringVar()
         self.rounds.set("12")
-        self.rounds.trace("w", self.rounds_changed)
+        self.rounds.trace("w", lambda *_: self.rounds_changed())
         self.spin_rounds = tkinter.Spinbox(self.root, textvariable=self.rounds, width=6, from_=1, to=255)
         self.spin_rounds.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
@@ -81,7 +81,9 @@ class RC5EncryptDialog(dialog_base.DialogBase):
         self.label_key = tkinter.Label(self.root, text="Key:")
         self.label_key.grid(row=2, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_key = tkinter.Entry(width=32)
+        self.key = tkinter.StringVar()
+        self.key.trace("w", lambda *_: self.entry_key_changed())
+        self.entry_key = tkinter.Entry(textvariable=self.key, width=32)
         self.entry_key.grid(row=2, column=3, padx=5, pady=5, sticky="w")
         self.entry_key.focus() # Focus to this widget
 
@@ -96,7 +98,9 @@ class RC5EncryptDialog(dialog_base.DialogBase):
         self.label_iv = tkinter.Label(self.root, text="IV:")
         self.label_iv.grid(row=3, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_iv = tkinter.Entry(width=32)
+        self.iv = tkinter.StringVar()
+        self.iv.trace("w", lambda *_: self.entry_iv_changed())
+        self.entry_iv = tkinter.Entry(textvariable=self.iv, width=32)
         self.entry_iv.grid(row=3, column=3, padx=5, pady=5, sticky="w")
 
         self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
@@ -104,14 +108,11 @@ class RC5EncryptDialog(dialog_base.DialogBase):
 
         # Set callback functions
         self.combo_mode.bind('<<ComboboxSelected>>', lambda event: self.combo_mode_selected())
-        self.combo_mode.bind("<Return>", lambda event: self.process())
-        self.combo_block_size.bind("<Return>", lambda event: self.process())
-        self.spin_rounds.bind("<Return>", lambda event: self.process())
-        self.combo_key_type.bind("<Return>", lambda event: self.process())
-        self.entry_key.bind("<Return>", lambda event: self.process())
-        self.combo_iv_type.bind("<Return>", lambda event: self.process())
-        self.entry_iv.bind("<Return>", lambda event: self.process())
-        self.button.bind("<Return>", lambda event: self.process())
+        self.combo_key_type.bind('<<ComboboxSelected>>', lambda event: self.entry_key_changed())
+        self.combo_iv_type.bind('<<ComboboxSelected>>', lambda event: self.entry_iv_changed())
+
+        for x in (self.combo_mode, self.combo_block_size, self.spin_rounds, self.combo_key_type, self.entry_key, self.combo_iv_type, self.entry_iv, self.button):
+            x.bind("<Return>", lambda event: self.process())
 
         # These are disabled in the initial state (ECB mode)
         self.combo_iv_type.configure(state = "disabled")
@@ -193,10 +194,18 @@ class RC5EncryptDialog(dialog_base.DialogBase):
             self.combo_iv_type.configure(state = "readonly")
             self.entry_iv.configure(state = "normal")
 
-    def rounds_changed(self, *args):
+    def rounds_changed(self):
         r = self.rounds.get()
         if not re.match("^([0-9])+$", r) and r != "":
             self.rounds.set("12")
+
+    def entry_key_changed(self):
+        if self.combo_key_type.get() == "Hex":
+            self.key.set(re.sub("[^0-9A-Fa-f]", "", self.key.get()))
+
+    def entry_iv_changed(self):
+        if self.combo_iv_type.get() == "Hex":
+            self.iv.set(re.sub("[^0-9A-Fa-f]", "", self.iv.get()))
 
 if __name__ == "__main__":
     # Receive data

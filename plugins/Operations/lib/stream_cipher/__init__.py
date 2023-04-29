@@ -23,6 +23,7 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import re
 import sys
 import tkinter
 import tkinter.ttk
@@ -52,7 +53,9 @@ class StreamCipherDialog(dialog_base.DialogBase):
         self.label_key = tkinter.Label(self.root, text="Key:")
         self.label_key.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
-        self.entry_key = tkinter.Entry(width=48)
+        self.key = tkinter.StringVar()
+        self.key.trace("w", lambda *_: self.entry_key_changed())
+        self.entry_key = tkinter.Entry(textvariable=self.key, width=48)
         self.entry_key.grid(row=0, column=3, padx=5, pady=5, sticky="w")
         self.entry_key.focus() # Focus to this widget
 
@@ -68,18 +71,31 @@ class StreamCipherDialog(dialog_base.DialogBase):
             self.label_nonce = tkinter.Label(self.root, text="Nonce:")
             self.label_nonce.grid(row=1, column=2, padx=5, pady=5, sticky="w")
 
-            self.entry_nonce = tkinter.Entry(width=48)
+            self.nonce = tkinter.StringVar()
+            self.nonce.trace("w", lambda *_: self.entry_nonce_changed())
+            self.entry_nonce = tkinter.Entry(textvariable=self.nonce, width=48)
             self.entry_nonce.grid(row=1, column=3, padx=5, pady=5, sticky="w")
 
         self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
         self.button.grid(row=2, column=0, padx=5, pady=5, columnspan=4)
 
         # Set callback functions
+        self.combo_key_type.bind('<<ComboboxSelected>>', lambda event: self.entry_key_changed())
+
         self.combo_key_type.bind("<Return>", lambda event: self.process())
         self.entry_key.bind("<Return>", lambda event: self.process())
 
         if self.use_nonce:
+            self.combo_nonce_type.bind('<<ComboboxSelected>>', lambda event: self.entry_nonce_changed())
             self.combo_nonce_type.bind("<Return>", lambda event: self.process())
             self.entry_nonce.bind("<Return>", lambda event: self.process())
 
         self.button.bind("<Return>", lambda event: self.process())
+
+    def entry_key_changed(self):
+        if self.combo_key_type.get() == "Hex":
+            self.key.set(re.sub("[^0-9A-Fa-f]", "", self.key.get()))
+
+    def entry_nonce_changed(self):
+        if self.combo_nonce_type.get() == "Hex":
+            self.nonce.set(re.sub("[^0-9A-Fa-f]", "", self.nonce.get()))
