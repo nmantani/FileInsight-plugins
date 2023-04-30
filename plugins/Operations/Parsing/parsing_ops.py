@@ -593,6 +593,10 @@ def parse_file_structure(fi):
         do_bookmark = True
 
     for k in parsed_dict.keys():
+        # For the case that start offset is larger than end offset
+        if parsed_dict[k]["start"] > parsed_dict[k]["end"]:
+            parsed_dict[k]["start"] = parsed_dict[k]["end"]
+
         if do_bookmark:
             # Adjust start offset for one byte data
             if parsed_dict[k]["start"] - parsed_dict[k]["end"] == 1:
@@ -626,7 +630,7 @@ def parse_file_structure(fi):
     tab_name = fi.get_new_document_name("Parsed data")
     fi.newDocument(tab_name, 0)
 
-    fi.setDocument(parsed_data)
+    fi.setDocument(parsed_data.encode("UTF-8"))
     print('Parsed data is shown in the new "Parsed data" tab.')
     print('Please use "Windows" tab -> "New Vertical Tab Group" to see parsed data and file contents side by side.')
     print(stderr_data)

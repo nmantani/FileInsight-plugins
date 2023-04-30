@@ -34,9 +34,7 @@ import importlib
 import inspect
 import json
 import re
-import struct
 import sys
-import time
 
 sys.path.append("./Parsing")
 from kaitaistruct import KaitaiStruct, KaitaiStream, BytesIO
@@ -98,7 +96,7 @@ def explore(file_type, obj, path="", offset=0, parent_offset=0, adjusted=False):
         if obj._io == obj._root._io:
             print("_root._io: True", file=sys.stderr)
         else:
-            print("_root._io: True", file=sys.stderr)
+            print("_root._io: False", file=sys.stderr)
         if obj._parent != None and obj._io == obj._parent._io:
             print("_parent._io: True", file=sys.stderr)
         else:
@@ -164,6 +162,11 @@ def explore(file_type, obj, path="", offset=0, parent_offset=0, adjusted=False):
                             and "end" in parsed_dict[path_new + "." + str(i)].keys():
                             if type(m[1][i]) == str:
                                 parsed_dict[path_new + "." + str(i)]["data"] =  repr(m[1][i])[1:-1] # Escape \r, \n, \t and remove single quote
+                            elif type(m[1][i]) == bytes:
+                                if len(m[1][i]) > 16:
+                                    parsed_dict[path_new + "." + str(i)]["data"] = binascii.b2a_hex(m[1][i])[0:32].decode() + "... (hex)"
+                                else:
+                                    parsed_dict[path_new + "." + str(i)]["data"] = binascii.b2a_hex(m[1][i]).decode() + " (hex)"
                             else:
                                 parsed_dict[path_new + "." + str(i)]["data"] = m[1][i]
                 elif "start" in parsed_dict[path_new].keys() and "end" in parsed_dict[path_new].keys():
@@ -355,14 +358,14 @@ def adjust_start_end(file_type, parsed_dict, data):
 
     elif file_type == "ELF":
         new_dict = collections.defaultdict(dict)
-        header_strings_start = parsed_dict["header.strings.entries.0"]["start"]
+        header_section_names_start = parsed_dict["header.section_names.entries.0"]["start"]
 
         for k in parsed_dict.keys():
             if re.match(r"^header\.section_headers\.\d+\.ofs_name$", k):
                 # Adjust offset of header.section_headers.??.name
                 offset_name = parsed_dict[k[:-8] + "name"]["start"] - parsed_dict[k]["start"] # k[:-8] + "name" = header.section_headers.??.name
                 len_name = len(parsed_dict[k[:-8] + "name"]["data"])
-                parsed_dict[k[:-8] + "name"]["start"] = header_strings_start + offset_name
+                parsed_dict[k[:-8] + "name"]["start"] = header_section_names_start + offset_name
                 parsed_dict[k[:-8] + "name"]["end"] = parsed_dict[k[:-8] + "name"]["start"] + len_name
 
                 # Add region of body
@@ -377,6 +380,12 @@ def adjust_start_end(file_type, parsed_dict, data):
                         new_dict[k[:-8] + "body"]["data"] = binascii.b2a_hex(body)[0:32].decode() + "... (hex)"
                     else:
                         new_dict[k[:-8] + "body"]["data"] = binascii.b2a_hex(body).decode() + " (hex)"
+            elif re.match(r"^header\.section_headers\.\d+\.body\.entries\.\d+\.name$", k):
+                # Adjust offset of header.section_headers.??.body.??.entries.??.name
+                # k[:-4] + "ofs_name" = header.section_headers.??.body.??.entries.??.ofs_name
+                if k[:-4] + "ofs_name" in parsed_dict:
+                    parsed_dict[k]["start"] = parsed_dict[k[:-4] + "ofs_name"]["start"]
+                    parsed_dict[k]["end"] = parsed_dict[k[:-4] + "ofs_name"]["end"]
 
         for k in new_dict.keys():
             parsed_dict[k]["start"] = new_dict[k]["start"]

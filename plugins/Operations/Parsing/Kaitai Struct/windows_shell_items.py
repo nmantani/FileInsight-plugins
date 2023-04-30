@@ -1,12 +1,11 @@
 # This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-from pkg_resources import parse_version
 import kaitaistruct
 from kaitaistruct import KaitaiStruct, KaitaiStream, BytesIO
 import collections
 
 
-if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
+if getattr(kaitaistruct, 'API_VERSION', (0, 9)) < (0, 9):
     raise Exception("Incompatible Kaitai Struct Python API: 0.9 or later is required, but you have %s" % (kaitaistruct.__version__))
 
 class WindowsShellItems(KaitaiStruct):
@@ -23,7 +22,7 @@ class WindowsShellItems(KaitaiStruct):
     various Windows versions.
     
     .. seealso::
-       Source - https://github.com/libyal/libfwsi/blob/master/documentation/Windows%20Shell%20Item%20format.asciidoc
+       Source - https://github.com/libyal/libfwsi/blob/main/documentation/Windows%20Shell%20Item%20format.asciidoc
     """
     SEQ_FIELDS = ["items"]
     def __init__(self, _io, _parent=None, _root=None):
@@ -108,7 +107,7 @@ class WindowsShellItems(KaitaiStruct):
     class RootFolderBody(KaitaiStruct):
         """
         .. seealso::
-           Source - https://github.com/libyal/libfwsi/blob/master/documentation/Windows%20Shell%20Item%20format.asciidoc#32-root-folder-shell-item
+           Source - https://github.com/libyal/libfwsi/blob/main/documentation/Windows%20Shell%20Item%20format.asciidoc#32-root-folder-shell-item
         """
         SEQ_FIELDS = ["sort_index", "shell_folder_id"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -129,7 +128,7 @@ class WindowsShellItems(KaitaiStruct):
     class VolumeBody(KaitaiStruct):
         """
         .. seealso::
-           Source - https://github.com/libyal/libfwsi/blob/master/documentation/Windows%20Shell%20Item%20format.asciidoc#33-volume-shell-item
+           Source - https://github.com/libyal/libfwsi/blob/main/documentation/Windows%20Shell%20Item%20format.asciidoc#33-volume-shell-item
         """
         SEQ_FIELDS = ["flags"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -147,7 +146,7 @@ class WindowsShellItems(KaitaiStruct):
     class FileEntryBody(KaitaiStruct):
         """
         .. seealso::
-           Source - https://github.com/libyal/libfwsi/blob/master/documentation/Windows%20Shell%20Item%20format.asciidoc#34-file-entry-shell-item
+           Source - https://github.com/libyal/libfwsi/blob/main/documentation/Windows%20Shell%20Item%20format.asciidoc#34-file-entry-shell-item
         """
         SEQ_FIELDS = ["_unnamed0", "file_size", "last_mod_time", "file_attrs"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -173,18 +172,18 @@ class WindowsShellItems(KaitaiStruct):
         @property
         def is_dir(self):
             if hasattr(self, '_m_is_dir'):
-                return self._m_is_dir if hasattr(self, '_m_is_dir') else None
+                return self._m_is_dir
 
             self._m_is_dir = (self._parent.code & 1) != 0
-            return self._m_is_dir if hasattr(self, '_m_is_dir') else None
+            return getattr(self, '_m_is_dir', None)
 
         @property
         def is_file(self):
             if hasattr(self, '_m_is_file'):
-                return self._m_is_file if hasattr(self, '_m_is_file') else None
+                return self._m_is_file
 
             self._m_is_file = (self._parent.code & 2) != 0
-            return self._m_is_file if hasattr(self, '_m_is_file') else None
+            return getattr(self, '_m_is_file', None)
 
 
 

@@ -1,6 +1,5 @@
 # This is a generated file! Please edit source .ksy file and use kaitai-struct-compiler to rebuild
 
-from pkg_resources import parse_version
 import kaitaistruct
 from kaitaistruct import KaitaiStruct, KaitaiStream, BytesIO
 from enum import Enum
@@ -8,7 +7,7 @@ import collections
 import zlib
 
 
-if parse_version(kaitaistruct.__version__) < parse_version('0.9'):
+if getattr(kaitaistruct, 'API_VERSION', (0, 9)) < (0, 9):
     raise Exception("Incompatible Kaitai Struct Python API: 0.9 or later is required, but you have %s" % (kaitaistruct.__version__))
 
 class Png(KaitaiStruct):
@@ -231,18 +230,18 @@ class Png(KaitaiStruct):
         @property
         def x(self):
             if hasattr(self, '_m_x'):
-                return self._m_x if hasattr(self, '_m_x') else None
+                return self._m_x
 
             self._m_x = (self.x_int / 100000.0)
-            return self._m_x if hasattr(self, '_m_x') else None
+            return getattr(self, '_m_x', None)
 
         @property
         def y(self):
             if hasattr(self, '_m_y'):
-                return self._m_y if hasattr(self, '_m_y') else None
+                return self._m_y
 
             self._m_y = (self.y_int / 100000.0)
-            return self._m_y if hasattr(self, '_m_y') else None
+            return getattr(self, '_m_y', None)
 
 
     class BkgdGreyscale(KaitaiStruct):
@@ -263,7 +262,7 @@ class Png(KaitaiStruct):
     class ChrmChunk(KaitaiStruct):
         """
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11cHRM
+           Source - https://www.w3.org/TR/png/#11cHRM
         """
         SEQ_FIELDS = ["white_point", "red", "green", "blue"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -294,7 +293,7 @@ class Png(KaitaiStruct):
     class IhdrChunk(KaitaiStruct):
         """
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11IHDR
+           Source - https://www.w3.org/TR/png/#11IHDR
         """
         SEQ_FIELDS = ["width", "height", "bit_depth", "color_type", "compression_method", "filter_method", "interlace_method"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -330,7 +329,7 @@ class Png(KaitaiStruct):
     class PlteChunk(KaitaiStruct):
         """
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11PLTE
+           Source - https://www.w3.org/TR/png/#11PLTE
         """
         SEQ_FIELDS = ["entries"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -359,7 +358,7 @@ class Png(KaitaiStruct):
     class SrgbChunk(KaitaiStruct):
         """
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11sRGB
+           Source - https://www.w3.org/TR/png/#11sRGB
         """
 
         class Intent(Enum):
@@ -386,7 +385,7 @@ class Png(KaitaiStruct):
         can be quite lengthy) with zlib compression.
         
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11zTXt
+           Source - https://www.w3.org/TR/png/#11zTXt
         """
         SEQ_FIELDS = ["keyword", "compression_method", "text_datastream"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -453,7 +452,7 @@ class Png(KaitaiStruct):
     class GamaChunk(KaitaiStruct):
         """
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11gAMA
+           Source - https://www.w3.org/TR/png/#11gAMA
         """
         SEQ_FIELDS = ["gamma_int"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -470,10 +469,10 @@ class Png(KaitaiStruct):
         @property
         def gamma_ratio(self):
             if hasattr(self, '_m_gamma_ratio'):
-                return self._m_gamma_ratio if hasattr(self, '_m_gamma_ratio') else None
+                return self._m_gamma_ratio
 
             self._m_gamma_ratio = (100000.0 / self.gamma_int)
-            return self._m_gamma_ratio if hasattr(self, '_m_gamma_ratio') else None
+            return getattr(self, '_m_gamma_ratio', None)
 
 
     class BkgdChunk(KaitaiStruct):
@@ -481,7 +480,7 @@ class Png(KaitaiStruct):
         image against. Contents depend on `color_type` of the image.
         
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11bKGD
+           Source - https://www.w3.org/TR/png/#11bKGD
         """
         SEQ_FIELDS = ["bkgd"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -516,7 +515,7 @@ class Png(KaitaiStruct):
         logical pixels into physical units (meters, etc) and vice-versa.
         
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11pHYs
+           Source - https://www.w3.org/TR/png/#11pHYs
         """
         SEQ_FIELDS = ["pixels_per_unit_x", "pixels_per_unit_y", "unit"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -594,10 +593,10 @@ class Png(KaitaiStruct):
         def delay(self):
             """Time to display this frame, in seconds."""
             if hasattr(self, '_m_delay'):
-                return self._m_delay if hasattr(self, '_m_delay') else None
+                return self._m_delay
 
             self._m_delay = (self.delay_num / (100.0 if self.delay_den == 0 else self.delay_den))
-            return self._m_delay if hasattr(self, '_m_delay') else None
+            return getattr(self, '_m_delay', None)
 
 
     class InternationalTextChunk(KaitaiStruct):
@@ -607,7 +606,7 @@ class Png(KaitaiStruct):
         characters.
         
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11iTXt
+           Source - https://www.w3.org/TR/png/#11iTXt
         """
         SEQ_FIELDS = ["keyword", "compression_flag", "compression_method", "language_tag", "translated_keyword", "text"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -644,7 +643,7 @@ class Png(KaitaiStruct):
         characters.
         
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11tEXt
+           Source - https://www.w3.org/TR/png/#11tEXt
         """
         SEQ_FIELDS = ["keyword", "text"]
         def __init__(self, _io, _parent=None, _root=None):
@@ -688,7 +687,7 @@ class Png(KaitaiStruct):
         up to 1 second precision in UTC timezone.
         
         .. seealso::
-           Source - https://www.w3.org/TR/PNG/#11tIME
+           Source - https://www.w3.org/TR/png/#11tIME
         """
         SEQ_FIELDS = ["year", "month", "day", "hour", "minute", "second"]
         def __init__(self, _io, _parent=None, _root=None):
