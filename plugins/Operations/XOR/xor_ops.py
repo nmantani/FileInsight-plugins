@@ -38,16 +38,20 @@ def simple_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (in hex, like 1122aabb):")
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute simple_xor_dialog.py to show XOR key input dialog
+        p = subprocess.Popen([fi.get_embed_python(), "XOR/simple_xor_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Get XOR key
+        stdout_data, stderr_data = p.communicate()
+        key = stdout_data.rstrip()
 
         # Dialog has been closed or XOR key is empty
-        if key == None or key == "":
+        if key == "":
             return
-        elif key[:2] == "0x":
-            key = key[2:]
-
-        if len(key) % 2 == 1:
-            key = "0" + key
 
         try:
             key_list = list(binascii.a2b_hex(key))
@@ -82,43 +86,22 @@ def decremental_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (single byte in hex like 4e, default = 00):")
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Dialog has been closed
-        if key == None:
-            return
+        # Execute decremental_xor_dialog.py to show setting dialog
+        p = subprocess.Popen([fi.get_embed_python(), "XOR/decremental_xor_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        if key == "":
-            key = 0
+        # Get XOR key and step
+        stdout_data, stderr_data = p.communicate()
+
+        if stdout_data == "":
+            return # Dialog has been closed
         else:
-            try:
-                key = int(key, 16)
-            except:
-                print("Error: XOR key is not hexadecimal.")
-                return
-
-        if key > 255 or key < 0:
-            print("Error: Invalid XOR key (> 0xff or < 0x0).")
-            return
-
-        step = fi.showSimpleDialog("Decrement step (in hex, default = 01):")
-
-        # Dialog has been closed
-        if step == None:
-            return
-
-        if step == "":
-            step = 1
-        else:
-            try:
-                step = int(step, 16)
-            except:
-                print("Error: decrement step is not hexadecimal.")
-                return
-
-        if step > 255 or step < 0:
-            print("Error: Invalid decrement step (> 0xff or < 0x0).")
-            return
+            key, step = stdout_data.split()
+            key = int(key, 16)
+            step = int(step)
 
         init_key = key
         data = list(fi.getDocument())
@@ -135,9 +118,9 @@ def decremental_xor(fi):
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
-            print("XORed one byte from offset %s to %s while decrementing key from %s (step %s)." % (hex(offset), hex(offset), hex(init_key), hex(step)))
+            print("XORed one byte from offset %s to %s while decrementing key from %s (step %s)." % (hex(offset), hex(offset), hex(init_key), step))
         else:
-            print("XORed %s bytes from offset %s to %s while decrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), hex(step)))
+            print("XORed %s bytes from offset %s to %s while decrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), step))
             print("Added a bookmark to XORed region.")
     else:
         print("Please select a region to use this plugin.")
@@ -150,43 +133,22 @@ def incremental_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (single byte in hex like 4e, default = 00):")
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Dialog has been closed
-        if key == None:
-            return
+        # Execute incremental_xor_dialog.py to show setting dialog
+        p = subprocess.Popen([fi.get_embed_python(), "XOR/incremental_xor_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        if key == "":
-            key = 0
+        # Get XOR key and step
+        stdout_data, stderr_data = p.communicate()
+
+        if stdout_data == "":
+            return # Dialog has been closed
         else:
-            try:
-                key = int(key, 16)
-            except:
-                print("Error: XOR key is not hexadecimal.")
-                return
-
-        if key > 255 or key < 0:
-            print("Error: Invalid XOR key (> 0xff or < 0x0).")
-            return
-
-        step = fi.showSimpleDialog("Increment step (in hex, default = 01):")
-
-        # Dialog has been closed
-        if step == None:
-            return
-
-        if step == "":
-            step = 1
-        else:
-            try:
-                step = int(step, 16)
-            except:
-                print("Error: increment step is not hexadecimal.")
-                return
-
-        if step > 255 or step < 0:
-            print("Error: Invalid increment step (> 0xff or < 0x0).")
-            return
+            key, step = stdout_data.split()
+            key = int(key, 16)
+            step = int(step)
 
         init_key = key
         data = list(fi.getDocument())
@@ -203,9 +165,9 @@ def incremental_xor(fi):
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
         if length == 1:
-            print("XORed one byte from offset %s to %s while incrementing key from %s (step %s)." % (hex(offset), hex(offset), hex(init_key), hex(step)))
+            print("XORed one byte from offset %s to %s while incrementing key from %s (step %s)." % (hex(offset), hex(offset), hex(init_key), step))
         else:
-            print("XORed %s bytes from offset %s to %s while incrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), hex(step)))
+            print("XORed %s bytes from offset %s to %s while incrementing key from %s (step %s)." % (length, hex(offset), hex(offset + length - 1), hex(init_key), step))
             print("Added a bookmark to XORed region.")
     else:
         print("Please select a region to use this plugin.")
@@ -218,39 +180,30 @@ def null_preserving_xor(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        key = fi.showSimpleDialog("XOR key (in hex, like 1122aabb):")
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Dialog has been closed or XOR key is empty
-        if key == None or key == "":
-            return
-        elif key[:2] == "0x":
-            key = key[2:]
+        # Execute incremental_xor_dialog.py to show setting dialog
+        p = subprocess.Popen([fi.get_embed_python(), "XOR/null_preserving_xor_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        if len(key) % 2 == 1:
-            key = "0" + key
+        # Get XOR key and step
+        stdout_data, stderr_data = p.communicate()
+
+        if stdout_data == "":
+            return # Dialog has been closed
+        else:
+            key, use_next_xor_key_byte = stdout_data.split()
+            if use_next_xor_key_byte == "True":
+                use_next_xor_key_byte = True
+            else:
+                use_next_xor_key_byte = False
 
         try:
             key_list = list(binascii.a2b_hex(key))
         except:
             print("Error: XOR key is invalid.")
             return
-
-        if len(key_list) > 1:
-            # Do not show command prompt window
-            startupinfo = subprocess.STARTUPINFO()
-            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-            # Execute null_preserving_xor_dialog.py to show operation mode setting dialog
-            p = subprocess.Popen([fi.get_embed_python(), "XOR/null_preserving_xor_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-            # Get operation mode setting
-            stdout_data, stderr_data = p.communicate()
-            mode = stdout_data.rstrip()
-
-            if mode == "":
-                return
-        else:
-            mode = "No"
 
         data = list(fi.getDocument())
 
@@ -261,7 +214,7 @@ def null_preserving_xor(fi):
                 data[j] = chr(ord(data[j]) ^ ord(key_list[k % len(key_list)]))
                 k += 1
             else:
-                if mode == "Yes":
+                if use_next_xor_key_byte:
                     k += 1
 
         tab_name = fi.get_new_document_name("Output of Null-preserving XOR")
@@ -269,13 +222,18 @@ def null_preserving_xor(fi):
         fi.setDocument("".join(data))
         fi.setBookmark(offset, length, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("XORed one byte from offset %s to %s with key %s while skipping data 00 and %s." % (hex(offset), hex(offset), key, key))
+        if len(key) == 2:
+            skipped_key = key
         else:
-            print("XORed %s bytes from offset %s to %s with key %s while skipping data 00 and %s." % (length, hex(offset), hex(offset + length - 1), key, key))
+            skipped_key = "XOR key bytes"
+
+        if length == 1:
+            print("XORed one byte from offset %s to %s with key %s while skipping data 00 and %s." % (hex(offset), hex(offset), key, skipped_key))
+        else:
+            print("XORed %s bytes from offset %s to %s with key %s while skipping data 00 and %s." % (length, hex(offset), hex(offset + length - 1), key, skipped_key))
 
         if len(key_list) > 1:
-            print("Use next XOR key byte when skipping XOR operation (for multibyte XOR key): %s" % mode)
+            print("Use next XOR key byte when skipping XOR operation (for multibyte XOR key): %s" % use_next_xor_key_byte)
 
         print("Added a bookmark to XORed region.")
     else:

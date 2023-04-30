@@ -26,53 +26,52 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import re
+import sys
 import tkinter
+import tkinter.messagebox
 
-# Print key length to stdout
-def print_key_length(r, s):
-    if s.get() != "":
-        print(s.get())
-    else:
-        print("1")
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-def key_length_changed(*args):
-    if not re.match("^-?([0-9])+$", key_length.get()):
-        s = re.sub("[^-0-9]", "", key_length.get())
-        if re.match("[0-9]+-", s):
-            s = s.replace("-", "")
-            key_length.set(s)
+class VisualEncryptDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+
+        self.label = tkinter.Label(self.root, text="XOR key length:")
+        self.label.grid(row=0, column=0, padx=5, pady=5)
+        self.key_length = tkinter.StringVar()
+        self.key_length.set("1")
+        self.key_length.trace("w", lambda *_: self.key_length_changed())
+        self.spin = tkinter.Spinbox(self.root, textvariable=self.key_length, width=4, from_=1, to=100)
+        self.spin.grid(row=0, column=1, padx=5, pady=5)
+        self.button = tkinter.Button(self.root, text='OK', command=(lambda: self.print_key_length()))
+        self.button.grid(row=0, column=2, padx=5, pady=5)
+        self.button.focus() # Focus to this widget
+
+        # Set callback functions
+        self.spin.bind("<Return>", lambda event: self.print_key_length())
+        self.button.bind("<Return>", lambda event: self.print_key_length())
+
+    # Print key length to stdout
+    def print_key_length(self):
+        if self.spin.get() == "":
+            tkinter.messagebox.showerror("Error:", message="XOR key length is empty.")
+            return
         else:
-            key_length.set(s)
-    elif int(key_length.get()) < 1:
-        key_length.set("1")
+            print(self.spin.get())
+            self.root.quit()
 
-# Create input dialog
-root = tkinter.Tk()
-root.title('Visual encrypt / decrypt')
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
-label = tkinter.Label(root, text="XOR key length:")
-label.grid(row=0, column=0, padx=5, pady=5)
-key_length = tkinter.StringVar()
-key_length.set("1")
-key_length.trace("w", key_length_changed)
-spin = tkinter.Spinbox(root, textvariable=key_length, width=4, from_=1, to=100)
-spin.grid(row=0, column=1, padx=5, pady=5)
-button = tkinter.Button(root, text='OK', command=(lambda r=root, s=spin: print_key_length(r, s)))
-button.grid(row=0, column=2, padx=5, pady=5)
-button.focus() # Focus to this widget
+    def key_length_changed(self):
+        if not re.match("^-?([0-9])+$", self.key_length.get()):
+            s = re.sub("[^-0-9]", "", self.key_length.get())
+            if re.match("[0-9]+-", s):
+                s = s.replace("-", "")
+                self.key_length.set(s)
+            else:
+                self.key_length.set(s)
+        elif int(self.key_length.get()) < 1:
+            self.key_length.set("1")
 
-# Set callback functions
-spin.bind("<Return>", lambda event, r=root, s=spin: print_key_length(r, s))
-button.bind("<Return>", lambda event, r=root, s=spin: print_key_length(r, s))
-
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
-
-root.mainloop()
-
+if __name__ == "__main__":
+    dialog = VisualEncryptDialog(title="Visual encrypt / decrypt")
+    dialog.show()

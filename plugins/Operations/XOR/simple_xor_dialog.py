@@ -1,7 +1,5 @@
 #
-# Mode setting dialog for "Null-preserving XOR" plugin
-#
-# Copyright (c) 2022, Nobutaka Mantani
+# Copyright (c) 2023, Nobutaka Mantani
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -35,7 +33,7 @@ import tkinter.messagebox
 sys.path.append("./lib")
 import dialog_base
 
-class NullPreservingXORDialog(dialog_base.DialogBase):
+class SimpleXORDialog(dialog_base.DialogBase):
     def __init__(self, **kwargs):
         super().__init__(title=kwargs["title"])
 
@@ -56,36 +54,29 @@ class NullPreservingXORDialog(dialog_base.DialogBase):
         self.entry_key.grid(row=0, column=3, padx=5, pady=5, sticky="w")
         self.entry_key.focus() # Focus to this widget
 
-        self.label_use_next_xor_key_byte = tkinter.Label(self.root, text="Use next XOR key byte when skipping\nXOR operation (for multibyte XOR key):", justify="left")
-        self.label_use_next_xor_key_byte.grid(row=1, column=0, padx=5, pady=5, sticky="w", columnspan=3)
-        self.bool_use_next_xor_key_byte = tkinter.BooleanVar()
-        self.bool_use_next_xor_key_byte.set(True)
-        self.check_use_next_xor_key_byte = tkinter.Checkbutton(self.root, variable=self.bool_use_next_xor_key_byte, text="", onvalue=True, offvalue=False, command=(lambda: None))
-        self.check_use_next_xor_key_byte.grid(row=1, column=3, padx=5, pady=5, sticky="w")
-
         self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
-        self.button.grid(row=2, column=0, padx=5, pady=5, columnspan=4)
+        self.button.grid(row=1, column=0, padx=5, pady=5, columnspan=4)
 
         # Set callback functions
         self.combo_key_type.bind('<<ComboboxSelected>>', lambda event: self.entry_key_changed())
 
-        for x in (self.combo_key_type, self.entry_key, self.check_use_next_xor_key_byte, self.button):
-            x.bind("<Return>", lambda event: self.process())
+        self.combo_key_type.bind("<Return>", lambda event: self.process())
+        self.entry_key.bind("<Return>", lambda event: self.process())
+
+        self.button.bind("<Return>", lambda event: self.process())
 
     def process(self):
         if self.combo_key_type.get() == "Hex":
             key = self.entry_key.get()
-            next = self.bool_use_next_xor_key_byte.get()
             if re.match("^([0-9A-Fa-f]{2})+$", key):
-                print(f"{key}\t{next}")
+                print(key)
                 self.root.quit()
             else:
                 tkinter.messagebox.showerror("Error:", message="Key is not in hex format.")
                 return
         else:
             key = binascii.b2a_hex(self.entry_key.get().encode())
-            next = self.bool_use_next_xor_key_byte.get()
-            print(f"{key.decode()}\t{next}")
+            print(key.decode())
             self.root.quit()
 
     def entry_key_changed(self):
@@ -93,5 +84,5 @@ class NullPreservingXORDialog(dialog_base.DialogBase):
             self.key.set(re.sub("[^0-9A-Fa-f]", "", self.key.get()))
 
 if __name__ == "__main__":
-    dialog = NullPreservingXORDialog(title="Null-preserving XOR")
+    dialog = SimpleXORDialog(title="Simple XOR")
     dialog.show()

@@ -29,58 +29,54 @@ import sys
 import tkinter
 import tkinter.ttk
 
-# Print selected items
-def get_selection(r, c1, c2):
-    print("%d %d" % (c1.current(), c2.current()))
-    root.quit()
+sys.path.append("./lib")
+import dialog_base
 
-# Read list of files from stdin
-files = sys.stdin.readlines()
+class XORWithAnotherFileDialog(dialog_base.DialogBase):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+        files = kwargs["files"]
 
-max_len = 0
-for f in files:
-    if len(f) > max_len:
-        max_len = len(f)
+        max_len = 0
+        for f in files:
+            if len(f) > max_len:
+                max_len = len(f)
 
-# Create input dialog
-root = tkinter.Tk()
-root.title("XOR with another file")
-root.protocol("WM_DELETE_WINDOW", (lambda r=root: r.quit()))
+        self.label1 = tkinter.Label(self.root, text="File to be XORed:")
+        self.label1.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
-label1 = tkinter.Label(root, text="File to be XORed:")
-label1.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.combo1 = tkinter.ttk.Combobox(self.root, state="readonly", width=max_len)
+        self.combo1["values"] = files
+        self.combo1.current(0)
+        self.combo1.grid(row=0, column=1, padx=5, pady=5, sticky="w")
 
-combo1 = tkinter.ttk.Combobox(root, state="readonly", width=max_len)
-combo1["values"] = files
-combo1.current(0)
-combo1.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.label2 = tkinter.Label(self.root, text="XOR key file:")
+        self.label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
 
-label2 = tkinter.Label(root, text="XOR key file:")
-label2.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.combo2 = tkinter.ttk.Combobox(self.root, state="readonly", width=max_len)
+        self.combo2["values"] = files
+        self.combo2.current(1)
+        self.combo2.grid(row=1, column=1, padx=5, pady=5, sticky="w")
 
-combo2 = tkinter.ttk.Combobox(root, state="readonly", width=max_len)
-combo2["values"] = files
-combo2.current(1)
-combo2.grid(row=1, column=1, padx=5, pady=5, sticky="w")
-combo2
+        self.label3 = tkinter.Label(self.root, text="XOR key file has to contain only XOR key data.")
+        self.label3.grid(row=2, column=0, padx=5, pady=5, sticky="w", columnspan=3)
 
-label2 = tkinter.Label(root, text="XOR key file has to contain only XOR key data.")
-label2.grid(row=2, column=0, padx=5, pady=5, sticky="w", columnspan=3)
+        self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.get_selection()))
+        self.button.grid(row=3, column=0, padx=5, pady=5, columnspan=3)
+        self.button.focus() # Focus to this widget
 
-button = tkinter.Button(root, text="OK", command=(lambda r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2)))
-button.grid(row=3, column=0, padx=5, pady=5, columnspan=3)
-button.focus() # Focus to this widget
+        # Set callback functions
+        for x in (self.combo1, self.combo2, self.button):
+            x.bind("<Return>", lambda event: self.get_selection())
 
-# Set callback functions
-for x in (combo1, combo2, button):
-    x.bind("<Return>", lambda event, r=root, c1=combo1, c2=combo2: get_selection(r, c1, c2))
+    # Print selected items
+    def get_selection(self):
+        print("%d %d" % (self.combo1.current(), self.combo2.current()))
+        self.root.quit()
 
-# Adjust window position
-sw = root.winfo_screenwidth()
-sh = root.winfo_screenheight()
-root.update_idletasks() # Necessary to get width and height of the window
-ww = root.winfo_width()
-wh = root.winfo_height()
-root.geometry('+%d+%d' % ((sw/2) - (ww/2), (sh/2) - (wh/2)))
+if __name__ == "__main__":
+    # Read list of files from stdin
+    files = sys.stdin.readlines()
 
-root.mainloop()
+    dialog = XORWithAnotherFileDialog(title="XOR with another file", files=files)
+    dialog.show()
