@@ -207,7 +207,7 @@ class FileInsight:
         return EMBED_PYTHON
 
 def find_embed():
-    if os.path.exists("python3-embed/python.exe") and os.path.exists("python3-embed/Scripts/pip.exe"):
+    if os.path.exists("python3-embed/python.exe"):
         return True
     else:
         print("Error: Python embeddable package (%s) is not properly installed." % EMBED_PATH)
