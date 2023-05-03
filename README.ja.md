@@ -382,7 +382,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 * File comparison  
   2つのファイルの内容を比較します。
 * Hash values  
-  選択範囲の(選択していない場合は全体の) CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash, Rich PE header hash, telfhash の値を計算します。
+  選択範囲の(選択していない場合は全体の) CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash, Rich PE header hash, authentihash, icon MD5, icon dhash, telfhash の値を計算します。
 * Send to (CLI)  
   選択範囲を(選択していない場合は全体を)別の CLI プログラムで開いて結果を取得します。
 * Send to (GUI)  

@@ -1,8 +1,8 @@
 #
 # Hash values - Calculate CRC32, MD5, SHA1, SHA256, ssdeep,
 # TLSH, imphash, impfuzzy, exphash, Rich PE header hash,
-# telfhash values of selected region (the whole file if not
-# selected)
+# authentihash, icon MD5, icon dhash, and telfhash values of
+# selected region (the whole file if not selected)
 #
 # Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
@@ -28,6 +28,7 @@ import ctypes
 import hashlib
 import os
 import pathlib
+import re
 import sys
 import tempfile
 import zlib
@@ -56,6 +57,16 @@ try:
     import telfhash
 except ImportError:
     sys.exit(-5) # telfhash is not installed
+
+try:
+    import lief
+except ImportError:
+    sys.exit(-6) # LIEF is not installed
+
+try:
+    from PIL import Image
+except ImportError:
+    sys.exit(-7) # Pillow is not installed
 
 def ssdeep(data):
     # Length of an individual fuzzy hash signature component
@@ -131,7 +142,6 @@ else:
 
     if file_type[:4] == "PE32":
         try:
-            pe = None
             pe = pefile.PE(data=data)
 
             if pe and hasattr(pe, "DIRECTORY_ENTRY_IMPORT"):
@@ -150,6 +160,49 @@ else:
                 rich_header_hash = pe.get_rich_header_hash()
                 if rich_header_hash:
                     print("Rich PE header hash: %s" % rich_header_hash)
+
+            pe = lief.parse(raw=data)
+            verify_result = re.sub("VERIFICATION_FLAGS\.", "", str(pe.verify_signature()))
+            print("authentihash: %s (signature verification: %s)" % (pe.authentihash_sha256.hex(), verify_result))
+
+            # main_icon_dhash computation is based on the implementation of SuperPeHasher.
+            # https://github.com/fr0gger/SuperPeHasher/blob/master/superpehasher/superpehasher.py
+            if pe.has_resources and pe.resources_manager.has_icons:
+                main_icon = pe.resources_manager.icons[0]
+                fd, filepath = tempfile.mkstemp() # Create a temporary file
+                main_icon.save(filepath)
+
+                with open(filepath, "rb") as f:
+                    main_icon_data = f.read()
+                    print("icon MD5: %s" % hashlib.md5(main_icon_data).hexdigest())
+
+                pil_icon = Image.open(filepath)
+                hash_size = 8
+                pil_icon = pil_icon.convert('L').resize((hash_size + 1, hash_size), Image.LANCZOS)
+
+                diff = []
+
+                for row in range(hash_size):
+                    for col in range(hash_size):
+                        left = pil_icon.getpixel((col, row))
+                        right = pil_icon.getpixel((col + 1, row))
+                        diff.append(left > right)
+
+                decimal_value = 0
+                hex_list = []
+
+                for index, value in enumerate(diff):
+                    if value:
+                        decimal_value += 2**(index % 8)
+
+                    if (index % 8) == 7:
+                        hex_list.append(hex(decimal_value)[2:].rjust(2, '0'))
+                        decimal_value = 0
+
+                main_icon_dhash = "".join(hex_list)
+                print("icon dhash: %s" % main_icon_dhash)
+
+                os.remove(filepath) # Cleanup
         except:
             pass # Do nothing if data is not valid PE file
     elif file_type[:4] == "ELF ":

@@ -35,7 +35,8 @@ import time
 def hash_values(fi):
     """
     Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,
-    Rich PE header hash, telfhash values of selected region (the whole file if not selected)
+    Rich PE header hash, authentihash, icon MD5, icon dhash, and telfhash values
+    of selected region (the whole file if not selected)
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -54,7 +55,7 @@ def hash_values(fi):
     p = subprocess.Popen([fi.get_embed_python(), "Misc/hash_values.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive hash values
-    stdout_data, stderr_data = p.communicate(input=data)
+    stdout_data_hash_values, stderr_data_hash_values = p.communicate(input=data)
     ret = p.wait()
 
     # There is a missing module
@@ -73,9 +74,40 @@ def hash_values(fi):
     elif ret == -5:
         fi.show_module_install_instruction("telfhash")
         return
+    elif ret == -6:
+        fi.show_module_install_instruction("LIEF", "lief")
+        return
+    elif ret == -7:
+        fi.show_module_install_instruction("PIL", "Pillow")
+        return
     else:
-        print(stdout_data),
-        print(stderr_data),
+        if not os.path.exists("Misc/c_gimphash_windows.exe"):
+            print("c_gimphash_windows.exe is not installed.")
+            print("Please download it from https://github.com/NextronSystems/gimphash/releases")
+            print("and place it into '%s' folder." % (os.getcwd() + "\\Misc"))
+            return
+
+        # Create a temporary file
+        fd, filepath = tempfile.mkstemp()
+        handle = os.fdopen(fd, "wb")
+        handle.write(data)
+        handle.close()
+
+        # Execute c_gimphash_windows.exe for gimphash computation
+        p = subprocess.Popen(["Misc/c_gimphash_windows.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive scan result
+        stdout_data_gimphash, stderr_data_gimphash = p.communicate()
+        ret = p.wait()
+
+        if stdout_data_gimphash != "":
+            gimphash = stdout_data_gimphash.split()[0]
+            stdout_data_hash_values += "gimphash: %s\n" % gimphash
+
+        os.remove(filepath) # Cleanup
+
+        print(stdout_data_hash_values),
+        print(stderr_data_hash_values),
 
 def send_to_cli(fi):
     """

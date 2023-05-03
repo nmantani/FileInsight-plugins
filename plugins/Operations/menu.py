@@ -382,7 +382,7 @@ ops_dict["Misc"] = ("Emulate code",
                     "Send to (GUI)")
 tooltip_dict["Misc"] = ("Emulate selected region as an executable or shellcode\n(the whole file if not selected)",
                         "Compare contents of two files",
-                        "Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,\nRich PE header hash, telfhash values of selected region (the whole file if not selected)",
+                        "Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,\nRich PE header hash, authentihash, icon MD5, icon dhash, and telfhash values of\nselected region (the whole file if not selected)",
                         "Send selected region (the whole file if not selected) to other CLI program and show output",
                         "Send selected region (the whole file if not selected) to other GUI program")
 
