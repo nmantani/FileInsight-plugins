@@ -56,10 +56,11 @@ Param(
 
 $RELEASE_VERSION = "2.16"
 $PYTHON_EMBEDDABLE_PACKAGES_RELEASE_VERSION = "20230102"
-$PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_VERSION = "20230402"
+$PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_VERSION = "20230503"
 $APLIB_VERSION = "1.1.1"
 $DIE_VERSION = "3.07"
 $EXIFTOOL_VERSION = "12.60"
+$GIMPHASH_VERSION = "0.2.0"
 $QUICKLZ_VERSION = "1.5.0"
 
 $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\python3-venv"
@@ -68,10 +69,11 @@ $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plu
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
 $FILEINSIGHT_PLUGINS_HASH = "E5CF0165C90350B8996DECCA7FA6B8EB4EB4545C0F48DCE18D8AAA032465D3E3"
 $PYTHON_EMBEDDABLE_PACKAGES_RELEASE_HASH = "764686B71E353D1D9F5FFE25A799C1AA448C283EAB9AD86C1230E5F043B1A8FA"
-$PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_HASH = "6ECF820E59DBD25C0DD187059222C2C5A6D08FA8B37F447E06EE2011C4CA4639"
+$PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_HASH = "201D83E976E949F5093D99E8293C6DF0501553A2D41A06680D2F9BE7F9CE0048"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $DIE_HASH = "3450169643BE76484AC4BD5E1473F6F4745D9825C8A07255A3925A4A6E8BAD7E"
 $EXIFTOOL_HASH = "379AAB9B70C87D9FCB1745DEA1FBA004FF78BC719A5073F43C1222BD6E9CE8F2"
+$GIMPHASH_HASH = "F285B6CB53A5B86182EE506321522A88BCBC029CE37639A39F480D3B0FE1D4CB"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
 
 function get_proxy_url {
@@ -799,6 +801,53 @@ function install_quicklz($work_dir) {
     Write-Host ""
 }
 
+function install_gimphash($work_dir, $update) {
+    Write-Host "[+] Installing gimphash..."
+
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\c_gimphash_windows.exe"
+    if ((Test-Path $file_path) -and !$update) {
+        Write-Host "[*] gimphash is already installed. Skipping installation."
+    } else {
+            Write-Host "[+] Downloading gimphash $GIMPHASH_VERSION..."
+            $download_url = "https://github.com/NextronSystems/gimphash/releases/download/$GIMPHASH_VERSION/c_gimphash_windows.exe"
+            $download_file_path = "$work_dir\c_gimphash_windows.exe"
+            download_file $download_url $download_file_path
+
+            if (!(Test-Path $download_file_path)) {
+                Write-Host "[!] Download has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+
+            Write-Host "[+] Verifying SHA256 hash value of $download_file_path (with $GIMPHASH_HASH)..."
+            $val = compute_hash $download_file_path
+            if ($val -eq $GIMPHASH_HASH) {
+                Write-Host "[+] OK."
+            } else {
+                Write-Host "[!] The hash value does not match ($val)."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+
+            $dest_file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Misc\c_gimphash_windows.exe"
+            Write-Host "[+] Copying c_gimphash_windows.exe to $dest_file_path ..."
+            Copy-Item $download_file_path -Destination $dest_file_path -Force
+            if (!(Test-Path "$dest_file_path")) {
+                Write-Host "[!] Installation has been failed."
+                remove_working_directory $work_dir
+                Write-Host "[+] Aborting installation."
+                exit
+            }
+            Write-Host "[+] Done."
+            Write-Host "[+] gimphash $GIMPHASH_VERSION has been installed."
+
+        Write-Host ""
+    }
+}
+
 function migrate_plugin_config() {
     $old_file_path1 = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins-old\Misc operations\send_to.json"
     $old_file_path2 = [Environment]::GetFolderPath('Personal') + "\FileInsight\plugins\Misc operations\send_to.json"
@@ -856,6 +905,10 @@ install_qiling_rootfs $work_dir $update
 install_aplib $work_dir
 install_exiftool $work_dir $update
 install_quicklz $work_dir
+
+if ($snapshot) {
+    install_gimphash $work_dir $update
+}
 
 migrate_plugin_config
 
