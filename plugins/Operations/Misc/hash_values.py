@@ -1,8 +1,8 @@
 #
-# Hash values - Calculate CRC32, MD5, SHA1, SHA256, ssdeep,
-# TLSH, imphash, impfuzzy, exphash, Rich PE header hash,
-# authentihash, icon MD5, icon dhash, and telfhash values of
-# selected region (the whole file if not selected)
+# Hash values - Calculate hash values of CRC32, MD5, SHA1,
+# SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,
+# Rich PE header hash, authentihash, icon MD5, icon dhash,
+# and telfhash of selected region (the whole file if not selected)
 #
 # Copyright (c) 2020, Nobutaka Mantani
 # All rights reserved.
@@ -222,4 +222,3 @@ else:
             os.remove(filepath) # Cleanup
         except Exception as e:
             print(e, file=sys.stderr)
-            pass # Do nothing if data is not valid PE file
