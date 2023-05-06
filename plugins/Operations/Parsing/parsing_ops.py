@@ -716,3 +716,160 @@ def disassemble(fi):
     tab_name = fi.get_new_document_name("Disassembly")
     fi.newDocument(tab_name, 0)
     fi.setDocument("".join(stdout_data))
+
+def extract_vba_macro(fi):
+    """
+    Extract Microsoft Office VBA macro from selected region (the whole file if not selected)
+    """
+    if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length > 0:
+        data = fi.getSelection()
+        selection = True
+    else:
+        offset = 0
+        data = fi.getDocument()
+        length = fi.getLength()
+        selection = False
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute unicode_format_dialog.py to show GUI
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+    # Get format setting
+    stdout_data, stderr_data = p.communicate()
+    if stdout_data == "":
+        return
+
+    method, retry = stdout_data.rstrip().split("\t")
+
+    if retry == "True":
+        retry = True
+    else:
+        retry = False
+
+    # Execute extract_vba_macro.py to check VBA stomping
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro.py", "-c"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive result
+    stdout_data, stderr_data = p.communicate(data)
+    ret = p.wait()
+
+    if ret == -1: # oletools is not installed
+        fi.show_module_install_instruction("oletools")
+        return
+    elif ret == -2: # Binary Refinery is not installed
+        fi.show_module_install_instruction("refinery", "binary-refinery")
+        return
+
+    if ret == 1:
+        vba_stomping = True
+    elif stderr_data != "" and not "Input data not recognized by VBA parser" in stderr_data:
+        if fi.getSelectionLength() > 0:
+            print("No VBA macro found from offset %s to %s." % (hex(offset), hex(offset + length)))
+        else:
+            print("No VBA macro found from the whole file.")
+
+        return
+    else:
+        vba_stomping = False
+
+    if method == "Extract source code":
+        extract_vba_source(fi, data, offset, length, selection)
+    else:
+        decompile_pcode(fi, data, offset, length, selection)
+
+    if vba_stomping:
+        if retry:
+            print("VBA stomping has been detected. Trying another extraction method because VBA source code or p-code may be altered.")
+            if method == "Extract source code":
+                decompile_pcode(fi, data, offset, length, selection)
+            else:
+                extract_vba_source(fi, data, offset, length, selection)
+        else:
+            print("VBA stomping has been detected. VBA source or p-code may be altered.")
+    else:
+        print("VBA stomping has not been detected.")
+
+def extract_vba_source(fi, data, offset, length, selection):
+    """
+    Used by extract_vba_macro()
+    """
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute extract_vba_macro.py to extract VBA macro
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive result
+    stdout_data, stderr_data = p.communicate(data)
+    ret = p.wait()
+
+    if stderr_data != "" and not "Input data not recognized by VBA parser" in stderr_data:
+        print("Error: parse failed.")
+        print(stderr_data)
+        return False
+    elif stdout_data == "":
+        if selection:
+            print("No VBA macro found from offset %s to %s." % (hex(offset), hex(offset + length)))
+        else:
+            print("No VBA macro found from the whole file.")
+
+        return False
+    else:
+        tab_name = fi.get_new_document_name("Extracted VBA macro (from source)")
+        fi.newDocument(tab_name, 0)
+        fi.setDocument(stdout_data)
+
+        if selection:
+            print('Extracted VBA macro source code from offset %s to %s and the output is shown in the new "%s" tab.' % (hex(offset), hex(offset + length), tab_name))
+        else:
+            print('Extracted VBA macro source code from the whole file and the output is shown in the new "%s" tab.' % tab_name)
+
+    return True
+
+def decompile_pcode(fi, data, offset, length, selection):
+    """
+    Used by extract_vba_macro()
+    """
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute extract_vba_macro.py to extract VBA macro
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro.py", "-p"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+    # Receive result
+    stdout_data, stderr_data = p.communicate(data)
+    ret = p.wait()
+
+    if stderr_data != "" and not "not a supported file type" in stderr_data:
+        print("Error: parse failed.")
+        print(stderr_data)
+        return
+    elif stdout_data == "":
+        if selection:
+            print("No VBA macro found from offset %s to %s." % (hex(offset), hex(offset + length)))
+        else:
+            print("No VBA macro found from the whole file.")
+        return
+    else:
+        tab_name = fi.get_new_document_name("Extracted VBA macro (from p-code)")
+        fi.newDocument(tab_name, 0)
+        fi.setDocument(stdout_data)
+
+        if selection:
+            print('Decompiled VBA macro p-code from offset %s to %s and the output is shown in the new "%s" tab.' % (hex(offset), hex(offset + length), tab_name))
+        else:
+            print('Decompiled VBA macro p-code from the whole file and the output is shown in the new "%s" tab.' % tab_name)

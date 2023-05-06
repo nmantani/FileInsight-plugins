@@ -13,7 +13,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [How to use](#how-to-use)
 * [How to update](#how-to-update)
 * [Customization](#customization)
-* [List of plugins (146 plugins)](#list-of-plugins-146-plugins)
+* [List of plugins (147 plugins)](#list-of-plugins-147-plugins)
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
@@ -132,7 +132,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (146 plugins)
+## List of plugins (147 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -397,6 +397,8 @@ Your customization will be reflected in menu items.
   Scan selected region (the whole file if not selected) to find embedded files
 * Disassemble  
   Disassemble selected region (the whole file if not selected)
+* Extract VBA macro  
+  Extract Microsoft Office VBA macro from selected region (the whole file if not selected)
 * File type  
   Identify file type of selected region (the whole file if not selected)
 * Find PE file  

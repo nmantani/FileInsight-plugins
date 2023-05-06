@@ -382,12 +382,13 @@ ops_dict["Misc"] = ("Emulate code",
                     "Send to (GUI)")
 tooltip_dict["Misc"] = ("Emulate selected region as an executable or shellcode\n(the whole file if not selected)",
                         "Compare contents of two files",
-                        "Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,\nRich PE header hash, authentihash, icon MD5, icon dhash, and telfhash values of\nselected region (the whole file if not selected)",
+                        "Calculate hash values of CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash,\nRich PE header hash, authentihash, icon MD5, icon dhash, and telfhash of selected region\n(the whole file if not selected)",
                         "Send selected region (the whole file if not selected) to other CLI program and show output",
                         "Send selected region (the whole file if not selected) to other GUI program")
 
 ops_dict["Parsing"] = ("Binwalk scan",
                        "Disassemble",
+                       "Extract VBA macro",
                        "File type",
                        "Find PE file",
                        "Parse file structure",
@@ -395,6 +396,7 @@ ops_dict["Parsing"] = ("Binwalk scan",
                        "Strings")
 tooltip_dict["Parsing"] = ("Scan selected region (the whole file if not selected)\nto find embedded files",
                            "Disassemble selected region\n(the whole file if not selected)",
+                           "Extract Microsoft Office VBA macro from selected region\n(the whole file if not selected)",
                            "Identify file type of selected region\n(the whole file if not selected)",
                            "Find PE file from selected region\n(the whole file if not selected)\nbased on PE header information",
                            "Parse file structure of selected region\n(the whole file if not selected) with Kaitai Struct",

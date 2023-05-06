@@ -13,7 +13,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [使い方](#使い方)
 * [アップデート方法](#アップデート方法)
 * [カスタマイズ](#カスタマイズ)
-* [プラグインの一覧 (146個)](#プラグインの一覧-146個)
+* [プラグインの一覧 (147個)](#プラグインの一覧-147個)
 
 ## スクリーンショット
 #### AES decrypt プラグインのダイアログ
@@ -128,7 +128,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (146個)
+## プラグインの一覧 (147個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -393,6 +393,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を(選択していない場合は全体を)スキャンして埋め込まれたファイルを探します。
 * Disassemble  
   選択範囲を(選択していない場合は全体を)逆アセンブルします。
+* Extract VBA macro  
+  選択範囲から(選択していない場合は全体から) Microsoft Office VBA マクロを抽出します。
 * File type  
   選択範囲の(選択していない場合は全体の)ファイルの種類を判別します。
 * Find PE file  
