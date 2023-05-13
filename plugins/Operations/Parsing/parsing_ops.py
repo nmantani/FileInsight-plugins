@@ -200,6 +200,7 @@ def find_pe_file(fi):
 
     if length > 0:
         data = fi.getSelection()
+        orig = fi.getDocument()
     else:
         offset = 0
         data = fi.getDocument()
@@ -223,25 +224,49 @@ def find_pe_file(fi):
     found = ret
     print(stdout_data),
 
+    offset_missing_mz = []
     for l in stdout_data.splitlines():
         if l[0:5] == "Win32" or l[0:5] == "Win64":
+            filetype = " ".join(l.split()[0:2])
             off = int(l.split()[5], 0)
             size = int(l.split()[7], 0)
             if off + size > length:
-                fi.setBookmark(off, length - off, hex(off), "#c8ffff")
+                fi.setBookmark(off, length - off, hex(off) + ": " + filetype, "#c8ffff")
             else:
-                fi.setBookmark(off, size, hex(off), "#c8ffff")
+                fi.setBookmark(off, size, hex(off) + ": " + filetype, "#c8ffff")
+            if '"MZ" signature is missing at offset' in l:
+                fi.setBookmark(off, 2, hex(off) + ': Added "MZ" signature', "#c8ffff")
+                offset_missing_mz.append(off)
+
+    if len(offset_missing_mz) > 0:
+        if fi.getSelectionLength() > 0:
+            newdata = list(fi.getDocument())
+        else:
+            newdata = list(data)
+
+        for off in offset_missing_mz:
+            newdata[off] = "M"
+            newdata[off + 1] = "Z"
+
+        newdata = "".join(newdata)
+        fi.setDocument(newdata)
 
     if fi.getSelectionLength() > 0:
         if found > 0:
             print("%d PE file(s) found from offset %s to %s." % (found, hex(offset), hex(offset + length - 1)))
-            print("Added bookmark(s) to the found PE file(s).")
+            if len(offset_missing_mz) > 0:
+                print('Added bookmark(s) to the found PE file(s) and the added "MZ" signature(s).')
+            else:
+                print("Added bookmark(s) to the found PE file(s).")
         else:
             print("No PE file found from offset %s to %s." % (hex(offset), hex(offset + length - 1)))
     else:
         if found > 0:
             print("%d PE file(s) found from the whole file." % found)
-            print("Added bookmark(s) to the found PE file(s).")
+            if len(offset_missing_mz) > 0:
+                print('Added bookmark(s) to the found PE file(s) and the added "MZ" signature(s).')
+            else:
+                print("Added bookmark(s) to the found PE file(s).")
         else:
             print("No PE file found from the whole file.")
 
