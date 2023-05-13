@@ -85,7 +85,7 @@ def find_with_mz(data, offset):
 
     return found
 
-def find_with_msdos_stub(data, offset, found_mz):
+def find_with_msdos_stub(data, offset, found_mz, xor_opt):
     i = 0
     pos = 0
     found = []
@@ -139,7 +139,12 @@ def find_with_msdos_stub(data, offset, found_mz):
             pe_size = pe.OPTIONAL_HEADER.SizeOfHeaders
             for section in pe.sections:
                 pe_size += section.SizeOfRawData
-            print('size %d bytes ("MZ" signature is missing at offset %s and added).' % (pe_size, hex(offset + pos)))
+
+            if xor_opt:
+                print('size %d bytes ("MZ" signature is missing at offset %s).' % (pe_size, hex(offset + pos)))
+            else:
+                print('size %d bytes ("MZ" signature is missing at offset %s and added).' % (pe_size, hex(offset + pos)))
+
             if pos + pe_size > length:
                 print("The end of PE file (offset %s) is beyond the end of search region (offset %s). Bookmarked region will be truncated." % (hex(offset+pos+pe_size), hex(offset+length)))
             else:
@@ -155,7 +160,13 @@ def find_with_msdos_stub(data, offset, found_mz):
 data = sys.stdin.buffer.read()
 offset = int(sys.argv[1])
 
+# Tweak messages for the "Guess multibyte XOR keys" plugin
+if len(sys.argv) > 2 and sys.argv[2] == "-x":
+    xor_opt = True
+else:
+    xor_opt = False
+
 found_mz = find_with_mz(data, offset)
-found_msdos_stub = find_with_msdos_stub(data, offset, found_mz)
+found_msdos_stub = find_with_msdos_stub(data, offset, found_mz, xor_opt)
 
 exit(len(found_mz) + len(found_msdos_stub))
