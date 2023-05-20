@@ -279,6 +279,7 @@ if __name__ == "__main__":
 
     operations += (crypto_ops.aes_decrypt,
                    crypto_ops.blowfish_decrypt,
+                   crypto_ops.cast128_decrypt,
                    crypto_ops.camellia_decrypt,
                    crypto_ops.chacha20_decrypt,
                    crypto_ops.des_decrypt,
@@ -293,6 +294,7 @@ if __name__ == "__main__":
                    crypto_ops.xxtea_decrypt,
                    crypto_ops.aes_encrypt,
                    crypto_ops.blowfish_encrypt,
+                   crypto_ops.cast128_encrypt,
                    crypto_ops.camellia_encrypt,
                    crypto_ops.chacha20_encrypt,
                    crypto_ops.des_encrypt,

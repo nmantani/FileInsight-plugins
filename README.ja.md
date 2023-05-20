@@ -13,7 +13,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [使い方](#使い方)
 * [アップデート方法](#アップデート方法)
 * [カスタマイズ](#カスタマイズ)
-* [プラグインの一覧 (147個)](#プラグインの一覧-147個)
+* [プラグインの一覧 (149個)](#プラグインの一覧-149個)
 
 ## スクリーンショット
 #### AES decrypt プラグインのダイアログ
@@ -128,7 +128,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (147個)
+## プラグインの一覧 (149個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -256,6 +256,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を AES で復号します。
 * Blowfish  
   選択範囲を Blowfish で復号します。
+* CAST-128  
+  選択範囲を CAST-128 で復号します。
 * Camellia  
   選択範囲を Camellia で復号します。
 * ChaCha20  
@@ -286,6 +288,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲を AES で暗号化します。
 * Blowfish  
   選択範囲を Blowfish で暗号化します。
+* CAST-128  
+  選択範囲を CAST-128 で暗号化します。
 * Camellia  
   選択範囲を Camellia で暗号化します。
 * ChaCha20  

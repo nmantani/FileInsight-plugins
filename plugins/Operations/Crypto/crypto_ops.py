@@ -195,6 +195,18 @@ def xxtea_encrypt(fi):
     """
     do_encrypt(fi, "XXTEA", "xxtea_encrypt_dialog.py")
 
+def cast128_decrypt(fi):
+    """
+    Decrypt selected region with CAST-128
+    """
+    do_decrypt(fi, "CAST-128", "cast128_decrypt_dialog.py")
+
+def cast128_encrypt(fi):
+    """
+    Encrypt selected region with CAST-128
+    """
+    do_encrypt(fi, "CAST-128", "cast128_encrypt_dialog.py")
+
 def do_decrypt(fi, name, script):
     """
     Decrypt selected region
