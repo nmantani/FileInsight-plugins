@@ -64,7 +64,7 @@ class RC2EncryptDialog(block_cipher.BlockCipherDialog):
         else:
             key = key.encode()
 
-        if mode in ["CBC", "CFB", "OFB"] and iv_type == "Hex":
+        if mode in ["CBC", "CFB", "OFB", "CTR"] and iv_type == "Hex":
             if re.match("^([0-9A-Fa-f]{2})+$", iv):
                 iv = binascii.a2b_hex(iv)
             else:
@@ -78,7 +78,7 @@ class RC2EncryptDialog(block_cipher.BlockCipherDialog):
             tkinter.messagebox.showerror("Error:", message="Key size must be in the range from 5 bytes and 128 bytes.")
             return
 
-        if mode in ["CBC", "CFB", "OFB"] and len(iv) != Cryptodome.Cipher.ARC2.block_size:
+        if mode in ["CBC", "CFB", "OFB", "CTR"] and len(iv) != Cryptodome.Cipher.ARC2.block_size:
             tkinter.messagebox.showerror("Error:", message="IV size must be %d bytes." % Cryptodome.Cipher.ARC2.block_size)
             return
 

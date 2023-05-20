@@ -64,7 +64,7 @@ class CAST128EncryptDialog(block_cipher.BlockCipherDialog):
         else:
             key = key.encode()
 
-        if mode in ["CBC", "CFB", "OFB"] and iv_type == "Hex":
+        if mode in ["CBC", "CFB", "OFB", "CTR"] and iv_type == "Hex":
             if re.match("^([0-9A-Fa-f]{2})+$", iv):
                 iv = binascii.a2b_hex(iv)
             else:
