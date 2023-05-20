@@ -766,10 +766,10 @@ def extract_vba_macro(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute unicode_format_dialog.py to show GUI
+    # Execute extract_vba_macro_dialog.py to show GUI
     p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
-    # Get format setting
+    # Get extraction setting
     stdout_data, stderr_data = p.communicate()
     if stdout_data == "":
         return
@@ -898,3 +898,131 @@ def decompile_pcode(fi, data, offset, length, selection):
             print('Decompiled VBA macro p-code from offset %s to %s and the output is shown in the new "%s" tab.' % (hex(offset), hex(offset + length), tab_name))
         else:
             print('Decompiled VBA macro p-code from the whole file and the output is shown in the new "%s" tab.' % tab_name)
+
+def string_type(fi):
+    """
+    Identify type of strings such as API keys and cryptocurrency wallet addresses
+    in the selected region (the whole file if not selected) with lemmeknow
+    """
+    if fi.getDocumentCount() == 0:
+        print("Please open a file to use this plugin.")
+        return
+
+    length = fi.getSelectionLength()
+    offset = fi.getSelectionOffset()
+
+    if length > 0:
+        data = fi.getSelection()
+        selection = True
+    else:
+        offset = 0
+        data = fi.getDocument()
+        length = fi.getLength()
+        selection = False
+
+    if not os.path.exists("Parsing/lemmeknow-windows.exe"):
+        print("lemmeknow is not installed.")
+        print("Please download lemmeknow-windows.exe from https://github.com/swanandx/lemmeknow/releases")
+        print("and copy it into '%s' folder." % (os.getcwd() + "\\Parsing"))
+        return
+
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+    # Execute string_type_dialog.py to show GUI
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/string_type_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+    # Get boundaryless mode setting
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    if stdout_data == "":
+        return
+    else:
+        stdout_data = stdout_data.rstrip()
+
+    if stdout_data == "True":
+        command = ["Parsing/lemmeknow-windows.exe", "-j"]
+        boundaryless = "enabled"
+    else:
+        command = ["Parsing/lemmeknow-windows.exe", "-b", "-j"]
+        boundaryless = "disabled"
+
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
+
+    command += [filepath]
+
+    # Execute lemmeknow-windows.exe to identify type of strings
+    p = subprocess.Popen(command, startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+    # Receive identified strings
+    stdout_data, stderr_data = p.communicate()
+    ret = p.wait()
+
+    os.remove(filepath) # Cleanup
+
+    identified_strings = json.loads(stdout_data, object_pairs_hook=collections.OrderedDict)
+
+    max_text_len = 0
+    max_name_len = 0
+    len_upperbound = 60
+    column_space = 8
+    for s in identified_strings:
+        if len(s["text"]) > max_text_len:
+            max_text_len = len(s["text"])
+
+        if len(s["data"]["name"]) > max_name_len:
+            max_name_len = len(s["data"]["name"])
+
+    if fi.getSelectionLength() > 0:
+        print("Strings from offset %s to %s has been identified (boundaryless mode = %s)." % (hex(offset), hex(offset + length - 1), boundaryless))
+    else:
+        print("Strings of the whole has been identified (boundaryless mode = %s)." % boundaryless)
+
+    if max_text_len == 0 or max_name_len == 0:
+        print("No string has been identified as a specific type.")
+        return
+    else:
+        if max_text_len > len_upperbound:
+            max_text_len = len_upperbound
+
+        if max_name_len > len_upperbound:
+            max_name_len = len_upperbound
+
+    output = "String" + " " * (max_text_len - len("String") + column_space)
+    output += "Type\n"
+    output += "-" * (max_text_len + column_space + max_name_len) + "\n"
+
+    for s in identified_strings:
+        if len(s["text"]) > len_upperbound or len(s["data"]["name"]) > len_upperbound:
+            split_text = [s["text"][i:i+len_upperbound] for i in range(0, len(s["text"]), len_upperbound)]
+            split_name = [s["data"]["name"][i:i+len_upperbound] for i in range(0, len(s["data"]["name"]), len_upperbound)]
+
+            if len(split_text) >= len(split_name):
+                for l in range(0, len(split_text)):
+                    output += split_text[l] + " " * (max_text_len - len(split_text[l]) + column_space)
+                    if l < len(split_name):
+                        output += split_name[l] + "\n"
+                    else:
+                        output += "\n"
+            else:
+                for l in range(0, len(split_name)):
+                    if l < len(split_text):
+                        output += split_text[l] + " " * (max_text_len - len(split_text[l]) + column_space)
+                    else:
+                        output += " " * (max_text_len + column_space)
+
+                    output += split_name[l] + "\n"
+        else:
+            output += s["text"] + " " * (max_text_len - len(s["text"]) + column_space) + s["data"]["name"] + "\n"
+
+    tab_name = fi.get_new_document_name("Identified strings")
+    fi.newDocument(tab_name, 0)
+    fi.setDocument(output)
+
+    print('Identified strings are shown in the new "%s" tab.' % tab_name)

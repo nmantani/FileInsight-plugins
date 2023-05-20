@@ -397,7 +397,8 @@ ops_dict["Parsing"] = ("Binwalk scan",
                        "Find PE file",
                        "Parse file structure",
                        "Show metadata",
-                       "Strings")
+                       "Strings",
+                       "String type")
 tooltip_dict["Parsing"] = ("Scan selected region (the whole file if not selected)\nto find embedded files",
                            "Disassemble selected region\n(the whole file if not selected)",
                            "Extract Microsoft Office VBA macro from selected region\n(the whole file if not selected)",
@@ -405,7 +406,8 @@ tooltip_dict["Parsing"] = ("Scan selected region (the whole file if not selected
                            "Find PE file from selected region\n(the whole file if not selected)\nbased on PE header information",
                            "Parse file structure of selected region\n(the whole file if not selected) with Kaitai Struct",
                            "Show metadata of selected region\n(the whole file if not selected) with ExifTool",
-                           "Extract text strings from selected region\n(the whole file if not selected)")
+                           "Extract text strings from selected region\n(the whole file if not selected)",
+                           "Identify type of strings such as API keys and\ncryptocurrency wallet addresses in the selected region\n(the whole file if not selected) with lemmeknow")
 
 ops_dict["Search"] = ("Regex extraction",
                       "Regex search",

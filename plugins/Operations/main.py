@@ -352,7 +352,8 @@ if __name__ == "__main__":
                    parsing_ops.find_pe_file,
                    parsing_ops.parse_file_structure,
                    parsing_ops.show_metadata,
-                   parsing_ops.strings)
+                   parsing_ops.strings,
+                   parsing_ops.string_type)
 
     operations += (search_ops.regex_extraction,
                    search_ops.regex_search,
