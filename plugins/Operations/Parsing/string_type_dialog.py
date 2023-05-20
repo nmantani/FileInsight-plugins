@@ -37,7 +37,7 @@ class StringTypeDialog(dialog_base.DialogBase):
     def __init__(self, **kwargs):
         super().__init__(title=kwargs["title"])
 
-        self.label_mode = tkinter.Label(self.root, text="Enable boundaryless mode\n(for more string identification but more false positives):", justify="left")
+        self.label_mode = tkinter.Label(self.root, text="Enable boundaryless mode\n(for more string type identification\nbut more false positives):", justify="left")
         self.label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
         self.bool_mode = tkinter.BooleanVar()
         self.bool_mode.set(False)
