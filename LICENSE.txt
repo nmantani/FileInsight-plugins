@@ -102,6 +102,9 @@ https://github.com/google/brotli/blob/master/LICENSE
 gimphash is distributed under the MIT license.
 https://github.com/NextronSystems/gimphash/blob/master/LICENSE
 
+lemmeknow is distributed under the MIT license.
+https://github.com/swanandx/lemmeknow/blob/main/LICENSE
+
 msgpack is distributed under the Apache License 2.0.
 https://github.com/msgpack/msgpack-python/blob/main/COPYING
 
