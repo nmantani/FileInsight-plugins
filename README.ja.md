@@ -13,7 +13,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [使い方](#使い方)
 * [アップデート方法](#アップデート方法)
 * [カスタマイズ](#カスタマイズ)
-* [プラグインの一覧 (149個)](#プラグインの一覧-149個)
+* [プラグインの一覧 (151個)](#プラグインの一覧-151個)
 
 ## スクリーンショット
 #### AES decrypt プラグインのダイアログ
@@ -128,7 +128,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (149個)
+## プラグインの一覧 (151個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -337,6 +337,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase64テーブルを使ってデコードします。
 * Custom base85 decode  
   選択範囲をカスタムbase85テーブルを使ってデコードします。
+* Custom base91 decode  
+  選択範囲をカスタムbase91テーブルを使ってデコードします。
 * MessagePack decode  
   選択範囲を MessagePack でシリアライズされたデータとしてデコードします。
 * Protobuf decode  
@@ -369,6 +371,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase64テーブルを使ってエンコードします。
 * Custom base85 encode  
   選択範囲をカスタムbase85テーブルを使ってエンコードします。
+* Custom base91 encode  
+  選択範囲をカスタムbase91テーブルを使ってエンデコードします。
 * MessagePack encode  
   選択範囲の JSON を MessagePack でシリアライズされたデータとしてエンコードします。
 * ROT13  

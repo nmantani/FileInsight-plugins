@@ -90,6 +90,9 @@ https://github.com/peterjc/backports.lzma/blob/master/LICENSE
 base58 is distributed under the MIT License.
 https://github.com/keis/base58/blob/master/COPYING
 
+base91-python is distributed under the BSD 3-Clause license.
+https://github.com/aberaud/base91-python/blob/master/base91.py
+
 binwalk is distributed under the MIT License.
 https://github.com/ReFirmLabs/binwalk/blob/master/LICENSE
 

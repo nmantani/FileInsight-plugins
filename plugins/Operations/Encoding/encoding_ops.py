@@ -26,6 +26,7 @@
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import base64
+import base91
 import binascii
 import quopri
 import re
@@ -160,14 +161,14 @@ def custom_base64_decode(fi):
                         return
 
                 trans = string.maketrans(custom_table, standard_table)
-                encoded = base64.b64decode(data.translate(trans))
+                decoded = base64.b64decode(data.translate(trans))
 
-                newdata = orig[:offset] + encoded + orig[offset + length:]
+                newdata = orig[:offset] + decoded + orig[offset + length:]
 
                 tab_name = fi.get_new_document_name("Output of Custom base64 decode")
                 fi.newDocument(tab_name, 1)
                 fi.setDocument(newdata)
-                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
+                fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
 
                 if length == 1:
                     print("Decoded one byte with custom base64 table from offset %s to %s." % (hex(offset), hex(offset)))
@@ -1616,5 +1617,107 @@ def messagepack_encode(fi):
             print("Encoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
         else:
             print("Encoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+    else:
+        print("Please select a region to use this plugin.")
+
+def custom_base91_decode(fi):
+    """
+    Decode selected region with custom base91 table
+    """
+    standard_table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~"'
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/custom_basexx_dialog.py", "91", "decode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base91 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 91:
+                print("Error: base91 table must be 91 characters.")
+            else:
+                data = fi.getSelection()
+                orig = fi.getDocument()
+                orig_len = len(orig)
+
+                for i in range(0, len(data)):
+                    if data[i] not in custom_table:
+                        print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
+                        return
+
+                # Receive decoded data
+                trans = string.maketrans(custom_table, standard_table)
+                decoded = bytes(base91.decode(data.translate(trans)))
+
+                newdata = orig[:offset] + decoded + orig[offset + length:]
+
+                tab_name = fi.get_new_document_name("Output of Custom base91 decode")
+                fi.newDocument(tab_name, 1)
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(decoded), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Decoded one byte with custom base91 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Decoded %s bytes with custom base91 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to decoded region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def custom_base91_encode(fi):
+    """
+    Encode selected region with custom base91 table
+    """
+    standard_table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~"'
+
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute custom_basexx_dialog.py to show GUI
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/custom_basexx_dialog.py", "91", "encode"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get base91 table input
+        stdout_data, stderr_data = p.communicate()
+        custom_table = stdout_data.rstrip()
+        custom_table_length = len(custom_table)
+
+        if custom_table_length > 0:
+            if custom_table_length != 91:
+                print("Error: base91 table must be 91 characters.")
+            else:
+                data = fi.getSelection()
+                orig = fi.getDocument()
+                orig_len = len(orig)
+
+                trans = string.maketrans(standard_table, custom_table)
+                encoded = base91.encode(data).translate(trans)
+
+                newdata = orig[:offset] + encoded + orig[offset + length:]
+
+                tab_name = fi.get_new_document_name("Output of Custom base91 encode")
+                fi.newDocument(tab_name, 1)
+                fi.setDocument(newdata)
+                fi.setBookmark(offset, len(encoded), hex(offset), "#c8ffff")
+
+                if length == 1:
+                    print("Encoded one byte with custom base91 table from offset %s to %s." % (hex(offset), hex(offset)))
+                else:
+                    print("Encoded %s bytes with custom base91 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+                print("Added a bookmark to encoded region.")
     else:
         print("Please select a region to use this plugin.")

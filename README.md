@@ -13,7 +13,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [How to use](#how-to-use)
 * [How to update](#how-to-update)
 * [Customization](#customization)
-* [List of plugins (149 plugins)](#list-of-plugins-149-plugins)
+* [List of plugins (151 plugins)](#list-of-plugins-151-plugins)
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
@@ -132,7 +132,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (149 plugins)
+## List of plugins (151 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -341,6 +341,8 @@ Your customization will be reflected in menu items.
   Decode selected region with custom base64 table
 * Custom base85 decode  
   Decode selected region with custom base85 table
+* Custom base91 decode  
+  Decode selected region with custom base91 table
 * MessagePack decode  
   Decode selected region as MessagePack serialized data
 * Protobuf decode  
@@ -373,6 +375,8 @@ Your customization will be reflected in menu items.
   Encode selected region with custom base64 table
 * Custom base85 encode  
   Encode selected region with custom base85 table
+* Custom base91 encode  
+  Encode selected region with custom base91 table
 * MessagePack encode  
   Encode JSON of selected region into MessagePack serialized data
 * ROT13  
