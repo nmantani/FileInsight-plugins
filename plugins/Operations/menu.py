@@ -328,6 +328,7 @@ ops_dict["Decode"] = ("Hex text to binary data",
                       "Custom base64 decode",
                       "Custom base85 decode",
                       "Custom base91 decode",
+                      "gob decode",
                       "MessagePack decode",
                       "Protobuf decode",
                       "From quoted printable",
@@ -344,11 +345,12 @@ tooltip_dict["Decode"] = ("Convert hex text of selected region into binary data"
                           "Decode selected region with custom base64 table",
                           "Decode selected region with custom base85 table",
                           "Decode selected region with custom base91 table",
-                          "Decode selected region as MessagePack serialized data",
-                          "Decode selected region as Protocol Buffers serialized data without .proto files",
+                          "Decode selected region as gob (serialization format for golang)\nserialized data into Python notation",
+                          "Decode selected region as MessagePack serialized data into JSON",
+                          "Decode selected region as Protocol Buffers serialized data into JSON without .proto files",
                           "Decode selected region as quoted printable text",
                           "Unescape Unicode escape sequence of selected region",
-                          "Decode selected region as percent-encoded text\nthat is used by URL")
+                          "Decode selected region as percent-encoded text that is used by URL")
 
 ops_dict["Encode"] = ("Binary data to hex text",
                       "Binary data to decimal text",

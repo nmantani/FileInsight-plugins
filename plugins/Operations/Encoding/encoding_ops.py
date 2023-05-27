@@ -916,7 +916,7 @@ def unicode_unescape(fi):
 
 def protobuf_decode(fi):
     """
-    Decode selected region as Protocol Buffers serialized data without .proto files
+    Decode selected region as Protocol Buffers serialized data into JSON without .proto files
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -1542,7 +1542,7 @@ def custom_base62_encode(fi):
 
 def messagepack_decode(fi):
     """
-    Decode selected region as MessagePack serialized data
+    Decode selected region as MessagePack serialized data into JSON
     """
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -1719,5 +1719,47 @@ def custom_base91_encode(fi):
                 else:
                     print("Encoded %s bytes with custom base91 table from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
                 print("Added a bookmark to encoded region.")
+    else:
+        print("Please select a region to use this plugin.")
+
+def gob_decode(fi):
+    """
+    Decode selected region as gob (serialization format for golang) serialized data into Python notation
+    """
+    offset = fi.getSelectionOffset()
+    length = fi.getSelectionLength()
+
+    if length > 0:
+        data = fi.getSelection()
+
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute gob_decode.py to decode data
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/gob_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive decoded data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == -1: # Goblin is not installed
+            print("pygob Python module is not installed.")
+            print("Please install it with the following command and try again.")
+            print("&'%s' -m pip install https://github.com/Zrocket/Goblin/archive/refs/heads/master.zip" % fi.get_embed_python())
+            return
+        elif ret == 1:
+            print("Error: decode failed.")
+            print(stderr_data)
+            return
+
+        tab_name = fi.get_new_document_name("Output of gob decode")
+        fi.newDocument(tab_name)
+        fi.setDocument(stdout_data)
+
+        if length == 1:
+            print("Decoded one byte from offset %s to %s." % (hex(offset), hex(offset)))
+        else:
+            print("Decoded %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
     else:
         print("Please select a region to use this plugin.")

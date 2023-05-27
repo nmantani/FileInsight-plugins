@@ -1,5 +1,6 @@
 #
-# MessagePack decode - Decode selected region as MessagePack serialized data into JSON
+# gob decode - Decode selected region as gob (serialization format for golang)
+# serialized data into Python notation
 #
 # Copyright (c) 2023, Nobutaka Mantani
 # All rights reserved.
@@ -25,19 +26,19 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import json
 import sys
 
 try:
-    import msgpack
+    import pygob
 except ImportError:
-    exit(-1) # msgpack is not installed
+    exit(-1) # Goblin is not installed
 
 try:
     data = sys.stdin.buffer.read()
-    decoded = msgpack.unpackb(data)
-    decoded_json = json.dumps(decoded, indent=4, ensure_ascii=False)
-    sys.stdout.buffer.write(decoded_json.encode())
+    gen = pygob.load_all(data) # return generator
+
+    for value in gen:
+        print(value)
 except Exception as e:
     print(e, file=sys.stderr)
     exit(1)

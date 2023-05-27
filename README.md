@@ -13,7 +13,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [How to use](#how-to-use)
 * [How to update](#how-to-update)
 * [Customization](#customization)
-* [List of plugins (151 plugins)](#list-of-plugins-151-plugins)
+* [List of plugins (152 plugins)](#list-of-plugins-152-plugins)
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
@@ -132,7 +132,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (151 plugins)
+## List of plugins (152 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -343,10 +343,12 @@ Your customization will be reflected in menu items.
   Decode selected region with custom base85 table
 * Custom base91 decode  
   Decode selected region with custom base91 table
+* gob decode  
+  Decode selected region as gob (serialization format for golang) serialized data into Python notation
 * MessagePack decode  
-  Decode selected region as MessagePack serialized data
+  Decode selected region as MessagePack serialized data into JSON
 * Protobuf decode  
-  Decode selected region as Protocol Buffers serialized data without .proto files
+  Decode selected region as Protocol Buffers serialized data into JSON without .proto files
 * From quoted printable  
   Decode selected region as quoted printable text
 * Unicode unescape  

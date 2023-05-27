@@ -1,6 +1,6 @@
 #
 # Protobuf decode - Decode selected region as Protocol Buffers serialized data
-# without .proto files
+# into JSON without .proto files
 #
 # Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.

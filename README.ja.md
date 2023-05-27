@@ -13,7 +13,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [使い方](#使い方)
 * [アップデート方法](#アップデート方法)
 * [カスタマイズ](#カスタマイズ)
-* [プラグインの一覧 (151個)](#プラグインの一覧-151個)
+* [プラグインの一覧 (152個)](#プラグインの一覧-152個)
 
 ## スクリーンショット
 #### AES decrypt プラグインのダイアログ
@@ -128,7 +128,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (151個)
+## プラグインの一覧 (152個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -339,10 +339,12 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase85テーブルを使ってデコードします。
 * Custom base91 decode  
   選択範囲をカスタムbase91テーブルを使ってデコードします。
+* gob decode  
+  選択範囲を gob (Go言語用のシリアライズフォーマット) でシリアライズされたデータとして Python の記法にデコードします。
 * MessagePack decode  
-  選択範囲を MessagePack でシリアライズされたデータとしてデコードします。
+  選択範囲を MessagePack でシリアライズされたデータとして JSON にデコードします。
 * Protobuf decode  
-  選択範囲を Protocol Buffers でシリアライズされたデータとして .proto ファイル無しでデコードします。
+  選択範囲を Protocol Buffers でシリアライズされたデータとして .proto ファイル無しで JSON にデコードします。
 * From quoted printable  
   選択範囲を quoted printable としてデコードします。
 * Unicode unescape  

@@ -319,6 +319,7 @@ if __name__ == "__main__":
                    encoding_ops.custom_base64_decode,
                    encoding_ops.custom_base85_decode,
                    encoding_ops.custom_base91_decode,
+                   encoding_ops.gob_decode,
                    encoding_ops.messagepack_decode,
                    encoding_ops.protobuf_decode,
                    encoding_ops.from_quoted_printable,
