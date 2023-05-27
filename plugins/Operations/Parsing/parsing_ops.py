@@ -766,21 +766,6 @@ def extract_vba_macro(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-    # Execute extract_vba_macro_dialog.py to show GUI
-    p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
-
-    # Get extraction setting
-    stdout_data, stderr_data = p.communicate()
-    if stdout_data == "":
-        return
-
-    method, retry = stdout_data.rstrip().split("\t")
-
-    if retry == "True":
-        retry = True
-    else:
-        retry = False
-
     # Execute extract_vba_macro.py to check VBA stomping
     p = subprocess.Popen([fi.get_embed_python(), "Parsing/extract_vba_macro.py", "-c"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -807,20 +792,11 @@ def extract_vba_macro(fi):
     else:
         vba_stomping = False
 
-    if method == "Extract source code":
-        extract_vba_source(fi, data, offset, length, selection)
-    else:
-        decompile_pcode(fi, data, offset, length, selection)
+    extract_vba_source(fi, data, offset, length, selection)
+    decompile_pcode(fi, data, offset, length, selection)
 
     if vba_stomping:
-        if retry:
-            print("VBA stomping has been detected. Trying another extraction method because VBA source code or p-code may be altered.")
-            if method == "Extract source code":
-                decompile_pcode(fi, data, offset, length, selection)
-            else:
-                extract_vba_source(fi, data, offset, length, selection)
-        else:
-            print("VBA stomping has been detected. VBA source or p-code may be altered.")
+        print("VBA stomping has been detected. VBA source or p-code may be altered.")
     else:
         print("VBA stomping has not been detected.")
 
