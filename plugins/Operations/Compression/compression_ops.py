@@ -833,11 +833,7 @@ def lzo_compress(fi):
         ret = p.wait()
 
         if ret == -1: # python-lzo is not installed
-            print("lzo Python module is not installed.")
-            print("Please manually download python-lzo wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it")
-            print("with the following command on PowerShell, then try again.")
-            print("&'%s' -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl" % fi.get_embed_python())
+            fi.show_module_install_instruction("lzo", "python-lzo")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -888,11 +884,7 @@ def lzo_decompress(fi):
         ret = p.wait()
 
         if ret == -1: # python-lzo is not installed
-            print("lzo Python module is not installed.")
-            print("Please manually download python-lzo wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzo' and install it")
-            print("with the following command on PowerShell, then try again.")
-            print("&'%s' -m pip install python_lzo-x.xx-cpxx-cpxx-win_amd64.whl" % fi.get_embed_python())
+            fi.show_module_install_instruction("lzo", "python-lzo")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1307,9 +1299,9 @@ def lzf_compress(fi):
         if ret == -1: # python-lzf is not installed
             print("lzf Python module is not installed.")
             print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it")
+            print("from 'https://download.lfd.uci.edu/pythonlibs/archived/python_lzf-0.2.4-cp310-cp310-win_amd64.whl' and install it")
             print("with the following command on PowerShell, then try again.")
-            print("&'%s' -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl" % fi.get_embed_python())
+            print("&'%s' -m pip install python_lzf-0.2.4-cp310-cp310-win_amd64.whl" % fi.get_embed_python())
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1362,9 +1354,9 @@ def lzf_decompress(fi):
         if ret == -1: # python-lzf is not installed
             print("lzf Python module is not installed.")
             print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://www.lfd.uci.edu/~gohlke/pythonlibs/#python-lzf' and install it")
+            print("from 'https://download.lfd.uci.edu/pythonlibs/archived/python_lzf-0.2.4-cp310-cp310-win_amd64.whl' and install it")
             print("with the following command on PowerShell, then try again.")
-            print("&'%s' -m pip install python_lzf-x.x.x-cpxx-cpxx-win_amd64.whl" % fi.get_embed_python())
+            print("&'%s' -m pip install python_lzf-0.2.4-cp310-cp310-win_amd64.whl" % fi.get_embed_python())
             return
         elif ret == 1:
             print("Error: decompression failed.")
