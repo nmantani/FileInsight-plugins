@@ -66,6 +66,9 @@ https://www.trellix.com/en-in/downloads/free-tools/terms-of-use.html
 Binary Refinery is distributed under the BSD 3-Clause license.
 https://github.com/binref/refinery/blob/master/LICENSE
 
+Goblin is distributed under the MIT license.
+https://github.com/Zrocket/Goblin/blob/master/LICENSE
+
 LIEF is distributed under the Apache License 2.0.
 https://github.com/lief-project/LIEF/blob/master/LICENSE
 
