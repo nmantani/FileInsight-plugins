@@ -70,8 +70,8 @@ class Chacha20DecryptDialog(stream_cipher.StreamCipherDialog):
             return
 
         len_nonce = len(nonce)
-        if len_nonce != 8 and len_nonce != 12:
-            tkinter.messagebox.showerror("Error:", message="Nonce size must be 8 bytes or 12 bytes.")
+        if len_nonce not in (8, 12, 24):
+            tkinter.messagebox.showerror("Error:", message="Nonce size must be 8, 12, or 24 bytes.")
             return
 
         try:
