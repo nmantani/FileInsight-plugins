@@ -396,7 +396,7 @@ Your customization will be reflected in menu items.
 * File comparison  
   Compare contents of two files
 * Hash values  
-  Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash, Rich PE header hash, authentihash, icon MD5, icon dhash, and telfhash values of selected region (the whole file if not selected)
+  Calculate CRC32, MD5, SHA1, SHA256, ssdeep, TLSH, imphash, impfuzzy, exphash, Rich PE header hash, authentihash, icon MD5, icon dhash, gimphash, and telfhash values of selected region (the whole file if not selected)
 * Send to (CLI)  
   Send selected region (the whole file if not selected) to other CLI program and get output
 * Send to (GUI)  
