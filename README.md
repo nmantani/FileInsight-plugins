@@ -13,7 +13,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [How to use](#how-to-use)
 * [How to update](#how-to-update)
 * [Customization](#customization)
-* [List of plugins (152 plugins)](#list-of-plugins-152-plugins)
+* [List of plugins (153 plugins)](#list-of-plugins-153-plugins)
 
 ## Screenshots
 #### Dialog of "AES decrypt" plugin
@@ -132,7 +132,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (152 plugins)
+## List of plugins (153 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -420,6 +420,8 @@ Your customization will be reflected in menu items.
   Show metadata of selected region (the whole file if not selected) with ExifTool
 * Strings  
   Extract text strings from selected region (the whole file if not selected)
+* String type  
+  Identify type of strings such as API keys and cryptocurrency wallet addresses in the selected region (the whole file if not selected) with lemmeknow
 
 ### Search operations
 * Regex extraction  

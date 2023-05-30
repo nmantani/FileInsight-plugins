@@ -13,7 +13,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [使い方](#使い方)
 * [アップデート方法](#アップデート方法)
 * [カスタマイズ](#カスタマイズ)
-* [プラグインの一覧 (152個)](#プラグインの一覧-152個)
+* [プラグインの一覧 (153個)](#プラグインの一覧-153個)
 
 ## スクリーンショット
 #### AES decrypt プラグインのダイアログ
@@ -128,7 +128,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (152個)
+## プラグインの一覧 (153個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -416,6 +416,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲の(選択していない場合は全体の)ファイルのメタデータを ExifTool を使って表示します。
 * Strings  
   選択範囲から(選択していない場合は全体から)文字列を抽出します。
+* String type  
+  選択範囲から(選択していない場合は全体から) lemmeknow を使って API キーや暗号資産のウォレットのアドレス等の文字列の種類を判別します。
 
 ### Search operations
 * Regex extraction  
