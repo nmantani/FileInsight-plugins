@@ -31,6 +31,7 @@ import binascii
 import quopri
 import re
 import string
+import struct
 import subprocess
 import urllib
 
@@ -531,6 +532,9 @@ def decimal_text_to_binary_data(fi):
                       "LF": "\x0a",
                       "CRLF": "\x0d\x0a"}
 
+        if d != "Space":
+            data = data.replace(" ", "")
+
         values = re.split(delimiters[d], data, flags=re.MULTILINE | re.DOTALL)
 
         # Check of splitted data
@@ -538,22 +542,34 @@ def decimal_text_to_binary_data(fi):
             if values[i] == "":
                 print("The selected region contains empty values (extra delimiters).")
                 return
-            if re.search("[^0-9]", values[i]):
+            if re.search("[^-0-9]", values[i]):
                 print("The selected region contains non-numeric or non-delimiter characters.")
-                return
-            if int(values[i]) < 0:
-                print("The selected region contains negative values.")
                 return
 
         orig = fi.getDocument()
 
         converted = ""
         for i in range(0, len(values)):
-            h = "%x" % int(values[i])
-            if len(h) % 2 == 1:
-                h = "0" + h
+            v = int(values[i])
 
-            b = binascii.a2b_hex(h)
+            if v < 0:
+                if v >= -128:
+                    b = struct.pack("b", v)
+                elif v >= -32768:
+                    b = struct.pack("h", v)
+                elif v >= -2147483648:
+                    b = struct.pack("l", v)
+                elif v >= -9223372036854775808:
+                    b = struct.pack("q", v)
+                else:
+                    print("Error: the value %d is out of range for 64 bit integer." % v)
+                    return
+            else:
+                h = "%x" % v
+                if len(h) % 2 == 1:
+                    h = "0" + h
+
+                b = binascii.a2b_hex(h)
             if endianness == "Little":
                 b = list(b)
                 b.reverse()

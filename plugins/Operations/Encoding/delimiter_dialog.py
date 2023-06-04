@@ -61,7 +61,8 @@ class DelimiterDialog(dialog_base.DialogBase):
         self.combo_endianness = tkinter.ttk.Combobox(self.root, width=10, state="readonly")
         self.combo_endianness["values"] = ("Big", "Little")
         self.combo_endianness.current(0)
-        self.label_endianness2 = tkinter.Label(self.root, text="endianness is applied to multibyte\nvalues (> 255).", justify="left")
+        self.label_endianness2 = tkinter.Label(self.root, text="Endianness is applied to multibyte values\n(> 255).", justify="left")
+        self.label_remove_space = tkinter.Label(self.root, text="Spaces will be automatically removed when\nyou choose a non-space delimiter.", justify="left")
 
         self.single_int = tkinter.BooleanVar()
         self.single_int.set(False)
@@ -84,9 +85,10 @@ class DelimiterDialog(dialog_base.DialogBase):
             self.label_endianness1.grid(row=1, column=0, padx=5, pady=5, sticky="w")
             self.combo_endianness.grid(row=1, column=1, padx=5, pady=5, sticky="w")
             self.label_endianness2.grid(row=2, column=0, padx=5, pady=5, sticky="w", columnspan=2)
+            self.label_remove_space.grid(row=3, column=0, padx=5, pady=5, sticky="w", columnspan=2)
 
             self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.print_setting()))
-            self.button.grid(row=3, column=0, padx=5, pady=5, columnspan=2)
+            self.button.grid(row=4, column=0, padx=5, pady=5, columnspan=2)
             self.button.focus() # Focus to this widget
         else:
             self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.print_setting()))
