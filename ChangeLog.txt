@@ -1,5 +1,4 @@
 2023-06-04 version 2.17
-* Important changes
 * New plugins
   - Compression operations
     - "lzip compress" plugin and "lzip decompress" plugin
