@@ -96,7 +96,7 @@ else:
     programs["Cutter"] = ["C:%HOMEPATH%\\Desktop\\tools\\cutter\\cutter.exe", "-A", "1"]
     programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v9.55.0\\CyberChef_v9.55.0.html"
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v10.4.0\\CyberChef_v10.4.0.html"
 
     # Create new config file
     f = open(config_file_name, "w")
