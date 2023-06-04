@@ -1,3 +1,72 @@
+2023-06-04 version 2.17
+* Important changes
+* New plugins
+  - Compression operations
+    - "lzip compress" plugin and "lzip decompress" plugin
+      These plugins compress and decompress selected region with lzip format.
+  - Crypto operations
+    - Camellia plugins
+      These plugins encrypt and decrypt selected region with Camellia.
+    - CAST-128 plugins
+      These plugins encrypt and decrypt selected region with CAST-128.
+    - RC5 plugins
+      These plugins encrypt and decrypt selected region with RC5.
+    - RC6 plugins
+      These plugins encrypt and decrypt selected region with RC6.
+    - XXTEA plugins
+      These plugins encrypt and decrypt selected region with XXTEA.
+  - Encoding operations
+    - "Custom base91 encode" plugin and "Custom base91 decode" plugin
+      These plugins encode and decode selected region with custom base91 table.
+    - "gob decode" plugin
+      This plugin decodes selected region as gob (serialization format for golang) serialized data into Python notation
+  - Parsing operations
+    - "Extract VBA macro" plugin
+      This plugin extracts Microsoft Office VBA macro from selected region (the whole file if not selected). It also supports p-code decompilation and VBA stomping detection.
+    - "String type" plugin
+      This plugin identifies type of strings such as API keys and cryptocurrency wallet addresses in the selected region (the whole file if not selected) with lemmeknow.
+* Enhancements
+  - Crypto operations
+    - ChaCha20 plugins
+      These plugins now support 24 bytes nonce.
+    - RC4 plugins
+      These plugins now support key shorter than five bytes.
+    - TEA plugins and XTEA plugins
+      These plugins are rewritten with Binary Refinery and they now support five cipher block modes of operation (ECB, CBC, CFB, OFB, and CTR)
+  - Encoding operations
+    - "Decimal text to binary data" plugin
+      - This plugin now suports conversion from negative numbers.
+      - This plugin now automatically removes spaces when you choose a non-space delimiter.
+  - Misc operations
+    - "Hash values" plugin
+      This plugin now supports exphash, Rich PE header hash, TLSH, authentihash, icon MD5, icon dhash, gimphash, and telfhash.
+  - Parsing operations
+    - "Find PE file" plugin
+      - This plugin now notes file types on bookmark comments.
+      - This plugin now can find PE file with MSDOS stub if "MZ" signature is missing.
+  - Search operations
+    - "YARA scan" plugin
+      - This plugin now can show XOR keys for "xor" keyword.
+  - XOR operations
+    - "Guess multibyte XOR keys" plugin
+      This plugin now can find XORed PE file with MSDOS stub if "MZ" signature is missing.
+* Bug fixes
+  - Compression operations
+    - "PPMd compress" plugin and "PPMd decompress" plugin
+      Improper check of order value is fixed.
+  - Crypto operations
+    - RC2 plugins
+      Improper check of IV for CTR mode is fixed.
+  - Search operations
+    - "YARA scan" plugin
+      Crash of FileInsight on bookmarking matched regions is fixed.
+* Other changes
+  - Parsing operations
+    - "Parse file structure" plugin
+      File structure parsers are updated with recent kaitai_struct_formats and kaitai_struct_compiler 0.10.
+    - "Show metadata" plugin
+      ExifTool is updated to 12.60.
+
 2023-01-04 version 2.16
 * Important changes
   - Embeddable Python is used instead of Python virtual environment (venv) to fully isolate Python environment for FileInsight-plugins from existing Python installation.
