@@ -1,3 +1,25 @@
+2023-06-07 version 2.17.1
+* Critical bug fix
+  This version fixes a critical bug of show_simple_dialog.py that prevents the following plugins from running:
+  - Basic operations
+    - Fill plugin
+    - Bookmark plugin
+  - Search operations
+    - "Regex extraction" plugin
+    - "Regex search" plugin
+    - "XOR hex search" plugin
+    - "XOR text search" plugin
+* Other change
+  - Encoding operations
+    - "Custom base16 decode" plugin
+    - "Custom base32 decode" plugin
+    - "Custom base58 decode" plugin
+    - "Custom base62 decode" plugin
+    - "Custom base64 decode" plugin
+    - "Custom base85 decode" plugin
+    - "Custom base91 decode" plugin
+      These plugins now automatically remove CR and LF before decode.
+
 2023-06-04 version 2.17
 * New plugins
   - Compression operations
