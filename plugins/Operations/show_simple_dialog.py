@@ -30,7 +30,9 @@ sys.path.append("./lib")
 import dialog_base
 
 class SimpleDialog(dialog_base.DialogBase):
-    def add_widgets(self, **kwargs):
+    def __init__(self, **kwargs):
+        super().__init__(title=kwargs["title"])
+
         label_text=kwargs["label_text"]
         self.label = tkinter.Label(self.root, text=label_text)
         self.label.grid(row=0, column=0, padx=5, pady=5, sticky="w")
@@ -52,12 +54,10 @@ class SimpleDialog(dialog_base.DialogBase):
         self.root.quit()
 
 if __name__ == "__main__":
-    dialog = SimpleDialog("Dialog")
-
     if len(sys.argv) < 2:
         label_text = ""
     else:
         label_text = sys.argv[1]
 
-    dialog.add_widgets(label_text=label_text)
+    dialog = SimpleDialog(title="Dialog", label_text=label_text)
     dialog.show()
