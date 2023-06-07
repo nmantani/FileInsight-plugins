@@ -156,6 +156,10 @@ def custom_base64_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
+
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
                         print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
@@ -1000,6 +1004,10 @@ def custom_base16_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
+
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
                         print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
@@ -1101,6 +1109,10 @@ def custom_base32_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
+
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
                         print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
@@ -1201,6 +1213,10 @@ def custom_base58_decode(fi):
                 data = fi.getSelection()
                 orig = fi.getDocument()
                 orig_len = len(orig)
+
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
 
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
@@ -1332,6 +1348,10 @@ def custom_base85_decode(fi):
                 orig = fi.getDocument()
                 orig_len = len(orig)
 
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
+
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
                         print("Error: invalid character '%s' (%s) found in data at offset %s." % (data[i], hex(ord(data[i])), hex(offset + i)))
@@ -1455,6 +1475,10 @@ def custom_base62_decode(fi):
                 data = fi.getSelection()
                 orig = fi.getDocument()
                 orig_len = len(orig)
+
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
 
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
@@ -1665,6 +1689,10 @@ def custom_base91_decode(fi):
                 data = fi.getSelection()
                 orig = fi.getDocument()
                 orig_len = len(orig)
+
+                # Remove CR and LF
+                data = data.replace("\r", "")
+                data = data.replace("\n", "")
 
                 for i in range(0, len(data)):
                     if data[i] not in custom_table:
