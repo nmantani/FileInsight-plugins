@@ -468,7 +468,7 @@ Your customization will be reflected in menu items.
   Decode selected region with visual decrypt algorithm that is used by Zeus trojan
 
 ## Author
-Nobutaka Mantani (Twitter: [@nmantani](https://twitter.com/nmantani), infosec.exchange Mastodon instance: <a rel="me" href="https://infosec.exchange/@nmantani">@nmantani</a>)
+Nobutaka Mantani (X: [@nmantani](https://twitter.com/nmantani))
 
 ## License
 The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)

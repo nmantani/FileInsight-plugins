@@ -464,7 +464,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をマルウェアの Zeus で使われている visual decrypt アルゴリズムでデコードします。
 
 ## 作者
-萬谷 暢崇 (Twitter: [@nmantani](https://twitter.com/nmantani), infosec.exchange Mastodon instance: <a rel="me" href="https://infosec.exchange/@nmantani">@nmantani</a>)
+萬谷 暢崇 (X: [@nmantani](https://twitter.com/nmantani))
 
 ## ライセンス
 The BSD 2-Clause License (http://opensource.org/licenses/bsd-license.php)
