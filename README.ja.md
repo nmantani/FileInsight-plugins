@@ -6,6 +6,8 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 暗号の復号、圧縮の展開、XOR された文字列の検索、YARA ルールでのスキャン、コードのエミュレーション、逆アセンブル等、多数の機能を追加できます。
 マルウェア解析に関する様々なデコード作業に便利です。（例：文書ファイル型のマルウェアからマルウェアの実行ファイルやダミーの文書ファイルを抽出する）
 
+**FileInsight のインストーラをお探しの方は** [https://downloadcenter.trellix.com/products/mcafee-avert/fileinsight.msi](https://downloadcenter.trellix.com/products/mcafee-avert/fileinsight.msi) **からダウンロードできます。**
+
 * [スクリーンショット](#スクリーンショット)
 * [講演](#講演)
 * [使用例](#使用例)
