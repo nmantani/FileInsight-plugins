@@ -951,7 +951,9 @@ install_embeddable_python_packages $work_dir $update
 install_detect_it_easy $work_dir $update
 install_qiling_rootfs $work_dir $update
 install_aplib $work_dir
-install_exiftool $work_dir $update
+if (!$snapshot) {
+    install_exiftool $work_dir $update
+}
 install_quicklz $work_dir
 install_gimphash $work_dir $update
 install_lemmeknow $work_dir $update
