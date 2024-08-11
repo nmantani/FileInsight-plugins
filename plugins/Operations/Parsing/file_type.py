@@ -32,6 +32,5 @@ try:
 except ImportError:
     exit(-1)
 
-data = sys.stdin.buffer.read()
-file_type = magic.from_buffer(data)
+file_type = magic.from_file(sys.argv[1])
 print(file_type)

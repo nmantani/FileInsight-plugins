@@ -80,7 +80,7 @@ def binwalk_scan(fi):
     if ret == -1:
         print("binwalk Python module is not installed.")
         print("Please install it with the following commands and try again.")
-        print("&'%s' -m pip install https://github.com/ReFirmLabs/binwalk/archive/refs/tags/v2.3.2.zip" % fi.get_embed_python())
+        print("&'%s' -m pip install git+https://github.com/OSPG/binwalk.git" % fi.get_embed_python())
         return
 
     if fi.getSelectionLength() > 0:
@@ -134,8 +134,14 @@ def file_type(fi):
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
+    # Create a temporary file
+    fd, filepath = tempfile.mkstemp()
+    handle = os.fdopen(fd, "wb")
+    handle.write(data)
+    handle.close()
+
     # Execute file_type.py for file type identification
-    p = subprocess.Popen([fi.get_embed_python(), "Parsing/file_type.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/file_type.py", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive file type
     stdout_data, stderr_data = p.communicate(data)
@@ -152,12 +158,6 @@ def file_type(fi):
         print("Please download die_win64_portable_****.zip from https://github.com/horsicq/DIE-engine/releases")
         print("and extract files into '%s' folder." % (os.getcwd() + "\\Parsing\\die_win64_portable"))
         return
-
-    # Create a temporary file
-    fd, filepath = tempfile.mkstemp()
-    handle = os.fdopen(fd, "wb")
-    handle.write(data)
-    handle.close()
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
@@ -288,10 +288,10 @@ def show_metadata(fi):
         data = fi.getDocument()
         length = fi.getLength()
 
-    if not os.path.exists("Parsing/exiftool.exe"):
+    if not os.path.exists("python3-embed/exiftool.exe"):
         print("ExifTool is not installed.")
         print("Please download ExifTool from https://exiftool.org/")
-        print("and copy exiftool(-k).exe as exiftool.exe into '%s' folder." % (os.getcwd() + "\\Parsing"))
+        print("and copy exiftool(-k).exe as exiftool.exe into '%s' folder." % (os.getcwd() + "\\python3-embed"))
         return
 
     # Create a temporary file
@@ -305,7 +305,7 @@ def show_metadata(fi):
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute exiftool.exe to get metadata
-    p = subprocess.Popen(["Parsing/exiftool.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen(["python3-embed/exiftool.exe", filepath], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
