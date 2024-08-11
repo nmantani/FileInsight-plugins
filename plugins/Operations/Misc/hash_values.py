@@ -161,8 +161,9 @@ else:
                 if rich_header_hash:
                     print("Rich PE header hash: %s" % rich_header_hash)
 
+            lief.logging.disable()
             pe = lief.parse(raw=data)
-            verify_result = re.sub("VERIFICATION_FLAGS\.", "", str(pe.verify_signature()))
+            verify_result = re.sub("lief.PE.VERIFICATION_FLAGS\\.", "", str(pe.verify_signature()))
             print("authentihash: %s (signature verification: %s)" % (pe.authentihash_sha256.hex(), verify_result))
 
             # main_icon_dhash computation is based on the implementation of SuperPeHasher.
