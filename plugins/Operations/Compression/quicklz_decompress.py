@@ -59,8 +59,7 @@ class QuickLZDecompressDialog(dialog_base.DialogBase):
 
             scratch_size = 676000
             scratch = ctypes.create_string_buffer(scratch_size)
-            decompressed = ctypes.create_string_buffer(len(self.data) * 2)
-
+            decompressed = ctypes.create_string_buffer(len(self.data) * 8)
             final_size = qlzlib.qlz_decompress(ctypes.c_char_p(self.data), decompressed, scratch)
 
             if final_size == 0:
