@@ -92,8 +92,8 @@ else:
     programs["capa"] = "%HOMEPATH%\\Desktop\\tools\\capa\\capa.exe"
     programs["floss"] = "%HOMEPATH%\\Desktop\\tools\\floss\\floss.exe"
     programs["pelook"] = ["%HOMEPATH%\\Desktop\\tools\\pelook\\pelook.exe", "-x"]
-    programs["olevba"] = ["%LOCALAPPDATA%\\Programs\\Python\\Python310\\Scripts\\olevba.exe", "--decode"]
-    programs["rtfobj"] = "%LOCALAPPDATA%\\Programs\\Python\\Python310\\Scripts\\rtfobj.exe"
+    programs["olevba"] = ["%LOCALAPPDATA%\\Programs\\Python\\Python312\\Scripts\\olevba.exe", "--decode"]
+    programs["rtfobj"] = "%LOCALAPPDATA%\\Programs\\Python\\Python312\\Scripts\\rtfobj.exe"
 
     # Create new config file
     f = open(config_file_name, "w")

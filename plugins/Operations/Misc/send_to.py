@@ -96,7 +96,7 @@ else:
     programs["Cutter"] = ["C:%HOMEPATH%\\Desktop\\tools\\cutter\\cutter.exe", "-A", "1"]
     programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v10.4.0\\CyberChef_v10.4.0.html"
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v10.19.0\\CyberChef_v10.19.0.html"
 
     # Create new config file
     f = open(config_file_name, "w")
@@ -105,7 +105,7 @@ else:
 
 # Add special menu items
 if not "CyberChef" in programs:
-    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\cyberchef.htm"
+    programs["CyberChef"] = "C:%HOMEPATH%\\Desktop\\CyberChef_v10.19.0\\CyberChef_v10.19.0.html"
 if not "Customize menu" in programs:
     programs["Customize menu"] = "Customize menu"
 
