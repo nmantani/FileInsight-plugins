@@ -35,6 +35,22 @@ import StringIO
 import subprocess
 import zlib
 
+def show_compression_result(length, offset, final_size):
+    if length == 1:
+        print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+    else:
+        print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+    print("Output size: %s bytes" % final_size)
+    print("Added a bookmark to compressed region.")
+
+def show_decompression_result(length, offset, final_size):
+    if length == 1:
+        print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
+    else:
+        print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
+    print("Output size: %s bytes" % final_size)
+    print("Added a bookmark to decompressed region.")
+
 def aplib_compress(fi):
     offset = fi.getSelectionOffset()
     length = fi.getSelectionLength()
@@ -67,11 +83,7 @@ def aplib_compress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -125,12 +137,7 @@ def aplib_decompress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
-
+            show_decompression_result(length, offset, final_size)
         except Exception as e:
             print("Error: decompression failed.")
             print("invalid compressed data")
@@ -160,11 +167,7 @@ def bzip2_compress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -193,11 +196,7 @@ def bzip2_decompress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
+            show_decompression_result(length, offset, final_size)
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
@@ -230,11 +229,7 @@ def gzip_compress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -265,11 +260,7 @@ def gzip_decompress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
+            show_decompression_result(length, offset, final_size)
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
@@ -301,11 +292,7 @@ def lznt1_compress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size.value)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -334,11 +321,7 @@ def lznt1_decompress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size.value, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
+            show_decompression_result(length, offset, final_size.value)
         except Exception as e:
             print("Error: decompression failed.")
             print("invalid compressed data")
@@ -369,11 +352,7 @@ def raw_deflate(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -402,11 +381,7 @@ def raw_inflate(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
+            show_decompression_result(length, offset, final_size)
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
@@ -456,11 +431,7 @@ def lz4_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -507,11 +478,7 @@ def lz4_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -555,11 +522,7 @@ def lzma_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -603,11 +566,7 @@ def lzma_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -651,11 +610,7 @@ def xz_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -699,11 +654,7 @@ def xz_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -750,11 +701,7 @@ def zstandard_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -801,11 +748,7 @@ def zstandard_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -852,11 +795,7 @@ def lzo_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -903,11 +842,7 @@ def lzo_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -936,11 +871,7 @@ def zlib_compress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -972,11 +903,7 @@ def zlib_decompress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
+            show_decompression_result(length, offset, final_size)
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
@@ -1031,11 +958,7 @@ def quicklz_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1086,11 +1009,7 @@ def quicklz_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1139,11 +1058,7 @@ def ppmd_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1192,12 +1107,7 @@ def ppmd_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
-        print(stderr_data)
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1226,11 +1136,7 @@ def lzrw1_kh_compress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to compressed region.")
+            show_compression_result(length, offset, final_size)
         except Exception as e:
             print("Error: compression failed.")
             print(e)
@@ -1262,11 +1168,7 @@ def lzrw1_kh_decompress(fi):
             fi.setDocument(newdata)
             fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-            if length == 1:
-                print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-            else:
-                print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-            print("Added a bookmark to decompressed region.")
+            show_decompression_result(length, offset, final_size)
         except Exception as e:
             print("Error: decompression failed.")
             print(e)
@@ -1297,11 +1199,7 @@ def lzf_compress(fi):
         ret = p.wait()
 
         if ret == -1: # python-lzf is not installed
-            print("lzf Python module is not installed.")
-            print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://download.lfd.uci.edu/pythonlibs/archived/python_lzf-0.2.4-cp310-cp310-win_amd64.whl' and install it")
-            print("with the following command on PowerShell, then try again.")
-            print("&'%s' -m pip install python_lzf-0.2.4-cp310-cp310-win_amd64.whl" % fi.get_embed_python())
+            fi.show_module_install_instruction("lzf", "python-lzf")
             return
         elif ret == 1:
             print("Error: compression failed.")
@@ -1320,11 +1218,7 @@ def lzf_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1352,11 +1246,7 @@ def lzf_decompress(fi):
         ret = p.wait()
 
         if ret == -1: # python-lzf is not installed
-            print("lzf Python module is not installed.")
-            print("Please manually download python-lzf wheel file (.whl) for your Python version")
-            print("from 'https://download.lfd.uci.edu/pythonlibs/archived/python_lzf-0.2.4-cp310-cp310-win_amd64.whl' and install it")
-            print("with the following command on PowerShell, then try again.")
-            print("&'%s' -m pip install python_lzf-0.2.4-cp310-cp310-win_amd64.whl" % fi.get_embed_python())
+            fi.show_module_install_instruction("lzf", "python-lzf")
             return
         elif ret == 1:
             print("Error: decompression failed.")
@@ -1375,11 +1265,7 @@ def lzf_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1428,11 +1314,7 @@ def lzjb_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1481,11 +1363,7 @@ def lzjb_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1532,11 +1410,7 @@ def snappy_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1583,11 +1457,7 @@ def snappy_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1634,11 +1504,7 @@ def brotli_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1685,11 +1551,7 @@ def brotli_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1736,11 +1598,7 @@ def lzfse_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1787,11 +1645,7 @@ def lzfse_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1838,11 +1692,7 @@ def lzip_compress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Compressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Compressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to compressed region.")
+        show_compression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
 
@@ -1889,10 +1739,6 @@ def lzip_decompress(fi):
         fi.setDocument(newdata)
         fi.setBookmark(offset, final_size, hex(offset), "#c8ffff")
 
-        if length == 1:
-            print("Decompressed one byte from offset %s to %s." % (hex(offset), hex(offset)))
-        else:
-            print("Decompressed %s bytes from offset %s to %s." % (length, hex(offset), hex(offset + length - 1)))
-        print("Added a bookmark to decompressed region.")
+        show_decompression_result(length, offset, final_size)
     else:
         print("Please select a region to use this plugin.")
