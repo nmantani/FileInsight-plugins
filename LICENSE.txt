@@ -66,6 +66,9 @@ https://www.trellix.com/en-in/downloads/free-tools/terms-of-use.html
 Binary Refinery is distributed under the BSD 3-Clause license.
 https://github.com/binref/refinery/blob/master/LICENSE
 
+Detect It Easy is distributed under the MIT license.
+https://github.com/horsicq/Detect-It-Easy/blob/master/LICENSE
+
 Goblin is distributed under the MIT license.
 https://github.com/Zrocket/Goblin/blob/master/LICENSE
 
@@ -97,10 +100,10 @@ base91-python is distributed under the BSD 3-Clause license.
 https://github.com/aberaud/base91-python/blob/master/base91.py
 
 binwalk is distributed under the MIT License.
-https://github.com/ReFirmLabs/binwalk/blob/master/LICENSE
+https://github.com/OSPG/binwalk/blob/master/LICENSE
 
-blackboxprotobuf (forked version) is distributed under the MIT License.
-https://github.com/ydkhatri/blackboxprotobuf/blob/master/LICENSE
+blackboxprotobuf is distributed under the MIT License.
+https://github.com/nccgroup/blackboxprotobuf/blob/master/LICENSE
 
 brotli is distributed under the MIT license.
 https://github.com/google/brotli/blob/master/LICENSE
