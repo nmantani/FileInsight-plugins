@@ -189,7 +189,7 @@ if len(sys.argv) == 8:
             if dump_num_block > 1:
                 dump_msg += 'The region %s and consecutive regions (start: 0x%x end: 0x%x size: %d) contain only zero. Extraction is skipped."\n' % (dump_tag, dump_start,  dump_end, dump_size)
             else:
-                dump_msg += 'The region %s (start: 0x%x end: 0x%x size: %d) contains only zero. Extraction is skipped."\n' % (dump_tag, dump_start, dump_end, dump_size)
+                dump_msg += 'The region %s (start: 0x%x end: 0x%x size: %d) contains only zero. Extraction is skipped.\n' % (dump_tag, dump_start, dump_end, dump_size)
         else:
             sys.stdout.buffer.write(b"****MEMDUMP****" + dump_data)
             if dump_num_block > 1:
