@@ -92,7 +92,7 @@ else:
     # Default external programs
     programs = collections.OrderedDict()
     programs["Detect It Easy"] = ["C:%HOMEPATH%\\Documents\\McAfee FileInsight\\plugins\\Operations\\Parsing\\die_win64_portable\\die.exe"]
-    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 8.3\\ida64.exe"
+    programs["IDA Free"] = "C:\\Program Files\\IDA Freeware 8.4\\ida64.exe"
     programs["Cutter"] = ["C:%HOMEPATH%\\Desktop\\tools\\cutter\\cutter.exe", "-A", "1"]
     programs["VS Code"] = "%LOCALAPPDATA%\\Programs\\Microsoft VS Code\\Code.exe"
     programs["MS Paint"] = "C:\\Windows\\system32\\mspaint.exe"
