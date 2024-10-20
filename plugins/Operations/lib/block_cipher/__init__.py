@@ -36,6 +36,7 @@ class BlockCipherDialog(dialog_base.DialogBase):
     def __init__(self, **kwargs):
         super().__init__(title=kwargs["title"])
         self.data = kwargs["data"]
+        num_row = 0
 
         if "use_key_length" in kwargs:
             use_key_length = kwargs["use_key_length"]
@@ -47,64 +48,105 @@ class BlockCipherDialog(dialog_base.DialogBase):
         else:
             self.show_ctr_label = True
 
+        if "use_no_unpadding" in kwargs:
+            self.use_no_unpadding = kwargs["use_no_unpadding"]
+        else:
+            self.use_no_unpadding = False
+
+        if "segment_size" in kwargs:
+            self.segment_size = kwargs["segment_size"]
+        else:
+            self.segment_size = None
+
         self.label_mode = tkinter.Label(self.root, text="Mode:")
-        self.label_mode.grid(row=0, column=0, padx=5, pady=5, sticky="w")
+        self.label_mode.grid(row=num_row, column=0, padx=5, pady=5, sticky="w")
 
         self.combo_mode = tkinter.ttk.Combobox(self.root, width=5, state="readonly")
         self.combo_mode["values"] = ("ECB", "CBC", "CFB", "OFB", "CTR")
         self.combo_mode.current(0)
-        self.combo_mode.grid(row=0, column=1, padx=5, pady=5, sticky="w")
+        self.combo_mode.grid(row=num_row, column=1, padx=5, pady=5, sticky="w")
 
         # For AES, Camellia and RC6
         if use_key_length:
             self.label_key_length = tkinter.Label(self.root, text="Key length:")
-            self.label_key_length.grid(row=0, column=2, padx=5, pady=5, sticky="w")
+            self.label_key_length.grid(row=num_row, column=2, padx=5, pady=5, sticky="w")
 
             self.combo_key_length = tkinter.ttk.Combobox(self.root, width=20, state="readonly")
             self.combo_key_length["values"] = ("128 bits (16 bytes)", "192 bits (24 bytes)", "256 bits (32 bytes)")
             self.combo_key_length.current(0)
-            self.combo_key_length.grid(row=0, column=3, padx=5, pady=5, sticky="w")
+            self.combo_key_length.grid(row=num_row, column=3, padx=5, pady=5, sticky="w")
+
+        num_row += 1
 
         self.label_key_type = tkinter.Label(self.root, text="Key type:")
-        self.label_key_type.grid(row=1, column=0, padx=5, pady=5, sticky="w")
+        self.label_key_type.grid(row=num_row, column=0, padx=5, pady=5, sticky="w")
 
         self.combo_key_type = tkinter.ttk.Combobox(self.root, width=5, state="readonly")
         self.combo_key_type["values"] = ("Text", "Hex")
         self.combo_key_type.current(0)
-        self.combo_key_type.grid(row=1, column=1, padx=5, pady=5, sticky="w")
+        self.combo_key_type.grid(row=num_row, column=1, padx=5, pady=5, sticky="w")
 
         self.label_key = tkinter.Label(self.root, text="Key:")
-        self.label_key.grid(row=1, column=2, padx=5, pady=5, sticky="w")
+        self.label_key.grid(row=num_row, column=2, padx=5, pady=5, sticky="w")
 
         self.key = tkinter.StringVar()
         self.key.trace("w", lambda *_: self.entry_key_changed())
         self.entry_key = tkinter.Entry(textvariable=self.key, width=32)
-        self.entry_key.grid(row=1, column=3, padx=5, pady=5, sticky="w")
+        self.entry_key.grid(row=num_row, column=3, padx=5, pady=5, sticky="w")
         self.entry_key.focus() # Focus to this widget
 
+        num_row += 1
+
         self.label_iv_type = tkinter.Label(self.root, text="IV type:")
-        self.label_iv_type.grid(row=2, column=0, padx=5, pady=5, sticky="w")
+        self.label_iv_type.grid(row=num_row, column=0, padx=5, pady=5, sticky="w")
 
         self.combo_iv_type = tkinter.ttk.Combobox(self.root, width=5, state="readonly")
         self.combo_iv_type["values"] = ("Text", "Hex")
         self.combo_iv_type.current(0)
-        self.combo_iv_type.grid(row=2, column=1, padx=5, pady=5, sticky="w")
+        self.combo_iv_type.grid(row=num_row, column=1, padx=5, pady=5, sticky="w")
 
         self.label_iv = tkinter.Label(self.root, text="IV:")
-        self.label_iv.grid(row=2, column=2, padx=5, pady=5, sticky="w")
+        self.label_iv.grid(row=num_row, column=2, padx=5, pady=5, sticky="w")
 
         self.iv = tkinter.StringVar()
         self.iv.trace("w", lambda *_: self.entry_iv_changed())
         self.entry_iv = tkinter.Entry(textvariable=self.iv, width=32)
-        self.entry_iv.grid(row=2, column=3, padx=5, pady=5, sticky="w")
+        self.entry_iv.grid(row=num_row, column=3, padx=5, pady=5, sticky="w")
+
+        num_row += 1
+
+        if self.segment_size:
+            self.label_segment_size = tkinter.Label(self.root, text="Segment size:")
+            self.label_segment_size.grid(row=num_row, column=0, padx=5, pady=5, sticky="w")
+            self.label_segment_size.grid_remove()
+
+            self.combo_segment_size = tkinter.ttk.Combobox(self.root, width=20, state="readonly")
+            self.combo_segment_size["values"] = self.segment_size
+            self.combo_segment_size.current(0)
+            self.combo_segment_size.grid(row=num_row, column=1, padx=5, pady=5, columnspan=2, sticky="w")
+            self.combo_segment_size.grid_remove()
+
+            num_row += 1
+
+        if self.use_no_unpadding:
+            self.label_no_unpadding = tkinter.Label(self.root, text="No unpadding:")
+            self.label_no_unpadding.grid(row=num_row, column=0, padx=5, pady=5, sticky="w")
+            self.bool_no_unpadding = tkinter.BooleanVar()
+            self.bool_no_unpadding.set(False)
+            self.check_no_unpadding = tkinter.Checkbutton(self.root, variable=self.bool_no_unpadding, text="", onvalue=True, offvalue=False)
+            self.check_no_unpadding.grid(row=num_row, column=1, padx=5, pady=5, sticky="w")
+
+            num_row += 1
 
         self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.process()))
-        self.button.grid(row=3, column=0, padx=5, pady=5, columnspan=4)
+        self.button.grid(row=num_row, column=0, padx=5, pady=5, columnspan=4)
+
+        num_row += 1
 
         if self.show_ctr_label:
             self.label_ctr = tkinter.Label(self.root, text="Note:\nThe first half of IV is used as the nonce and the second half is used as\nthe initial value of the counter.", justify="left")
 
-            self.label_ctr.grid(row=4, column=0, padx=5, pady=5, columnspan=4, sticky="w")
+            self.label_ctr.grid(row=num_row, column=0, padx=5, pady=5, columnspan=4, sticky="w")
             self.label_ctr.grid_remove()
 
         # Set callback functions
@@ -137,6 +179,22 @@ class BlockCipherDialog(dialog_base.DialogBase):
                 self.label_ctr.grid()
             else:
                 self.label_ctr.grid_remove()
+
+        if self.use_no_unpadding:
+            if mode in ["ECB", "CBC"]:
+                self.label_no_unpadding.grid()
+                self.check_no_unpadding.grid()
+            else:
+                self.label_no_unpadding.grid_remove()
+                self.check_no_unpadding.grid_remove()
+
+        if self.segment_size:
+            if mode == "CFB":
+                self.label_segment_size.grid()
+                self.combo_segment_size.grid()
+            else:
+                self.label_segment_size.grid_remove()
+                self.combo_segment_size.grid_remove()
 
     def entry_key_changed(self):
         if self.combo_key_type.get() == "Hex":

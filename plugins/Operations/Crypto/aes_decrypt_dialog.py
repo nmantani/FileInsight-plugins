@@ -48,6 +48,7 @@ class AESDecryptDialog(block_cipher.BlockCipherDialog):
                     "OFB":Cryptodome.Cipher.AES.MODE_OFB,
                     "CTR":Cryptodome.Cipher.AES.MODE_CTR}
         aes_key_length = (16, 24 ,32)
+        aes_segment_size = (Cryptodome.Cipher.AES.block_size * 8, 8)
 
         mode = self.combo_mode.get()
         key_length = aes_key_length[self.combo_key_length.current()]
@@ -55,6 +56,7 @@ class AESDecryptDialog(block_cipher.BlockCipherDialog):
         key = self.entry_key.get()
         iv_type = self.combo_iv_type.get()
         iv = self.entry_iv.get()
+        segment_size = aes_segment_size[self.combo_segment_size.current()]
 
         if key_type == "Hex":
             if re.match("^([0-9A-Fa-f]{2})+$", key):
@@ -84,7 +86,7 @@ class AESDecryptDialog(block_cipher.BlockCipherDialog):
 
         try:
             if mode == "CFB":
-                cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv, segment_size=Cryptodome.Cipher.AES.block_size * 8)
+                cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv, segment_size=segment_size)
             elif mode in ["CBC", "OFB"]:
                 cipher = Cryptodome.Cipher.AES.new(key, aes_mode[mode], iv)
             elif mode == "CTR": # The first half of IV is used as nonce and the second half is used as initial_value.
@@ -94,7 +96,7 @@ class AESDecryptDialog(block_cipher.BlockCipherDialog):
 
             plaintext = cipher.decrypt(self.data)
 
-            if mode in ["ECB", "CBC"]:
+            if mode in ["ECB", "CBC"] and self.bool_no_unpadding.get() == False:
                 plaintext = Cryptodome.Util.Padding.unpad(plaintext, Cryptodome.Cipher.AES.block_size)
         except Exception as e:
             tkinter.messagebox.showerror("Error:", message=e)
@@ -109,6 +111,7 @@ if __name__ == "__main__":
     # Receive data
     data = sys.stdin.buffer.read()
 
-    dialog = AESDecryptDialog(title="AES decrypt", data=data, use_key_length=True)
+    segment_size_list = (f"{Cryptodome.Cipher.AES.block_size * 8} bits ({Cryptodome.Cipher.AES.block_size} bytes)", "8 bits (1 byte)")
+    dialog = AESDecryptDialog(title="AES decrypt", data=data, use_key_length=True, use_no_unpadding=True, segment_size=segment_size_list)
     dialog.show()
     exit(1) # Not decrypted
