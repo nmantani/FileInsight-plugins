@@ -140,13 +140,13 @@ function download_file($url, $save_path) {
     }
 
     # curl.exe has been available since Windows 10 version 1803
-    $agent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"
+    $agent = "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:131.0) Gecko/20100101 Firefox/131.0"
     if (Get-Command curl.exe -ea SilentlyContinue) {
         # XXX: setting user-agent header is required to download QuickLZ library
         if ($PROXY_URL) {
-            curl.exe -x "$PROXY_URL" -A "$agent" -Lo "$save_path" "$url"
+            curl.exe -f -x "$PROXY_URL" -A "$agent" -Lo "$save_path" "$url"
         } else {
-            curl.exe -A "$agent" -Lo "$save_path" "$url"
+            curl.exe -f -A "$agent" -Lo "$save_path" "$url"
         }
     } else {
         Write-Host "[+] Progress of download is not shown. Please be patient."
@@ -691,9 +691,9 @@ function install_exiftool($work_dir, $update) {
 
             if (!(Test-Path $zip_archive_path)) {
                 Write-Host "[!] Download has been failed."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
+                Write-Host "[*] Please manually download ExifTool from https://exiftool.org/"
+                Write-Host "[*] and copy exiftool(-k).exe as '$file_path' ."
+                return
             }
             Write-Host "[+] Done."
 
