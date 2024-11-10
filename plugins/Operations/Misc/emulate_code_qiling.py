@@ -22,6 +22,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
+import os
 import pathlib
 import shlex
 import sys
@@ -96,27 +97,20 @@ def check_rootfs_files(rootfs_base):
         if not pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32\\" + f).exists():
             print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x8664_windows\\Windows\\System32").resolve()), file=sys.stderr)
             rootfs_ok = False
-        if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.1"):
-            if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\" + f).exists():
-                print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
-                rootfs_ok = False
-        else:
-            if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64\\" + f).exists():
-                print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve()), file=sys.stderr)
-                rootfs_ok = False
+        if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\" + f).exists():
+            print("%s is not found in %s ." % (f, pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
+            rootfs_ok = False
 
-    if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.3") \
-       and not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\ucrtbase.dll").exists():
+    if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\ucrtbase.dll").exists():
         print("ucrtbase.dll is not found in %s ." % pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve(), file=sys.stderr)
         rootfs_ok = False
 
     # ntdll.dll must be placed in System32 folder for Windows (x86) since Qiling Framework 1.2.2
-    if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.1") \
-       and not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\ntdll.dll").exists():
+    if not pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32\\ntdll.dll").exists():
         print("ntdll.dll is not found in %s ." % pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve(), file=sys.stderr)
         rootfs_ok = False
 
-    if packaging.version.parse(qiling.__version__) > packaging.version.parse("1.2.1") and rootfs_ok == False:
+    if rootfs_ok == False:
         print("\nSince Qiling Framework 1.2.2, the location of x86 Windows DLL files has been changed from\n%s\nto\n%s ." % (pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\SysWOW64").resolve(), pathlib.Path(rootfs_base + "\\x86_windows\\Windows\\System32").resolve()), file=sys.stderr)
 
     if not pathlib.Path(rootfs_base + "\\x8664_linux\\lib\\libc.so.6").exists():
@@ -129,7 +123,7 @@ def check_rootfs_files(rootfs_base):
     return rootfs_ok
 
 # Hook of execve system call to get memory data, this is necessary since Qiling Framework 1.2.2
-def execve_hook(ql, execve_pathname, execve_argv, execve_envp, *args, **kw):
+def execve_hook(ql, execve_pathname, execve_argv, execve_envp):
     import qiling.os.posix.syscall.unistd
     global all_mem, map_info
 
@@ -137,7 +131,39 @@ def execve_hook(ql, execve_pathname, execve_argv, execve_envp, *args, **kw):
     all_mem = ql.mem.save()
     map_info = ql.mem.map_info
 
-    qiling.os.posix.syscall.unistd.ql_syscall_execve(ql, execve_pathname, execve_argv, execve_envp, *args, **kw)
+    vpath = ql.os.utils.read_cstring(execve_pathname)
+    hpath = ql.os.path.virtual_to_host_path(vpath)
+
+    # ql_syscall_execve() does not show log message if these conditions are not met
+    if not ql.os.path.is_safe_host_path(hpath) or not os.path.isfile(hpath):
+        def __read_ptr_array(addr):
+            if addr:
+                while True:
+                    elem = ql.mem.read_ptr(addr)
+
+                    if elem == 0:
+                        break
+
+                    yield elem
+                    addr += ql.arch.pointersize
+
+        def __read_str_array(addr):
+            yield from (ql.os.utils.read_cstring(ptr) for ptr in __read_ptr_array(addr))
+
+        args = list(__read_str_array(execve_argv))
+
+        env = {}
+        for s in __read_str_array(execve_envp):
+            k, _, v = s.partition('=')
+            env[k] = v
+
+        ql.stop()
+        ql.clear_ql_hooks()
+
+        ql.log.debug(f"execve system call is hooked with execve_hook() function to get memory dumps")
+        ql.log.debug(f'execve("{vpath}", [{", ".join(args)}], [{", ".join(f"{k}={v}" for k, v in env.items())}])')
+    else:
+        qiling.os.posix.syscall.unistd.ql_syscall_execve(ql, execve_pathname, execve_argv, execve_envp)
 
 if __name__ == "__main__":
     if len(sys.argv) == 10:
@@ -172,14 +198,7 @@ if __name__ == "__main__":
 
         if file_type == "executable":
             try:
-                # output parameter has been removed since Qiling Framework 1.2.3
-                if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
-                    ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=4, profile="%s.ql" % os_type)
-                # filename parameter has been renamed to argv since Qiling Framework 1.2.1
-                elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.1"):
-                    ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
-                else:
-                    ql = qiling.Qiling(filename=[file_path] + cmd_args, rootfs=rootfs, output="debug", profile="%s.ql" % os_type)
+                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=4, profile="%s.ql" % os_type)
 
                 # Start to watch file system events
                 handler = FileChangeHandler()
@@ -196,33 +215,25 @@ if __name__ == "__main__":
                 shellcode = f.read()
 
             try:
-                # bigendian parameter has been renamed to endian since Qiling Framework 1.4.3
-                if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-                    from qiling.const import QL_ENDIAN
+                from qiling.const import QL_ENDIAN, QL_ARCH, QL_OS, QL_INTERCEPT
 
-                    if big_endian:
-                        endian = QL_ENDIAN.EB
-                    else:
-                        endian = QL_ENDIAN.EL
-
-                    ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, endian=endian, multithread=multithread, verbose=4)
-
-                    if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2") and os_type == "linux":
-                        ql.os.set_syscall("execve", execve_hook)
-                # output parameter has been removed since Qiling Framework 1.2.3
-                elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.3"):
-                    ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, verbose=4)
-
-                    if os_type == "linux":
-                        ql.set_syscall("execve", execve_hook)
-                # shellcoder parameter has been renamed to code since Qiling Framework 1.2.2
-                elif packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.2.2"):
-                    ql = qiling.Qiling(code=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
-
-                    if os_type == "linux":
-                        ql.set_syscall("execve", execve_hook)
+                if big_endian:
+                    endian = QL_ENDIAN.EB
                 else:
-                    ql = qiling.Qiling(shellcoder=shellcode, archtype=arch, ostype=os_type, rootfs=rootfs, bigendian=big_endian, output="debug")
+                    endian = QL_ENDIAN.EL
+
+                dict_arch = {"x86": QL_ARCH.X86,
+                             "x8664": QL_ARCH.X8664,
+                             "arm": QL_ARCH.ARM,
+                             "arm64": QL_ARCH.ARM64,
+                             "mips": QL_ARCH.MIPS}
+
+                dict_os = {"linux": QL_OS.LINUX, "windows": QL_OS.WINDOWS}
+
+                ql = qiling.Qiling(code=shellcode, archtype=dict_arch[arch], ostype=dict_os[os_type], rootfs=rootfs, endian=endian, multithread=multithread, verbose=4)
+
+                if os_type == "linux":
+                    ql.os.set_syscall("execve", execve_hook, QL_INTERCEPT.CALL)
 
                 # Start to watch file system events
                 handler = FileChangeHandler()
@@ -259,11 +270,8 @@ if __name__ == "__main__":
         all_mem = ql.mem.save()
 
     print("\nMemory map:", file=sys.stderr)
-    if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-        for info_line in ql.mem.get_formatted_mapinfo():
-            print(info_line, file=sys.stderr)
-    else:
-        ql.mem.show_mapinfo()
+    for info_line in ql.mem.get_formatted_mapinfo():
+        print(info_line, file=sys.stderr)
     print("", file=sys.stderr)
 
     num_dump = 0
@@ -271,20 +279,15 @@ if __name__ == "__main__":
     heap_start = None
     heap_end = None
 
-    if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.0"):
-        all_mem = all_mem["ram"]
-        start_index = 0
-    else:
-        start_index = 1
+    all_mem = all_mem["ram"]
+    start_index = 0
 
     for i in range(start_index, len(all_mem) + start_index):
         start = all_mem[i][0]
         end = all_mem[i][1]
         info = all_mem[i][3]
-        if packaging.version.parse(qiling.__version__) >= packaging.version.parse("1.4.3"):
-            image = ql.loader.find_containing_image(start)
-        else:
-            image = ql.os.find_containing_image(start)
+        image = ql.loader.find_containing_image(start)
+
         if image:
             info += " (%s)" % image.path
 
