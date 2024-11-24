@@ -51,6 +51,7 @@ def binwalk_scan(fi):
     offset = fi.getSelectionOffset()
 
     offset_found = []
+    type_found = []
     if length > 0:
         data = fi.getSelection()
     else:
@@ -58,29 +59,34 @@ def binwalk_scan(fi):
         data = fi.getDocument()
         length = fi.getLength()
 
-    # Create a temporary file
-    fd, filepath = tempfile.mkstemp()
+    # Create a temporary file to write data
+    fd, file_path = tempfile.mkstemp()
     handle = os.fdopen(fd, "wb")
     handle.write(data)
     handle.close()
+
+    # Create a temporary file to write binwalk log
+    fd, log_path = tempfile.mkstemp()
+    os.close(fd)
 
     # Do not show command prompt window
     startupinfo = subprocess.STARTUPINFO()
     startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
     # Execute binwalk_scan.py for scanning with binwalk
-    p = subprocess.Popen([fi.get_embed_python(), "Parsing/binwalk_scan.py", filepath, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    p = subprocess.Popen([fi.get_embed_python(), "Parsing/binwalk_scan.py", file_path, log_path, str(offset)], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
     # Receive scan result
     stdout_data, stderr_data = p.communicate()
     ret = p.wait()
 
-    os.remove(filepath) # Cleanup
+    # Cleanup
+    os.remove(file_path)
+    os.remove(log_path)
 
     if ret == -1:
-        print("binwalk Python module is not installed.")
-        print("Please install it with the following commands and try again.")
-        print("&'%s' -m pip install git+https://github.com/OSPG/binwalk.git" % fi.get_embed_python())
+        print("binwalk is not installed.")
+        print("Please install binwalk.exe into '%s' folder." % (os.getcwd() + "\\python3-embed"))
         return
 
     if fi.getSelectionLength() > 0:
@@ -90,6 +96,7 @@ def binwalk_scan(fi):
 
     for l in stdout_data.splitlines():
         offset_found.append(int(l.split()[1], 0))
+        type_found.append(l.split("\t")[1])
 
     num_found = len(offset_found)
     if num_found == 0:
@@ -107,9 +114,9 @@ def binwalk_scan(fi):
         else:
             for i in range(0, num_found):
                 if i + 1 == num_found:
-                    fi.setBookmark(offset_found[i], offset + length - offset_found[i], hex(offset_found[i]), "#c8ffff")
+                    fi.setBookmark(offset_found[i], offset + length - offset_found[i], hex(offset_found[i]) + " " + type_found[i], "#c8ffff")
                 else:
-                    fi.setBookmark(offset_found[i], offset_found[i + 1] - offset_found[i], hex(offset_found[i]), "#c8ffff")
+                    fi.setBookmark(offset_found[i], offset_found[i + 1] - offset_found[i], hex(offset_found[i]) + " " + type_found[i], "#c8ffff")
 
             print("\r\nAdded bookmarks to the detected files.")
             print("Elapsed time (bookmark): %f (sec)" % (time.time() - time_start))
@@ -148,7 +155,7 @@ def file_type(fi):
     ret = p.wait()
 
     if ret == -1:
-        fi.show_module_install_instruction("magic", "python-magic-bin")
+        fi.show_module_install_instruction("magic", "python-magic")
         return
 
     file_type_python_magic = stdout_data

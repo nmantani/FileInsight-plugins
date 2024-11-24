@@ -100,7 +100,7 @@ base91-python is distributed under the BSD 3-Clause license.
 https://github.com/aberaud/base91-python/blob/master/base91.py
 
 binwalk is distributed under the MIT License.
-https://github.com/OSPG/binwalk/blob/master/LICENSE
+https://github.com/ReFirmLabs/binwalk/blob/master/LICENSE
 
 blackboxprotobuf is distributed under the MIT License.
 https://github.com/nccgroup/blackboxprotobuf/blob/master/LICENSE

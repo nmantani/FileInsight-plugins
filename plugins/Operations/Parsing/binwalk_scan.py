@@ -25,15 +25,36 @@
 # OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 # ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+import collections
+import json
+import os
+import subprocess
 import sys
 
-try:
-    import binwalk
-except ImportError:
+binwalk_path = os.getcwd() + "\\python3-embed\\binwalk.exe"
+
+if not os.path.exists(binwalk_path):
     exit(-1)
 
-filepath = sys.argv[1]
-offset = int(sys.argv[2])
-for module in binwalk.scan(sys.argv[1], signature=True, quiet=True, string=False):
-    for result in module.results:
-        print("Offset: 0x%x\t%s" % (offset + result.offset, result.description))
+file_path = sys.argv[1]
+log_path = sys.argv[2]
+offset = int(sys.argv[3])
+
+# Do not show command prompt window
+startupinfo = subprocess.STARTUPINFO()
+startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+# Execute binwalk_scan.py for scanning with binwalk
+p = subprocess.Popen([binwalk_path, "-a", "-q", "-l", log_path, file_path], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+
+# Receive scan result
+stdout_data, stderr_data = p.communicate()
+ret = p.wait()
+
+with open(log_path, "r") as f:
+    output = json.load(f, object_pairs_hook=collections.OrderedDict)
+
+for dict in output[0]["Analysis"]["file_map"]:
+    description = dict["description"].replace("\n", " ")
+    description = description.replace("\r", "")
+    print("Offset: 0x%x\t%s" % (offset + dict["offset"], description))
