@@ -60,7 +60,7 @@ def hash_values(fi):
 
     # There is a missing module
     if ret == -1:
-        fi.show_module_install_instruction("magic", "python-magic-bin")
+        fi.show_module_install_instruction("magic", "python-magic")
         return
     elif ret == -2:
         fi.show_module_install_instruction("pefile")
@@ -268,7 +268,7 @@ def get_ssdeep(fi, data):
 
     # There is a missing module
     if ret == -1:
-        fi.show_module_install_instruction("magic", "python-magic-bin")
+        fi.show_module_install_instruction("magic", "python-magic")
         return
     elif ret == -2:
         fi.show_module_install_instruction("pefile")
@@ -296,7 +296,7 @@ def get_impfuzzy(fi, data):
 
     # There is a missing module
     if ret == -1:
-        fi.show_module_install_instruction("magic", "python-magic-bin")
+        fi.show_module_install_instruction("magic", "python-magic")
         return
     elif ret == -2:
         fi.show_module_install_instruction("pefile")
@@ -346,7 +346,7 @@ def compare_fuzzyhash(fi, hash1, hash2):
 
     # There is a missing module
     if ret == -1:
-        fi.show_module_install_instruction("magic", "python-magic-bin")
+        fi.show_module_install_instruction("magic", "python-magic")
         return
     elif ret == -2:
         fi.show_module_install_instruction("pefile")
