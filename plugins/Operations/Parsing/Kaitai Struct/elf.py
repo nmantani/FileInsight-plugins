@@ -543,7 +543,7 @@ class Elf(KaitaiStruct):
         self._debug['header']['end'] = self._io.pos()
 
     class EndianElf(KaitaiStruct):
-        SEQ_FIELDS = ["e_type", "machine", "e_version", "entry_point", "program_header_offset", "section_header_offset", "flags", "e_ehsize", "program_header_entry_size", "qty_program_header", "section_header_entry_size", "qty_section_header", "section_names_idx"]
+        SEQ_FIELDS = ["e_type", "machine", "e_version", "entry_point", "program_header_offset", "section_header_offset", "flags", "e_ehsize", "len_program_headers", "num_program_headers", "len_section_headers", "num_section_headers", "section_names_idx"]
         def __init__(self, _io, _parent=None, _root=None):
             self._io = _io
             self._parent = _parent
@@ -600,18 +600,18 @@ class Elf(KaitaiStruct):
             self._debug['e_ehsize']['start'] = self._io.pos()
             self.e_ehsize = self._io.read_u2le()
             self._debug['e_ehsize']['end'] = self._io.pos()
-            self._debug['program_header_entry_size']['start'] = self._io.pos()
-            self.program_header_entry_size = self._io.read_u2le()
-            self._debug['program_header_entry_size']['end'] = self._io.pos()
-            self._debug['qty_program_header']['start'] = self._io.pos()
-            self.qty_program_header = self._io.read_u2le()
-            self._debug['qty_program_header']['end'] = self._io.pos()
-            self._debug['section_header_entry_size']['start'] = self._io.pos()
-            self.section_header_entry_size = self._io.read_u2le()
-            self._debug['section_header_entry_size']['end'] = self._io.pos()
-            self._debug['qty_section_header']['start'] = self._io.pos()
-            self.qty_section_header = self._io.read_u2le()
-            self._debug['qty_section_header']['end'] = self._io.pos()
+            self._debug['len_program_headers']['start'] = self._io.pos()
+            self.len_program_headers = self._io.read_u2le()
+            self._debug['len_program_headers']['end'] = self._io.pos()
+            self._debug['num_program_headers']['start'] = self._io.pos()
+            self.num_program_headers = self._io.read_u2le()
+            self._debug['num_program_headers']['end'] = self._io.pos()
+            self._debug['len_section_headers']['start'] = self._io.pos()
+            self.len_section_headers = self._io.read_u2le()
+            self._debug['len_section_headers']['end'] = self._io.pos()
+            self._debug['num_section_headers']['start'] = self._io.pos()
+            self.num_section_headers = self._io.read_u2le()
+            self._debug['num_section_headers']['end'] = self._io.pos()
             self._debug['section_names_idx']['start'] = self._io.pos()
             self.section_names_idx = self._io.read_u2le()
             self._debug['section_names_idx']['end'] = self._io.pos()
@@ -653,18 +653,18 @@ class Elf(KaitaiStruct):
             self._debug['e_ehsize']['start'] = self._io.pos()
             self.e_ehsize = self._io.read_u2be()
             self._debug['e_ehsize']['end'] = self._io.pos()
-            self._debug['program_header_entry_size']['start'] = self._io.pos()
-            self.program_header_entry_size = self._io.read_u2be()
-            self._debug['program_header_entry_size']['end'] = self._io.pos()
-            self._debug['qty_program_header']['start'] = self._io.pos()
-            self.qty_program_header = self._io.read_u2be()
-            self._debug['qty_program_header']['end'] = self._io.pos()
-            self._debug['section_header_entry_size']['start'] = self._io.pos()
-            self.section_header_entry_size = self._io.read_u2be()
-            self._debug['section_header_entry_size']['end'] = self._io.pos()
-            self._debug['qty_section_header']['start'] = self._io.pos()
-            self.qty_section_header = self._io.read_u2be()
-            self._debug['qty_section_header']['end'] = self._io.pos()
+            self._debug['len_program_headers']['start'] = self._io.pos()
+            self.len_program_headers = self._io.read_u2be()
+            self._debug['len_program_headers']['end'] = self._io.pos()
+            self._debug['num_program_headers']['start'] = self._io.pos()
+            self.num_program_headers = self._io.read_u2be()
+            self._debug['num_program_headers']['end'] = self._io.pos()
+            self._debug['len_section_headers']['start'] = self._io.pos()
+            self.len_section_headers = self._io.read_u2be()
+            self._debug['len_section_headers']['end'] = self._io.pos()
+            self._debug['num_section_headers']['start'] = self._io.pos()
+            self.num_section_headers = self._io.read_u2be()
+            self._debug['num_section_headers']['end'] = self._io.pos()
             self._debug['section_names_idx']['start'] = self._io.pos()
             self.section_names_idx = self._io.read_u2be()
             self._debug['section_names_idx']['end'] = self._io.pos()
@@ -1235,7 +1235,7 @@ class Elf(KaitaiStruct):
                 if hasattr(self, '_m_linked_section'):
                     return self._m_linked_section
 
-                if  ((self.linked_section_idx != Elf.SectionHeaderIdxSpecial.undefined.value) and (self.linked_section_idx < self._root.header.qty_section_header)) :
+                if  ((self.linked_section_idx != Elf.SectionHeaderIdxSpecial.undefined.value) and (self.linked_section_idx < self._root.header.num_section_headers)) :
                     self._m_linked_section = self._root.header.section_headers[self.linked_section_idx]
 
                 return getattr(self, '_m_linked_section', None)
@@ -1822,11 +1822,11 @@ class Elf(KaitaiStruct):
             if self._is_le:
                 self._raw__m_program_headers = []
                 self._m_program_headers = []
-                for i in range(self.qty_program_header):
+                for i in range(self.num_program_headers):
                     if not 'arr' in self._debug['_m_program_headers']:
                         self._debug['_m_program_headers']['arr'] = []
                     self._debug['_m_program_headers']['arr'].append({'start': self._io.pos()})
-                    self._raw__m_program_headers.append(self._io.read_bytes(self.program_header_entry_size))
+                    self._raw__m_program_headers.append(self._io.read_bytes(self.len_program_headers))
                     _io__raw__m_program_headers = KaitaiStream(BytesIO(self._raw__m_program_headers[i]))
                     _t__m_program_headers = Elf.EndianElf.ProgramHeader(_io__raw__m_program_headers, self, self._root, self._is_le)
                     _t__m_program_headers._read()
@@ -1836,11 +1836,11 @@ class Elf(KaitaiStruct):
             else:
                 self._raw__m_program_headers = []
                 self._m_program_headers = []
-                for i in range(self.qty_program_header):
+                for i in range(self.num_program_headers):
                     if not 'arr' in self._debug['_m_program_headers']:
                         self._debug['_m_program_headers']['arr'] = []
                     self._debug['_m_program_headers']['arr'].append({'start': self._io.pos()})
-                    self._raw__m_program_headers.append(self._io.read_bytes(self.program_header_entry_size))
+                    self._raw__m_program_headers.append(self._io.read_bytes(self.len_program_headers))
                     _io__raw__m_program_headers = KaitaiStream(BytesIO(self._raw__m_program_headers[i]))
                     _t__m_program_headers = Elf.EndianElf.ProgramHeader(_io__raw__m_program_headers, self, self._root, self._is_le)
                     _t__m_program_headers._read()
@@ -1862,11 +1862,11 @@ class Elf(KaitaiStruct):
             if self._is_le:
                 self._raw__m_section_headers = []
                 self._m_section_headers = []
-                for i in range(self.qty_section_header):
+                for i in range(self.num_section_headers):
                     if not 'arr' in self._debug['_m_section_headers']:
                         self._debug['_m_section_headers']['arr'] = []
                     self._debug['_m_section_headers']['arr'].append({'start': self._io.pos()})
-                    self._raw__m_section_headers.append(self._io.read_bytes(self.section_header_entry_size))
+                    self._raw__m_section_headers.append(self._io.read_bytes(self.len_section_headers))
                     _io__raw__m_section_headers = KaitaiStream(BytesIO(self._raw__m_section_headers[i]))
                     _t__m_section_headers = Elf.EndianElf.SectionHeader(_io__raw__m_section_headers, self, self._root, self._is_le)
                     _t__m_section_headers._read()
@@ -1876,11 +1876,11 @@ class Elf(KaitaiStruct):
             else:
                 self._raw__m_section_headers = []
                 self._m_section_headers = []
-                for i in range(self.qty_section_header):
+                for i in range(self.num_section_headers):
                     if not 'arr' in self._debug['_m_section_headers']:
                         self._debug['_m_section_headers']['arr'] = []
                     self._debug['_m_section_headers']['arr'].append({'start': self._io.pos()})
-                    self._raw__m_section_headers.append(self._io.read_bytes(self.section_header_entry_size))
+                    self._raw__m_section_headers.append(self._io.read_bytes(self.len_section_headers))
                     _io__raw__m_section_headers = KaitaiStream(BytesIO(self._raw__m_section_headers[i]))
                     _t__m_section_headers = Elf.EndianElf.SectionHeader(_io__raw__m_section_headers, self, self._root, self._is_le)
                     _t__m_section_headers._read()
@@ -1896,7 +1896,7 @@ class Elf(KaitaiStruct):
             if hasattr(self, '_m_section_names'):
                 return self._m_section_names
 
-            if  ((self.section_names_idx != Elf.SectionHeaderIdxSpecial.undefined.value) and (self.section_names_idx < self._root.header.qty_section_header)) :
+            if  ((self.section_names_idx != Elf.SectionHeaderIdxSpecial.undefined.value) and (self.section_names_idx < self._root.header.num_section_headers)) :
                 _pos = self._io.pos()
                 self._io.seek(self.section_headers[self.section_names_idx].ofs_body)
                 self._debug['_m_section_names']['start'] = self._io.pos()
