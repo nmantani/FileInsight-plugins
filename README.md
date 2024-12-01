@@ -61,7 +61,7 @@ It is useful for various kinds of decoding tasks in malware analysis (e.g. extra
 * [Use case 5: Code emulation](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-5--Code-emulation)
 
 ## How to install
-Please execute the following command. The latest release version of FileInsight-plugins and pre-requisites including FileInsight and Python 3.10.x (x64) will be installed.
+Please execute the following command. The latest release version of FileInsight-plugins and pre-requisites including FileInsight and Python 3.12.x (x64) will be installed.
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"

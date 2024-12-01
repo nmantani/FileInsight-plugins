@@ -61,7 +61,7 @@ FileInsight-plugins は McAfee FileInsight バイナリエディタ用のプラ�
 * [Use case 5: Code emulation](https://github.com/nmantani/FileInsight-plugins/wiki/Use-case-5--Code-emulation)
 
 ## インストール方法
-以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3.10.x (x64) を含む必要なものがインストールされます。
+以下のコマンドを実行してください。最新のリリース版の FileInsight-plugins と FileInsight、Python 3.12.x (x64) を含む必要なものがインストールされます。
 
 ```
 powershell -exec bypass -command "IEX((New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/nmantani/FileInsight-plugins/master/install.ps1'))"
