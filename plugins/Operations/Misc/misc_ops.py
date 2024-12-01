@@ -572,7 +572,7 @@ def emulate_code(fi):
 
     # Execute emulate_code_qiling.py or emulate_code_speakeasy.py to emulate code
     if framework == "Qiling Framework":
-        p = subprocess.Popen([fi.get_embed_python(), "Misc/emulate_code_qiling.py", file_path, file_type, os_type, arch, big_endian, cmd_args, multithread, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Misc/emulate_code_qiling.py", file_path, file_type, os_type, arch.lower(), big_endian, cmd_args, multithread, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     else: # Speakeasy
         p = subprocess.Popen([fi.get_embed_python(), "Misc/emulate_code_speakeasy.py", file_path, file_type, os_type, arch, cmd_args, timeout, tab_index], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
@@ -634,7 +634,7 @@ def emulate_code(fi):
         print("Big endian: %s" % str(big_endian).lower())
     print("Command line arguments: %s" % cmd_args)
     if framework == "Qiling Framework":
-        print("Multithread: %s" % str(multithread))
+        print("Multithread: %s" % str(multithread).lower())
     print("Timeout: %s" % timeout)
     print("")
 

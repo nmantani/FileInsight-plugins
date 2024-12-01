@@ -70,7 +70,7 @@ class EmulateCodeDialog(dialog_base.DialogBase):
         self.label_arch.grid(row=3, column=0, padx=5, pady=5, sticky="w")
 
         self.combo_arch = tkinter.ttk.Combobox(self.root, state="readonly")
-        self.combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS")
+        self.combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS", "RISC-V32", "RISC-V64")
         self.combo_arch.current(0)
         self.combo_arch.grid(row=3, column=2, padx=5, pady=5, sticky="w")
 
@@ -101,7 +101,7 @@ class EmulateCodeDialog(dialog_base.DialogBase):
         self.label_timeout.grid(row=7, column=0, padx=5, pady=5, sticky="w")
         self.timeout = tkinter.StringVar()
         self.timeout.set("60")
-        self.timeout.trace("w", self.timeout_changed)
+        self.timeout.trace_add("write", self.timeout_changed)
         self.spin_timeout = tkinter.Spinbox(self.root, textvariable=self.timeout, width=4, from_=0, to=10000)
         self.spin_timeout.grid(row=7, column=2, padx=5, pady=5, sticky="w")
 
@@ -124,13 +124,17 @@ class EmulateCodeDialog(dialog_base.DialogBase):
             arch = self.combo_arch.get().lower()
             if arch == "x64":
                 arch = "x8664"
+            elif arch == "RISC-V32":
+                arch = "riscv32"
+            elif arch == "RISC-V64":
+                arch = "riscv64"
             big_endian = self.combo_endian.get()
             if big_endian == "True":
                 big_endian = True
             else:
                 big_endian = False
-            path = str(emulate_code_qiling.rootfs_path(rootfs_base, arch, self.combo_os.get().lower(), big_endian))
-            print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.combo_framework.get(), self.combo_type.get(), self.combo_os.get(), self.combo_arch.get().lower(), self.combo_endian.get(), self.entry_args.get(), self.bool_thread.get(), self.timeout.get(), path), end="")
+            path = str(emulate_code_qiling.rootfs_path(rootfs_base, arch.lower(), self.combo_os.get().lower(), big_endian))
+            print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.combo_framework.get(), self.combo_type.get(), self.combo_os.get(), self.combo_arch.get(), self.combo_endian.get(), self.entry_args.get(), self.bool_thread.get(), self.timeout.get(), path), end="")
         else:
             print("%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s" % (self.combo_framework.get(), self.combo_type.get(), self.combo_os.get(), self.combo_arch.get().lower(), self.combo_endian.get(), self.entry_args.get(), self.bool_thread.get(), self.timeout.get(), "None"), end="")
 
@@ -150,7 +154,7 @@ class EmulateCodeDialog(dialog_base.DialogBase):
         else: # Qiling Framework
             self.combo_os.configure(state="readonly")
             self.combo_os.current(0)
-            self.combo_arch.configure(values=("x64", "x86", "ARM", "ARM64", "MIPS"))
+            self.combo_arch.configure(values=("x64", "x86", "ARM", "ARM64", "MIPS", "RISC-V32", "RISC-V64"))
             self.combo_arch.current(0)
             self.label_thread.grid()
             self.check_thread.grid()

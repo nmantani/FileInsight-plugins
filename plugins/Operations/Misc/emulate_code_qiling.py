@@ -173,6 +173,10 @@ if __name__ == "__main__":
         arch = sys.argv[4]
         if arch == "x64":
             arch = "x8664"
+        elif arch == "risc-v32":
+            arch = "riscv32"
+        elif arch == "risc-v64":
+            arch = "riscv64"
         big_endian = sys.argv[5]
         if big_endian == "True":
             big_endian = True
@@ -226,7 +230,9 @@ if __name__ == "__main__":
                              "x8664": QL_ARCH.X8664,
                              "arm": QL_ARCH.ARM,
                              "arm64": QL_ARCH.ARM64,
-                             "mips": QL_ARCH.MIPS}
+                             "mips": QL_ARCH.MIPS,
+                             "riscv32": QL_ARCH.RISCV,
+                             "riscv64": QL_ARCH.RISCV64}
 
                 dict_os = {"linux": QL_OS.LINUX, "windows": QL_OS.WINDOWS}
 
