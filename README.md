@@ -134,7 +134,7 @@ Your customization will be reflected in menu items.
 
 ![customization3.png](docs/customization3.png)
 
-## List of plugins (153 plugins)
+## List of plugins (155 plugins)
 ### Basic operations
 * Copy to new file  
   Copy selected region (the whole file if not selected) to a new file
@@ -345,6 +345,8 @@ Your customization will be reflected in menu items.
   Decode selected region with custom base85 table
 * Custom base91 decode  
   Decode selected region with custom base91 table
+* Custom base92 decode  
+  Decode selected region with custom base92 table
 * gob decode  
   Decode selected region as gob (serialization format for golang) serialized data into Python notation
 * MessagePack decode  
@@ -381,6 +383,8 @@ Your customization will be reflected in menu items.
   Encode selected region with custom base85 table
 * Custom base91 encode  
   Encode selected region with custom base91 table
+* Custom base92 encode  
+  Encode selected region with custom base92 table
 * MessagePack encode  
   Encode JSON of selected region into MessagePack serialized data
 * ROT13  

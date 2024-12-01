@@ -10,6 +10,10 @@
 # Custom base64 encode
 # Custom base85 decode
 # Custom base85 encode
+# Custom base91 decode
+# Custom base91 encode
+# Custom base92 decode
+# Custom base92 encode
 #
 # Copyright (c) 2021, Nobutaka Mantani
 # All rights reserved.
@@ -46,7 +50,11 @@ class CustomBASEXXDialog(dialog_base.DialogBase):
         super().__init__(title=kwargs["title"])
         digits = kwargs["digits"]
 
-        if digits == "85":
+        if digits == "92":
+            table = "!#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_abcdefghijklmnopqrstuvwxyz{|}~"
+        elif digits == "91":
+            table = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~"'
+        elif digits == "85":
             table = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!#$%&()*+-;<=>?@^_`{|}~"
         elif digits == "64":
             table = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
@@ -61,7 +69,7 @@ class CustomBASEXXDialog(dialog_base.DialogBase):
         else:
             sys.exit(1)
 
-        self.label = tkinter.Label(self.root, text="BASE%s table:" % digits)
+        self.label = tkinter.Label(self.root, text="base%s table:" % digits)
         self.label.grid(row=0, column=0, padx=5, pady=5)
 
         self.entry = tkinter.Entry(self.root, width=(len(table) + 16))

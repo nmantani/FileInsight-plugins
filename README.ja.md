@@ -130,7 +130,7 @@ Send to プラグインのメニューで Customize menu をクリックして�
 
 ![customization3.png](docs/customization3.png)
 
-## プラグインの一覧 (153個)
+## プラグインの一覧 (155個)
 ### Basic operations
 * Copy to new file  
   選択範囲を(選択していない場合は全体を)新しいファイルとして開きます。
@@ -341,6 +341,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase85テーブルを使ってデコードします。
 * Custom base91 decode  
   選択範囲をカスタムbase91テーブルを使ってデコードします。
+* Custom base92 decode  
+  選択範囲をカスタムbase92テーブルを使ってデコードします。
 * gob decode  
   選択範囲を gob (Go言語用のシリアライズフォーマット) でシリアライズされたデータとして Python の記法にデコードします。
 * MessagePack decode  
@@ -377,6 +379,8 @@ Send to プラグインのメニューで Customize menu をクリックして�
   選択範囲をカスタムbase85テーブルを使ってエンコードします。
 * Custom base91 encode  
   選択範囲をカスタムbase91テーブルを使ってエンデコードします。
+* Custom base92 encode  
+  選択範囲をカスタムbase92テーブルを使ってエンデコードします。
 * MessagePack encode  
   選択範囲の JSON を MessagePack でシリアライズされたデータとしてエンコードします。
 * ROT13  
