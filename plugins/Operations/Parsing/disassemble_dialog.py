@@ -46,7 +46,7 @@ class DisassembleDialog(dialog_base.DialogBase):
         self.label_arch.grid(row=0, column=0, padx=5, pady=5, sticky="w")
 
         self.combo_arch = tkinter.ttk.Combobox(self.root, state="readonly")
-        self.combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS", "PowerPC", "PowerPC64", "SPARC")
+        self.combo_arch["values"] = ("x64", "x86", "ARM", "ARM64", "MIPS", "PowerPC", "PowerPC64", "SPARC", "RISC-V")
         self.combo_arch.current(0)
         self.combo_arch.grid(row=0, column=2, padx=5, pady=5, sticky="w")
 
@@ -110,15 +110,25 @@ class DisassembleDialog(dialog_base.DialogBase):
         self.combo_v8.grid(row=6, column=2, padx=5, pady=5, sticky="w")
         self.combo_v8.grid_remove()
 
+        self.label_riscv_mode = tkinter.Label(self.root, text="Mode:")
+        self.label_riscv_mode.grid(row=7, column=0, padx=5, pady=5, sticky="w")
+        self.label_riscv_mode.grid_remove()
+
+        self.combo_riscv_mode = tkinter.ttk.Combobox(self.root, state="readonly")
+        self.combo_riscv_mode["values"] = ("32 bits", "64 bits", "Compressed")
+        self.combo_riscv_mode.current(0)
+        self.combo_riscv_mode.grid(row=7, column=2, padx=5, pady=5, sticky="w")
+        self.combo_riscv_mode.grid_remove()
+
         self.button = tkinter.Button(self.root, text="OK", command=(lambda: self.get_selection()))
-        self.button.grid(row=7, column=0, padx=5, pady=5, columnspan=3)
+        self.button.grid(row=8, column=0, padx=5, pady=5, columnspan=3)
         self.button.focus() # Focus to this widget
 
         # Set callback functions
         self.combo_arch.bind('<<ComboboxSelected>>', lambda event: self.combo_arch_selected())
         self.combo_arm_mode.bind('<<ComboboxSelected>>', lambda event: self.combo_arm_mode_selected())
 
-        for x in (self.combo_arch, self.combo_arm_mode, self.combo_mips_mode, self.combo_endian, self.combo_micromips, self.combo_mclass, self.combo_v8, self.button):
+        for x in (self.combo_arch, self.combo_arm_mode, self.combo_mips_mode, self.combo_endian, self.combo_micromips, self.combo_mclass, self.combo_v8, self.combo_riscv_mode, self.button):
             x.bind("<Return>", lambda event: self.get_selection())
 
     # Print selected items
@@ -190,6 +200,15 @@ class DisassembleDialog(dialog_base.DialogBase):
         elif self.combo_arch.get() == "SPARC":
             arch = capstone.CS_ARCH_SPARC
             mode = capstone.CS_MODE_BIG_ENDIAN
+        elif self.combo_arch.get() == "RISC-V":
+            arch = capstone.CS_ARCH_RISCV
+
+            if self.combo_riscv_mode.get() == "32 bits":
+                mode = capstone.CS_MODE_RISCV32
+            elif self.combo_riscv_mode.get() == "64 bits":
+                mode = capstone.CS_MODE_RISCV64
+            elif self.combo_riscv_mode.get() == "Compressed":
+                mode = capstone.CS_MODE_RISCVC
 
         print("%s\t%s" % (str(arch), str(mode))) # These values will be passed to disassemble.py
         self.show_disassembly_setting(arch, mode) # Pass message of disassembly settings via stderr
@@ -262,7 +281,16 @@ class DisassembleDialog(dialog_base.DialogBase):
             else:
                 print("  Big endian: false", file=sys.stderr)
         elif arch == capstone.CS_ARCH_SPARC:
-                print("  Architecture: SPARC", file=sys.stderr)
+            print("  Architecture: SPARC", file=sys.stderr)
+        elif arch == capstone.CS_ARCH_RISCV:
+            print("  Architecture: RISC-V", file=sys.stderr)
+
+            if mode & capstone.CS_MODE_RISCV32:
+                print("  Mode: 32 bits", file=sys.stderr)
+            elif mode & capstone.CS_MODE_RISCV64:
+                print("  Mode: 64 bits", file=sys.stderr)
+            elif mode & capstone.CS_MODE_RISCVC:
+                print("  Mode: Compressed", file=sys.stderr)
 
     def combo_arch_selected(self):
         # Hide / show labels and comboboxes
@@ -279,6 +307,8 @@ class DisassembleDialog(dialog_base.DialogBase):
             self.combo_mclass.grid_remove()
             self.label_v8.grid_remove()
             self.combo_v8.grid_remove()
+            self.label_riscv_mode.grid_remove()
+            self.combo_riscv_mode.grid_remove()
         elif self.combo_arch.get() == "ARM":
             self.label_arm_mode.grid()
             self.combo_arm_mode.grid()
@@ -293,6 +323,8 @@ class DisassembleDialog(dialog_base.DialogBase):
             self.combo_mclass.grid()
             self.label_v8.grid()
             self.combo_v8.grid()
+            self.label_riscv_mode.grid_remove()
+            self.combo_riscv_mode.grid_remove()
         elif self.combo_arch.get() == "ARM64":
             self.label_arm_mode.grid_remove()
             self.combo_arm_mode.grid_remove()
@@ -307,6 +339,8 @@ class DisassembleDialog(dialog_base.DialogBase):
             self.combo_mclass.grid_remove()
             self.label_v8.grid_remove()
             self.combo_v8.grid_remove()
+            self.label_riscv_mode.grid_remove()
+            self.combo_riscv_mode.grid_remove()
         elif self.combo_arch.get() == "MIPS":
             self.label_arm_mode.grid_remove()
             self.combo_arm_mode.grid_remove()
@@ -321,6 +355,8 @@ class DisassembleDialog(dialog_base.DialogBase):
             self.combo_mclass.grid_remove()
             self.label_v8.grid_remove()
             self.combo_v8.grid_remove()
+            self.label_riscv_mode.grid_remove()
+            self.combo_riscv_mode.grid_remove()
         elif self.combo_arch.get() in ["PowerPC", "PowerPC64"]:
             self.label_arm_mode.grid_remove()
             self.combo_arm_mode.grid_remove()
@@ -335,6 +371,23 @@ class DisassembleDialog(dialog_base.DialogBase):
             self.combo_mclass.grid_remove()
             self.label_v8.grid_remove()
             self.combo_v8.grid_remove()
+            self.label_riscv_mode.grid_remove()
+            self.combo_riscv_mode.grid_remove()
+        elif self.combo_arch.get() == "RISC-V":
+            self.label_arm_mode.grid_remove()
+            self.combo_arm_mode.grid_remove()
+            self.label_mips_mode.grid_remove()
+            self.combo_mips_mode.grid_remove()
+            self.label_endian.grid_remove()
+            self.combo_endian.grid_remove()
+            self.label_micromips.grid_remove()
+            self.combo_micromips.grid_remove()
+            self.label_mclass.grid_remove()
+            self.combo_mclass.grid_remove()
+            self.label_v8.grid_remove()
+            self.combo_v8.grid_remove()
+            self.label_riscv_mode.grid()
+            self.combo_riscv_mode.grid()
 
     def combo_arm_mode_selected(self):
         # Hide / show labels and comboboxes
