@@ -202,7 +202,9 @@ if __name__ == "__main__":
 
         if file_type == "executable":
             try:
-                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=4, profile="%s.ql" % os_type)
+                from qiling.const import QL_VERBOSE
+
+                ql = qiling.Qiling(argv=[file_path] + cmd_args, rootfs=rootfs, multithread=multithread, verbose=QL_VERBOSE.DEBUG, profile="%s.ql" % os_type)
 
                 # Start to watch file system events
                 handler = FileChangeHandler()
@@ -219,7 +221,7 @@ if __name__ == "__main__":
                 shellcode = f.read()
 
             try:
-                from qiling.const import QL_ENDIAN, QL_ARCH, QL_OS, QL_INTERCEPT
+                from qiling.const import QL_ENDIAN, QL_ARCH, QL_OS, QL_INTERCEPT, QL_VERBOSE
 
                 if big_endian:
                     endian = QL_ENDIAN.EB
@@ -236,7 +238,7 @@ if __name__ == "__main__":
 
                 dict_os = {"linux": QL_OS.LINUX, "windows": QL_OS.WINDOWS}
 
-                ql = qiling.Qiling(code=shellcode, archtype=dict_arch[arch], ostype=dict_os[os_type], rootfs=rootfs, endian=endian, multithread=multithread, verbose=4)
+                ql = qiling.Qiling(code=shellcode, archtype=dict_arch[arch], ostype=dict_os[os_type], rootfs=rootfs, endian=endian, multithread=multithread, verbose=QL_VERBOSE.DEBUG)
 
                 if os_type == "linux":
                     ql.os.set_syscall("execve", execve_hook, QL_INTERCEPT.CALL)
