@@ -82,6 +82,11 @@ def hex_text_to_binary_data(fi):
         zero_x_prefix = False # Current position is next to "0x" prefix
         contiguous = False # Previous character is hex character
         for i in range(0, len(string)):
+            # Check "-"
+            if string[i] == "-":
+                data += "-"
+                continue
+
             # Skip "0x"
             if i < len(string) - 2 and string[i] == "0" and string[i+1] in "x":
                 zero_x_prefix = True
@@ -113,8 +118,19 @@ def hex_text_to_binary_data(fi):
         converted = ""
         i = 0
         while i < len(data) - 1:
-            converted += chr(int(data[i] + data[i+1], 16))
-            i += 2
+            if data[i] == "-":
+                v = int(data[i+1] + data[i+2], 16)
+
+                if v > 128:
+                    print("The selected region contains values out of range (from -128 to 255).")
+                    return
+                else:
+                    converted += struct.pack("b", -v)
+
+                i += 3
+            else:
+                converted += chr(int(data[i] + data[i+1], 16))
+                i += 2
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
@@ -427,7 +443,7 @@ def binary_data_to_decimal_text(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen([fi.get_embed_python(), "Encoding/delimiter_dialog.py", "-s"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/delimiter_dialog.py", "-d", "-s"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -526,29 +542,9 @@ def decimal_text_to_binary_data(fi):
         if setting == "":
             return
         else:
-            (d, endianness, single_int) = setting.split()
+            (_, endianness, _) = setting.split()
 
-        delimiters = {"Space": " ",
-                      "Comma": ",",
-                      "Semi-colon": ";",
-                      "Colon": ":",
-                      "Tab": "\t",
-                      "LF": "\x0a",
-                      "CRLF": "\x0d\x0a"}
-
-        if d != "Space":
-            data = data.replace(" ", "")
-
-        values = re.split(delimiters[d], data, flags=re.MULTILINE | re.DOTALL)
-
-        # Check of splitted data
-        for i in range(0, len(values)):
-            if values[i] == "":
-                print("The selected region contains empty values (extra delimiters).")
-                return
-            if re.search("[^-0-9]", values[i]):
-                print("The selected region contains non-numeric or non-delimiter characters.")
-                return
+        values = re.split("[^-0-9]+", data, flags=re.MULTILINE | re.DOTALL)
 
         orig = fi.getDocument()
 
@@ -609,7 +605,7 @@ def binary_data_to_octal_text(fi):
         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
         # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen([fi.get_embed_python(), "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/delimiter_dialog.py", "-d"], startupinfo=startupinfo, stdout=subprocess.PIPE)
 
         # Get delimiter setting
         stdout_data, stderr_data = p.communicate()
@@ -618,7 +614,7 @@ def binary_data_to_octal_text(fi):
         if setting == "":
             return
         else:
-            (d, endianness, single_int) = setting.split()
+            (d, _, _) = setting.split()
 
         delimiters = {"Space": " ",
                       "Comma": ",",
@@ -634,7 +630,12 @@ def binary_data_to_octal_text(fi):
         for i in range(0, length):
             if i > 0:
                 converted += delimiters[d]
-            converted += oct(ord(data[i]))
+
+            v = oct(ord(data[i]))
+            if len(v) == 1: # v == 0
+                converted += v
+            else:
+                converted += v[1:]
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
@@ -657,49 +658,25 @@ def octal_text_to_binary_data(fi):
     data = fi.getSelection()
 
     if length > 0:
-        # Do not show command prompt window
-        startupinfo = subprocess.STARTUPINFO()
-        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-
-        # Execute delimiter_dialog.py to show GUI
-        p = subprocess.Popen([fi.get_embed_python(), "Encoding/delimiter_dialog.py"], startupinfo=startupinfo, stdout=subprocess.PIPE)
-
-        # Get delimiter setting
-        stdout_data, stderr_data = p.communicate()
-        setting = stdout_data.rstrip()
-
-        if setting == "":
-            return
-        else:
-            (d, endianness, single_int) = setting.split()
-
-        delimiters = {"Space": " ",
-                      "Comma": ",",
-                      "Semi-colon": ";",
-                      "Colon": ":",
-                      "Tab": "\t",
-                      "LF": "\x0a",
-                      "CRLF": "\x0d\x0a"}
-
-        values = re.split(delimiters[d], data, flags=re.MULTILINE | re.DOTALL)
+        values = re.split("[^-0-9]+", data, flags=re.MULTILINE | re.DOTALL)
 
         # Check of splitted data
         for i in range(0, len(values)):
-            if values[i] == "":
-                print("The selected region contains empty values (extra delimiters).")
-                return
-            if re.search("[^0-9]", values[i]):
-                print("The selected region contains non-numeric or non-delimiter characters.")
-                return
-            if int(values[i], 8) < 0 or int(values[i], 8) > 255:
-                print("The selected region contains values out of range (0-255).")
+            v = int(values[i], 8)
+            if v < -128 or v > 255:
+                print("The selected region contains values out of range (from -128 to 255).")
                 return
 
         orig = fi.getDocument()
 
         converted = ""
         for i in range(0, len(values)):
-            converted += chr(int(values[i], 8))
+            v = int(values[i], 8)
+
+            if v < 0:
+                converted += struct.pack("b", v)
+            else:
+                converted += struct.pack("B", v)
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
