@@ -642,14 +642,26 @@ def octal_text_to_binary_data(fi):
     data = fi.getSelection()
 
     if length > 0:
-        values = re.split("[^-0-9]+", data, flags=re.MULTILINE | re.DOTALL)
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        # Check of splitted data
-        for i in range(0, len(values)):
-            v = int(values[i], 8)
-            if v < -128 or v > 255:
-                print("The selected region contains values out of range (from -128 to 255).")
-                return
+        # Execute delimiter_dialog.py to show GUI
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/delimiter_dialog.py", "-e"], startupinfo=startupinfo, stdout=subprocess.PIPE)
+
+        # Get delimiter setting
+        stdout_data, stderr_data = p.communicate()
+        setting = stdout_data.rstrip()
+
+        if setting == "":
+            return
+        else:
+            (_, endianness, _) = setting.split()
+
+        # Remove "0o" prefix
+        data = data.replace("0o", "")
+
+        values = re.split("[^-0-9]+", data, flags=re.MULTILINE | re.DOTALL)
 
         orig = fi.getDocument()
 
@@ -658,9 +670,37 @@ def octal_text_to_binary_data(fi):
             v = int(values[i], 8)
 
             if v < 0:
-                converted += struct.pack("b", v)
+                if v >= -128:
+                    b = struct.pack("b", v)
+                elif v >= -32768:
+                    b = struct.pack("h", v)
+                elif v >= -2147483648:
+                    b = struct.pack("l", v)
+                elif v >= -9223372036854775808:
+                    b = struct.pack("q", v)
+                else:
+                    print("Error: the value %d is out of range for 64 bit integer." % v)
+                    return
+
+                if endianness == "Big":
+                    b = list(b)
+                    b.reverse()
+                    converted += "".join(b)
+                else:
+                    converted += b
             else:
-                converted += struct.pack("B", v)
+                h = "%x" % v
+                if len(h) % 2 == 1:
+                    h = "0" + h
+
+                b = binascii.a2b_hex(h)
+
+                if endianness == "Little":
+                    b = list(b)
+                    b.reverse()
+                    converted += "".join(b)
+                else:
+                    converted += b
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
