@@ -45,11 +45,25 @@ def binary_data_to_hex_text(fi):
     if length > 0:
         data = fi.getSelection()
         orig = fi.getDocument()
-
         converted = ""
-        for i in range(0, length):
-            converted += "%02x" % ord(data[i])
 
+        # Do not show command prompt window
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        # Execute hex_encode.py to encode data
+        p = subprocess.Popen([fi.get_embed_python(), "Encoding/hex_encode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        # Receive encoded data
+        stdout_data, stderr_data = p.communicate(data)
+        ret = p.wait()
+
+        if ret == 1:
+            print("Error: encode failed.")
+            print(stderr_data)
+            return
+
+        converted = stdout_data
         newdata = orig[:offset] + converted + orig[offset + length:]
 
         tab_name = fi.get_new_document_name("Output of Binary data to hex text")
@@ -70,77 +84,47 @@ def hex_text_to_binary_data(fi):
     length = fi.getSelectionLength()
 
     if length > 0:
-        string = fi.getSelection()
+        data = fi.getSelection()
     else:
         print("Please select a region to use this plugin.")
         return
 
-    hexchars = list("0123456789abcdefABCDEF")
+    # Remove "0x" prefix
+    data = data.replace("0x", "")
 
-    if length >= 2:
-        data = ""
-        zero_x_prefix = False # Current position is next to "0x" prefix
-        contiguous = False # Previous character is hex character
-        for i in range(0, len(string)):
-            # Check "-"
-            if string[i] == "-":
-                data += "-"
-                continue
+    # Remove non-hex characters
+    data = re.sub("[^0-9A-Fa-f]+", "", data)
 
-            # Skip "0x"
-            if i < len(string) - 2 and string[i] == "0" and string[i+1] in "x":
-                zero_x_prefix = True
-                continue
+    orig = fi.getDocument()
 
-            if string[i] in hexchars:
-                if zero_x_prefix == True:
-                    # Append "0" for 0x0, ... 0xf
-                    if (i < len(string) - 1 and string[i+1] not in hexchars) or i == len(string) - 1:
-                        data += "0"
-                        zero_x_prefix = False
-                    # Special handling is not required when there are two hex characters
-                    elif i < len(string) - 1 and string[i+1] in hexchars:
-                        zero_x_prefix = False
-                # Skip single hex character without "0x" prefix
-                elif i < len(string) - 1 and contiguous == False and string[i+1] not in hexchars:
-                    continue
+    converted = ""
 
-                data += string[i]
-                contiguous = True
-            else:
-                contiguous = False
+    # Do not show command prompt window
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
 
-        if len(data) < 2:
-            return
+    # Execute hex_encode.py to decode data
+    p = subprocess.Popen([fi.get_embed_python(), "Encoding/hex_decode.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
-        orig = fi.getDocument()
+    # Receive encoded data
+    stdout_data, stderr_data = p.communicate(data)
+    ret = p.wait()
 
-        converted = ""
-        i = 0
-        while i < len(data) - 1:
-            if data[i] == "-":
-                v = int(data[i+1] + data[i+2], 16)
+    if ret == 1:
+        print("Error: decode failed.")
+        print(stderr_data)
+        return
 
-                if v > 128:
-                    print("The selected region contains values out of range (from -128 to 255).")
-                    return
-                else:
-                    converted += struct.pack("b", -v)
+    converted = stdout_data
+    newdata = orig[:offset] + converted + orig[offset + length:]
 
-                i += 3
-            else:
-                converted += chr(int(data[i] + data[i+1], 16))
-                i += 2
+    tab_name = fi.get_new_document_name("Output of Hex text to binary data")
+    fi.newDocument(tab_name, 1)
+    fi.setDocument(newdata)
+    fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
 
-        newdata = orig[:offset] + converted + orig[offset + length:]
-
-        tab_name = fi.get_new_document_name("Output of Hex text to binary data")
-        fi.newDocument(tab_name, 1)
-        fi.setDocument(newdata)
-        fi.setBookmark(offset, len(converted), hex(offset), "#c8ffff")
-
-        print("Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are skipped)." % (hex(offset), hex(offset + length - 1), length))
-        print("Added a bookmark to converted region.")
+    print("Converted hex text from offset %s to %s (%s bytes) into binary data (non-hex characters are ignored)." % (hex(offset), hex(offset + length - 1), length))
+    print("Added a bookmark to converted region.")
 
 def custom_base64_decode(fi):
     """
