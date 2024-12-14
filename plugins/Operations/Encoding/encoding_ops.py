@@ -548,18 +548,26 @@ def decimal_text_to_binary_data(fi):
                 else:
                     print("Error: the value %d is out of range for 64 bit integer." % v)
                     return
+
+                if endianness == "Big":
+                    b = list(b)
+                    b.reverse()
+                    converted += "".join(b)
+                else:
+                    converted += b
             else:
                 h = "%x" % v
                 if len(h) % 2 == 1:
                     h = "0" + h
 
                 b = binascii.a2b_hex(h)
-            if endianness == "Little":
-                b = list(b)
-                b.reverse()
-                converted += "".join(b)
-            else:
-                converted += b
+
+                if endianness == "Little":
+                    b = list(b)
+                    b.reverse()
+                    converted += "".join(b)
+                else:
+                    converted += b
 
         newdata = orig[:offset] + converted + orig[offset + length:]
 
