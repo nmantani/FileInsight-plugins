@@ -1,3 +1,63 @@
+2024-12-15 version 2.18
+* New plugins
+  - Encoding operations
+    - "Custom base92 encode" plugin and "Custom base92 decode" plugin
+      These plugins encode and decode selected region with custom base92 table.
+* Enhancements
+  - Crypto operations
+    - AES plugins
+      - "No unpadding" option is added for ECB mode and CBC mode.
+      - Segment size is selectable for CFB mode.
+  - Compression operations
+    All plugins show output size.
+  - Encoding operations
+    - "Binary data to hex text" plugin and "Hex text to binary data" plugin
+      These plugins are rewritten to use external Python 3 scripts. They can encode or decode much faster.
+    - "Octal text to binary data" plugin
+      Negative number is supported.
+    - "Decimal text to binary data" plugin and "Octal text to binary data" plugin
+      Delimiters are automatically detected and loose format
+      (multiple lines and using multiple delimiter types) is acceptable.
+  - Misc operations
+    - "Emulate code" plugin
+      - RISC-V architecture is supported in emulation with Qiling Framework.
+  - Parsing operations
+    - "Binwalk scan" plugin
+      - Binwalk is upgraded to version 3 that is rewritten with Rust.
+      - Detected file types will be shown in bookmarks.
+    - Disassemble plugin
+      RISC-V architecture is supported.
+    - "File type" plugin
+      File type detection accuracy with python-magic is improved with updated libmagic.
+* Bug fixes
+  - Compression operations
+    - "QuickLZ decompress" plugin
+      Decompression failure for some cases is fixed.
+  - Encoding operations
+    - "Decimal text to binary data" plugin
+      Incorrect byte order for negative values is fixed.
+* Other changes
+  - Python Windows embeddable package is updated to 3.12.5.
+  - Python package dependencies are updated accordingly.
+  - Encoding operations
+    - "Binary data to octal text" plugin
+      "0" prefix is not prepended for octal values.
+    - "Protobuf decode" plugin
+      blackboxprotobuf is switched from the forked version to the original version
+      (https://github.com/nccgroup/blackboxprotobuf).
+  - Misc operations
+    - "Hash values" plugin
+      Hash algorithm of exphash is changed from SHA256 to MD5 due to update of pefile.
+  - Parsing operations
+    - "Binwalk scan" plugin
+      Binwalk is bundled with FileInsight-plugins-embeddable-python-packages
+      because Windows binary of Binwalk is not distributed.
+    - "Show metadata" plugin
+      ExifTool is bundled with FileInsight-plugins-embeddable-python-packages to avoid
+      unavailability on installation because only the latest production
+      versions of ExifTool is available and old production versions are
+      not available.
+
 2023-06-07 version 2.17.1
 * Critical bug fix
   This version fixes a critical bug of show_simple_dialog.py that prevents the following plugins from running:
