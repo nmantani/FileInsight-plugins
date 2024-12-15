@@ -410,7 +410,7 @@ if __name__ == "__main__":
 
     if find_embed():
         # Preload diec.exe and exiftool.exe to start them faster for when "File type" plugin and "Show metadata" plugin use them
-        if os.path.exists("Parsing/die_win64_portable/diec.exe") and os.path.exists("Parsing/exiftool.exe"):
+        if os.path.exists("Parsing/die_win64_portable/diec.exe") and os.path.exists("python3-embed/exiftool.exe"):
             pid = os.getpid()
             kernel32 = ctypes.windll.kernel32
             mutex = kernel32.CreateMutexA(0, 1, "fileinsight-plugins-preload-%s" % pid) # pid is not changed in a FileInsight process
@@ -420,7 +420,7 @@ if __name__ == "__main__":
             if result == 0x00000000:
                 # Execute diec.exe and exiftool.exe in the background only once
                 subprocess.Popen(["Parsing/die_win64_portable/diec.exe", "main.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-                subprocess.Popen(["Parsing/exiftool.exe", "main.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                subprocess.Popen(["python3-embed/exiftool.exe", "main.py"], startupinfo=startupinfo, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
         # Execute menu.py to show GUI
         # GUI portion is moved to menu.py to avoid hangup of FileInsight
