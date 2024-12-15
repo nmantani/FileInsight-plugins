@@ -54,12 +54,11 @@ Param(
     [Switch]$snapshot
 )
 
-$RELEASE_VERSION = "2.17.1"
-$PYTHON_EMBEDDABLE_PACKAGES_RELEASE_VERSION = "20230527"
+$RELEASE_VERSION = "2.18"
+$PYTHON_EMBEDDABLE_PACKAGES_RELEASE_VERSION = "20241201"
 $PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_VERSION = "20241201"
 $APLIB_VERSION = "1.1.1"
 $DIE_VERSION = "3.10"
-$EXIFTOOL_VERSION = "13.00"
 $GIMPHASH_VERSION = "0.2.0"
 $LEMMEKNOW_VERSION = "0.8.0"
 $QUICKLZ_VERSION = "1.5.0"
@@ -68,12 +67,11 @@ $VENV_PATH = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plu
 
 # SHA256 Hash values of files that will be downloaded
 $FILEINSIGHT_HASH = "005FE63E3942D772F82EC4DF935002AEDB8BBBF10FC95BE086C029A2F3C875A9"
-$FILEINSIGHT_PLUGINS_HASH = "64931882134483166F3025E8FF9B4993B174DE95990859A075A4D1F54B415B49"
-$PYTHON_EMBEDDABLE_PACKAGES_RELEASE_HASH = "8392f52d4e2bffdc74d6569ab2e214567a333b1156f97fc59193562f0e1a73a3"
+$FILEINSIGHT_PLUGINS_HASH = "4E5E4CB3BA0D4260C37C8C16331DEBC3DCE1F1D67EEF5F0335C1C92DBD622313"
+$PYTHON_EMBEDDABLE_PACKAGES_RELEASE_HASH = "C16EA1E4026CFB8A4AD94DACDC0890DCFE94479762288E760E30F7A71B801FA4"
 $PYTHON_EMBEDDABLE_PACKAGES_SNAPSHOT_HASH = "C16EA1E4026CFB8A4AD94DACDC0890DCFE94479762288E760E30F7A71B801FA4"
 $APLIB_HASH = "C35C6D3D96CCA8A29FA863EFB22FA2E9E03F5BC2C0293C3256D7AF2E112583B3"
 $DIE_HASH = "6E84AC8D3ABDFBA60078A36FA7F6B492B20C2AF2C502E0A4579F41367AC37C80"
-$EXIFTOOL_HASH = "BCA1292B39200C15728D4E111B6CA8A8F411BC15D7E0BF1786904CBD240CDDC9"
 $GIMPHASH_HASH = "F285B6CB53A5B86182EE506321522A88BCBC029CE37639A39F480D3B0FE1D4CB"
 $LEMMEKNOW_HASH = "6983AF87D102BFE6FB00ED67EE64E7968908CB3242F8DEE9E2EB981C297E6C66"
 $QUICKLZ_HASH = "C64082498113C220142079B6340BCE3A7B729AD550FCF7D38E08CF8BB2634A28"
@@ -667,89 +665,6 @@ function install_detect_it_easy($work_dir, $update) {
     }
 }
 
-function install_exiftool($work_dir, $update) {
-    Write-Host "[+] Installing ExifTool..."
-
-    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\exiftool.exe"
-    if ((Test-Path $file_path) -and !$update) {
-        Write-Host "[*] ExifTool is already installed. Skipping installation."
-    } else {
-        if ((Test-Path $file_path) -and $update) {
-            $current_version = &$file_path -ver
-            $need_install = [System.Version] $current_version -lt $EXIFTOOL_VERSION
-        } else {
-            $need_install = $true
-        }
-
-        if ($need_install) {
-            Write-Host "[+] Downloading ExifTool-$EXIFTOOL_VERSION..."
-            $archive_url = "https://exiftool.org/exiftool-${EXIFTOOL_VERSION}_64.zip"
-            # Mirror site for website outage
-            #$archive_url = "https://jaist.dl.sourceforge.net/project/exiftool/exiftool-${EXIFTOOL_VERSION}_64.zip"
-            $zip_archive_path = "$work_dir\exiftool-${EXIFTOOL_VERSION}_64.zip"
-            download_file $archive_url $zip_archive_path
-
-            if (!(Test-Path $zip_archive_path)) {
-                Write-Host "[!] Download has been failed."
-                Write-Host "[*] Please manually download ExifTool from https://exiftool.org/"
-                Write-Host "[*] and copy exiftool(-k).exe as '$file_path' ."
-                return
-            }
-            Write-Host "[+] Done."
-
-            Write-Host "[+] Verifying SHA256 hash value of $zip_archive_path (with $EXIFTOOL_HASH)..."
-            $val = compute_hash $zip_archive_path
-            if ($val -eq $EXIFTOOL_HASH) {
-                Write-Host "[+] OK."
-            } else {
-                Write-Host "[!] The hash value does not match ($val)."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            }
-
-            Write-Host "[+] Extracting exiftool-${EXIFTOOL_VERSION}_64.zip..."
-            $extract_dir = $work_dir
-            extract_zip $zip_archive_path $extract_dir
-            $file_path = "$extract_dir\exiftool-${EXIFTOOL_VERSION}_64\exiftool(-k).exe"
-
-            if (!(Test-Path $file_path)) {
-                Write-Host "[!] Extraction has been failed."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            }
-            Write-Host "[+] Done."
-
-            $dest_file = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\exiftool.exe"
-            Write-Host "[+] Copying exiftool(-k).exe to $dest_file ..."
-            Copy-Item $file_path -Destination $dest_file -Recurse -Force
-            if (!(Test-Path "$dest_file")) {
-                Write-Host "[!] Installation has been failed."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            }
-
-            $file_path = "$extract_dir\exiftool-${EXIFTOOL_VERSION}_64\exiftool_files"
-            $dest_file = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\exiftool_files"
-            Write-Host "[+] Copying exiftool_files to $dest_file ..."
-            Copy-Item $file_path -Destination $dest_file -Recurse -Force
-            if (!(Test-Path "$dest_file")) {
-                Write-Host "[!] Installation has been failed."
-                remove_working_directory $work_dir
-                Write-Host "[+] Aborting installation."
-                exit
-            }
-            Write-Host "[+] Done."
-            Write-Host "[+] ExifTool $EXIFTOOL_VERSION has been installed."
-        } else {
-            Write-Host "[*] ExifTool $EXIFTOOL_VERSION is already installed. Skipping installation."
-        }
-        Write-Host ""
-    }
-}
-
 function install_quicklz($work_dir) {
     Write-Host "[+] Installing QuickLZ library..."
 
@@ -933,6 +848,22 @@ function migrate_plugin_config() {
     }
 }
 
+function remove_old_exiftool() {
+    $file_path = [Environment]::GetFolderPath('Personal') + "\McAfee FileInsight\plugins\Operations\Parsing\exiftool.exe"
+
+    if ((Test-Path $file_path)) {
+        Write-Host "[+] Removing old ExifTool..."
+        Remove-Item $file_path
+
+        if ((Test-Path $file_path)) {
+            Write-Host "[!] Cannot remove '$file_path'."
+        } else {
+            Write-Host "[+] Done."
+        }
+    }
+    Write-Host ""
+}
+
 #
 # Main section
 #
@@ -962,13 +893,11 @@ install_embeddable_python_packages $work_dir $update
 install_detect_it_easy $work_dir $update
 install_qiling_rootfs $work_dir $update
 install_aplib $work_dir
-if (!$snapshot) {
-    install_exiftool $work_dir $update
-}
 install_quicklz $work_dir
 install_gimphash $work_dir $update
 install_lemmeknow $work_dir $update
 
+remove_old_exiftool
 migrate_plugin_config
 
 remove_working_directory $work_dir
